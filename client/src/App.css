@@ -36,3 +36,40 @@
     transform: rotate(360deg);
   }
 }
+
+.timebestilling{
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timebestilling * {
+  margin:1rem;
+}
+
+.navBar{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  font-size: larger;
+  font-weight: bolder;
+}
+
+.navBar * {
+  padding:2rem;
+  text-align: center;
+  cursor: pointer;
+}
+
+.navBar *:active{
+  background-color: #505050;
+}
+h1{
+  font-size: large;
+}
+
+.bareLinnea{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
