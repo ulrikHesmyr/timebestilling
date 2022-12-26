@@ -1,9 +1,8 @@
-import React, {useState,useEffect, useRef} from 'react'
+import React, {useState, useRef} from 'react'
 import Tjenester from '../components/Tjenester';
 
-export default function Timebestilling(){
+export default function Timebestilling({sDato, dato}){
 
-    const [dato, setDato] = useState(null);
     const tjenesteliste = useRef(null);
     
 
@@ -11,13 +10,13 @@ export default function Timebestilling(){
     <div className='timebestilling'>
     <h1>Velg din time</h1>
     <input type="date" min={hentDato()} onChange={(e)=>{
-        setDato(e.target.value);
+        sDato(e.target.value);
         tjenesteliste.current.scrollIntoView({
             behavior:'smooth',
             block:'end'
         })
     }}></input>
-    <p>{(dato != null?`Din valgte dato er ${dato.substring(8,10)}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}`:"")}</p>
+    <p>{(dato != null?`Din valgte dato er ${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}`:"")}</p>
     <div ref={tjenesteliste}>
         {(dato!=null? <Tjenester/>:"")}
     </div>
