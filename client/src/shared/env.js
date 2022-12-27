@@ -21,3 +21,15 @@ export const tjenester = [
         tid: 110
     }
 ];
+export const klokkeslett = [
+    {tid:"08:00", tilgjengeligeAnsatte:3},
+    {tid:"09:00", tilgjengeligeAnsatte:3},
+    {tid:"10:00", tilgjengeligeAnsatte:3},
+    {tid:"11:00", tilgjengeligeAnsatte:3},
+    {tid:"12:00", tilgjengeligeAnsatte:3},
+    {tid:"13:00", tilgjengeligeAnsatte:3},
+    {tid:"14:00", tilgjengeligeAnsatte:3},
+    {tid:"15:00", tilgjengeligeAnsatte:3},
+    {tid:"16:00", tilgjengeligeAnsatte:3},
+    {tid:"17:00", tilgjengeligeAnsatte:1}
+]

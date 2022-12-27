@@ -8,6 +8,8 @@ const App = ()=> {
 
   
   const [dato, setDato] = useState(null);
+  const [produkt, setProdukt] = useState(null);
+
 
   return (
       <BrowserRouter>
@@ -17,7 +19,7 @@ const App = ()=> {
               <Link to="/about">VI ER bareLinnea</Link>
             </nav>
             <Routes>
-              <Route exact path="/" element={<Timebestilling sDato={setDato} dato={dato}/>} />
+              <Route exact path="/" element={<Timebestilling sDato={setDato} dato={dato} produkt={produkt} sProdukt={setProdukt}/>} />
               <Route exact path="/about" element={<ViErBareLinnea/>} />
             </Routes>
         </div>

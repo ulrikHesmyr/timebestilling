@@ -1,10 +1,18 @@
-import React, {useState, useRef} from 'react'
+import React, { useRef, useEffect} from 'react'
 import Tjenester from '../components/Tjenester';
+import Klokkeslett from '../components/Klokkeslett';
 
-export default function Timebestilling({sDato, dato}){
+export default function Timebestilling({sDato, dato, produkt, sProdukt}){
 
     const tjenesteliste = useRef(null);
+    const valgtProduktTekst = useRef(null);
     
+    useEffect(()=>{
+        valgtProduktTekst.current.scrollIntoView({
+            behavior:'smooth',
+            block:'start'
+        })
+    }, [produkt])
 
     return (
     <div className='timebestilling'>
@@ -18,9 +26,13 @@ export default function Timebestilling({sDato, dato}){
     }}></input>
     <p>{(dato != null?`Din valgte dato er ${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}`:"")}</p>
     <div ref={tjenesteliste}>
-        {(dato!=null? <Tjenester/>:"")}
+        {(dato!=null? <Tjenester produkt={produkt} sProdukt={sProdukt} />:"")}
     </div>
-    
+    <p ref={valgtProduktTekst}>{(produkt != null? `Du har valgt: ${produkt}`:"")}</p>
+
+    <div>
+        {(produkt != null?<Klokkeslett dato={dato} hentMaaned={hentMaaned}/>:"")}
+    </div>
     </div>
         )
 }
