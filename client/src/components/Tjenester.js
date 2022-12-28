@@ -1,21 +1,35 @@
 import React from "react";
-import {tjenester} from '../shared/env.js'
+import {tjenester, kategorier} from '../shared/env.js'
 
 
-export default function Tjenester({produkt, sProdukt, valgtProdukt}){
+export default function Tjenester({produkt, sProdukt, frisor}){
     
     return(
         <div>
             <h1>Hva ønsker du å reservere time for?</h1>
-            {tjenester.map((element)=>(
-                <div className="tjeneste" key={element.navn} onClick={(e)=>{
-                    sProdukt(element.navn);
-                }} style={{border: produkt === element.navn?"3px solid black": "thin solid black"}}>
-                <h2>{element.navn}</h2>
-                <p>Pris: {element.pris} kr</p>
-                <p>Tid: {element.tid} minutter</p>
-                </div>
+            <div className="kategorier">
+            
+                {kategorier.map((kategori)=>(
+                    <div key={kategori}>
+                    <div className="kategori">{kategori}</div>
+                    {frisor.produkter.filter(element=>kategorier[tjenester[element].kategori] === kategori).map((element)=>(
+                        <div className="tjeneste" key={tjenester[element].navn} onClick={()=>{
+                            if(!produkt.includes(tjenester[element].navn)){
+                                sProdukt([...produkt, tjenester[element].navn]);
+                            } else {
+                                sProdukt(produkt.filter(p=>p !== tjenester[element].navn))
+                            }
+                        }} style={{border: produkt === tjenester[element].navn?"3px solid black": "thin solid black"}}>
+                        <h3>{tjenester[element].navn}</h3>
+                        <p>Pris: {tjenester[element].pris} kr</p>
+                        <p>Tid: {tjenester[element].tid} minutter</p>
+                        </div>
             ))}
+            </div>
+                    
+                    
+                ))}
+            </div>
         </div>
     )
 }

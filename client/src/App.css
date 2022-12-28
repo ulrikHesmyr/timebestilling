@@ -1,57 +1,177 @@
-.timebestilling{
-  display:flex;
-  flex-direction: column;
-  align-items: center;
-}
 
+  .timebestilling{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
 .timebestilling * {
   margin:1rem;
 }
-
-.navBar{
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  font-size: larger;
-  font-weight: bolder;
-}
-
-.navBar * {
-  padding:2rem;
-  text-align: center;
-  cursor: pointer;
-  text-decoration: none;
-  color:black;
-}
-
-.navBar *:active{
-  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
-  color:inherit !important;
-}
-h1{
-  font-size: large;
-}
-
-.bareLinnea{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.tjeneste{
-  background-color: white;
-}
-
-.klokkeslettene{
-  display: grid;
-  grid-template-columns:1fr 1fr;
   
-}
+  .navBar{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    font-size: larger;
+    font-weight: bolder;
+  }
+  
+  
+  .navBar * {
+    padding:2rem;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+    color:black;
+  }
+  
+  .navBar *:active{
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
+    color:inherit !important;
+  }
+  h1{
+    font-size: large;
+  }
+  
+  .bareLinnea{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .kategorier{
+    display: flex;
+    flex-direction: column; 
+  }
+  .kategorier .kategori{
+    border-left: thin solid black;
+    cursor: pointer;
+    padding:0.3rem;
+  }
+  
+  .kategorier{
+    display: flex;
+    flex-direction: row;
+  }
+  .tjeneste{
+    background-color: white;
+    cursor: pointer;
+  }
+  
+  .klokkeslettene{
+    display: flex;
+  }
+  .klokkeslettene *:hover{
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+  }
+  
+  .klokkeslettene *{
+    cursor: pointer;
+    border-radius: 1rem;
+    padding:2rem;
+    color:black;
+    transition: 0.5s ease;
+  }
+  
+  .frisorene{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  }
+  
+  .frisor{
+    padding: 1rem;
+    cursor: pointer;
+    border: thin solid black;
+    border-radius: 0.4rem;
+  }
 
-.klokkeslettene *{
-  cursor: pointer;
-  border-radius: 1rem;
-  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
-  padding:2rem;
-  color:black;
+
+  /*******************************************************************************************************************/
+@media (width <= 900px){
+  
+  
+  .timebestilling{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+.timebestilling * {
+  margin:1rem;
+}
+  
+  .navBar{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    font-size: larger;
+    font-weight: bolder;
+  }
+  
+  
+  .navBar * {
+    padding:2rem;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+    color:black;
+  }
+  
+  .navBar *:active{
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
+    color:inherit !important;
+  }
+  h1{
+    font-size: large;
+  }
+  
+  .bareLinnea{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .kategorier{
+    display: flex;
+    flex-direction: column; 
+  }
+  .kategorier .kategori{
+    border-left: thin solid black;
+    cursor: pointer;
+    padding:0.3rem;
+  }
+  
+  .tjenester{
+    display: grid;
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .tjeneste{
+    background-color: white;
+    cursor: pointer;
+  }
+  
+  .klokkeslettene{
+    display: grid;
+    grid-template-columns:1fr 1fr;
+    
+  }
+  
+  .klokkeslettene *{
+    cursor: pointer;
+    border-radius: 1rem;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
+    padding:2rem;
+    color:black;
+  }
+  
+  .frisorene{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .frisor{
+    padding: 1rem;
+    cursor: pointer;
+    border: thin solid black;
+    border-radius: 0.4rem;
+  }
 }
