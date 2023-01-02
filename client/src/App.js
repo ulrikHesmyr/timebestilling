@@ -11,9 +11,20 @@ const App = ()=> {
   const [produkt, setProdukt] = useState([]);
   const [frisor, setFrisor] = useState(null);
   const [klokkeslettet, setKlokkeslett] = useState(null);
-  const [navn, setNavn] = useState(null);
-  const [telefonnummer, setTelefonnummer] = useState(null);
+  const [navn, setNavn] = useState(undefined);
+  const [telefonnummer, setTelefonnummer] = useState(undefined);
+  const [bestilteTimer, setBestiltetimer] = useState(undefined);
+  const [updateDataTrigger, setUpdate] = useState(false);
 
+  useEffect(()=>{
+    async function fetchData(){
+      const request = await fetch('http://localhost:3001/timebestilling/hentBestiltetimer');
+      const response = await request.json();
+      setBestiltetimer(response);
+
+    }
+    fetchData();
+  },[updateDataTrigger])
 
   return (
       <BrowserRouter>
@@ -23,7 +34,7 @@ const App = ()=> {
               <Link to="/about">VI ER bareLinnea</Link>
             </nav>
             <Routes>
-              <Route exact path="/" element={<Timebestilling navn={navn} sNavn={setNavn} telefonnummer={telefonnummer} sTelefonnummer={setTelefonnummer} klokkeslettet={klokkeslettet} sKlokkeslett={setKlokkeslett} sDato={setDato} dato={dato} produkt={produkt} sProdukt={setProdukt} frisor={frisor} sFrisor={setFrisor}/>} />
+              <Route exact path="/" element={<Timebestilling setUpdate={setUpdate} updateDataTrigger={updateDataTrigger} bestilteTimer={bestilteTimer} navn={navn} sNavn={setNavn} telefonnummer={telefonnummer} sTelefonnummer={setTelefonnummer} klokkeslettet={klokkeslettet} sKlokkeslett={setKlokkeslett} sDato={setDato} dato={dato} produkt={produkt} sProdukt={setProdukt} frisor={frisor} sFrisor={setFrisor}/>} />
               <Route exact path="/about" element={<ViErBareLinnea/>} />
             </Routes>
         </div>

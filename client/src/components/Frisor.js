@@ -1,7 +1,7 @@
 import React from "react";
 import { frisorer, tjenester } from "../shared/env";
 
-export default function Frisor({frisor, sFrisor, tjenesteliste, sProdukt}){
+export default function Frisor({sKlokkeslett ,frisor, sFrisor, tjenesteliste, sProdukt}){
 
     return(
         <div className="frisorComponent">
@@ -11,6 +11,7 @@ export default function Frisor({frisor, sFrisor, tjenesteliste, sProdukt}){
             {frisorer.map((element)=>(<div className="frisor" key={element.navn} onClick={()=>{
                 sFrisor(element);
                 sProdukt([]);
+                sKlokkeslett(null);
                 tjenesteliste.current.scrollIntoView({
                     behavior:'smooth',
                     block:'start'

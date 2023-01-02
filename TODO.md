@@ -1,6 +1,10 @@
 CLIENT:
+- Lage kvitteringsside når de har bestilt time
+
 - Lagre navn og nummer i localStorage for senere                                                         1
 SERVER:
+- Sende bekreftelse på timebestilling på epost 
+
 - Sett opp protected route router.post('/login', async(req,res))
 - Når de logger inn så får de tilgang til: 
     Reservere bort timer hvor de ikke skal jobbe
