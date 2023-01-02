@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import {BrowserRouter, Route, Routes, Link} from 'react-router-dom'
 import Timebestilling from './pages/Timebestilling'
 import ViErBareLinnea from './pages/bareLinnea'
+import DinReservasjon from './pages/DinReservasjon'
 import './App.css'
 
 const App = ()=> {
@@ -15,6 +16,7 @@ const App = ()=> {
   const [telefonnummer, setTelefonnummer] = useState(undefined);
   const [bestilteTimer, setBestiltetimer] = useState(undefined);
   const [updateDataTrigger, setUpdate] = useState(false);
+  const [registrertReservasjon, setReservasjon] = useState(undefined);
 
   useEffect(()=>{
     async function fetchData(){
@@ -34,7 +36,7 @@ const App = ()=> {
               <Link to="/about">VI ER bareLinnea</Link>
             </nav>
             <Routes>
-              <Route exact path="/" element={<Timebestilling setUpdate={setUpdate} updateDataTrigger={updateDataTrigger} bestilteTimer={bestilteTimer} navn={navn} sNavn={setNavn} telefonnummer={telefonnummer} sTelefonnummer={setTelefonnummer} klokkeslettet={klokkeslettet} sKlokkeslett={setKlokkeslett} sDato={setDato} dato={dato} produkt={produkt} sProdukt={setProdukt} frisor={frisor} sFrisor={setFrisor}/>} />
+              <Route exact path="/" element={(registrertReservasjon?<DinReservasjon setReservasjon={setReservasjon} registrertReservasjon={registrertReservasjon} />:<Timebestilling  setReservasjon={setReservasjon} setUpdate={setUpdate} updateDataTrigger={updateDataTrigger} bestilteTimer={bestilteTimer} navn={navn} sNavn={setNavn} telefonnummer={telefonnummer} sTelefonnummer={setTelefonnummer} klokkeslettet={klokkeslettet} sKlokkeslett={setKlokkeslett} sDato={setDato} dato={dato} produkt={produkt} sProdukt={setProdukt} frisor={frisor} sFrisor={setFrisor}/>)} />
               <Route exact path="/about" element={<ViErBareLinnea/>} />
             </Routes>
         </div>

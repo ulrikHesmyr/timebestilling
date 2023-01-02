@@ -5,7 +5,7 @@ import Frisor from '../components/Frisor';
 import PersonInfo from '../components/PersonInfo';
 import { frisorer } from '../shared/env';
 
-export default function Timebestilling({setUpdate, updateDataTrigger, bestilteTimer, navn, sNavn, telefonnummer, sTelefonnummer, klokkeslettet, sKlokkeslett, sDato, dato, produkt, sProdukt, frisor, sFrisor}){
+export default function Timebestilling({setReservasjon, setUpdate, updateDataTrigger, bestilteTimer, navn, sNavn, telefonnummer, sTelefonnummer, klokkeslettet, sKlokkeslett, sDato, dato, produkt, sProdukt, frisor, sFrisor}){
 
     const tjenesteliste = useRef(null);
     const frisorListe = useRef(null);
@@ -14,6 +14,15 @@ export default function Timebestilling({setUpdate, updateDataTrigger, bestilteTi
     const valgtProduktTekst = useRef(null);
     const valgtTidspunktTekst = useRef(null);
     
+    function nullstillData(){
+        sDato(null);
+        sProdukt([]);
+        sFrisor(null);
+        sKlokkeslett(null);
+        sNavn(undefined);
+        sTelefonnummer(undefined);
+    }
+
     useEffect(()=>{
         valgtDatoTekst.current.scrollIntoView({
             behavior:'smooth',
@@ -74,7 +83,7 @@ export default function Timebestilling({setUpdate, updateDataTrigger, bestilteTi
     <p ref={valgtTidspunktTekst}>{(klokkeslettet != null?`Valgt klokkeslett er ${klokkeslettet}`:"")}</p>
 
     <div>
-        {(klokkeslettet != null?<PersonInfo setUpdate={setUpdate} updateDataTrigger={updateDataTrigger} sNavn={sNavn} sTelefonnummer={sTelefonnummer} data={{
+        {(klokkeslettet != null?<PersonInfo telefonnummer={telefonnummer} navn={navn} nullstillData={nullstillData} setReservasjon={setReservasjon} setUpdate={setUpdate} updateDataTrigger={updateDataTrigger} sNavn={sNavn} sTelefonnummer={sTelefonnummer} data={{
         dato:dato, 
         tidspunkt:klokkeslettet,
         frisor:frisorer.indexOf(frisor),

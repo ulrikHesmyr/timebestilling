@@ -1,8 +1,7 @@
 import React, {useRef} from 'react'
 
-export default function PersonInfo({setUpdate ,updateDataTrigger, data, sNavn, sTelefonnummer}){
+export default function PersonInfo({navn, telefonnummer, nullstillData, setReservasjon ,setUpdate ,updateDataTrigger, data, sNavn, sTelefonnummer}){
     
-
     const navnInput = useRef(null);
     const tlfInput = useRef(null);
 
@@ -16,17 +15,21 @@ export default function PersonInfo({setUpdate ,updateDataTrigger, data, sNavn, s
             body: JSON.stringify(data)
         });
         const response = await request.json();
-        console.log(response);
-        setUpdate(!updateDataTrigger);
+        if(response){
+            setUpdate(!updateDataTrigger);
+            setReservasjon(response.bestiltTime);
+            nullstillData();
+        }
+        console.log(response.bestiltTime);
     }
 
     return (
         <form>
-            <label htmlFor="navn">Navn: <input value={data.kunde} ref={navnInput} type="text" placeholder='Navn Navnesen' name='navn' onChange={(e)=>{
+            <label htmlFor="navn">Navn: <input value={navn} ref={navnInput} type="text" placeholder='Navn Navnesen' name='navn' onChange={(e)=>{
                 sNavn(e.target.value);
             }}></input></label>
             
-            <label htmlFor="phone">Telefon:<input value={data.telefonnummer} ref={tlfInput} type="number" name="phone" onChange={(e)=>{
+            <label htmlFor="phone">Telefon:<input value={telefonnummer} ref={tlfInput} type="number" name="phone" onChange={(e)=>{
                 sTelefonnummer(parseInt(e.target.value));
             }}></input> </label>
             
