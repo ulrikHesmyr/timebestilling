@@ -1,5 +1,5 @@
 CLIENT:
-- Gjøre at timer er reservert for kun den frisøren som har kunde                                                                  1
+- Lagre navn og nummer i localStorage for senere                                                         1
 SERVER:
 - Sett opp protected route router.post('/login', async(req,res))
 - Når de logger inn så får de tilgang til: 
