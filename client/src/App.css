@@ -1,4 +1,6 @@
-
+body{
+  font-size: 1.4rem;
+}
   .timebestilling{
     display:flex;
     flex-direction: column;
@@ -85,11 +87,16 @@
     border-radius: 0.4rem;
   }
 
+  input, label{
+    padding:0.8rem;
+  }
 
   /*******************************************************************************************************************/
 @media (width <= 900px){
   
-  
+  body{
+    font-size: medium;
+  }
   .timebestilling{
     display:flex;
     flex-direction: column;

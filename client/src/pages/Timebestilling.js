@@ -59,7 +59,7 @@ export default function Timebestilling({ navn, sNavn, telefonnummer, sTelefonnum
     <p ref={valgtProduktTekst}>{(produkt.length > 0? `Du har valgt: ${produkt.join(", ")}`:"")}</p>
 
     <div>
-        {(produkt.length > 0?<Klokkeslett sKlokkeslett={sKlokkeslett} dato={dato} hentMaaned={hentMaaned}/>:"")}
+        {(produkt.length > 0?<Klokkeslett frisor={frisor} sKlokkeslett={sKlokkeslett} dato={dato} hentMaaned={hentMaaned}/>:"")}
     </div>
     <p ref={valgtTidspunktTekst}>{(klokkeslettet != null?`Valgt klokkeslett er ${klokkeslettet}`:"")}</p>
 

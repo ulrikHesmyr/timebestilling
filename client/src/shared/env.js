@@ -48,11 +48,11 @@ export const frisorer = [
     },
     {
     navn:"Elin",
-    produkter:[1,2]
+    produkter:[0,1,2]
     },
     {
     navn:"Anine",
-    produkter:[2,3]
+    produkter:[0,2,3]
     }
     
 ];

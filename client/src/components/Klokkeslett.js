@@ -1,11 +1,11 @@
 import React from 'react'
-import { klokkeslett } from '../shared/env'
+import { klokkeslett, frisorer } from '../shared/env'
 import {bestilteTimer} from '../shared/dataFraDatabase'
 
-export default function Klokkeslett({sKlokkeslett, dato, hentMaaned}){
+export default function Klokkeslett({sKlokkeslett, dato, hentMaaned, frisor}){
 //Fjerne bestilte tidspunkter fra ledige klokkeslett
     let reserverteTimer = bestilteTimer.map(element =>{
-        if(element.dato === dato){
+        if(element.dato === dato && element.frisor === frisorer.indexOf(frisor)){
             return element.tidspunkt
         } else {
             return undefined

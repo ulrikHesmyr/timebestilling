@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {BrowserRouter, Route, Routes, Link} from 'react-router-dom'
 import Timebestilling from './pages/Timebestilling'
 import ViErBareLinnea from './pages/bareLinnea'
