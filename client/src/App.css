@@ -2,6 +2,14 @@ body{
   box-sizing: border-box;
 }
 
+.navBar, .overskrift, .frisor, .kategorier, .klokkeslettene{
+  user-select: none;
+}
+
+.navBar a:active, .overskrift:active, .frisor:active, .tjeneste:active {
+  background-color: rgba(0, 0, 0, 0.25);
+}
+
 form{
   display: flex;
   gap:1rem;
@@ -12,11 +20,11 @@ input, button{
   font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
   font-size: large;
 }
-  .timebestilling{
-    display:grid;
-    gap:1rem;
-    grid-template-columns: 2fr 1fr;
-  }
+.timebestilling{
+  display:grid;
+  gap:1rem;
+  grid-template-columns: 2fr 1fr;
+}
   
 .timebestilling * {
   margin:1rem;
@@ -62,9 +70,14 @@ input, button{
     flex-wrap: wrap;
     box-sizing: border-box;
   }
+  
   .tjeneste{
     background-color: white;
     cursor: pointer;
+    padding: 0.3rem;
+    border-end-end-radius: 2rem;
+    border-right: thin solid black;
+    border-top:thin solid black;
   }
   
   .klokkeslettene{
@@ -120,7 +133,23 @@ input, button{
     flex-wrap:wrap;
   }
   .overskrift{
+    display: flex;
     border:thin solid black;
+    border-radius: 0px 0px 1rem 0px;
+    cursor: pointer;
+    padding: 0.2rem;
+    align-items: center;
+  }
+  .overskrift p{
+    display: flex;
+    border-radius: 50%;
+    height:2rem;
+    aspect-ratio: 1/1;
+    border:1px solid black;
+    align-items: center;
+    justify-content: center;
+    background-color: black;
+    color:white;
   }
 
   @keyframes animer-inn{
@@ -149,6 +178,26 @@ input, button{
   .animer-ut{
     background-color: pink;
     animation: 0.5s animer-ut;
+  }
+
+  .infoboks{
+    display: grid;
+    border:thin solid black;
+    grid-template-rows: 1fr 1fr;
+    max-height: 80vh;
+    box-sizing: border-box;
+  }
+  .infoboks p{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: thin solid black;
+    
+  }
+  .infoboks p p{
+    display: flex;
+    flex-wrap: wrap;
   }
 
   /*******************************************************************************************************************/
@@ -208,14 +257,6 @@ input, button{
     padding:0.3rem;
   }
   
-  .tjenester{
-    display: grid;
-    grid-template-columns: 1fr 1fr !important;
-  }
-  .tjeneste{
-    background-color: white;
-    cursor: pointer;
-  }
   
   .klokkeslettene{
     display: grid;

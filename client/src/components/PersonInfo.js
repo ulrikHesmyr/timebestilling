@@ -1,6 +1,6 @@
 import React, {useRef} from 'react'
 
-export default function PersonInfo({synligKomponent, displayKomponent, navn, telefonnummer, nullstillData, setReservasjon ,setUpdate ,updateDataTrigger, data, sNavn, sTelefonnummer}){
+export default function PersonInfo({isMobile, synligKomponent, displayKomponent, navn, telefonnummer, nullstillData, setReservasjon ,setUpdate ,updateDataTrigger, data, sNavn, sTelefonnummer}){
     
     const navnInput = useRef(null);
     const tlfInput = useRef(null);
@@ -34,13 +34,17 @@ export default function PersonInfo({synligKomponent, displayKomponent, navn, tel
                     sNavn(e.target.value);
                 }}></input></label>
 
-                <label htmlFor="phone">Telefon:<input value={telefonnummer} ref={tlfInput} type="number" name="phone" onChange={(e)=>{
-                    sTelefonnummer(e.target.value);
+                <label htmlFor="phone">Telefon:<input value={telefonnummer} ref={tlfInput} type="text" name="phone" onChange={(e)=>{
+                    const newValue = e.target.value;
+                    if(/^\d*$/.test(newValue)){
+                        sTelefonnummer(newValue);
+                    }
                 }}></input> </label>
 
+                {isMobile?"h":""}
                 <button onClick={(e)=>{
                     e.preventDefault();
-                    if(tlfInput.current.value.length === 8){
+                    if(telefonnummer.length === 8){
                         registrerData();
                     } else {
                         alert("Telefonnumeret er ikke gyldig");

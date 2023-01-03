@@ -15,7 +15,7 @@ const App = ()=> {
   const [frisor, setFrisor] = useState(null);
   const [klokkeslettet, setKlokkeslett] = useState(null);
   const [navn, setNavn] = useState('');
-  const [telefonnummer, setTelefonnummer] = useState(0);
+  const [telefonnummer, setTelefonnummer] = useState('');
   const [bestilteTimer, setBestiltetimer] = useState(undefined);
   const [updateDataTrigger, setUpdate] = useState(false);
   const [registrertReservasjon, setReservasjon] = useState(undefined);

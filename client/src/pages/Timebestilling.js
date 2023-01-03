@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import Tjenester from '../components/Tjenester';
 import Klokkeslett from '../components/Klokkeslett';
 import Frisor from '../components/Frisor';
@@ -14,49 +14,89 @@ export default function Timebestilling({setSynligKomponent, synligKomponent, hen
         sFrisor(null);
         sKlokkeslett(null);
         sNavn('');
-        sTelefonnummer(0);
+        sTelefonnummer('');
     }
 
     function displayKomponent(componentIndex){
         console.log(componentIndex);
         setSynligKomponent(componentIndex);
     }
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const userAgent = window.navigator.userAgent;
+        setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent));
+    }, []);
 
     return (
 
     <div className='timebestilling'>
         <div>
             
-            <h2 className='overskrift'>Velg din time</h2>
+            <h2 className='overskrift' onClick={()=>{
+                if(synligKomponent === 0){
+                    displayKomponent(-1);
+                } else {
+                    displayKomponent(0);
+                }
+            }} style={{backgroundColor: dato !== null?"lightgreen":"white"}} ><p>1</p> Velg din time</h2>
             {(synligKomponent === 0? (<Dato synligKomponent={synligKomponent} displayKomponent={displayKomponent} sDato={sDato} sKlokkeslett={sKlokkeslett} sProdukt={sProdukt} klokkeslettet={klokkeslettet} produkt={produkt} hentDato={hentDato} />):"")}
-
-            <h2 className='overskrift'>Velg frisør</h2>
+            
+            <h2 className='overskrift' onClick={()=>{
+                if(synligKomponent === 1){
+                    displayKomponent(-1);
+                } else {
+                    displayKomponent(1);
+                }
+            }} style={{backgroundColor: frisor !== null?"lightgreen":"white"}}><p>2</p>Velg frisør</h2>
             {(synligKomponent === 1? <Frisor synligKomponent={synligKomponent} displayKomponent={displayKomponent} klokkeslettet={klokkeslettet} produkt={produkt} sKlokkeslett={sKlokkeslett} frisor={frisor} sFrisor={sFrisor} sProdukt={sProdukt}/>:"")}
            
-            <h2 className='overskrift'>Hva ønsker du å reservere time for?</h2>
+            <h2 className='overskrift' onClick={()=>{
+                if(synligKomponent === 2){
+                    displayKomponent(-1);
+                } else {
+                    displayKomponent(2);
+                }
+            }} style={{backgroundColor: produkt.length > 0?"lightgreen":"white"}}><p>3</p>Behandlinger</h2>
             {(synligKomponent === 2? <Tjenester synligKomponent={synligKomponent} displayKomponent={displayKomponent} produkt={produkt} sProdukt={sProdukt} frisor={frisor} />:"")}
            
-            <h2 className='overskrift'>Velg klokkeslett for timen her:</h2>
+            <h2 className='overskrift' onClick={()=>{
+                if(synligKomponent === 3){
+                    displayKomponent(-1);
+                } else {
+                    displayKomponent(3);
+                }
+            }} style={{backgroundColor: klokkeslettet !== null?"lightgreen":"white"}}><p>4</p>Velg klokkeslett for timen her</h2>
             {(frisor !== 0 && produkt.length > 0 && synligKomponent === 3?<Klokkeslett synligKomponent={synligKomponent} displayKomponent={displayKomponent} klokkeslettet={klokkeslettet} produkt={produkt} bestilteTimer={bestilteTimer} frisor={frisor} sKlokkeslett={sKlokkeslett} dato={dato} hentMaaned={hentMaaned}/>:"")}
             
-            <h2 className='overskrift'>Din info:</h2>
-            {(klokkeslettet != null && produkt.length > 0 && synligKomponent === 4?<PersonInfo synligKomponent={synligKomponent} displayKomponent={displayKomponent} telefonnummer={telefonnummer} navn={navn} nullstillData={nullstillData} setReservasjon={setReservasjon} setUpdate={setUpdate} updateDataTrigger={updateDataTrigger} sNavn={sNavn} sTelefonnummer={sTelefonnummer} data={{
+            <h2 className='overskrift' onClick={()=>{
+                if(synligKomponent === 4){
+                    displayKomponent(-1);
+                } else {
+                    displayKomponent(4);
+                }
+            }} style={{backgroundColor: navn !== "" && telefonnummer.toString().length === 8?"lightgreen":"white"}}><p>5</p>Din info</h2>
+            {(klokkeslettet != null && produkt.length > 0 && synligKomponent === 4?<PersonInfo isMobile={isMobile} synligKomponent={synligKomponent} displayKomponent={displayKomponent} telefonnummer={telefonnummer} navn={navn} nullstillData={nullstillData} setReservasjon={setReservasjon} setUpdate={setUpdate} updateDataTrigger={updateDataTrigger} sNavn={sNavn} sTelefonnummer={sTelefonnummer} data={{
                 dato:dato, 
                 tidspunkt:klokkeslettet,
                 frisor:frisorer.indexOf(frisor),
                 behandlinger:produkt,
                 medarbeider: frisorer[frisorer.indexOf(frisor)].navn,
-                telefonnummer: telefonnummer,
+                telefonnummer: parseInt(telefonnummer),
                 kunde:navn
             }} />:"")}
 
         </div>
 
-        <div>
-            <p>{(dato != null?`Din valgte dato er ${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}`:"")}</p>
-            <p>{(frisor != null?`Du har valgt ${frisor.navn}`:"")}</p>
-            <p>{(produkt.length > 0? `Du har valgt: ${produkt.join(", ")}`:"")}</p>
-            <p>{(klokkeslettet != null && produkt.length > 0?`Valgt klokkeslett er ${klokkeslettet}`:"")}</p>
+        <div className='infoboks'>
+            <div>
+            <h3>Din timebestilling</h3>
+            <div>Dato {(dato != null?(<p>{parseInt(dato.substring(8,10))}. {hentMaaned(parseInt(dato.substring(5,7)) -1)}</p>):"")}</div>
+            <div>Frisør {(frisor != null?(<p>{frisor.navn}</p>):"")}</div>
+            <div>Time for {(produkt.length > 0?(<p>{produkt.join(", ")}</p>):"")}</div>
+            <div>Tid {(klokkeslettet != null && produkt.length > 0?(<p>{klokkeslettet}</p>):"")}</div>
+            </div>
+            <p>obs.: Prisene er kun estimert og kan øke dersom det blir brukt hårprodukter eller om det kreves vask osv.</p>
         </div>
 
     

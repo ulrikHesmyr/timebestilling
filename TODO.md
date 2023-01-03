@@ -1,4 +1,6 @@
 CLIENT:
+- Sjekke om det er mobil og flytte på den timebestillingsboksen
+- Lage "fortsett" knapp sånn man ikke skipper behandlingsiden med en gang man trykker på én ting (kan gjøre dette for de andre og)
 - Fjerne mulighet for å reservere klokkesletter samme dagen som har allerede vært
 - Dersom man er på mobilen så skal kategoriene være nedrykksmenyer
 
