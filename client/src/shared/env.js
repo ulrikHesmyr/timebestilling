@@ -59,13 +59,22 @@ export const frisorer = [
 
 export const klokkeslett = [
     {tid:"08:00", tilgjengeligeAnsatte:3},
+    {tid:"08:30", tilgjengeligeAnsatte:3},
     {tid:"09:00", tilgjengeligeAnsatte:3},
+    {tid:"09:30", tilgjengeligeAnsatte:3},
     {tid:"10:00", tilgjengeligeAnsatte:3},
+    {tid:"10:30", tilgjengeligeAnsatte:3},
     {tid:"11:00", tilgjengeligeAnsatte:3},
+    {tid:"11:30", tilgjengeligeAnsatte:3},
     {tid:"12:00", tilgjengeligeAnsatte:3},
+    {tid:"12:30", tilgjengeligeAnsatte:3},
     {tid:"13:00", tilgjengeligeAnsatte:3},
+    {tid:"13:30", tilgjengeligeAnsatte:3},
     {tid:"14:00", tilgjengeligeAnsatte:3},
+    {tid:"14:30", tilgjengeligeAnsatte:3},
     {tid:"15:00", tilgjengeligeAnsatte:3},
+    {tid:"15:30", tilgjengeligeAnsatte:3},
     {tid:"16:00", tilgjengeligeAnsatte:3},
+    {tid:"16:30", tilgjengeligeAnsatte:3},
     {tid:"17:00", tilgjengeligeAnsatte:1}
 ]

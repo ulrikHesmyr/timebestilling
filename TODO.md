@@ -15,3 +15,6 @@ SERVER:
 
 1. På denne måten kan frisørene liksom være selvstendige eller individuelle, for da avhenger de ikke av kommunikasjon med hverandre.
     Eneste da er dersom kunden velger "FØRSTE LEDIGE FRISØR" så kan de ansatte selv gå inn å sette seg selv på oppdraget
+
+Ideer:
+Gavekort, betaling med stripe

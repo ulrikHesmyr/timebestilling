@@ -5,6 +5,8 @@ export default function PersonInfo({navn, telefonnummer, nullstillData, setReser
     const navnInput = useRef(null);
     const tlfInput = useRef(null);
 
+    //const [navnInputValue, setNavnInputValue] = useState('');
+
     async function registrerData(){
         console.log(data);
         const request = await fetch('http://localhost:3001/timebestilling/bestilltime', {
@@ -30,7 +32,7 @@ export default function PersonInfo({navn, telefonnummer, nullstillData, setReser
             }}></input></label>
             
             <label htmlFor="phone">Telefon:<input value={telefonnummer} ref={tlfInput} type="number" name="phone" onChange={(e)=>{
-                sTelefonnummer(parseInt(e.target.value));
+                sTelefonnummer(e.target.value);
             }}></input> </label>
             
             <button onClick={(e)=>{
