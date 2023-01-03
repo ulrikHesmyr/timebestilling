@@ -6,7 +6,7 @@ export default function Tjenester({produkt, sProdukt, frisor}){
     
     return(
         <div>
-            <h1>Hva ønsker du å reservere time for?</h1>
+            <h2>Hva ønsker du å reservere time for?</h2>
             <div className="kategorier">
             
                 {kategorier.map((kategori)=>(
