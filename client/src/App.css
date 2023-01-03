@@ -1,5 +1,4 @@
 body{
-  font-size: 1.4rem;
   box-sizing: border-box;
 }
 
@@ -11,12 +10,12 @@ form{
 
 input, button{
   font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-  font-size: x-large;
+  font-size: large;
 }
   .timebestilling{
-    display:flex;
-    flex-direction: column;
-    align-items: center;
+    display:grid;
+    gap:1rem;
+    grid-template-columns: 2fr 1fr;
   }
   
 .timebestilling * {
@@ -27,7 +26,7 @@ input, button{
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    font-size: larger;
+    font-size: large;
     font-weight: bolder;
   }
   
@@ -75,6 +74,10 @@ input, button{
     box-sizing: border-box;
     max-width: 100%;
   }
+.klokkeslett{
+  background-color: aqua;
+}
+
   .klokkeslettene *:hover{
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
   }
@@ -112,8 +115,44 @@ input, button{
     align-items: center;
   }
 
+  .login{
+    display: flex;
+    flex-wrap:wrap;
+  }
+  .overskrift{
+    border:thin solid black;
+  }
+
+  @keyframes animer-inn{
+    from{
+      opacity: 0.5;
+      transform: translateY(-20px);
+    } 
+    to{
+      opacity: 1;
+      transform: translateY(0px);
+    }
+  }
+  .animer-inn{
+    background-color: white;
+    animation: 0.5s animer-inn;
+  }
+
+  @keyframes animer-ut{
+    from{
+      opacity: 1;
+    } 
+    to{
+      opacity: 0.5;
+    }
+  }
+  .animer-ut{
+    background-color: pink;
+    animation: 0.5s animer-ut;
+  }
+
   /*******************************************************************************************************************/
-/*
+
 @media (width <= 900px){
   
   body{
@@ -206,4 +245,3 @@ input, button{
   }
 }
 
-*/

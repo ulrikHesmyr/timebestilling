@@ -2,11 +2,11 @@ import React from "react";
 import {tjenester, kategorier} from '../shared/env.js'
 
 
-export default function Tjenester({produkt, sProdukt, frisor}){
+export default function Tjenester({synligKomponent, displayKomponent, produkt, sProdukt, frisor}){
     
+
     return(
-        <div>
-            <h2>Hva ønsker du å reservere time for?</h2>
+        <div className={synligKomponent === 2? 'animer-inn':'animer-ut'}>
             <div className="kategorier">
             
                 {kategorier.map((kategori)=>(
@@ -16,10 +16,13 @@ export default function Tjenester({produkt, sProdukt, frisor}){
                         <div className="tjeneste" key={tjenester[element].navn} onClick={()=>{
                             if(!produkt.includes(tjenester[element].navn)){
                                 sProdukt([...produkt, tjenester[element].navn]);
+                                setTimeout(()=>{
+                                    displayKomponent(3);
+                                },100);
                             } else {
                                 sProdukt(produkt.filter(p=>p !== tjenester[element].navn))
                             }
-                        }} style={{border: produkt === tjenester[element].navn?"3px solid black": "thin solid black"}}>
+                        }} style={{backgroundColor: produkt.includes(tjenester[element].navn)?"lightgreen": "white"}}>
                         <h3>{tjenester[element].navn}</h3>
                         <p>Pris: {tjenester[element].pris} kr</p>
                         <p>Tid: {tjenester[element].tid} minutter</p>

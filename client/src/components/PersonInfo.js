@@ -1,6 +1,6 @@
 import React, {useRef} from 'react'
 
-export default function PersonInfo({navn, telefonnummer, nullstillData, setReservasjon ,setUpdate ,updateDataTrigger, data, sNavn, sTelefonnummer}){
+export default function PersonInfo({synligKomponent, displayKomponent, navn, telefonnummer, nullstillData, setReservasjon ,setUpdate ,updateDataTrigger, data, sNavn, sTelefonnummer}){
     
     const navnInput = useRef(null);
     const tlfInput = useRef(null);
@@ -21,28 +21,32 @@ export default function PersonInfo({navn, telefonnummer, nullstillData, setReser
             setUpdate(!updateDataTrigger);
             setReservasjon(response.bestiltTime);
             nullstillData();
+            displayKomponent(0);
+
         }
         console.log(response.bestiltTime);
     }
 
     return (
-        <form>
-            <label htmlFor="navn">Navn: <input value={navn} ref={navnInput} type="text" placeholder='Navn Navnesen' name='navn' onChange={(e)=>{
-                sNavn(e.target.value);
-            }}></input></label>
-            
-            <label htmlFor="phone">Telefon:<input value={telefonnummer} ref={tlfInput} type="number" name="phone" onChange={(e)=>{
-                sTelefonnummer(e.target.value);
-            }}></input> </label>
-            
-            <button onClick={(e)=>{
-                e.preventDefault();
-                if(tlfInput.current.value.length === 8){
-                    registrerData();
-                } else {
-                    alert("Telefonnumeret er ikke gyldig");
-                }
-            }}>SEND INN RESERVASJON</button>
-        </form>
+        <div className={synligKomponent === 4? 'animer-inn':'animer-ut'}>
+            <form>
+                <label htmlFor="navn">Navn: <input value={navn} ref={navnInput} type="text" placeholder='Navn Navnesen' name='navn' onChange={(e)=>{
+                    sNavn(e.target.value);
+                }}></input></label>
+
+                <label htmlFor="phone">Telefon:<input value={telefonnummer} ref={tlfInput} type="number" name="phone" onChange={(e)=>{
+                    sTelefonnummer(e.target.value);
+                }}></input> </label>
+
+                <button onClick={(e)=>{
+                    e.preventDefault();
+                    if(tlfInput.current.value.length === 8){
+                        registrerData();
+                    } else {
+                        alert("Telefonnumeret er ikke gyldig");
+                    }
+                }}>SEND INN RESERVASJON</button>
+            </form>
+        </div>
     )
 }

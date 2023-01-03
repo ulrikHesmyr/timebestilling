@@ -3,6 +3,7 @@ import {BrowserRouter, Route, Routes, Link} from 'react-router-dom'
 import Timebestilling from './pages/Timebestilling'
 import ViErBareLinnea from './pages/bareLinnea'
 import DinReservasjon from './pages/DinReservasjon'
+import Login from './pages/Login'
 import './App.css'
 
 const App = ()=> {
@@ -18,6 +19,8 @@ const App = ()=> {
   const [bestilteTimer, setBestiltetimer] = useState(undefined);
   const [updateDataTrigger, setUpdate] = useState(false);
   const [registrertReservasjon, setReservasjon] = useState(undefined);
+  const [synligKomponent, setSynligKomponent] = useState(0);
+
 
   useEffect(()=>{
     async function fetchData(){
@@ -37,8 +40,9 @@ const App = ()=> {
               <Link to="/about">VI ER bareLinnea</Link>
             </nav>
             <Routes>
-              <Route exact path="/" element={(registrertReservasjon?<DinReservasjon hentMaaned={hentMaaned} setReservasjon={setReservasjon} registrertReservasjon={registrertReservasjon} />:<Timebestilling hentMaaned={hentMaaned} setReservasjon={setReservasjon} setUpdate={setUpdate} updateDataTrigger={updateDataTrigger} bestilteTimer={bestilteTimer} navn={navn} sNavn={setNavn} telefonnummer={telefonnummer} sTelefonnummer={setTelefonnummer} klokkeslettet={klokkeslettet} sKlokkeslett={setKlokkeslett} sDato={setDato} dato={dato} produkt={produkt} sProdukt={setProdukt} frisor={frisor} sFrisor={setFrisor}/>)} />
+              <Route exact path="/" element={(registrertReservasjon?<DinReservasjon hentMaaned={hentMaaned} setReservasjon={setReservasjon} registrertReservasjon={registrertReservasjon} />:<Timebestilling synligKomponent={synligKomponent} setSynligKomponent={setSynligKomponent} hentMaaned={hentMaaned} setReservasjon={setReservasjon} setUpdate={setUpdate} updateDataTrigger={updateDataTrigger} bestilteTimer={bestilteTimer} navn={navn} sNavn={setNavn} telefonnummer={telefonnummer} sTelefonnummer={setTelefonnummer} klokkeslettet={klokkeslettet} sKlokkeslett={setKlokkeslett} sDato={setDato} dato={dato} produkt={produkt} sProdukt={setProdukt} frisor={frisor} sFrisor={setFrisor}/>)} />
               <Route exact path="/about" element={<ViErBareLinnea/>} />
+              <Route exact path="/login" element={<Login/>} />
             </Routes>
         </div>
       </BrowserRouter>

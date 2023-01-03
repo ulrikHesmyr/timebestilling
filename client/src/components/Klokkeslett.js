@@ -1,12 +1,9 @@
 import React from 'react'
 import { klokkeslett, frisorer, tjenester } from '../shared/env'
 
-function Klokkeslett({produkt, bestilteTimer,sKlokkeslett, dato, hentMaaned, frisor}){
-//Fjerne bestilte tidspunkter fra ledige klokkeslett
-    console.log(bestilteTimer);
+function Klokkeslett({synligKomponent, displayKomponent, klokkeslettet, produkt, bestilteTimer, sKlokkeslett, dato, hentMaaned, frisor}){
     const gjeldendeTjenester = tjenester.filter(element=>produkt.includes(element.navn));
     const totalTid = gjeldendeTjenester.reduce((total, element)=> total + element.tid, 0);
-    console.log(totalTid, "totalTid");
     
 
     let ekstra = [];
@@ -29,8 +26,6 @@ function Klokkeslett({produkt, bestilteTimer,sKlokkeslett, dato, hentMaaned, fri
         }
     }).filter(x => x).concat(ekstra);
 
-    console.log("reserverte timer: ", reserverteTimer);
-
     let utilgjengeligeTimer = [];
     for(let i = 0; i < klokkeslett.length; i++){
         for(let j = 0; j < reserverteTimer.length; j++){
@@ -39,19 +34,20 @@ function Klokkeslett({produkt, bestilteTimer,sKlokkeslett, dato, hentMaaned, fri
             }
         }
     }
-    console.log(utilgjengeligeTimer);
 
 
 
     const ledigeTimer = klokkeslett.map(element=>element.tid).filter(tid=> !reserverteTimer.includes(tid) && !utilgjengeligeTimer.includes(tid))
     return(
-        <div>
-        <h2>Velg klokkeslett for timen her:</h2>
-        <div className='klokkeslettene'>
-            {(ledigeTimer.length > 0? ledigeTimer.map((tid)=>(<div key={tid} onClick={()=>{
-                sKlokkeslett(tid)
-            }}> {tid} </div>)):`Ingen ledige timer for ${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}`)}
-        </div>
+        <div className={synligKomponent === 3? 'animer-inn':'animer-ut'}>
+            <div className='klokkeslettene'>
+                {(ledigeTimer.length > 0? ledigeTimer.map((tid)=>(<div style={{backgroundColor: klokkeslettet===tid ?"lightgreen": "white"}} className='klokkeslett' key={tid} onClick={()=>{
+                    sKlokkeslett(tid);
+                    setTimeout(()=>{
+                        displayKomponent(4);
+                    },100);
+                }}> {tid} </div>)):`Ingen ledige timer for ${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}`)}
+            </div>
         </div>
     )
 }
