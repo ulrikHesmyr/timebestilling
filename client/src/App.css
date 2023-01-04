@@ -19,6 +19,7 @@ form{
 input, button{
   font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
   font-size: large;
+  margin: 1rem;
 }
 .timebestilling{
   display:grid;

@@ -1,13 +1,14 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useContext} from 'react'
 import Tjenester from '../components/Tjenester';
 import Klokkeslett from '../components/Klokkeslett';
 import Frisor from '../components/Frisor';
 import PersonInfo from '../components/PersonInfo';
 import Dato from '../components/Dato';
-import { frisorer, tjenester } from '../shared/env';
+import { DataContext } from '../App';
 
-function Timebestilling({setSynligKomponent, synligKomponent, hentMaaned, setReservasjon, setUpdate, updateDataTrigger, bestilteTimer, navn, sNavn, telefonnummer, sTelefonnummer, klokkeslettet, sKlokkeslett, sDato, dato, produkt, sProdukt, frisor, sFrisor}){
-    
+function Timebestilling({env, setSynligKomponent, synligKomponent, hentMaaned, setReservasjon, setUpdate, updateDataTrigger, bestilteTimer, navn, sNavn, telefonnummer, sTelefonnummer, klokkeslettet, sKlokkeslett, sDato, dato, produkt, sProdukt, frisor, sFrisor}){
+    //const env = useContext(DataContext);
+    //console.log(env);
     const [isMobile, setIsMobile] = useState(false);
 
     function nullstillData(){
@@ -28,7 +29,7 @@ function Timebestilling({setSynligKomponent, synligKomponent, hentMaaned, setRes
         setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent));
     }, []);
 
-    const gjeldendeTjenester = tjenester.filter(element=>produkt.includes(element.navn));
+    const gjeldendeTjenester = env.tjenester.filter(element=>produkt.includes(element.navn));
     const totalTid = gjeldendeTjenester.reduce((total, element)=> total + element.tid, 0);
     const totalPris = gjeldendeTjenester.reduce((total, element)=> total + element.pris, 0);
 
@@ -53,7 +54,7 @@ function Timebestilling({setSynligKomponent, synligKomponent, hentMaaned, setRes
                     displayKomponent(1);
                 }
             }} style={{backgroundColor: frisor !== null?"lightgreen":"white"}}><p>2</p>Velg frisør</h2>
-            {(synligKomponent === 1 && dato !== null? <Frisor synligKomponent={synligKomponent} displayKomponent={displayKomponent} klokkeslettet={klokkeslettet} produkt={produkt} sKlokkeslett={sKlokkeslett} frisor={frisor} sFrisor={sFrisor} sProdukt={sProdukt}/>:"")}
+            {(synligKomponent === 1 && dato !== null? <Frisor env={env} synligKomponent={synligKomponent} displayKomponent={displayKomponent} klokkeslettet={klokkeslettet} produkt={produkt} sKlokkeslett={sKlokkeslett} frisor={frisor} sFrisor={sFrisor} sProdukt={sProdukt}/>:"")}
            
             <h2 className='overskrift' onClick={()=>{
                 if(synligKomponent === 2){
@@ -62,7 +63,7 @@ function Timebestilling({setSynligKomponent, synligKomponent, hentMaaned, setRes
                     displayKomponent(2);
                 }
             }} style={{backgroundColor: produkt.length > 0?"lightgreen":"white"}}><p>3</p>Behandlinger</h2>
-            {(synligKomponent === 2 && frisor !== null? <Tjenester synligKomponent={synligKomponent} displayKomponent={displayKomponent} produkt={produkt} sProdukt={sProdukt} frisor={frisor} />:"")}
+            {(synligKomponent === 2 && frisor !== null? <Tjenester sKlokkeslett={sKlokkeslett} env={env} synligKomponent={synligKomponent} displayKomponent={displayKomponent} produkt={produkt} sProdukt={sProdukt} frisor={frisor} />:"")}
            
             <h2 className='overskrift' onClick={()=>{
                 if(synligKomponent === 3){
@@ -71,7 +72,7 @@ function Timebestilling({setSynligKomponent, synligKomponent, hentMaaned, setRes
                     displayKomponent(3);
                 }
             }} style={{backgroundColor: klokkeslettet !== null?"lightgreen":"white"}}><p>4</p>Velg klokkeslett for timen her</h2>
-            {(synligKomponent === 3 && produkt.length > 0?<Klokkeslett synligKomponent={synligKomponent} displayKomponent={displayKomponent} klokkeslettet={klokkeslettet} produkt={produkt} bestilteTimer={bestilteTimer} frisor={frisor} sKlokkeslett={sKlokkeslett} dato={dato} hentMaaned={hentMaaned}/>:"")}
+            {(synligKomponent === 3 && produkt.length > 0?<Klokkeslett env={env} synligKomponent={synligKomponent} displayKomponent={displayKomponent} klokkeslettet={klokkeslettet} produkt={produkt} bestilteTimer={bestilteTimer} frisor={frisor} sKlokkeslett={sKlokkeslett} dato={dato} hentMaaned={hentMaaned}/>:"")}
             
             <h2 className='overskrift' onClick={()=>{
                 if(synligKomponent === 4){
@@ -83,9 +84,9 @@ function Timebestilling({setSynligKomponent, synligKomponent, hentMaaned, setRes
             {(klokkeslettet != null && produkt.length > 0 && synligKomponent === 4?<PersonInfo totalPris={totalPris} totalTid={totalTid} klokkeslettet={klokkeslettet} produkt={produkt} frisor={frisor} hentMaaned={hentMaaned} dato={dato} isMobile={isMobile} synligKomponent={synligKomponent} displayKomponent={displayKomponent} telefonnummer={telefonnummer} navn={navn} nullstillData={nullstillData} setReservasjon={setReservasjon} setUpdate={setUpdate} updateDataTrigger={updateDataTrigger} sNavn={sNavn} sTelefonnummer={sTelefonnummer} data={{
                 dato:dato, 
                 tidspunkt:klokkeslettet,
-                frisor:frisorer.indexOf(frisor),
+                frisor: env.frisorer.indexOf(frisor),
                 behandlinger:produkt,
-                medarbeider: frisorer[frisorer.indexOf(frisor)].navn,
+                medarbeider: env.frisorer[env.frisorer.indexOf(frisor)].navn,
                 telefonnummer: parseInt(telefonnummer),
                 kunde:navn
             }} />:"")}

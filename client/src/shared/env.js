@@ -1,4 +1,5 @@
 export const antallAnsatte = 3;
+export const bedrift = "bareLinnea" 
 
 export const kategorier = ["Klipp", "Farge", "Kur", "Striping", "Vipper/bryn","Vask/føhn","Straight hair","Brud og make-up"]
 export const tjenester = [

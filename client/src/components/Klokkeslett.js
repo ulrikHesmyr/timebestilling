@@ -1,9 +1,8 @@
 import React from 'react'
 import Fortsett from './Fortsett';
-import { klokkeslett, frisorer, tjenester } from '../shared/env'
 
-function Klokkeslett({synligKomponent, displayKomponent, klokkeslettet, produkt, bestilteTimer, sKlokkeslett, dato, hentMaaned, frisor}){
-    const gjeldendeTjenester = tjenester.filter(element=>produkt.includes(element.navn));
+function Klokkeslett({env, synligKomponent, displayKomponent, klokkeslettet, produkt, bestilteTimer, sKlokkeslett, dato, hentMaaned, frisor}){
+    const gjeldendeTjenester = env.tjenester.filter(element=>produkt.includes(element.navn));
     const totalTid = gjeldendeTjenester.reduce((total, element)=> total + element.tid, 0);
     
 
@@ -14,8 +13,8 @@ function Klokkeslett({synligKomponent, displayKomponent, klokkeslettet, produkt,
     //    utilgjengeligeTimer.push(klokkeslettFraMinutter(minutter));
     //}
     const reserverteTimer = bestilteTimer.map(element =>{
-        if(element.dato === dato && element.frisor === frisorer.indexOf(frisor)){
-            let okkupertTid = tjenester.filter(tjeneste=>element.behandlinger.includes(tjeneste.navn)).reduce((total, minutterFraTjeneste)=> total + minutterFraTjeneste.tid, 0);
+        if(element.dato === dato && element.frisor === env.frisorer.indexOf(frisor)){
+            let okkupertTid = env.tjenester.filter(tjeneste=>element.behandlinger.includes(tjeneste.navn)).reduce((total, minutterFraTjeneste)=> total + minutterFraTjeneste.tid, 0);
             let minutter = minutterFraKlokkeslett(element.tidspunkt);
             while(minutter < (minutterFraKlokkeslett(element.tidspunkt) + okkupertTid-30)){
                 minutter+=30;
@@ -28,17 +27,17 @@ function Klokkeslett({synligKomponent, displayKomponent, klokkeslettet, produkt,
     }).filter(x => x).concat(ekstra);
 
     let utilgjengeligeTimer = [];
-    for(let i = 0; i < klokkeslett.length; i++){
+    for(let i = 0; i < env.klokkeslett.length; i++){
         for(let j = 0; j < reserverteTimer.length; j++){
-            if( minutterFraKlokkeslett(reserverteTimer[j]) > minutterFraKlokkeslett(klokkeslett[i].tid) && (minutterFraKlokkeslett(klokkeslett[i].tid)+totalTid) > minutterFraKlokkeslett(reserverteTimer[j])){
-                utilgjengeligeTimer.push(klokkeslett[i].tid);
+            if( minutterFraKlokkeslett(reserverteTimer[j]) > minutterFraKlokkeslett(env.klokkeslett[i].tid) && (minutterFraKlokkeslett(env.klokkeslett[i].tid)+totalTid) > minutterFraKlokkeslett(reserverteTimer[j])){
+                utilgjengeligeTimer.push(env.klokkeslett[i].tid);
             }
         }
     }
 
 
 
-    const ledigeTimer = klokkeslett.map(element=>element.tid).filter(tid=> !reserverteTimer.includes(tid) && !utilgjengeligeTimer.includes(tid))
+    const ledigeTimer = env.klokkeslett.map(element=>element.tid).filter(tid=> !reserverteTimer.includes(tid) && !utilgjengeligeTimer.includes(tid))
     return(
         <div className={synligKomponent === 3? 'animer-inn':'animer-ut'}>
             <Fortsett displayKomponent={displayKomponent} number={4} valid={(klokkeslettet !== null? false:true)} />

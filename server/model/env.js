@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const env = new mongoose.Schema({
     bedrift:{type:String},
-    antallAnsatte:3,
+    antallBestillinger:{type:Number},
     kategorier: [String],
     tjenester: [
         {

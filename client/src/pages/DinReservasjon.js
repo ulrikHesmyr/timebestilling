@@ -1,9 +1,11 @@
-import React from 'react'
-import {tjenester} from '../shared/env'
+import React, {useContext} from 'react'
+import { DataContext } from '../App';
 
-export default function DinReservasjon({hentMaaned, setReservasjon ,registrertReservasjon}){
+export default function DinReservasjon({env, hentMaaned, setReservasjon ,registrertReservasjon}){
     
-    const gjeldendeTjenester = tjenester.filter(element=>registrertReservasjon.behandlinger.includes(element.navn));
+    //const env = useContext(DataContext);
+
+    const gjeldendeTjenester = env.tjenester.filter(element=>registrertReservasjon.behandlinger.includes(element.navn));
     const totalTid = gjeldendeTjenester.reduce((total, element)=> total + element.tid, 0);
     const totalPris = gjeldendeTjenester.reduce((total, element)=> total + element.pris, 0);
     return (
