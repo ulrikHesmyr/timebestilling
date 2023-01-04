@@ -1,4 +1,5 @@
 import React from 'react'
+import Fortsett from './Fortsett';
 import { klokkeslett, frisorer, tjenester } from '../shared/env'
 
 function Klokkeslett({synligKomponent, displayKomponent, klokkeslettet, produkt, bestilteTimer, sKlokkeslett, dato, hentMaaned, frisor}){
@@ -40,12 +41,10 @@ function Klokkeslett({synligKomponent, displayKomponent, klokkeslettet, produkt,
     const ledigeTimer = klokkeslett.map(element=>element.tid).filter(tid=> !reserverteTimer.includes(tid) && !utilgjengeligeTimer.includes(tid))
     return(
         <div className={synligKomponent === 3? 'animer-inn':'animer-ut'}>
+            <Fortsett displayKomponent={displayKomponent} number={4} valid={(klokkeslettet !== null? false:true)} />
             <div className='klokkeslettene'>
                 {(ledigeTimer.length > 0? ledigeTimer.map((tid)=>(<div style={{backgroundColor: klokkeslettet===tid ?"lightgreen": "white"}} className='klokkeslett' key={tid} onClick={()=>{
                     sKlokkeslett(tid);
-                    setTimeout(()=>{
-                        displayKomponent(4);
-                    },100);
                 }}> {tid} </div>)):`Ingen ledige timer for ${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}`)}
             </div>
         </div>

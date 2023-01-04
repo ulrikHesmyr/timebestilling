@@ -4,10 +4,12 @@ import Klokkeslett from '../components/Klokkeslett';
 import Frisor from '../components/Frisor';
 import PersonInfo from '../components/PersonInfo';
 import Dato from '../components/Dato';
-import { frisorer } from '../shared/env';
+import { frisorer, tjenester } from '../shared/env';
 
-export default function Timebestilling({setSynligKomponent, synligKomponent, hentMaaned, setReservasjon, setUpdate, updateDataTrigger, bestilteTimer, navn, sNavn, telefonnummer, sTelefonnummer, klokkeslettet, sKlokkeslett, sDato, dato, produkt, sProdukt, frisor, sFrisor}){
+function Timebestilling({setSynligKomponent, synligKomponent, hentMaaned, setReservasjon, setUpdate, updateDataTrigger, bestilteTimer, navn, sNavn, telefonnummer, sTelefonnummer, klokkeslettet, sKlokkeslett, sDato, dato, produkt, sProdukt, frisor, sFrisor}){
     
+    const [isMobile, setIsMobile] = useState(false);
+
     function nullstillData(){
         sDato(null);
         sProdukt([]);
@@ -18,15 +20,17 @@ export default function Timebestilling({setSynligKomponent, synligKomponent, hen
     }
 
     function displayKomponent(componentIndex){
-        console.log(componentIndex);
         setSynligKomponent(componentIndex);
     }
-    const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
         const userAgent = window.navigator.userAgent;
         setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent));
     }, []);
+
+    const gjeldendeTjenester = tjenester.filter(element=>produkt.includes(element.navn));
+    const totalTid = gjeldendeTjenester.reduce((total, element)=> total + element.tid, 0);
+    const totalPris = gjeldendeTjenester.reduce((total, element)=> total + element.pris, 0);
 
     return (
 
@@ -40,7 +44,7 @@ export default function Timebestilling({setSynligKomponent, synligKomponent, hen
                     displayKomponent(0);
                 }
             }} style={{backgroundColor: dato !== null?"lightgreen":"white"}} ><p>1</p> Velg din time</h2>
-            {(synligKomponent === 0? (<Dato synligKomponent={synligKomponent} displayKomponent={displayKomponent} sDato={sDato} sKlokkeslett={sKlokkeslett} sProdukt={sProdukt} klokkeslettet={klokkeslettet} produkt={produkt} hentDato={hentDato} />):"")}
+            {(synligKomponent === 0? (<Dato dato={dato} synligKomponent={synligKomponent} displayKomponent={displayKomponent} sDato={sDato} sKlokkeslett={sKlokkeslett} sProdukt={sProdukt} klokkeslettet={klokkeslettet} produkt={produkt} />):"")}
             
             <h2 className='overskrift' onClick={()=>{
                 if(synligKomponent === 1){
@@ -49,7 +53,7 @@ export default function Timebestilling({setSynligKomponent, synligKomponent, hen
                     displayKomponent(1);
                 }
             }} style={{backgroundColor: frisor !== null?"lightgreen":"white"}}><p>2</p>Velg frisør</h2>
-            {(synligKomponent === 1? <Frisor synligKomponent={synligKomponent} displayKomponent={displayKomponent} klokkeslettet={klokkeslettet} produkt={produkt} sKlokkeslett={sKlokkeslett} frisor={frisor} sFrisor={sFrisor} sProdukt={sProdukt}/>:"")}
+            {(synligKomponent === 1 && dato !== null? <Frisor synligKomponent={synligKomponent} displayKomponent={displayKomponent} klokkeslettet={klokkeslettet} produkt={produkt} sKlokkeslett={sKlokkeslett} frisor={frisor} sFrisor={sFrisor} sProdukt={sProdukt}/>:"")}
            
             <h2 className='overskrift' onClick={()=>{
                 if(synligKomponent === 2){
@@ -58,7 +62,7 @@ export default function Timebestilling({setSynligKomponent, synligKomponent, hen
                     displayKomponent(2);
                 }
             }} style={{backgroundColor: produkt.length > 0?"lightgreen":"white"}}><p>3</p>Behandlinger</h2>
-            {(synligKomponent === 2? <Tjenester synligKomponent={synligKomponent} displayKomponent={displayKomponent} produkt={produkt} sProdukt={sProdukt} frisor={frisor} />:"")}
+            {(synligKomponent === 2 && frisor !== null? <Tjenester synligKomponent={synligKomponent} displayKomponent={displayKomponent} produkt={produkt} sProdukt={sProdukt} frisor={frisor} />:"")}
            
             <h2 className='overskrift' onClick={()=>{
                 if(synligKomponent === 3){
@@ -67,7 +71,7 @@ export default function Timebestilling({setSynligKomponent, synligKomponent, hen
                     displayKomponent(3);
                 }
             }} style={{backgroundColor: klokkeslettet !== null?"lightgreen":"white"}}><p>4</p>Velg klokkeslett for timen her</h2>
-            {(frisor !== 0 && produkt.length > 0 && synligKomponent === 3?<Klokkeslett synligKomponent={synligKomponent} displayKomponent={displayKomponent} klokkeslettet={klokkeslettet} produkt={produkt} bestilteTimer={bestilteTimer} frisor={frisor} sKlokkeslett={sKlokkeslett} dato={dato} hentMaaned={hentMaaned}/>:"")}
+            {(synligKomponent === 3 && produkt.length > 0?<Klokkeslett synligKomponent={synligKomponent} displayKomponent={displayKomponent} klokkeslettet={klokkeslettet} produkt={produkt} bestilteTimer={bestilteTimer} frisor={frisor} sKlokkeslett={sKlokkeslett} dato={dato} hentMaaned={hentMaaned}/>:"")}
             
             <h2 className='overskrift' onClick={()=>{
                 if(synligKomponent === 4){
@@ -76,7 +80,7 @@ export default function Timebestilling({setSynligKomponent, synligKomponent, hen
                     displayKomponent(4);
                 }
             }} style={{backgroundColor: navn !== "" && telefonnummer.toString().length === 8?"lightgreen":"white"}}><p>5</p>Din info</h2>
-            {(klokkeslettet != null && produkt.length > 0 && synligKomponent === 4?<PersonInfo isMobile={isMobile} synligKomponent={synligKomponent} displayKomponent={displayKomponent} telefonnummer={telefonnummer} navn={navn} nullstillData={nullstillData} setReservasjon={setReservasjon} setUpdate={setUpdate} updateDataTrigger={updateDataTrigger} sNavn={sNavn} sTelefonnummer={sTelefonnummer} data={{
+            {(klokkeslettet != null && produkt.length > 0 && synligKomponent === 4?<PersonInfo totalPris={totalPris} totalTid={totalTid} klokkeslettet={klokkeslettet} produkt={produkt} frisor={frisor} hentMaaned={hentMaaned} dato={dato} isMobile={isMobile} synligKomponent={synligKomponent} displayKomponent={displayKomponent} telefonnummer={telefonnummer} navn={navn} nullstillData={nullstillData} setReservasjon={setReservasjon} setUpdate={setUpdate} updateDataTrigger={updateDataTrigger} sNavn={sNavn} sTelefonnummer={sTelefonnummer} data={{
                 dato:dato, 
                 tidspunkt:klokkeslettet,
                 frisor:frisorer.indexOf(frisor),
@@ -88,21 +92,23 @@ export default function Timebestilling({setSynligKomponent, synligKomponent, hen
 
         </div>
 
-        <div className='infoboks'>
+        {(!isMobile?(<div className='infoboks'>
             <div>
             <h3>Din timebestilling</h3>
             <div>Dato {(dato != null?(<p>{parseInt(dato.substring(8,10))}. {hentMaaned(parseInt(dato.substring(5,7)) -1)}</p>):"")}</div>
             <div>Frisør {(frisor != null?(<p>{frisor.navn}</p>):"")}</div>
             <div>Time for {(produkt.length > 0?(<p>{produkt.join(", ")}</p>):"")}</div>
             <div>Tid {(klokkeslettet != null && produkt.length > 0?(<p>{klokkeslettet}</p>):"")}</div>
+            <div>Estimert pris {totalPris} kr</div>
+            <div>Estimert tid {totalTid} minutter</div>
             </div>
             <p>obs.: Prisene er kun estimert og kan øke dersom det blir brukt hårprodukter eller om det kreves vask osv.</p>
-        </div>
+        </div>):"")}
 
     
     
     </div>
-        )
+    )
 }
 
 export function Kvittering(){
@@ -115,12 +121,4 @@ export function Kvittering(){
 }
 
 
-function hentDato(){ //Hvilket format true=yyyy-mm-dd, false=["dd","mm","yyyy"]
-    
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    return (`${year}-${month}-${day}`);
-    
-}
+export default React.memo(Timebestilling);

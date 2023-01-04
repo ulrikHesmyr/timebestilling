@@ -10,7 +10,7 @@ const App = ()=> {
 
   
   
-  const [dato, setDato] = useState(null);
+  const [dato, setDato] = useState(hentDato());
   const [produkt, setProdukt] = useState([]);
   const [frisor, setFrisor] = useState(null);
   const [klokkeslettet, setKlokkeslett] = useState(null);
@@ -20,6 +20,8 @@ const App = ()=> {
   const [updateDataTrigger, setUpdate] = useState(false);
   const [registrertReservasjon, setReservasjon] = useState(undefined);
   const [synligKomponent, setSynligKomponent] = useState(0);
+  const [synligMeny, setSynligmeny] = useState(false);
+
 
 
   useEffect(()=>{
@@ -35,15 +37,28 @@ const App = ()=> {
   return (
       <BrowserRouter>
         <div>
-            <nav className='navBar'>
-              <Link to="/">Bestill time</Link>
-              <Link to="/about">VI ER bareLinnea</Link>
-            </nav>
+            <div className='burger' aria-expanded={synligMeny} onClick={()=>{
+              setSynligmeny(!synligMeny);
+            }}>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+            {(synligMeny?(
+            <div className='navBar' aria-hidden={!synligMeny}>
+              <Link onClick={()=>{
+                setSynligmeny(false);
+              }} to="/">VI ER bareLinnea <p>Bli kjent</p></Link>
+              <Link onClick={()=>{
+                setSynligmeny(false);
+              }} to="/timebestilling">Bestill time <p>Reserver time hos oss</p></Link>
+            </div>):(
             <Routes>
-              <Route exact path="/" element={(registrertReservasjon?<DinReservasjon hentMaaned={hentMaaned} setReservasjon={setReservasjon} registrertReservasjon={registrertReservasjon} />:<Timebestilling synligKomponent={synligKomponent} setSynligKomponent={setSynligKomponent} hentMaaned={hentMaaned} setReservasjon={setReservasjon} setUpdate={setUpdate} updateDataTrigger={updateDataTrigger} bestilteTimer={bestilteTimer} navn={navn} sNavn={setNavn} telefonnummer={telefonnummer} sTelefonnummer={setTelefonnummer} klokkeslettet={klokkeslettet} sKlokkeslett={setKlokkeslett} sDato={setDato} dato={dato} produkt={produkt} sProdukt={setProdukt} frisor={frisor} sFrisor={setFrisor}/>)} />
-              <Route exact path="/about" element={<ViErBareLinnea/>} />
+              <Route exact path="/timebestilling" element={(registrertReservasjon?<DinReservasjon hentMaaned={hentMaaned} setReservasjon={setReservasjon} registrertReservasjon={registrertReservasjon} />:<Timebestilling synligKomponent={synligKomponent} setSynligKomponent={setSynligKomponent} hentMaaned={hentMaaned} setReservasjon={setReservasjon} setUpdate={setUpdate} updateDataTrigger={updateDataTrigger} bestilteTimer={bestilteTimer} navn={navn} sNavn={setNavn} telefonnummer={telefonnummer} sTelefonnummer={setTelefonnummer} klokkeslettet={klokkeslettet} sKlokkeslett={setKlokkeslett} sDato={setDato} dato={dato} produkt={produkt} sProdukt={setProdukt} frisor={frisor} sFrisor={setFrisor}/>)} />
+              <Route exact path="/" element={<ViErBareLinnea/>} />
               <Route exact path="/login" element={<Login/>} />
-            </Routes>
+            </Routes>))}
+            
         </div>
       </BrowserRouter>
   );
@@ -68,4 +83,18 @@ function hentMaaned(maanedInt){
   }
 }
 
+
+function hentDato(){ //Hvilket format true=yyyy-mm-dd, false=["dd","mm","yyyy"]
+    
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  return (`${year}-${month}-${day}`);
+  
+}
+
 export default App;
+export{
+  hentDato
+}

@@ -27,27 +27,42 @@ input, button{
 }
   
 .timebestilling * {
-  margin:1rem;
+  margin:0.3rem;
 }
   
   .navBar{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    flex-wrap: wrap;
     font-size: large;
-    font-weight: bolder;
+    justify-items: center;
+    animation: animer-inn 0.3s;
   }
   
   
-  .navBar * {
-    padding:2rem;
-    text-align: center;
+  .navBar a {
+    text-align: start;
+    padding: 2rem;
+    text-align: start;
     cursor: pointer;
     text-decoration: none;
+    color: green;
+    width: 20rem;
+    border-right: thin solid rgba(0, 0, 0, 0.25);
+    border-bottom: thin solid rgba(0, 0, 0, 0.25);
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+    background-color: white;
+    font-size: larger;
+  }
+  .navBar a p{
+    font-weight: lighter;
+    text-align: start;
     color:black;
+    margin:0;
+    font-size: large;
   }
   
-  .navBar *:active{
+  .navBar a:active{
     box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
     color:inherit !important;
   }
@@ -72,12 +87,21 @@ input, button{
   }
   
   .tjeneste{
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    justify-content: center;
+    align-items: center;
+    height: fit-content;
+    width: max-content;
     background-color: white;
     cursor: pointer;
     padding: 0.3rem;
     border-end-end-radius: 2rem;
     border-right: thin solid black;
     border-top:thin solid black;
+  }
+  .tjeneste input{
+    height: 3rem;
   }
   
   .klokkeslettene{
@@ -139,6 +163,7 @@ input, button{
     cursor: pointer;
     padding: 0.2rem;
     align-items: center;
+    z-index: 2;
   }
   .overskrift p{
     display: flex;
@@ -155,7 +180,7 @@ input, button{
   @keyframes animer-inn{
     from{
       opacity: 0.5;
-      transform: translateY(-20px);
+      transform: translateY(-10px);
     } 
     to{
       opacity: 1;
@@ -163,8 +188,9 @@ input, button{
     }
   }
   .animer-inn{
-    background-color: white;
+    background-color: transparent;
     animation: 0.5s animer-inn;
+    z-index: 1;
   }
 
   @keyframes animer-ut{
@@ -177,7 +203,7 @@ input, button{
   }
   .animer-ut{
     background-color: pink;
-    animation: 0.5s animer-ut;
+    animation: 0.5s linear animer-ut;
   }
 
   .infoboks{
@@ -200,6 +226,20 @@ input, button{
     flex-wrap: wrap;
   }
 
+  .burger{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    width:4rem;
+    aspect-ratio: 1/1;
+  }
+  .burger div{
+    background-color: black;
+    width:80%;
+    height:0.2rem;
+  }
+
   /*******************************************************************************************************************/
 
 @media (width <= 900px){
@@ -214,30 +254,15 @@ input, button{
   }
   
 .timebestilling * {
-  margin:1rem;
+  margin:0.8rem;
+}
+.infoboks{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: max-content;
 }
   
-  .navBar{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    font-size: larger;
-    font-weight: bolder;
-  }
-  
-  
-  .navBar * {
-    padding:2rem;
-    text-align: center;
-    cursor: pointer;
-    text-decoration: none;
-    color:black;
-  }
-  
-  .navBar *:active{
-    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
-    color:inherit !important;
-  }
   h1{
     font-size: large;
   }

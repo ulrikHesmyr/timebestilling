@@ -1,17 +1,16 @@
 import React from "react";
+import Fortsett from "./Fortsett";
 import { frisorer, tjenester } from "../shared/env";
 
 function Frisor({synligKomponent, displayKomponent, produkt, klokkeslettet, sKlokkeslett ,frisor, sFrisor, sProdukt}){
 
     return(
         <div className={synligKomponent === 1? 'animer-inn':'animer-ut'}>
+            <Fortsett valid={(frisor !== null?false:true)} number={2} displayKomponent={displayKomponent} />
             <div className="frisorene">
 
                 {frisorer.map((element)=>(<div className="frisor" key={element.navn} onClick={()=>{
                     sFrisor(element);
-                    setTimeout(()=>{
-                        displayKomponent(2);
-                    },100);
                     if(produkt.length > 0 || klokkeslettet != null){
                         sProdukt([]);
                         sKlokkeslett(null);

@@ -1,6 +1,6 @@
 import React, {useRef} from 'react'
 
-export default function PersonInfo({isMobile, synligKomponent, displayKomponent, navn, telefonnummer, nullstillData, setReservasjon ,setUpdate ,updateDataTrigger, data, sNavn, sTelefonnummer}){
+export default function PersonInfo({totalTid, totalPris, dato, klokkeslettet, produkt, frisor, hentMaaned, isMobile, synligKomponent, displayKomponent, navn, telefonnummer, nullstillData, setReservasjon ,setUpdate ,updateDataTrigger, data, sNavn, sTelefonnummer}){
     
     const navnInput = useRef(null);
     const tlfInput = useRef(null);
@@ -23,8 +23,9 @@ export default function PersonInfo({isMobile, synligKomponent, displayKomponent,
             nullstillData();
             displayKomponent(0);
 
+        } else {
+            alert("Noe har skjedd galt, prøv på nytt!");
         }
-        console.log(response.bestiltTime);
     }
 
     return (
@@ -41,13 +42,24 @@ export default function PersonInfo({isMobile, synligKomponent, displayKomponent,
                     }
                 }}></input> </label>
 
-                {isMobile?"h":""}
+                {isMobile?(<div className='infoboks'>
+            <div>
+            <h3>Din timebestilling</h3>
+            <div>Dato {(dato != null?(<p>{parseInt(dato.substring(8,10))}. {hentMaaned(parseInt(dato.substring(5,7)) -1)}</p>):"")}</div>
+            <div>Frisør {(frisor != null?(<p>{frisor.navn}</p>):"")}</div>
+            <div>Time for {(produkt.length > 0?(<p>{produkt.join(", ")}</p>):"")}</div>
+            <div>Tid {(klokkeslettet != null && produkt.length > 0?(<p>{klokkeslettet}</p>):"")}</div>
+            <div>Estimert pris <p>{totalPris} kr</p></div>
+            <div>Estimert tid <p>{totalTid} minutter</p></div>
+            </div>
+            <p>obs.: Prisene er kun estimert og kan øke dersom det blir brukt hårprodukter eller om det kreves vask osv.</p>
+        </div>):""}
                 <button onClick={(e)=>{
                     e.preventDefault();
-                    if(telefonnummer.length === 8){
+                    if(telefonnummer.length === 8 && navn !== ""){
                         registrerData();
                     } else {
-                        alert("Telefonnumeret er ikke gyldig");
+                        alert("Telefonnumeret eller navn er ikke gyldig");
                     }
                 }}>SEND INN RESERVASJON</button>
             </form>

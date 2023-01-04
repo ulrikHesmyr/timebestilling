@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const env = new mongoose.Schema({
+    bedrift:{type:String},
     antallAnsatte:3,
     kategorier: [String],
     tjenester: [
@@ -21,7 +22,8 @@ const env = new mongoose.Schema({
     klokkeslett: [
         {
         tid: String, 
-        tilgjengeligeAnsatte: Number}
+        tilgjengeligeAnsatte: Number
+    }
     ]
 })
 

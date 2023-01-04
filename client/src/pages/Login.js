@@ -1,20 +1,26 @@
 import React, {useState} from 'react'
 
-function Login(){
+export default function Login(){
 
     const [brukernavn, setBrukernavn] = useState('');
     const [passord, setPassord] = useState('');
 
     async function logginn(){
-        const request = await fetch('http://localhost:3001/login', {
+        const data = {
+            "brukernavn":brukernavn,
+            "passord":passord
+        }
+        const request = await fetch('http://localhost:3001/login/auth', {
             method: "POST",
             headers:{
                 "Content-Type":"appliaction/json",
             },
-            body:JSON.stringify({brukernavn: brukernavn, passord: passord})
+            body: JSON.stringify(data)
         })
         const response = await request.json();
-        console.log(response);
+        if(response){
+            console.log(response);
+        }
     }
     //useEffect
     //Sjekker om bruker er authenticated med Cookieparser
@@ -37,4 +43,4 @@ function Login(){
     )
 }
 
-export default React.memo(Login);
+//export default React.memo(Login);
