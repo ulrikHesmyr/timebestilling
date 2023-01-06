@@ -1,5 +1,4 @@
 const nodemailer = require("nodemailer");
-require("dotenv").config();
 
 function sendMail(subject, message){
     const transporter = nodemailer.createTransport({

@@ -22,6 +22,15 @@ function PersonInfo({totalTid, totalPris, dato, klokkeslettet, produkt, frisor, 
             setReservasjon(response.bestiltTime);
             nullstillData();
             displayKomponent(0);
+           Notification.requestPermission().then(function(permission){
+            console.log(permission);
+            if(permission === 'granted'){
+                new Notification(`Din timereservasjon er registrert! Du vil motta en melding med bekreftelse!`, {
+                    body:`Bekreftelse sendt til: ${telefonnummer}`,
+                    icon:'../../public/mercedes.jpg'
+                });
+            }
+           }) 
 
         } else {
             alert("Noe har skjedd galt, prøv på nytt!");

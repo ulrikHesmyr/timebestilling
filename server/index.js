@@ -9,8 +9,10 @@ require("./configuration/database").connect();
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
+const {BEDRIFT} = process.env;
 
 const Bestiltetimer = require("./model/bestilling");
+const Environment = require("./model/env");
 
 schedule.scheduleJob('0 22 * * *', async ()=>{
   try {
@@ -19,15 +21,17 @@ schedule.scheduleJob('0 22 * * *', async ()=>{
     //console.log(gamleTimebestillinger);
     const gamleTimebestillinger = await Bestiltetimer.deleteMany({dato: idag}).exec();
     console.log(gamleTimebestillinger);
+    await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {$inc:{antallBestillinger:gamleTimebestillinger.deletedCount}}, (err)=>{
+      if(err){
+        mailer.sendMail(`Problem database for ${BEDRIFT}`, "Problemer med å oppdatere data for antall bestillinger i databasen");
+      }
+    });
     
   } catch (error) {
     console.log(error);
     mailer.sendMail(`Problemer med node-schedule for: ${process.env.BEDRIFT}`,"Problemer med scheduleJob slette gamle timebestillinger");
   }
 })
-app.get("/serviceWorker.js", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "public", "serviceWorker.js"));
-});
 
 app.use('/timebestilling', require('./routes/timebestilling'));
 app.use('/login', require('./routes/login'));

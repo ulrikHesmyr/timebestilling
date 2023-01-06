@@ -1,24 +1,29 @@
 const express = require("express");
 const router = express.Router();
-require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const mailer = require("../configuration/mailer");
-const {VAKTER_BRUKER, ADMIN_BRUKER, ADMIN_PASS, VAKTER_PASS, ACCESS_TOKEN_KEY} = process.env;
+const {BEDRIFT, ACCESS_TOKEN_KEY} = process.env;
+const Bestiltetimer = require("../model/bestilling");
+const Environment = require("../model/env");
 
 router.post('/auth', async (req,res)=>{
-    const {brukernavn, passord} = req.body;
-    if(brukernavn === VAKTER_BRUKER && passord === VAKTER_PASS || brukernavn === ADMIN_BRUKER && passord === ADMIN_PASS){
-        const accessToken = jwt.sign({brukernavn: brukernavn, passord: passord}, ACCESS_TOKEN_KEY);
+    try {
+        const {brukernavn, passord} = req.body;
+        const env = await Environment.findOne({bedrift:BEDRIFT});
+
+        if(brukernavn === env.vakter_bruker && passord === env.vakter_pass || brukernavn === env.admin_bruker && passord === env.admin_pass){
         //console.log(jwt.verify(token, ACCESS_TOKEN_KEY));
         //console.log(req.cookies());
-        
-        return res.json({valid:true, message:"Du er nå logget inn", brukertype: brukernavn, cookie: {accessToken:accessToken, name:"access_token"} });
+        const bestilteTimer = await Bestiltetimer.find();
+        return res.json({valid:true, message:"Du er nå logget inn", brukertype: brukernavn, env:env});
+
     } else {
         return res.json({valid:false, message:"Feil passord eller brukernavn"});
     }
-        
-    
-
+    } catch (error) {
+        console.log(error);
+        mailer.sendMail(`Problem med database for: ${BEDRIFT}`, "Får ikke hentet bestiltetimer og environment på login route");
+    }
 })
 
 router.get("/logout", (req, res) => {

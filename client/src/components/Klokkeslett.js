@@ -1,5 +1,6 @@
 import React from 'react'
 import Fortsett from './Fortsett';
+import { hentDato } from '../App';
 
 function Klokkeslett({env, synligKomponent, displayKomponent, klokkeslettet, produkt, bestilteTimer, sKlokkeslett, dato, hentMaaned, frisor}){
     const gjeldendeTjenester = env.tjenester.filter(element=>produkt.includes(element.navn));
@@ -7,6 +8,8 @@ function Klokkeslett({env, synligKomponent, displayKomponent, klokkeslettet, pro
     
 
     let ekstra = [];
+    const klokkeslettminutterNaa = minutterFraKlokkeslett(`${new Date().getHours()}:${new Date().getMinutes()}`);
+    console.log(klokkeslettminutterNaa);
     
     //while(minutter < (minutterFraKlokkeslett(element.tidspunkt) + totalTid-30)){
     //    minutter+=30;
@@ -37,7 +40,14 @@ function Klokkeslett({env, synligKomponent, displayKomponent, klokkeslettet, pro
 
 
 
-    const ledigeTimer = env.klokkeslett.map(element=>element.tid).filter(tid=> !reserverteTimer.includes(tid) && !utilgjengeligeTimer.includes(tid))
+
+    const ledigeTimer = env.klokkeslett.map((element)=>{
+        if(hentDato() === dato && minutterFraKlokkeslett(element.tid) < klokkeslettminutterNaa){
+            return undefined;
+        } else {
+            return element.tid
+        }
+    }).filter(tid=> tid && !reserverteTimer.includes(tid) && !utilgjengeligeTimer.includes(tid));
     return(
         <div className={synligKomponent === 3? 'animer-inn':'animer-ut'}>
             <Fortsett displayKomponent={displayKomponent} number={4} valid={(klokkeslettet !== null? false:true)} />

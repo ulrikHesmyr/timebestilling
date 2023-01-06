@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const env = new mongoose.Schema({
+    admin_bruker:{type:String},
+    admin_pass:{type:String},
+    vakter_bruker:{type:String},
+    vakter_pass:{type:String},
     bedrift:{type:String},
     antallBestillinger:{type:Number},
     kategorier: [String],

@@ -31,7 +31,7 @@ const App = ()=> {
       const environmentRequest = await fetch("http://localhost:3001/env/env");
       const environment = await environmentRequest.json();
       if(environment){
-        console.log(environment);
+        console.log("Offentlig: må fje", environment);
         sEnv(environment);
       }
     }
@@ -72,7 +72,7 @@ const App = ()=> {
             <Routes>
               <Route exact path="/timebestilling" element={(registrertReservasjon?<DinReservasjon env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} registrertReservasjon={registrertReservasjon} />:(env !== null?<Timebestilling env={env} synligKomponent={synligKomponent} setSynligKomponent={setSynligKomponent} hentMaaned={hentMaaned} setReservasjon={setReservasjon} setUpdate={setUpdate} updateDataTrigger={updateDataTrigger} bestilteTimer={bestilteTimer} navn={navn} sNavn={setNavn} telefonnummer={telefonnummer} sTelefonnummer={setTelefonnummer} klokkeslettet={klokkeslettet} sKlokkeslett={setKlokkeslett} sDato={setDato} dato={dato} produkt={produkt} sProdukt={setProdukt} frisor={frisor} sFrisor={setFrisor}/>:"Laster..."))} />
               <Route exact path="/" element={(env !== null?<Hjem env={env}/>:"Laster...")} />
-              <Route exact path="/login" element={(loggetInn?"du er logget inn":<Login toggleLoggetInn={toggleLoggetInn} env={env}/>)} />
+              <Route exact path="/login" element={<Login loggetInn={loggetInn} toggleLoggetInn={toggleLoggetInn} env={env}/>} />
             </Routes>))}
             
         </div>

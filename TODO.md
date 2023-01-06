@@ -1,11 +1,9 @@
 CLIENT:
-- Fjerne mulighet for å reservere klokkesletter samme dagen som har allerede vært
-- Få alle komponenter til å vente med å rendre inn
+- Login route, oppdatere state for env når en autorisert person logger inn. Bestiltetimer fetches i App.js
 
 - Lagre navn og nummer i localStorage for senere  
 
 SERVER:
-- Sett opp protected route router.post('/login', async(req,res)). Pr salong så har vi én bruker for å se vakter, og én bruker for administrerende folk
 - Dersom "førsye ledige frisør"(legg dette som default for alle frisørsalonger) velges, så skal den assignes til den første ledige frisøren, samtidig skal det telles opp en variabel  som ser hvem av frisørene som har fått minst "første ledige" slik at den frisøren alltid får timen
 
 - Sende bekreftelse på timebestilling på SMS eller epost

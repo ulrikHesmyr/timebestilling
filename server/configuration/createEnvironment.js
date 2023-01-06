@@ -1,10 +1,14 @@
 const Environment = require("../model/env");
+const {BEDRIFT} = process.env;
 
 async function opprettEnvironment(){
     try {
-        const nyttEnvironment = await Environment.create({
-        
-            bedrift:"Ulriks frisørsalong",
+        await Environment.create({
+            admin_bruker:"admin",
+            admin_pass:"KongHarald",
+            vakter_bruker:"vakter",
+            vakter_pass:"DronningSonja",
+            bedrift:BEDRIFT,
             antallBestillinger:0,
             kategorier: ["Klipp", "Kur", "Striper", "Barbering"],
             tjenester: [
@@ -47,7 +51,7 @@ async function opprettEnvironment(){
             ],
             frisorer:[
                 {
-                    navn:"Ulrik",
+                    navn:"Robin",
                     produkter:[0,1,2,3,4,5]
                 },
                 {

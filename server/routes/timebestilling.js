@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const mailer = require("../configuration/mailer");
-require("dotenv").config();
 
 const Bestilttime = require("../model/bestilling");
 
