@@ -1,6 +1,6 @@
 import React, {useRef} from 'react'
 
-export default function PersonInfo({totalTid, totalPris, dato, klokkeslettet, produkt, frisor, hentMaaned, isMobile, synligKomponent, displayKomponent, navn, telefonnummer, nullstillData, setReservasjon ,setUpdate ,updateDataTrigger, data, sNavn, sTelefonnummer}){
+function PersonInfo({totalTid, totalPris, dato, klokkeslettet, produkt, frisor, hentMaaned, isMobile, synligKomponent, displayKomponent, navn, telefonnummer, nullstillData, setReservasjon ,setUpdate ,updateDataTrigger, data, sNavn, sTelefonnummer}){
     
     const navnInput = useRef(null);
     const tlfInput = useRef(null);
@@ -66,3 +66,5 @@ export default function PersonInfo({totalTid, totalPris, dato, klokkeslettet, pr
         </div>
     )
 }
+
+export default React.memo(PersonInfo);

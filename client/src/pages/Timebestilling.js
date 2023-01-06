@@ -1,18 +1,17 @@
-import React, {useEffect, useState, useContext} from 'react'
+import React, {useEffect, useState} from 'react'
 import Tjenester from '../components/Tjenester';
 import Klokkeslett from '../components/Klokkeslett';
 import Frisor from '../components/Frisor';
 import PersonInfo from '../components/PersonInfo';
 import Dato from '../components/Dato';
-import { DataContext } from '../App';
+import { hentDato } from '../App';
 
 function Timebestilling({env, setSynligKomponent, synligKomponent, hentMaaned, setReservasjon, setUpdate, updateDataTrigger, bestilteTimer, navn, sNavn, telefonnummer, sTelefonnummer, klokkeslettet, sKlokkeslett, sDato, dato, produkt, sProdukt, frisor, sFrisor}){
-    //const env = useContext(DataContext);
-    //console.log(env);
+    
     const [isMobile, setIsMobile] = useState(false);
 
     function nullstillData(){
-        sDato(null);
+        sDato(hentDato());
         sProdukt([]);
         sFrisor(null);
         sKlokkeslett(null);

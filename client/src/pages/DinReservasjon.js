@@ -1,10 +1,7 @@
-import React, {useContext} from 'react'
-import { DataContext } from '../App';
+import React from 'react'
 
-export default function DinReservasjon({env, hentMaaned, setReservasjon ,registrertReservasjon}){
+function DinReservasjon({env, hentMaaned, setReservasjon ,registrertReservasjon}){
     
-    //const env = useContext(DataContext);
-
     const gjeldendeTjenester = env.tjenester.filter(element=>registrertReservasjon.behandlinger.includes(element.navn));
     const totalTid = gjeldendeTjenester.reduce((total, element)=> total + element.tid, 0);
     const totalPris = gjeldendeTjenester.reduce((total, element)=> total + element.pris, 0);
@@ -28,3 +25,5 @@ export default function DinReservasjon({env, hentMaaned, setReservasjon ,registr
             </div>:<p>Laster inn...</p>)
     )
 }
+
+export default React.memo(DinReservasjon);

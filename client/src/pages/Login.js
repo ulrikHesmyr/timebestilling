@@ -1,27 +1,43 @@
 import React, {useState} from 'react'
+import Cookies from 'js-cookie'
 
-export default function Login(){
-
+function Login({toggleLoggetInn}){
     const [brukernavn, setBrukernavn] = useState('');
     const [passord, setPassord] = useState('');
 
     async function logginn(){
+        const access_token = Cookies.get("access_token");
+        const test_token = Cookies.get("test_token");
         const data = {
-            "brukernavn":brukernavn,
-            "passord":passord
+            brukernavn:brukernavn.toLowerCase(), 
+            passord:passord,
+            token: access_token
         }
         const request = await fetch('http://localhost:3001/login/auth', {
-            method: "POST",
+            method:"POST",
             headers:{
-                "Content-Type":"appliaction/json",
+                "Content-Type":"application/json",
             },
-            body: JSON.stringify(data)
-        })
+            body: JSON.stringify(data),
+            //credentials:'include'
+        });
         const response = await request.json();
-        if(response){
-            console.log(response);
+        console.log(response);
+        if(!response.valid){
+            console.log(response.message);
+        } else if(response.valid){
+            //Cookies.set(response.cookie.name, response.cookie.accessToken, {expires:7});
+           toggleLoggetInn(true);
+           Notification.requestPermission().then(function(permission){
+            console.log(permission);
+            if(permission === 'granted'){
+                console.log("h");
+                //new Notification("This is a push alert");
+            }
+           }) 
         }
     }
+    
     //useEffect
     //Sjekker om bruker er authenticated med Cookieparser
     return(
@@ -43,4 +59,4 @@ export default function Login(){
     )
 }
 
-//export default React.memo(Login);
+export default React.memo(Login);

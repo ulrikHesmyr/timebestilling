@@ -69,7 +69,7 @@ input, button{
   }
   
   
-  .bareLinnea{
+  .hjem{
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -268,7 +268,7 @@ input, button{
     font-size: large;
   }
   
-  .bareLinnea{
+  .hjem{
     display: flex;
     flex-direction: column;
     align-items: center;

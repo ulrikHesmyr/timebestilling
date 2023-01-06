@@ -23,4 +23,9 @@ Scenarioer:
     reservert for dameklipp
 
 Før produksjon
+endre variabler i .env filen
+endre request fra http://localhost til domenenavnet
 slette unødvendige filer og fjerne unødvendig kode
+endre tittel i index.html
+sette NODE_ENV til "production" i .env filen
+un-comment credentials i Login.js i client

@@ -2,7 +2,7 @@ import React from "react";
 import Fortsett from "./Fortsett.js";
 
 
-export default function Tjenester({env, sKlokkeslett, synligKomponent, displayKomponent, produkt, sProdukt, frisor}){
+function Tjenester({env, sKlokkeslett, synligKomponent, displayKomponent, produkt, sProdukt, frisor}){
     
 
     return(
@@ -38,3 +38,5 @@ export default function Tjenester({env, sKlokkeslett, synligKomponent, displayKo
         </div>
     )
 }
+
+export default React.memo(Tjenester);

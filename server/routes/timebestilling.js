@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const mailer = require("../configuration/mailer");
+require("dotenv").config();
 
 const Bestilttime = require("../model/bestilling");
 
@@ -27,8 +29,13 @@ router.post('/bestilltime', async (req,res)=>{
 
 router.get('/hentBestiltetimer', async (req,res)=>{
     try {
-        const alleBestilteTimer = await Bestilttime.find();
-        return res.json(alleBestilteTimer)
+        await Bestilttime.find({},'dato tidspunkt frisor behandlinger', function(err, docs){
+                if(err){
+                    mailer.sendMail(`Problem database: ${process.env.BEDRIFT}`, `Problemer med å returnere filtrerte documents fra mongodb for bestilte timer. Her er error melding: ${err}`);
+                } else {
+                    return res.json(docs);
+                }
+            });
     } catch (error) {
         console.log(error);
     }

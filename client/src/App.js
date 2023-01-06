@@ -1,12 +1,11 @@
-import React, {createContext, useState, useEffect} from 'react'
+import React, {useState, useEffect} from 'react'
 import {BrowserRouter, Route, Routes, Link} from 'react-router-dom'
 import Timebestilling from './pages/Timebestilling'
-import ViErBareLinnea from './pages/bareLinnea'
+import Hjem from './pages/hjem'
 import DinReservasjon from './pages/DinReservasjon'
 import Login from './pages/Login'
 import './App.css'
 
-export const DataContext = createContext();
 
 const App = ()=> {
 
@@ -24,6 +23,7 @@ const App = ()=> {
   const [synligKomponent, setSynligKomponent] = useState(0);
   const [synligMeny, setSynligmeny] = useState(false);
   const [env, sEnv] = useState(null);
+  const [loggetInn, toggleLoggetInn] = useState(false);
 
 
   useEffect(()=>{
@@ -44,13 +44,13 @@ const App = ()=> {
       const request = await fetch('http://localhost:3001/timebestilling/hentBestiltetimer');
       const response = await request.json();
       setBestiltetimer(response);
+      console.log(response);
 
     }
     fetchData();
   },[updateDataTrigger])
 
   return (
-    //<DataContext.Provider value={env}>
       <BrowserRouter>
         <div>
             <div className='burger' aria-expanded={synligMeny} onClick={()=>{
@@ -64,20 +64,19 @@ const App = ()=> {
             <div className='navBar' aria-hidden={!synligMeny}>
               <Link onClick={()=>{
                 setSynligmeny(false);
-              }} to="/">VI ER bareLinnea <p>Bli kjent</p></Link>
+              }} to="/">VI ER {(env !== null? env.bedrift:"")} <p>Bli kjent</p></Link>
               <Link onClick={()=>{
                 setSynligmeny(false);
               }} to="/timebestilling">Bestill time <p>Reserver time hos oss</p></Link>
             </div>):(
             <Routes>
-              <Route exact path="/timebestilling" element={(registrertReservasjon?<DinReservasjon env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} registrertReservasjon={registrertReservasjon} />:<Timebestilling env={env} synligKomponent={synligKomponent} setSynligKomponent={setSynligKomponent} hentMaaned={hentMaaned} setReservasjon={setReservasjon} setUpdate={setUpdate} updateDataTrigger={updateDataTrigger} bestilteTimer={bestilteTimer} navn={navn} sNavn={setNavn} telefonnummer={telefonnummer} sTelefonnummer={setTelefonnummer} klokkeslettet={klokkeslettet} sKlokkeslett={setKlokkeslett} sDato={setDato} dato={dato} produkt={produkt} sProdukt={setProdukt} frisor={frisor} sFrisor={setFrisor}/>)} />
-              <Route exact path="/" element={<ViErBareLinnea env={env}/>} />
-              <Route exact path="/login" element={<Login env={env}/>} />
+              <Route exact path="/timebestilling" element={(registrertReservasjon?<DinReservasjon env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} registrertReservasjon={registrertReservasjon} />:(env !== null?<Timebestilling env={env} synligKomponent={synligKomponent} setSynligKomponent={setSynligKomponent} hentMaaned={hentMaaned} setReservasjon={setReservasjon} setUpdate={setUpdate} updateDataTrigger={updateDataTrigger} bestilteTimer={bestilteTimer} navn={navn} sNavn={setNavn} telefonnummer={telefonnummer} sTelefonnummer={setTelefonnummer} klokkeslettet={klokkeslettet} sKlokkeslett={setKlokkeslett} sDato={setDato} dato={dato} produkt={produkt} sProdukt={setProdukt} frisor={frisor} sFrisor={setFrisor}/>:"Laster..."))} />
+              <Route exact path="/" element={(env !== null?<Hjem env={env}/>:"Laster...")} />
+              <Route exact path="/login" element={(loggetInn?"du er logget inn":<Login toggleLoggetInn={toggleLoggetInn} env={env}/>)} />
             </Routes>))}
             
         </div>
       </BrowserRouter>
-    //</DataContext.Provider>
   );
 }
 
