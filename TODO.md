@@ -1,5 +1,5 @@
 CLIENT:
-- Login route, oppdatere state for env når en autorisert person logger inn. Bestiltetimer fetches i App.js
+- Style timene i Vakter component
 
 - Lagre navn og nummer i localStorage for senere  
 

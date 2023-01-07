@@ -5,7 +5,6 @@ function Frisor({env, synligKomponent, displayKomponent, produkt, klokkeslettet,
 
     return(
         <div className={synligKomponent === 1? 'animer-inn':'animer-ut'}>
-            <Fortsett valid={(frisor !== null?false:true)} number={2} displayKomponent={displayKomponent} />
             <div className="frisorene">
 
                 {env.frisorer.map((element)=>(<div className="frisor" key={element.navn} onClick={()=>{
@@ -20,6 +19,7 @@ function Frisor({env, synligKomponent, displayKomponent, produkt, klokkeslettet,
                     {(element.produkter.length === env.tjenester.length?(<p>hvilken som helst behandling</p>):element.produkter.map((index)=>(<p key={index}>{env.tjenester[index].navn}</p>)))}
                 </div>))}
             </div>
+            <Fortsett valid={(frisor !== null?false:true)} number={2} displayKomponent={displayKomponent} />
         </div>
     )
 }

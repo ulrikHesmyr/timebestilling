@@ -50,12 +50,13 @@ function Klokkeslett({env, synligKomponent, displayKomponent, klokkeslettet, pro
     }).filter(tid=> tid && !reserverteTimer.includes(tid) && !utilgjengeligeTimer.includes(tid));
     return(
         <div className={synligKomponent === 3? 'animer-inn':'animer-ut'}>
-            <Fortsett displayKomponent={displayKomponent} number={4} valid={(klokkeslettet !== null? false:true)} />
             <div className='klokkeslettene'>
                 {(ledigeTimer.length > 0? ledigeTimer.map((tid)=>(<div style={{backgroundColor: klokkeslettet===tid ?"lightgreen": "white"}} className='klokkeslett' key={tid} onClick={()=>{
                     sKlokkeslett(tid);
                 }}> {tid} </div>)):`Ingen ledige timer for ${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}`)}
             </div>
+            
+            <Fortsett displayKomponent={displayKomponent} number={4} valid={(klokkeslettet !== null? false:true)} />
         </div>
     )
 }
@@ -64,7 +65,7 @@ export function minutterFraKlokkeslett(k){
     return ((parseInt(k.substring(0,2))*60) + parseInt(k.substring(3,5)));
 }
 
-function klokkeslettFraMinutter(n) {
+export function klokkeslettFraMinutter(n) {
     let number = n;
     let hours = (number / 60);
     let rhours = Math.floor(hours);

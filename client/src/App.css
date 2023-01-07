@@ -265,6 +265,14 @@ input, button{
   .velgFrisorVakter div:hover, .velgFrisorVakter div:active{
     border-bottom: thin solid black;
   }
+  .fortsett{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    cursor: pointer;
+    padding:1rem;
+    color:white;
+    background-color: rgb(30, 46, 65);
+    border: thin solid rgba(31, 62, 0, 0.5);
+  }
 
   /*******************************************************************************************************************/
 
