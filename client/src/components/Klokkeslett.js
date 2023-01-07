@@ -19,8 +19,8 @@ function Klokkeslett({env, synligKomponent, displayKomponent, klokkeslettet, pro
         if(element.dato === dato && element.frisor === env.frisorer.indexOf(frisor)){
             let okkupertTid = env.tjenester.filter(tjeneste=>element.behandlinger.includes(tjeneste.navn)).reduce((total, minutterFraTjeneste)=> total + minutterFraTjeneste.tid, 0);
             let minutter = minutterFraKlokkeslett(element.tidspunkt);
-            while(minutter < (minutterFraKlokkeslett(element.tidspunkt) + okkupertTid-30)){
-                minutter+=30;
+            while(minutter < (minutterFraKlokkeslett(element.tidspunkt) + okkupertTid-15)){
+                minutter+=15;
                 ekstra.push(klokkeslettFraMinutter(minutter));
             }
             return element.tidspunkt;
@@ -32,8 +32,8 @@ function Klokkeslett({env, synligKomponent, displayKomponent, klokkeslettet, pro
     let utilgjengeligeTimer = [];
     for(let i = 0; i < env.klokkeslett.length; i++){
         for(let j = 0; j < reserverteTimer.length; j++){
-            if( minutterFraKlokkeslett(reserverteTimer[j]) > minutterFraKlokkeslett(env.klokkeslett[i].tid) && (minutterFraKlokkeslett(env.klokkeslett[i].tid)+totalTid) > minutterFraKlokkeslett(reserverteTimer[j])){
-                utilgjengeligeTimer.push(env.klokkeslett[i].tid);
+            if( minutterFraKlokkeslett(reserverteTimer[j]) > minutterFraKlokkeslett(env.klokkeslett[i]) && (minutterFraKlokkeslett(env.klokkeslett[i])+totalTid) > minutterFraKlokkeslett(reserverteTimer[j])){
+                utilgjengeligeTimer.push(env.klokkeslett[i]);
             }
         }
     }
@@ -42,10 +42,10 @@ function Klokkeslett({env, synligKomponent, displayKomponent, klokkeslettet, pro
 
 
     const ledigeTimer = env.klokkeslett.map((element)=>{
-        if(hentDato() === dato && minutterFraKlokkeslett(element.tid) < klokkeslettminutterNaa){
+        if(hentDato() === dato && minutterFraKlokkeslett(element) < klokkeslettminutterNaa){
             return undefined;
         } else {
-            return element.tid
+            return element;
         }
     }).filter(tid=> tid && !reserverteTimer.includes(tid) && !utilgjengeligeTimer.includes(tid));
     return(
@@ -60,7 +60,7 @@ function Klokkeslett({env, synligKomponent, displayKomponent, klokkeslettet, pro
     )
 }
 
-function minutterFraKlokkeslett(k){
+export function minutterFraKlokkeslett(k){
     return ((parseInt(k.substring(0,2))*60) + parseInt(k.substring(3,5)));
 }
 

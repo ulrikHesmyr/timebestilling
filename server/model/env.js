@@ -23,12 +23,7 @@ const env = new mongoose.Schema({
         }
         
     ],
-    klokkeslett: [
-        {
-        tid: String, 
-        tilgjengeligeAnsatte: Number
-    }
-    ]
+    klokkeslett: [String]
 })
 
 module.exports = mongoose.model("env", env);

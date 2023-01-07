@@ -15,7 +15,7 @@ router.post('/auth', async (req,res)=>{
         //console.log(jwt.verify(token, ACCESS_TOKEN_KEY));
         //console.log(req.cookies());
         const bestilteTimer = await Bestiltetimer.find();
-        return res.json({valid:true, message:"Du er nå logget inn", brukertype: brukernavn, env:env});
+        return res.json({valid:true, message:"Du er nå logget inn", brukertype: brukernavn, env:env, bestilteTimer:bestilteTimer});
 
     } else {
         return res.json({valid:false, message:"Feil passord eller brukernavn"});

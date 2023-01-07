@@ -2,10 +2,13 @@ import React, {useState} from 'react'
 import Admin from './Admin';
 import Vakter from './Vakter'
 
-function Login({toggleLoggetInn, loggetInn}){
+function Login(){
     const [brukernavn, setBrukernavn] = useState('');
     const [passord, setPassord] = useState('');
     const [brukertype, setBukertype] = useState('');
+    const [env, sEnv] = useState();
+    const [bestilteTimer, sBestiltetimer] = useState();
+    const [loggetInn, toggleLoggetInn] = useState(false);
 
     async function logginn(){
         const data = {
@@ -27,13 +30,20 @@ function Login({toggleLoggetInn, loggetInn}){
         } else if(response.valid){
            toggleLoggetInn(true);
            setBukertype(response.brukertype);
+           sEnv(response.env);
+           sBestiltetimer(response.bestilteTimer);
+           //setBestiltetimer(response.bestilteTimer.map((time)=>{
+           // time.dato = new Date(time.dato + "Z" + time.tidspunkt);
+           // time.start = 
+           // return time;
+           //}));
         }
     }
     
     //useEffect
     //Sjekker om bruker er authenticated med Cookieparser
     return(
-        (loggetInn?(brukertype === "admin"?<Admin/>:(brukertype === "vakter"?<Vakter/>:"")):(<div className='login'>
+        (loggetInn?(brukertype === "admin"?<Admin env={env} bestilteTimer={bestilteTimer}/>:(brukertype === "vakter"?<Vakter env={env} bestilteTimer={bestilteTimer} />:"")):(<div className='login'>
         <h1>Login</h1>
         <form>
             <label>Brukernavn: <input value={brukernavn} type="text" placeholder='brukernavn' onChange={(e)=>{

@@ -17,13 +17,10 @@ const App = ()=> {
   const [klokkeslettet, setKlokkeslett] = useState(null);
   const [navn, setNavn] = useState('');
   const [telefonnummer, setTelefonnummer] = useState('');
-  const [bestilteTimer, setBestiltetimer] = useState(undefined);
-  const [updateDataTrigger, setUpdate] = useState(false);
   const [registrertReservasjon, setReservasjon] = useState(undefined);
   const [synligKomponent, setSynligKomponent] = useState(0);
   const [synligMeny, setSynligmeny] = useState(false);
   const [env, sEnv] = useState(null);
-  const [loggetInn, toggleLoggetInn] = useState(false);
 
 
   useEffect(()=>{
@@ -38,21 +35,9 @@ const App = ()=> {
     fetchEnvironment();
   },[])
 
-  useEffect(()=>{
-    async function fetchData(){
-
-      const request = await fetch('http://localhost:3001/timebestilling/hentBestiltetimer');
-      const response = await request.json();
-      setBestiltetimer(response);
-      console.log(response);
-
-    }
-    fetchData();
-  },[updateDataTrigger])
 
   return (
       <BrowserRouter>
-        <div>
             <div className='burger' aria-expanded={synligMeny} onClick={()=>{
               setSynligmeny(!synligMeny);
             }}>
@@ -70,12 +55,12 @@ const App = ()=> {
               }} to="/timebestilling">Bestill time <p>Reserver time hos oss</p></Link>
             </div>):(
             <Routes>
-              <Route exact path="/timebestilling" element={(registrertReservasjon?<DinReservasjon env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} registrertReservasjon={registrertReservasjon} />:(env !== null?<Timebestilling env={env} synligKomponent={synligKomponent} setSynligKomponent={setSynligKomponent} hentMaaned={hentMaaned} setReservasjon={setReservasjon} setUpdate={setUpdate} updateDataTrigger={updateDataTrigger} bestilteTimer={bestilteTimer} navn={navn} sNavn={setNavn} telefonnummer={telefonnummer} sTelefonnummer={setTelefonnummer} klokkeslettet={klokkeslettet} sKlokkeslett={setKlokkeslett} sDato={setDato} dato={dato} produkt={produkt} sProdukt={setProdukt} frisor={frisor} sFrisor={setFrisor}/>:"Laster..."))} />
+              <Route exact path="/timebestilling" element={(registrertReservasjon?<DinReservasjon env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} registrertReservasjon={registrertReservasjon} />:(env !== null?<Timebestilling env={env} synligKomponent={synligKomponent} setSynligKomponent={setSynligKomponent} hentMaaned={hentMaaned} setReservasjon={setReservasjon} navn={navn} sNavn={setNavn} telefonnummer={telefonnummer} sTelefonnummer={setTelefonnummer} klokkeslettet={klokkeslettet} sKlokkeslett={setKlokkeslett} sDato={setDato} dato={dato} produkt={produkt} sProdukt={setProdukt} frisor={frisor} sFrisor={setFrisor}/>:"Laster..."))} />
               <Route exact path="/" element={(env !== null?<Hjem env={env}/>:"Laster...")} />
-              <Route exact path="/login" element={<Login loggetInn={loggetInn} toggleLoggetInn={toggleLoggetInn} env={env}/>} />
+              <Route exact path="/login" element={<Login/>} />
             </Routes>))}
             
-        </div>
+        
       </BrowserRouter>
   );
 }
@@ -112,5 +97,6 @@ function hentDato(){ //Hvilket format true=yyyy-mm-dd, false=["dd","mm","yyyy"]
 
 export default App;
 export{
-  hentDato
+  hentDato,
+  hentMaaned
 }

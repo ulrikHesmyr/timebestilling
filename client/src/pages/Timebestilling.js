@@ -6,9 +6,11 @@ import PersonInfo from '../components/PersonInfo';
 import Dato from '../components/Dato';
 import { hentDato } from '../App';
 
-function Timebestilling({env, setSynligKomponent, synligKomponent, hentMaaned, setReservasjon, setUpdate, updateDataTrigger, bestilteTimer, navn, sNavn, telefonnummer, sTelefonnummer, klokkeslettet, sKlokkeslett, sDato, dato, produkt, sProdukt, frisor, sFrisor}){
+function Timebestilling({env, setSynligKomponent, synligKomponent, hentMaaned, setReservasjon, navn, sNavn, telefonnummer, sTelefonnummer, klokkeslettet, sKlokkeslett, sDato, dato, produkt, sProdukt, frisor, sFrisor}){
     
     const [isMobile, setIsMobile] = useState(false);
+    const [updateDataTrigger, setUpdate] = useState(false);
+    const [bestilteTimer, setBestiltetimer] = useState(undefined);
 
     function nullstillData(){
         sDato(hentDato());
@@ -27,6 +29,18 @@ function Timebestilling({env, setSynligKomponent, synligKomponent, hentMaaned, s
         const userAgent = window.navigator.userAgent;
         setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent));
     }, []);
+    
+  useEffect(()=>{
+    async function fetchData(){
+      console.log("henter bestillinger");
+      const request = await fetch('http://localhost:3001/timebestilling/hentBestiltetimer');
+      const response = await request.json();
+      setBestiltetimer(response);
+      console.log(response);
+
+    }
+    fetchData();
+  },[updateDataTrigger])
 
     const gjeldendeTjenester = env.tjenester.filter(element=>produkt.includes(element.navn));
     const totalTid = gjeldendeTjenester.reduce((total, element)=> total + element.tid, 0);
