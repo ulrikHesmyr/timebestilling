@@ -245,35 +245,60 @@ input, button{
     gap:0.3rem;
     grid-template-columns: 1fr 2fr;
   }
-  .vakter{
-    max-height: 80vh;
-    overflow-y: scroll;
-    margin:1rem;
-  }
-  .vakt{
-    border:thin solid black;
-    color:black;
-  }
   .velgFrisorVakter{
     display: flex;
     flex-wrap: wrap;
+    color: white;
   }
   .velgFrisorVakter div{
-    padding:0.7rem;
+    padding:2rem;
     cursor: pointer;
+    margin: 0.3rem;
   }
   .velgFrisorVakter div:hover, .velgFrisorVakter div:active{
-    border-bottom: thin solid black;
+    border: thin solid black;
   }
   .fortsett{
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     cursor: pointer;
     padding:1rem;
     color:white;
-    background-color: rgb(30, 46, 65);
+    background-color: rgb(54, 115, 188);
     border: thin solid rgba(31, 62, 0, 0.5);
   }
 
+  .eventWrapper{
+    align-items: center;
+    justify-content: center !important;
+    border: none !important;
+    color:white !important;
+  }
+  .rbc-timeslot-group{
+    border-bottom: 1px solid black !important;
+  }
+  .rbc-day-slot .rbc-time-slot{
+    border-collapse: collapse;
+    border-top:1px solid black !important;
+  }
+  .rbc-event-label {
+    display: none !important;
+  }
+  .loginForm{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+  }
+
+  .sosialemedier{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+  }
+  .sosialemedier *{
+    margin: 0.3rem;
+  }
   /*******************************************************************************************************************/
 
 @media (width <= 900px){

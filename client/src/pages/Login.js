@@ -32,11 +32,6 @@ function Login(){
            setBukertype(response.brukertype);
            sEnv(response.env);
            sBestiltetimer(response.bestilteTimer);
-           //setBestiltetimer(response.bestilteTimer.map((time)=>{
-           // time.dato = new Date(time.dato + "Z" + time.tidspunkt);
-           // time.start = 
-           // return time;
-           //}));
         }
     }
     
@@ -45,7 +40,7 @@ function Login(){
     return(
         (loggetInn?(brukertype === "admin"?<Admin env={env} bestilteTimer={bestilteTimer}/>:(brukertype === "vakter"?<Vakter env={env} bestilteTimer={bestilteTimer} />:"")):(<div className='login'>
         <h1>Login</h1>
-        <form>
+        <form className='loginForm'>
             <label>Brukernavn: <input value={brukernavn} type="text" placeholder='brukernavn' onChange={(e)=>{
                 setBrukernavn(e.target.value);
             }}></input> </label>

@@ -32,11 +32,9 @@ function Timebestilling({env, setSynligKomponent, synligKomponent, hentMaaned, s
     
   useEffect(()=>{
     async function fetchData(){
-      console.log("henter bestillinger");
       const request = await fetch('http://localhost:3001/timebestilling/hentBestiltetimer');
       const response = await request.json();
       setBestiltetimer(response);
-      console.log(response);
 
     }
     fetchData();

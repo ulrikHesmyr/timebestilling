@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 
 const env = new mongoose.Schema({
+    kontakt_epost:{type:String},
+    kontakt_tlf:{type: Number},
+    sosialeMedier:[{platform: String, bruker: String}],
     admin_bruker:{type:String},
     admin_pass:{type:String},
     vakter_bruker:{type:String},

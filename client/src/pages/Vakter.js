@@ -1,17 +1,22 @@
 import React, {useState, useMemo, useEffect} from 'react'
-import { hentMaaned } from '../App';
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import {Calendar, momentLocalizer} from 'react-big-calendar'
 import moment from 'moment'
+import { hentMaaned } from '../App'
 
 import {klokkeslettFraMinutter, minutterFraKlokkeslett} from '../components/Klokkeslett'
 
 const localizer = momentLocalizer(moment);
 
 function Vakter({env, bestilteTimer}){
-    //const farger = ["yellow", "cadetblue", "chartreuse", "coral", "mediumorchid"];
-    //const [ansatt, setAnsatt] = useState(env.frisorer.map(frisor=>frisor.navn));
-    console.log(bestilteTimer);
+  
+  const frisornavn = env.frisorer.map(frisor=>frisor.navn);
+
+    const farger = ["darkblue", "cadetblue", "chartreuse", "coral", "mediumorchid"];
+    const ukedag = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
+    const [ansatt, setAnsatt] = useState(frisornavn);
+
+
     const [isMobile, setisMobile] = useState(false);
     useEffect(()=>{
         if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
@@ -19,42 +24,59 @@ function Vakter({env, bestilteTimer}){
           }
     },[]);
 
-    const events = [
-        {
-        title:"heihei",
-        start: new Date("2023-01-07Z08:00:000+1:00"),
-        end: new Date("2023-01-07Z09:00:000+1:00")
-        }
-    ]
-    console.log(bestilteTimer);
     const vakterTimebestillinger = bestilteTimer.map((time)=>{
+      if(ansatt.includes(time.medarbeider)){
         const gjeldendeTjenester = env.tjenester.filter(tjeneste => time.behandlinger.includes(tjeneste.navn)).reduce((total, element)=> total + element.tid, 0);
-        console.log(gjeldendeTjenester, time.behandlinger);
-        time.start = new Date(`${time.dato}Z${time.tidspunkt}:000+1:00`);
-        time.end = new Date(`${time.dato}Z${klokkeslettFraMinutter(gjeldendeTjenester+minutterFraKlokkeslett(time.tidspunkt))}:000+1:00`);
-        time.title = `Behandlinger: ${time.behandlinger.join(", ")} Frisør: ${time.medarbeider} Kunde: ${time.kunde}, tlf.: ${time.telefonnummer}`
-        time.color = "coralblue"
+        time.start = new Date(`${time.dato}Z${time.tidspunkt}+1:00`);
+        time.end = new Date(`${time.dato}Z${klokkeslettFraMinutter(gjeldendeTjenester+minutterFraKlokkeslett(time.tidspunkt))}+1:00`);
+        time.slutt = klokkeslettFraMinutter(minutterFraKlokkeslett(time.tidspunkt)+gjeldendeTjenester);
+        time.title = `${time.medarbeider.toUpperCase()}, ${time.behandlinger.join(", ")} Kunde: ${time.kunde}, tlf.: ${time.telefonnummer}`
         return time
+      }
     }) 
+    const MIN_DATE = new Date(2020, 0, 1, 8, 0, 0); // 08:00
+    const MAX_DATE = new Date(2020, 0, 1, 17, 30, 0); // 17:30
 
-    console.log(vakterTimebestillinger);
-    const MIN_DATE = new Date(2020, 0, 1, 8, 0, 0); // 8AM
-    const MAX_DATE = new Date(2020, 0, 1, 17, 30, 0); // 5PM
-
-    
+    let formats = {
+      timeGutterFormat: 'HH:mm',
+    }
     return(
         <>
-        <Calendar
+          <h3>Velg vakter for:</h3>
+        <div className='velgFrisorVakter'>
+        {env.frisorer.map((frisorElement)=>(
+          <div key={frisorElement.navn} style={{backgroundColor:farger[env.frisorer.indexOf(frisorElement)]}} onClick={()=>{
+            setAnsatt(frisorElement.navn);
+          }} >{frisorElement.navn}</div>
+        ))}
+        <div style={{color:"black"}} onClick={()=>{
+            setAnsatt(frisornavn);
+          }} >ALLE</div>
+        </div>
+        <p>PS Trykk på timen dersom det som står ikke er leselig</p>
+        <Calendar format={"DD/MM/YYYY HH:mm"}
         components={{
             event: ({event}) => (
-              <div style={{backgroundColor: event.color}}>
-                {event.title}
+              <div onClick={()=>{
+                alert(`${ukedag[new Date(event.dato).getDay() -1]} ${parseInt(event.dato.substring(8,10))}. ${hentMaaned(parseInt(event.dato.substring(5,7)) -1)} ${event.tidspunkt}-${event.slutt} ${event.title}  `)
+              }}>
+                {event.tidspunkt}-{event.slutt}: {event.title}
               </div>
             )
           }}
+        formats={formats}
         min={MIN_DATE} max={MAX_DATE} events={vakterTimebestillinger} defaultDate={new Date()} defaultView="day" 
-        localizer={localizer} startAccessor="start" endAccessor="end" style={{height:"80vh", margin: "50px"}}
-        dateFormat="H:mm" /> 
+        views={["agenda", "day","week","month"]}
+        localizer={localizer} startAccessor="start" endAccessor="end" style={{height:(isMobile?"150vh":"100vh"), margin:"5px"}}
+        eventPropGetter={event => {
+          return {
+            style:{ 
+              backgroundColor: farger[event.frisor]
+            },
+            className: 'eventWrapper'
+
+          };
+        }}/> 
         </>
     )
 }

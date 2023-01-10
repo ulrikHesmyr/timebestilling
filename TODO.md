@@ -1,7 +1,5 @@
 CLIENT:
-- Style timene i Vakter component
-
-- Lagre navn og nummer i localStorage for senere  
+- Kontakt oss side
 
 SERVER:
 - Dersom "førsye ledige frisør"(legg dette som default for alle frisørsalonger) velges, så skal den assignes til den første ledige frisøren, samtidig skal det telles opp en variabel  som ser hvem av frisørene som har fått minst "første ledige" slik at den frisøren alltid får timen
@@ -27,3 +25,4 @@ slette unødvendige filer og fjerne unødvendig kode
 endre tittel i index.html
 sette NODE_ENV til "production" i .env filen
 un-comment credentials i Login.js i client
+bytt fra mercedes bildet til logo

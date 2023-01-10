@@ -4,6 +4,16 @@ const {BEDRIFT} = process.env;
 async function opprettEnvironment(){
     try {
         await Environment.create({
+            kontakt_epost:"eksempel@gmail.com",
+            kontakt_tlf:41394262,
+            sosialeMedier:[{
+                platform:"Instagram",
+                bruker:"UlrikFrisor"
+            },
+            {
+                platform:"Facebook",
+                bruker:"UlrikFrisor"
+            }],
             admin_bruker:"admin",
             admin_pass:"KongHarald",
             vakter_bruker:"vakter",

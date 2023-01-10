@@ -9,7 +9,6 @@ function Klokkeslett({env, synligKomponent, displayKomponent, klokkeslettet, pro
 
     let ekstra = [];
     const klokkeslettminutterNaa = minutterFraKlokkeslett(`${new Date().getHours()}:${new Date().getMinutes()}`);
-    console.log(klokkeslettminutterNaa);
     
     //while(minutter < (minutterFraKlokkeslett(element.tidspunkt) + totalTid-30)){
     //    minutter+=30;

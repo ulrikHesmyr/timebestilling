@@ -5,6 +5,7 @@ import Hjem from './pages/hjem'
 import DinReservasjon from './pages/DinReservasjon'
 import Login from './pages/Login'
 import './App.css'
+import Kontakt from './pages/Kontakt'
 
 
 const App = ()=> {
@@ -50,14 +51,20 @@ const App = ()=> {
               <Link onClick={()=>{
                 setSynligmeny(false);
               }} to="/">VI ER {(env !== null? env.bedrift:"")} <p>Bli kjent</p></Link>
+
               <Link onClick={()=>{
                 setSynligmeny(false);
               }} to="/timebestilling">Bestill time <p>Reserver time hos oss</p></Link>
+
+              <Link onClick={()=>{
+                setSynligmeny(false);
+              }} to="/kontakt-oss">Kontakt oss<p>Ta kontakt via epost, telefon eller sosiale medier</p></Link>
             </div>):(
             <Routes>
               <Route exact path="/timebestilling" element={(registrertReservasjon?<DinReservasjon env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} registrertReservasjon={registrertReservasjon} />:(env !== null?<Timebestilling env={env} synligKomponent={synligKomponent} setSynligKomponent={setSynligKomponent} hentMaaned={hentMaaned} setReservasjon={setReservasjon} navn={navn} sNavn={setNavn} telefonnummer={telefonnummer} sTelefonnummer={setTelefonnummer} klokkeslettet={klokkeslettet} sKlokkeslett={setKlokkeslett} sDato={setDato} dato={dato} produkt={produkt} sProdukt={setProdukt} frisor={frisor} sFrisor={setFrisor}/>:"Laster..."))} />
               <Route exact path="/" element={(env !== null?<Hjem env={env}/>:"Laster...")} />
               <Route exact path="/login" element={<Login/>} />
+              <Route exact path="/kontakt-oss" element={(env !== null? <Kontakt env={env}/>:"Laster...")}/>
             </Routes>))}
             
         

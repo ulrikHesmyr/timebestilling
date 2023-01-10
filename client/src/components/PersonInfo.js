@@ -8,7 +8,6 @@ function PersonInfo({totalTid, totalPris, dato, klokkeslettet, produkt, frisor, 
     //const [navnInputValue, setNavnInputValue] = useState('');
 
     async function registrerData(){
-        console.log(data);
         const request = await fetch('http://localhost:3001/timebestilling/bestilltime', {
             method:"POST",
             headers:{
@@ -23,7 +22,6 @@ function PersonInfo({totalTid, totalPris, dato, klokkeslettet, produkt, frisor, 
             nullstillData();
             displayKomponent(0);
            Notification.requestPermission().then(function(permission){
-            console.log(permission);
             if(permission === 'granted'){
                 new Notification(`Din timereservasjon er registrert! Du vil motta en melding med bekreftelse!`, {
                     body:`Bekreftelse sendt til: ${telefonnummer}`,
@@ -40,7 +38,7 @@ function PersonInfo({totalTid, totalPris, dato, klokkeslettet, produkt, frisor, 
     return (
         <div className={synligKomponent === 4? 'animer-inn':'animer-ut'}>
             <form>
-                <label htmlFor="navn">Navn: <input value={navn} ref={navnInput} type="text" placeholder='Navn Navnesen' name='navn' onChange={(e)=>{
+                <label htmlFor="navn">Navn: <input maxLength={10} value={navn} ref={navnInput} type="text" placeholder='Navn Navnesen' name='navn' onChange={(e)=>{
                     sNavn(e.target.value);
                 }}></input></label>
 
@@ -63,7 +61,7 @@ function PersonInfo({totalTid, totalPris, dato, klokkeslettet, produkt, frisor, 
             </div>
             <p>obs.: Prisene er kun estimert og kan øke dersom det blir brukt hårprodukter eller om det kreves vask osv.</p>
         </div>):""}
-                <button onClick={(e)=>{
+                <button style={{padding:"1rem"}} onClick={(e)=>{
                     e.preventDefault();
                     if(telefonnummer.length === 8 && navn !== ""){
                         registrerData();
