@@ -1,6 +1,6 @@
 import React from 'react'
 
-function DinReservasjon({env, hentMaaned, setReservasjon ,registrertReservasjon}){
+function DinReservasjon({env, hentMaaned, setReservasjon , registrertReservasjon}){
     
     const gjeldendeTjenester = env.tjenester.filter(element=>registrertReservasjon.behandlinger.includes(element.navn));
     const totalTid = gjeldendeTjenester.reduce((total, element)=> total + element.tid, 0);
@@ -18,9 +18,10 @@ function DinReservasjon({env, hentMaaned, setReservasjon ,registrertReservasjon}
                     <div>Estimert pris {totalPris} kr</div>
                     <div>Estimert tid {totalTid} minutter</div>
                 </div>):"")}
-                <button onClick={(e)=>{
+                <button style={{padding:"1rem"}} onClick={(e)=>{
                     e.preventDefault();
                     setReservasjon(undefined);
+                    window.location.href="/"
                 }}>GÅ TILBAKE</button>
             </div>:<p>Laster inn...</p>)
     )

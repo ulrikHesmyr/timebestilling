@@ -3,7 +3,7 @@ import Fortsett from './Fortsett';
 import { hentDato } from '../App';
 
 function Klokkeslett({env, synligKomponent, displayKomponent, klokkeslettet, produkt, bestilteTimer, sKlokkeslett, dato, hentMaaned, frisor}){
-    const gjeldendeTjenester = env.tjenester.filter(element=>produkt.includes(element.navn));
+    const gjeldendeTjenester = env.tjenester.filter(element=>produkt.includes(element));
     const totalTid = gjeldendeTjenester.reduce((total, element)=> total + element.tid, 0);
     
 
@@ -38,7 +38,38 @@ function Klokkeslett({env, synligKomponent, displayKomponent, klokkeslettet, pro
     }
 
 
-
+    let dager = [
+        {
+        dag: "Mandag",
+        open:"09:00",
+        closed:"17:00"
+        },
+        {
+        dag: "Tirsdag",
+        open:"09:00",
+        closed:"17:00"
+        },
+        {
+        dag: "Onsdag",
+        open:"09:00",
+        closed:"17:00"
+        },
+        {
+        dag: "Torsdag",
+        open:"09:00",
+        closed:"17:00"
+        },
+        {
+        dag: "Fredag",
+        open:"10:00",
+        closed:"16:00"
+        },
+        {
+        dag: "Lørdag",
+        open:"10:00",
+        closed:"14:00"
+        }
+    ]
 
     const ledigeTimer = env.klokkeslett.map((element)=>{
         if(hentDato() === dato && minutterFraKlokkeslett(element) < klokkeslettminutterNaa){
@@ -48,14 +79,14 @@ function Klokkeslett({env, synligKomponent, displayKomponent, klokkeslettet, pro
         }
     }).filter(tid=> tid && !reserverteTimer.includes(tid) && !utilgjengeligeTimer.includes(tid));
     return(
-        <div className={synligKomponent === 3? 'animer-inn':'animer-ut'}>
+        <div className="animer-inn">
             <div className='klokkeslettene'>
                 {(ledigeTimer.length > 0? ledigeTimer.map((tid)=>(<div style={{backgroundColor: klokkeslettet===tid ?"lightgreen": "white"}} className='klokkeslett' key={tid} onClick={()=>{
                     sKlokkeslett(tid);
                 }}> {tid} </div>)):`Ingen ledige timer for ${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}`)}
             </div>
             
-            <Fortsett displayKomponent={displayKomponent} number={4} valid={(klokkeslettet !== null? false:true)} />
+            <Fortsett displayKomponent={displayKomponent} number={3} valid={(klokkeslettet !== null? false:true)} />
         </div>
     )
 }

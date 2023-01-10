@@ -1,18 +1,15 @@
-import React from 'react'
-import Fortsett from './Fortsett';
+import React from 'react';
 import { hentDato } from '../App';
 
-function Dato({dato, synligKomponent, displayKomponent, sDato, sKlokkeslett, sProdukt, klokkeslettet, produkt}){
+function Dato({dato, sDato, sKlokkeslett, klokkeslettet}){
     return(
-        <div className={synligKomponent === 0? 'animer-inn':'animer-ut'}>
+        <div className='animer-inn'>
             <input value={dato} type="date" min={hentDato()} onChange={(e)=>{
-                if(produkt.length > 0 || klokkeslettet != null){
-                    sProdukt([]);
+                if(klokkeslettet != null){
                     sKlokkeslett(null);
                 }
                 sDato(e.target.value);
             }}></input>
-            <Fortsett valid={(dato !== null? false:true)} number={1} displayKomponent={displayKomponent} />
         </div>
     )
 }

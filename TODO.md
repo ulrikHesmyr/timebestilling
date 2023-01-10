@@ -3,6 +3,7 @@ CLIENT:
 
 SERVER:
 - Dersom "førsye ledige frisør"(legg dette som default for alle frisørsalonger) velges, så skal den assignes til den første ledige frisøren, samtidig skal det telles opp en variabel  som ser hvem av frisørene som har fått minst "første ledige" slik at den frisøren alltid får timen
+- Laste opp bilder for friøsrene
 
 - Sende bekreftelse på timebestilling på SMS eller epost
 - Når de logger inn så får de tilgang til: 

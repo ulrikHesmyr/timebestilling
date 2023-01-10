@@ -1,4 +1,4 @@
-import React, {useState, useMemo, useEffect} from 'react'
+import React, {useState, useEffect} from 'react'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import {Calendar, momentLocalizer} from 'react-big-calendar'
 import moment from 'moment'
@@ -31,9 +31,10 @@ function Vakter({env, bestilteTimer}){
         time.end = new Date(`${time.dato}Z${klokkeslettFraMinutter(gjeldendeTjenester+minutterFraKlokkeslett(time.tidspunkt))}+1:00`);
         time.slutt = klokkeslettFraMinutter(minutterFraKlokkeslett(time.tidspunkt)+gjeldendeTjenester);
         time.title = `${time.medarbeider.toUpperCase()}, ${time.behandlinger.join(", ")} Kunde: ${time.kunde}, tlf.: ${time.telefonnummer}`
-        return time
+        return time;
       }
-    }) 
+      return undefined;
+    }).filter(x=>x) 
     const MIN_DATE = new Date(2020, 0, 1, 8, 0, 0); // 08:00
     const MAX_DATE = new Date(2020, 0, 1, 17, 30, 0); // 17:30
 
@@ -54,6 +55,7 @@ function Vakter({env, bestilteTimer}){
           }} >ALLE</div>
         </div>
         <p>PS Trykk på timen dersom det som står ikke er leselig</p>
+        
         <Calendar format={"DD/MM/YYYY HH:mm"}
         components={{
             event: ({event}) => (

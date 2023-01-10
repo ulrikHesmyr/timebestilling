@@ -2,8 +2,10 @@ import React from 'react'
 
 function Kontakt({env}){
     return(
-        <>
+        <div className='kontaktsiden'>
             <h3>Kontakt oss!</h3>
+            <div>{env.kontakt_epost}</div>
+            <div>{env.kontakt_tlf}</div>
             <div className='sosialemedier'>
                 {env.sosialeMedier.map((medie)=>(
                     <div key={medie.platform}>
@@ -12,7 +14,8 @@ function Kontakt({env}){
                     </div>
                 ))}
             </div>
-        </>
+            <footer>Nettapplikasjon levert av: ulrik.hesmyr@gmail.com</footer>
+        </div>
     )
 }
 

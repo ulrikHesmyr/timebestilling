@@ -36,7 +36,7 @@ function PersonInfo({totalTid, totalPris, dato, klokkeslettet, produkt, frisor, 
     }
 
     return (
-        <div className={synligKomponent === 4? 'animer-inn':'animer-ut'}>
+        <div className={synligKomponent === 4? 'animer-inn':''}>
             <form>
                 <label htmlFor="navn">Navn: <input maxLength={10} value={navn} ref={navnInput} type="text" placeholder='Navn Navnesen' name='navn' onChange={(e)=>{
                     sNavn(e.target.value);
@@ -54,10 +54,10 @@ function PersonInfo({totalTid, totalPris, dato, klokkeslettet, produkt, frisor, 
             <h3>Din timebestilling</h3>
             <div>Dato {(dato != null?(<p>{parseInt(dato.substring(8,10))}. {hentMaaned(parseInt(dato.substring(5,7)) -1)}</p>):"")}</div>
             <div>Frisør {(frisor != null?(<p>{frisor.navn}</p>):"")}</div>
-            <div>Time for {(produkt.length > 0?(<p>{produkt.join(", ")}</p>):"")}</div>
+            <div>Time for {(produkt.length > 0?(<p>{produkt.map(produkt=>produkt.navn).join(", ")}</p>):"")}</div>
             <div>Tid {(klokkeslettet != null && produkt.length > 0?(<p>{klokkeslettet}</p>):"")}</div>
-            <div>Estimert pris <p>{totalPris} kr</p></div>
-            <div>Estimert tid <p>{totalTid} minutter</p></div>
+            <div>Estimert pris {totalPris} kr</div>
+            <div>Estimert tid {totalTid} minutter</div>
             </div>
             <p>obs.: Prisene er kun estimert og kan øke dersom det blir brukt hårprodukter eller om det kreves vask osv.</p>
         </div>):""}

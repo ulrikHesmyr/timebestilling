@@ -2,8 +2,19 @@ body{
   box-sizing: border-box;
 }
 
+footer{
+  position: fixed;
+  bottom: 10rem;
+}
+
 .navBar, .overskrift, .frisor, .kategorier, .klokkeslettene{
   user-select: none;
+}
+.kontaktsiden{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .navBar a:active, .overskrift:active, .frisor:active, .tjeneste:active {
@@ -28,7 +39,7 @@ input, button{
 }
   
 .timebestilling * {
-  margin:0.3rem;
+  margin:0.15rem;
 }
   
   .navBar{
@@ -96,7 +107,6 @@ input, button{
     width: max-content;
     background-color: white;
     cursor: pointer;
-    padding: 0.3rem;
     border-end-end-radius: 2rem;
     border-right: thin solid black;
     border-top:thin solid black;
@@ -164,6 +174,7 @@ input, button{
     cursor: pointer;
     padding: 0.2rem;
     align-items: center;
+    width: 90%;
     z-index: 2;
   }
   .overskrift p{
@@ -194,18 +205,6 @@ input, button{
     z-index: 1;
   }
 
-  @keyframes animer-ut{
-    from{
-      opacity: 1;
-    } 
-    to{
-      opacity: 0.5;
-    }
-  }
-  .animer-ut{
-    background-color: pink;
-    animation: 0.5s linear animer-ut;
-  }
 
   .infoboks{
     display: grid;
@@ -316,7 +315,10 @@ input, button{
   }
   
 .timebestilling * {
-  margin:0.8rem;
+  margin:0.5rem;
+}
+.timebestilling .container{
+  width: 95%;
 }
 .infoboks{
   display: flex;

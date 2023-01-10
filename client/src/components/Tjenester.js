@@ -2,39 +2,41 @@ import React from "react";
 import Fortsett from "./Fortsett.js";
 
 
-function Tjenester({env, sKlokkeslett, synligKomponent, displayKomponent, produkt, sProdukt, frisor}){
+function Tjenester({env, sFrisor, sKlokkeslett, displayKomponent, produkt, sProdukt}){
     
 
     return(
-        <div className={synligKomponent === 2? 'animer-inn':'animer-ut'}>
+        <div className='animer-inn'>
             <div className="kategorier">
             
                 {env.kategorier.map((kategori)=>(
                     <div key={kategori}>
                         <div className="kategori">{kategori}</div>
-                        {frisor.produkter.filter(element=>env.kategorier[env.tjenester[element].kategori] === kategori).map((element)=>(
-                            <div className="tjeneste" key={env.tjenester[element].navn} onClick={()=>{
-                                if(!produkt.includes(env.tjenester[element].navn)){
-                                    sProdukt([...produkt, env.tjenester[element].navn]);
+                        {env.tjenester.filter(element=>env.kategorier[element.kategori] === kategori).map((tjeneste)=>(
+                            <div className="tjeneste" key={tjeneste.navn} onClick={()=>{
+                                if(!produkt.includes(tjeneste)){
+                                    sProdukt([...produkt, tjeneste]);
                                     sKlokkeslett(null);
+                                    sFrisor(null);
                                 } else {
-                                    sProdukt(produkt.filter(p=>p !== env.tjenester[element].navn))
+                                    sProdukt(produkt.filter(p=>p !== tjeneste))
                                 }
                             }}>
-                            <div>
-                                <h3>{env.tjenester[element].navn}</h3>
-                                <p>Pris: {env.tjenester[element].pris} kr</p>
-                                <p>Tid: {env.tjenester[element].tid} minutter</p>
+                                <div>
+                                    <h3>{tjeneste.navn}</h3>
+                                    <p>Pris: {tjeneste.pris} kr</p>
+                                    <p>Tid: {tjeneste.tid} minutter</p>
+                                </div>
+                                <input type="checkbox" readOnly checked={produkt.includes(tjeneste)}></input>
                             </div>
-                            <input type="checkbox" readOnly checked={produkt.includes(env.tjenester[element].navn)}></input>
-                            </div>
-                            ))}
+                            )
+                        )}
                     </div>
                     
                     
                     ))}
             </div>
-                    <Fortsett displayKomponent={displayKomponent} number={3} valid={(produkt.length > 0?false:true)} />
+                    <Fortsett displayKomponent={displayKomponent} number={1} valid={(produkt.length > 0?false:true)} />
         </div>
     )
 }
