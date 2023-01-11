@@ -1,3 +1,14 @@
+:root{
+  --farge1:darkblue;
+  --farge2:rgb(54, 115, 188);
+  --farge3:lightgreen;
+  --farge4:green;
+  --color1:white;
+  --color2:white;
+  --color3:black;
+  --color4:black;
+}
+
 body{
   box-sizing: border-box;
 }
@@ -5,6 +16,18 @@ body{
 footer{
   position: fixed;
   bottom: 10rem;
+}
+
+button:hover{
+  cursor: pointer;
+}
+button:disabled{
+  background-color: grey;
+  cursor:not-allowed;
+}
+button:active{
+  background-color: var(--farge4);
+  color:var(--farge3);
 }
 
 .navBar, .overskrift, .frisor, .kategorier, .klokkeslettene{
@@ -15,6 +38,9 @@ footer{
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+.litentekst{
+  font-size: small;
 }
 
 .navBar a:active, .overskrift:active, .frisor:active, .tjeneste:active {
@@ -58,7 +84,7 @@ input, button{
     text-align: start;
     cursor: pointer;
     text-decoration: none;
-    color: green;
+    color: var(--farge4);
     width: 20rem;
     border-right: thin solid rgba(0, 0, 0, 0.25);
     border-bottom: thin solid rgba(0, 0, 0, 0.25);
@@ -76,7 +102,6 @@ input, button{
   
   .navBar a:active{
     box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
-    color:inherit !important;
   }
   
   
@@ -89,13 +114,15 @@ input, button{
     border-left: thin solid black;
     cursor: pointer;
     padding:0.3rem;
+    display: flex;
+    flex-direction: row;
+    justify-items: center;
+    justify-content: space-between;
   }
   
   .kategorier{
     display: flex;
-    gap:1rem;
-    flex-wrap: wrap;
-    box-sizing: border-box;
+    flex-direction: column;
   }
   
   .tjeneste{
@@ -123,7 +150,9 @@ input, button{
     max-width: 100%;
   }
 .klokkeslett{
-  background-color: aqua;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
   .klokkeslettene *:hover{
@@ -136,6 +165,7 @@ input, button{
     padding:2rem;
     color:black;
     transition: 0.5s ease;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
   }
   
   .frisorene{
@@ -255,14 +285,14 @@ input, button{
     margin: 0.3rem;
   }
   .velgFrisorVakter div:hover, .velgFrisorVakter div:active{
-    border: thin solid black;
+    box-shadow: 1px 1px 1px black;
   }
   .fortsett{
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     cursor: pointer;
     padding:1rem;
-    color:white;
-    background-color: rgb(54, 115, 188);
+    background-color: var(--farge2);
+    color:var(--color2);
     border: thin solid rgba(31, 62, 0, 0.5);
   }
 
@@ -298,9 +328,36 @@ input, button{
   .sosialemedier *{
     margin: 0.3rem;
   }
+
+  .rbc-agenda-time-cell{
+    display: none !important;
+  }
+  .vaktpanel{
+    padding: 0.2rem;
+  }
+  .adminpanel{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .adminpanel *{
+    border:thin solid black;
+  }
+
+  .redigeringsBoks{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+  }
+  
   /*******************************************************************************************************************/
 
 @media (width <= 900px){
+  
+  .adminpanel{
+    display: flex;
+    flex-direction: column;
+  }
   .navBar{
     display: flex;
     flex-direction: column;
@@ -336,31 +393,12 @@ input, button{
     flex-direction: column;
     align-items: center;
   }
-  .kategorier{
-    display: flex;
-    flex-direction: column; 
-  }
-  .kategorier .kategori{
-    border-left: thin solid black;
-    cursor: pointer;
-    padding:0.3rem;
-  }
-  
   
   .klokkeslettene{
     display: grid;
-    grid-template-columns:1fr 1fr;
+    grid-template-columns:1fr 1fr 1fr;
     
   }
-  
-  .klokkeslettene *{
-    cursor: pointer;
-    border-radius: 1rem;
-    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
-    padding:2rem;
-    color:black;
-  }
-  
   .frisorene{
     display: grid;
     gap:0.1rem;

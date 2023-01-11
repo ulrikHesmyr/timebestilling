@@ -1,10 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+
 const mailer = require("../configuration/mailer");
-const {BEDRIFT, ACCESS_TOKEN_KEY} = process.env;
 const Bestiltetimer = require("../model/bestilling");
 const Environment = require("../model/env");
+const {BEDRIFT} = process.env;
 
 router.post('/auth', async (req,res)=>{
     try {

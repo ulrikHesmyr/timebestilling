@@ -6,6 +6,7 @@ import DinReservasjon from './pages/DinReservasjon'
 import Login from './pages/Login'
 import './App.css'
 import Kontakt from './pages/Kontakt'
+import PB from './pages/Personvern_Brukervilkaar'
 
 
 const App = ()=> {
@@ -29,7 +30,7 @@ const App = ()=> {
       const environmentRequest = await fetch("http://localhost:3001/env/env");
       const environment = await environmentRequest.json();
       if(environment){
-        console.log("Offentlig: må fje", environment);
+        console.log(environment);
         sEnv(environment);
       }
     }
@@ -65,6 +66,7 @@ const App = ()=> {
               <Route exact path="/" element={(env !== null?<Hjem env={env}/>:"Laster...")} />
               <Route exact path="/login" element={<Login/>} />
               <Route exact path="/kontakt-oss" element={(env !== null? <Kontakt env={env}/>:"Laster...")}/>
+              <Route exact path="/personvaernserklaering-og-brukervilkaar" element={<PB/>}/>
             </Routes>))}
             
         

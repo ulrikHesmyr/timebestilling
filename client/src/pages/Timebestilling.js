@@ -54,7 +54,7 @@ function Timebestilling({env, setSynligKomponent, synligKomponent, hentMaaned, s
                 } else {
                     displayKomponent(0);
                 }
-            }} style={{backgroundColor: produkt.length > 0?"lightgreen":"white"}}><p>1</p>Behandlinger</h2>
+            }} style={{backgroundColor: produkt.length > 0?"var(--farge3)":"white"}}><p>1</p>Behandlinger</h2>
             {(synligKomponent === 0 && env !== null? <Tjenester sFrisor={sFrisor} sKlokkeslett={sKlokkeslett} env={env} synligKomponent={synligKomponent} displayKomponent={displayKomponent} produkt={produkt} sProdukt={sProdukt} frisor={frisor} />:"")}
            
            
@@ -73,9 +73,9 @@ function Timebestilling({env, setSynligKomponent, synligKomponent, hentMaaned, s
                 } else {
                     displayKomponent(2);
                 }
-            }} style={{backgroundColor: dato !== null && klokkeslettet !== null ?"lightgreen":"white"}} ><p>3</p> Velg din time</h2>
+            }} style={{backgroundColor: dato !== null && klokkeslettet !== null ?"lightgreen":"white"}} ><p>3</p> Velg dato og tid</h2>
             {(synligKomponent === 2 && frisor !== null ? <Dato dato={dato} synligKomponent={synligKomponent} displayKomponent={displayKomponent} sDato={sDato} sKlokkeslett={sKlokkeslett} sProdukt={sProdukt} klokkeslettet={klokkeslettet} produkt={produkt} />:"")}
-            {(synligKomponent === 2 && frisor !== null ? <Klokkeslett env={env} synligKomponent={synligKomponent} displayKomponent={displayKomponent} klokkeslettet={klokkeslettet} produkt={produkt} bestilteTimer={bestilteTimer} frisor={frisor} sKlokkeslett={sKlokkeslett} dato={dato} hentMaaned={hentMaaned}/>:"")}
+            {(synligKomponent === 2 && frisor !== null && bestilteTimer !== null? <Klokkeslett env={env} synligKomponent={synligKomponent} displayKomponent={displayKomponent} klokkeslettet={klokkeslettet} produkt={produkt} bestilteTimer={bestilteTimer} frisor={frisor} sKlokkeslett={sKlokkeslett} dato={dato} hentMaaned={hentMaaned}/>:"")}
             
             <h2 className='overskrift' onClick={()=>{
                 if(synligKomponent === 3){
@@ -83,7 +83,7 @@ function Timebestilling({env, setSynligKomponent, synligKomponent, hentMaaned, s
                 } else {
                     displayKomponent(3);
                 }
-            }} style={{backgroundColor: navn !== "" && telefonnummer.toString().length === 8?"lightgreen":"white"}}><p>5</p>Din info</h2>
+            }} style={{backgroundColor: navn !== "" && telefonnummer.toString().length === 8?"lightgreen":"white"}}><p>4</p>Din info</h2>
             {(synligKomponent === 3 && klokkeslettet !== null?<PersonInfo totalPris={totalPris} totalTid={totalTid} klokkeslettet={klokkeslettet} produkt={produkt} frisor={frisor} hentMaaned={hentMaaned} dato={dato} isMobile={isMobile} synligKomponent={synligKomponent} displayKomponent={displayKomponent} telefonnummer={telefonnummer} navn={navn} nullstillData={nullstillData} setReservasjon={setReservasjon} setUpdate={setUpdate} updateDataTrigger={updateDataTrigger} sNavn={sNavn} sTelefonnummer={sTelefonnummer} data={{
                 dato:dato, 
                 tidspunkt:klokkeslettet,

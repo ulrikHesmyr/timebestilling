@@ -42,7 +42,7 @@ function Vakter({env, bestilteTimer}){
       timeGutterFormat: 'HH:mm',
     }
     return(
-        <>
+        <div className='vaktpanel'>
           <h3>Velg vakter for:</h3>
         <div className='velgFrisorVakter'>
         {env.frisorer.map((frisorElement)=>(
@@ -54,7 +54,7 @@ function Vakter({env, bestilteTimer}){
             setAnsatt(frisornavn);
           }} >ALLE</div>
         </div>
-        <p>PS Trykk på timen dersom det som står ikke er leselig</p>
+        <p>PS Trykk på timen dersom det som står, ikke er leselig</p>
         
         <Calendar format={"DD/MM/YYYY HH:mm"}
         components={{
@@ -79,7 +79,7 @@ function Vakter({env, bestilteTimer}){
 
           };
         }}/> 
-        </>
+        </div>
     )
 }
 

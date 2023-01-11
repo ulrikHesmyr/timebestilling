@@ -1,8 +1,8 @@
 import React from 'react'
 
-function Fortsett({displayKomponent, number, valid}){
+function Fortsett({displayKomponent, number, disabled}){
     return (
-        <button className='fortsett' disabled={valid} onClick={(e)=>{
+        <button className='fortsett' disabled={disabled} onClick={(e)=>{
             e.preventDefault();
             displayKomponent(number);
         }}>FORTSETT</button>

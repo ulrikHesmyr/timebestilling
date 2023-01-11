@@ -7,9 +7,16 @@ const {BEDRIFT} = process.env;
 
 
 router.get('/env', async(req,res)=>{
-    const env = await Environment.findOne({bedrift: BEDRIFT});
-    if(env){
-        return res.send(env);
+    try {
+        await Environment.findOne({bedrift: BEDRIFT}).select('-admin_bruker -admin_pass -antallBestillinger -vakter_bruker -vakter_pass -_id -__v').exec((err, doc)=>{
+            if(err){
+                console.log(err);
+            } else {
+                return res.send(doc);
+            }
+        })
+    } catch (error) {
+        console.log(error);
     }
 })
 
