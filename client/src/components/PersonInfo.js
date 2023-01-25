@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 function PersonInfo({totalTid, totalPris, dato, klokkeslettet, produkt, frisor, hentMaaned, isMobile, synligKomponent, displayKomponent, navn, telefonnummer, nullstillData, setReservasjon ,setUpdate ,updateDataTrigger, data, sNavn, sTelefonnummer}){
     
     const [harregistrert, sHarRegistrert] = useState(false); //For å passe på at en bruker ikke trykker to ganger før neste side rekker å laste inn
-
+    let format = /[`!@#$%^&*()_+=[\]{};':"\\|,.<>/?~]/;
     async function registrerData(){
         const request = await fetch('http://localhost:3001/timebestilling/bestilltime', {
             method:"POST",
@@ -14,7 +14,10 @@ function PersonInfo({totalTid, totalPris, dato, klokkeslettet, produkt, frisor, 
             body: JSON.stringify(data)
         });
         const response = await request.json();
-        if(response){
+        if(response.bestillingAlreadyExcist){
+            alert("Denne timen er opptatt, noen har bestilt time samtidig som deg, men sendte inn registrering først, prøv på nytt!");
+            window.location.reload();
+        } else if(response){
             setUpdate(!updateDataTrigger);
             setReservasjon(response.bestiltTime);
             nullstillData();
@@ -36,15 +39,17 @@ function PersonInfo({totalTid, totalPris, dato, klokkeslettet, produkt, frisor, 
     return (
         <div className={synligKomponent === 4? 'animer-inn':''}>
             <form>
-                <label htmlFor="navn">Navn: * <input maxLength={10} value={navn} type="text" placeholder='Navn Navnesen' name='navn' onChange={(e)=>{
-                    sNavn(e.target.value);
+                <label htmlFor="navn">Navn: * <input maxLength={20} value={navn} type="text" placeholder='Navn Navnesen' name='navn' onChange={(e)=>{
+                    if(!format.test(e.target.value)){ //Legg inn regex
+                        sNavn(e.target.value);
+                    }
                 }}></input> </label>
 
                 <label htmlFor="phone">Telefon: * <input value={telefonnummer} type="text" name="phone" onChange={(e)=>{
                     const newValue = e.target.value;
-                    if(/^\d*$/.test(newValue)){
+                    if(/^\d*$/.test(newValue) && (e.target.value.length === 0 || e.target.value[0] === "4" || e.target.value[0] === "9")){
                         sTelefonnummer(newValue);
-                    }
+                    } 
                 }}></input> </label>
 
             {isMobile?(<div className='infoboks'>

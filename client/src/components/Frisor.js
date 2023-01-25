@@ -1,26 +1,25 @@
-import React, {useState, useEffect} from "react";
+import React from "react";
 import Fortsett from "./Fortsett";
 
-function Frisor({env, synligKomponent, displayKomponent, produkt, klokkeslettet, sKlokkeslett ,frisor, sFrisor, sProdukt}){
-
-    const [gjeldendeTjenester, sGjeldendeTjenester] = useState(produkt.map(tjeneste=>env.tjenester.indexOf(tjeneste)));
-    useEffect(()=>{
-        let g = produkt.map(tjeneste=>env.tjenester.indexOf(tjeneste));
-        sGjeldendeTjenester(g);
-    },[env.tjenester, produkt])
-
-    function includesArray(source, target) {
-        return target.every(function(elem) {
-            return source.includes(elem);
-        });
-    }
-
+function Frisor({tilgjengeligeFrisorer, env, synligKomponent, displayKomponent, produkt, klokkeslettet, sKlokkeslett ,frisor, sFrisor}){
 
     return(
-        <div className={synligKomponent === 1? 'animer-inn':'animer-ut'}>
-            <div className="frisorene">
+        <div className={synligKomponent === 1? 'animer-inn':""}>
+            <div onClick={()=>{
+                sFrisor(false);
+                if(klokkeslettet != null){
+                    sKlokkeslett(null);
+                }
 
-                {env.frisorer.filter(frisor=>includesArray(frisor.produkter, gjeldendeTjenester)).map((element)=>(<div className="frisor" key={element.navn} onClick={()=>{
+                }} style={{border: frisor === false?"3px solid black":"thin solid black", cursor:"pointer", padding:"0.2rem", width:"fit-content"}}>
+                    
+                    Første ledige frisør
+                </div>
+            <div className="frisorene">
+            
+                {tilgjengeligeFrisorer.map((element)=>(<div className="frisor" 
+                key={element.navn} onClick={()=>{
+                    console.log(element);
                     sFrisor(element);
                     if(klokkeslettet != null){
                         sKlokkeslett(null);

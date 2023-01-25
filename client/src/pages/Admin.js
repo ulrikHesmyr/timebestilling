@@ -35,7 +35,7 @@ function Admin({env, bestilteTimer}){
     }
 
     async function oppdaterTimebestillinger(){
-        console.log(tempBestilteTimer);
+        console.log("sendte oppdaterte timereservasjoner til databasen");
     }
 
     function rediger(i){
@@ -45,7 +45,14 @@ function Admin({env, bestilteTimer}){
     function lagre(){
         setValgtIndeks(-1);
     }
-
+    console.log(frisorer);
+    class Frisor{
+        constructor(navn, produkter){
+            this.navn = navn;
+            this.produkter = produkter;
+        }
+    }
+    console.log(Frisor);
     return(
         <div className='adminpanel'>
             <div>
@@ -71,7 +78,18 @@ function Admin({env, bestilteTimer}){
                     </div>
 
                     <div>
-                        <div><p>Passord for: vakter</p> <RedigerPassord state={vakter_pass} setState={sVPassord} sendTilDatabase={sendTilDatabase} /> </div>
+                        <div className='redigeringsBoks'><p>Passord for: vakter</p> <RedigerPassord state={vakter_pass} setState={sVPassord} sendTilDatabase={sendTilDatabase} /> </div>
+                        <div className='redigeringsBoks'><p>Passord for: admin</p> <RedigerPassord state={admin_pass} setState={sAPassord} sendTilDatabase={sendTilDatabase} /> </div>
+                    </div>
+                    <div>
+                        {frisorer.map((frisor)=>(
+                            <div>
+                                <div>{frisor.navn}</div>
+                                <div>{frisor.produkter.join(', ')}</div>
+                            </div>
+                        ))}
+                        
+
                     </div>
                 </div>
                 ):"Laster..."}

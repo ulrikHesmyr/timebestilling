@@ -3,8 +3,6 @@ import React, { useState } from "react";
 function RedigerPassord({state, setState, sendTilDatabase}){
 
     const [redigeringsKnappSynlig, sRedigeringsKnappSynlig] = useState(true);
-    const [inputSynlig, sInputSynlig] = useState(false);
-    const [avbrytOgLagreSynlig, sAvbrytOgLagreSynlig] = useState(false);
 
     const [nyttPassord, sNyttPassord] = useState("");
     const [gjentaPassord, sGjentapassord] = useState("");
@@ -15,24 +13,27 @@ function RedigerPassord({state, setState, sendTilDatabase}){
             {redigeringsKnappSynlig?(<button className='rediger' onClick={(e)=>{
             e.preventDefault();
             sRedigeringsKnappSynlig(false);
-        }}><img src='rediger.png' style={{height:"1.4rem"}} alt="Rediger"></img> </button>):(<div>
-            <label>Nytt passord: <input value={nyttPassord} type={(toggleViewPassord?"text":"password")} onChange={(e)=>{
-                sNyttPassord(e.target.value);
-            }}></input> <input checked={toggleViewPassord} type="checkbox" onChange={()=>{
+        }}><img src='rediger.png' style={{height:"1.4rem"}} alt="Rediger"></img> </button>):(<div className="passordBoks">
+            <label>Nytt passord:<div><p className="litentekst">vis passord</p> <input checked={toggleViewPassord} type="checkbox" onChange={()=>{
                 sToggleView(!toggleViewPassord);
-            }}></input> </label>
-            <label>Nytt passord: <input value={gjentaPassord} type={(toggleViewPassordGjentagelse?"text":"password")} onChange={(e)=>{
-                sGjentapassord(e.target.value);
-            }}></input> <input checked={toggleViewPassordGjentagelse} type="checkbox" onChange={()=>{
+            }}></input><input value={nyttPassord} type={(toggleViewPassord?"text":"password")} onChange={(e)=>{
+                sNyttPassord(e.target.value);
+            }}></input> </div> </label>
+            <label>Gjenta nytt passord: <div> <p className="litentekst">vis passord</p> 
+            <input checked={toggleViewPassordGjentagelse} type="checkbox" onChange={()=>{
                 sToggleViewG(!toggleViewPassordGjentagelse)
-            }}></input> </label>
-            <button onClick={(e)=>{
+            }}></input><input value={gjentaPassord} type={(toggleViewPassordGjentagelse?"text":"password")} onChange={(e)=>{
+                sGjentapassord(e.target.value);
+            }}></input> 
+                </div> </label>
+            <div><button onClick={(e)=>{
                 e.preventDefault();
                 if(nyttPassord === gjentaPassord){
                     setState(nyttPassord);
                     sRedigeringsKnappSynlig(true);
                     sNyttPassord("");
                     sGjentapassord("");
+                    sendTilDatabase();
                 } else {
                     alert("Passord ikke like");
                 }
@@ -48,7 +49,7 @@ function RedigerPassord({state, setState, sendTilDatabase}){
                 sGjentapassord("");
             }}>
                 <img style={{height:"1.4rem"}} src="avbryt.png" alt="Avbryt endringer og behold gammelt passord"></img>
-            </button>
+            </button></div>
         </div>)}
             
         </>

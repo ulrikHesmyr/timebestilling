@@ -346,14 +346,38 @@ input, button{
   .redigeringsBoks{
     display: flex;
     justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+  }
+  .passordBoks{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+  }
+  .passordBoks label{
+    display: flex;
+    flex-direction: row;
+  }
+  .passordBoks label div{
+    display: flex;
     flex-direction: row;
     align-items: center;
+  }
+  .passordBoks input[type=checkbox]{
+    height:2rem;
+  }
+  .passordBoks input[type=password], .passordBoks input[type=text]{
+    width:10rem;
   }
   
   /*******************************************************************************************************************/
 
 @media (width <= 900px){
   
+  .passordBoks label{
+    display: flex;
+    flex-direction: column;
+  }
   .adminpanel{
     display: flex;
     flex-direction: column;

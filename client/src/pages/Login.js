@@ -38,7 +38,7 @@ function Login(){
     //useEffect
     //Sjekker om bruker er authenticated med Cookieparser
     return(
-        (loggetInn?(brukertype === "admin"?<Admin env={env} bestilteTimer={bestilteTimer}/>:(brukertype === "vakter"?<Vakter env={env} bestilteTimer={bestilteTimer} />:"")):(<div className='login'>
+        (loggetInn && env !== null?(brukertype === "admin"?<Admin env={env} bestilteTimer={bestilteTimer}/>:(brukertype === "vakter"?<Vakter env={env} bestilteTimer={bestilteTimer} />:"")):(<div className='login'>
         <h1>Login</h1>
         <form className='loginForm'>
             <label>Brukernavn: <input value={brukernavn} type="text" placeholder='brukernavn' onChange={(e)=>{
