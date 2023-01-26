@@ -299,7 +299,7 @@ input, button{
   .eventWrapper{
     align-items: center;
     justify-content: center !important;
-    border: none !important;
+    border: thin solid rgba(0, 0, 0, 0.75) !important;
     color:white !important;
   }
   .rbc-timeslot-group{
@@ -340,7 +340,7 @@ input, button{
     grid-template-columns: 1fr 1fr;
   }
   .adminpanel *{
-    border:thin solid black;
+    color:black;
   }
 
   .redigeringsBoks{

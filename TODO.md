@@ -11,14 +11,17 @@ PROBLEMSTILLINGER:
 
 
 CLIENT:
-- Ikke tillate mer enn 30 tegn for navn-input
+- Fortsett i Admin.js med sende nytt env til database
+- Ikke tillate mer enn 30 tegn for input-felter. Og sjekk med regexp
 - Admin panel
 - Legg til pattern for Login.js pattern="[0-9a-fA-F]{4,8}" for passord, slik at det er mer sikkert
 - Ikke tillatte input dersom det ikke er bokstaver eller bindestrek
-- Lage footer med info om: Meg, google icons, personvernserklæring og brukervilkår, 
+- Lage footer med info om: Meg, google icons, personvernserklæring og brukervilkår,
+- I Vakter.js, dersom view i Calendar er på "week", så fjern all tekst utenom navn på frisøren
 
 
 SERVER:
+- Flytte keyname for sms api fra timebestilling.js til .env fil
 - Admin panel - Ansatt må kunne reservere vekk timer når de ikke er på jobb eller har ferie
 - Laste opp bilder for friøsrene
 - app.use(express.json({limit:'1kb'}))
@@ -39,7 +42,7 @@ Scenarioer:
 
 Før produksjon
 endre variabler i .env filen
-endre request fra http://localhost til domenenavnet
+endre request i Personinfo.js og Admin.js fra http://localhost til domenenavnet
 slette unødvendige filer og fjerne unødvendig kode
 endre tittel i index.html
 sette NODE_ENV til "production" i .env filen

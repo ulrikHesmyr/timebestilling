@@ -12,7 +12,7 @@ function Vakter({env, bestilteTimer}){
   
   const frisornavn = env.frisorer.map(frisor=>frisor.navn);
 
-    const farger = ["darkblue", "cadetblue", "chartreuse", "coral", "mediumorchid"];
+    const farger = ["darkblue", "cadetblue", "chartreuse", "coral", "mediumorchid", "indigo","red","black","purple","peru", "burylwood"];
     const ukedag = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
     const [ansatt, setAnsatt] = useState(frisornavn);
 

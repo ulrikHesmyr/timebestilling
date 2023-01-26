@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react'
 import RedigerKontakt from '../components/RedigerKontakt';
 import RedigerPassord from '../components/RedigerPassord';
+import LeggTilFrisor from '../components/LeggTilFrisor';
+
 function Admin({env, bestilteTimer}){
     console.log(env);
     console.log(bestilteTimer);
@@ -29,9 +31,38 @@ function Admin({env, bestilteTimer}){
         setTempBestilteTimer(bestilteTimer)
     }, [bestilteTimer]);
 
+    useEffect(()=>{
+        if(frisorer !== env.frisorer){
+            sendTilDatabase();
+        }
+    },[admin_pass, vakter_pass, frisorer, klokkeslett, tjenester, sosialeMedier, kategorier, kontakt_epost, kontakt_tlf, valgtIndeks]);
+
     async function sendTilDatabase(){
         console.log("sendte nytt env til database");
         //fetch
+        const nyttEnv = {
+            admin_pass:admin_pass,
+            vakter_pass:vakter_pass,
+            frisorer:frisorer,
+            kategorier:kategorier,
+            tjenester:tjenester,
+            klokkeslett:klokkeslett,
+            sosialeMedier:sosialeMedier,
+            kontakt_epost:kontakt_epost,
+            kontakt_tlf:kontakt_tlf
+        }
+        const options = {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body: JSON.stringify(nyttEnv)
+        }
+        const request = await fetch("http://localhost:3001/env/oppdaterEnv", options);
+        const response = await request.json();
+        if(response){
+            console.log(response);
+        }
     }
 
     async function oppdaterTimebestillinger(){
@@ -88,13 +119,11 @@ function Admin({env, bestilteTimer}){
                                 <div>{frisor.produkter.join(', ')}</div>
                             </div>
                         ))}
-                        
-
+                        <LeggTilFrisor env={env} setState={sFrisorer} state={frisorer}/>
                     </div>
                 </div>
                 ):"Laster..."}
             </div>
-            <RedigerKontakt  />
         </div>
     )
 }
