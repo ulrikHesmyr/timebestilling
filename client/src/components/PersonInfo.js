@@ -45,7 +45,7 @@ function PersonInfo({totalTid, totalPris, dato, klokkeslettet, produkt, frisor, 
                     }
                 }}></input> </label>
 
-                <label htmlFor="phone">Telefon: * <input value={telefonnummer} type="text" name="phone" onChange={(e)=>{
+                <label htmlFor="phone">Telefon: * <input maxLength={8} value={telefonnummer} type="text" name="phone" onChange={(e)=>{
                     const newValue = e.target.value;
                     if(/^\d*$/.test(newValue) && (e.target.value.length === 0 || e.target.value[0] === "4" || e.target.value[0] === "9")){
                         sTelefonnummer(newValue);

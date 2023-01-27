@@ -34,21 +34,25 @@ router.post('/bestilltime', async (req,res)=>{
             })
 
             //Sender SMS med bekreftelse
-            if(process.env.SMS_ENABLED){
+            let SMS_ENABLED = false;
+            if(SMS_ENABLED){
                 
                 let baseUrl = "https://shared.target365.io/";
-                let keyName = "Ulrik2023";
-                let serviceClient = new Client(process.env.PRIVATE_KEY , { baseUrl, keyName });
+                let keyName = process.env.KEYNAME_SMS;
+                let privateKey = process.env.PRIVATE_KEY;
+                let serviceClient = new Client(privateKey, { baseUrl, keyName });
 
 
                 let outMessage = {
                     transactionId: uuidv4(),
                     sender:'Target365',
                     recipient:`+47${telefonnummer}`,
-                    content:`Takk for din timebestilling hos ${process.env.BEDRIFT}!\n\nDette er en bekreftelse på din reservasjon for "${behandlinger.join(", ")}" hos vår medarbeider ${medarbeider}\n${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}, kl.:${tidspunkt}\n\nTimen er registrert på: ${kunde}\n\nTa kontakt på: ${env.kontakt_tlf} dersom det skulle oppstå noe uforutsett! Avbestilling må skje senest 1 døgn før avtalt time.`
+                    content:`Takk for din timebestilling hos ${process.env.BEDRIFT}!\n\nDette er en bekreftelse på din reservasjon for "${behandlinger.join(", ")}" hos vår medarbeider ${medarbeider}\n${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}, kl.:${tidspunkt}\n\nTimen er registrert på: ${kunde}\n\nTa kontakt på: ${env.kontakt_tlf} dersom det skulle oppstå noe uforutsett!💇 Avbestilling må skje senest 1 døgn før avtalt time.`
                 }
                 await serviceClient.postOutMessage(outMessage);
 
+            } else {
+                console.log("SENDTE IKKE MELDING");
             }
             
             if(bestillNyTime){

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-function RedigerKontakt({setState, state, sendTilDatabase}){
+function RedigerKontakt({number, setState, state, sendTilDatabase}){
 
 
     const [redigeringsKnappSynlig, sRedigeringsKnappSynlig] = useState(true);
@@ -17,15 +17,15 @@ function RedigerKontakt({setState, state, sendTilDatabase}){
             sRedigeringsKnappSynlig(false);
             sAvbrytOgLagreSynlig(true)
         }}><img src='rediger.png' style={{height:"1.4rem"}} alt="Rediger"></img> </button>):""}
-        {inputSynlig?(<input value={state} onChange={(e)=>{
-            setState(e.target.value);
+        {inputSynlig?(<input type={number?"number":"text"} value={tempState} onChange={(e)=>{
+            sTempState(e.target.value);
         }}></input>):""}
         {avbrytOgLagreSynlig?(
             <div>
                 
-            <button onClick={()=>{
-                setState(state);
-                sTempState(state);
+            <button onClick={(e)=>{
+                e.preventDefault();
+                setState(tempState);
                 sendTilDatabase();
                 sAvbrytOgLagreSynlig(false);
                 sInputSynlig(false);
@@ -35,7 +35,7 @@ function RedigerKontakt({setState, state, sendTilDatabase}){
             </button>
             
             <button onClick={()=>{
-                setState(tempState);
+                sTempState(state);
                 sAvbrytOgLagreSynlig(false);
                 sInputSynlig(false);
                 sRedigeringsKnappSynlig(true);

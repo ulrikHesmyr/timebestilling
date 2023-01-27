@@ -317,6 +317,11 @@ input, button{
     flex-wrap: wrap;
     flex-direction: column;
   }
+  .loginForm label{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
 
   .sosialemedier{
     display: flex;

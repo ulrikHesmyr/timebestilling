@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import Admin from './Admin';
 import Vakter from './Vakter'
 
@@ -9,6 +9,13 @@ function Login(){
     const [env, sEnv] = useState();
     const [bestilteTimer, sBestiltetimer] = useState();
     const [loggetInn, toggleLoggetInn] = useState(false);
+    const [passordSynlig, sPassordsynlig] = useState(false);
+
+    let format = /[ `!@#$%-^&*()_+=[\]{};':"\\|,.<>/?~]/;
+
+    useEffect(()=>{
+        alleredeLoggetInn();
+    },[]);
 
     async function logginn(){
         const data = {
@@ -34,19 +41,37 @@ function Login(){
            sBestiltetimer(response.bestilteTimer);
         }
     }
+
+    async function alleredeLoggetInn(){
+        console.log("allerede logget inn funksjon");
+        const request = await fetch("http://localhost:3001/login/loggetinn");
+        const response = await request.json();
+        if(response.valid){
+            toggleLoggetInn(true);
+            setBukertype(response.brukertype);
+            sEnv(response.env);
+            sBestiltetimer(response.bestilteTimer);
+        } else {
+            console.log(response.message);
+        }
+    }
     
-    //useEffect
-    //Sjekker om bruker er authenticated med Cookieparser
+
     return(
         (loggetInn && env !== null?(brukertype === "admin"?<Admin env={env} bestilteTimer={bestilteTimer}/>:(brukertype === "vakter"?<Vakter env={env} bestilteTimer={bestilteTimer} />:"")):(<div className='login'>
-        <h1>Login</h1>
         <form className='loginForm'>
-            <label>Brukernavn: <input value={brukernavn} type="text" placeholder='brukernavn' onChange={(e)=>{
-                setBrukernavn(e.target.value);
+            <label>Brukernavn: <input value={brukernavn} maxLength={10} type="text" placeholder='brukernavn' onChange={(e)=>{
+                if(!format.test(e.target.value)){
+                    setBrukernavn(e.target.value);
+                }
             }}></input> </label>
-            <label>Passord: <input value={passord} type="password" onChange={(e)=>{
+            <label>Passord: <input value={passord} type={passordSynlig?"text":"password"} maxLength={20} onChange={(e)=>{
                 setPassord(e.target.value);
-            }}></input> </label>
+            }}></input> {(passordSynlig?<img onClick={()=>{
+                sPassordsynlig(false);
+            }} src='oye_lukket.png' style={{height:"1.4rem"}} alt="Skjul passord"></img>:<img onClick={()=>{
+                sPassordsynlig(true);
+            }} src='oye_aapnet.png' style={{height:"1.4rem"}} alt="Vis passord"></img>)}</label>
             <button onClick={(e)=>{
                 e.preventDefault();
                 logginn();
