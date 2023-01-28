@@ -7,6 +7,9 @@
   --color2:white;
   --color3:black;
   --color4:black;
+  --background1:linear-gradient(0deg, rgba(211,157,39,1) 0%, rgba(253,187,45,1) 100%);
+  --background2:linear-gradient(0deg, rgba(39,77,211,1) 0%, rgba(45,133,253,1) 100%);
+
 }
 
 body{
@@ -26,8 +29,8 @@ button:disabled{
   cursor:not-allowed;
 }
 button:active{
-  background-color: var(--farge4);
-  color:var(--farge3);
+  background: var(--background2);
+  color:var(--color2);
 }
 
 .navBar, .overskrift, .frisor, .kategorier, .klokkeslettene{
@@ -80,17 +83,25 @@ input, button{
   
   .navBar a {
     text-align: start;
+    margin: 0.1rem;
     padding: 2rem;
     text-align: start;
     cursor: pointer;
     text-decoration: none;
     color: var(--farge4);
     width: 20rem;
-    border-right: thin solid rgba(0, 0, 0, 0.25);
-    border-bottom: thin solid rgba(0, 0, 0, 0.25);
-    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+    border-left: thin solid rgba(0, 0, 0, 0.45);
+    border-bottom: thin solid rgba(0, 0, 0, 0.05);
+    clip-path: polygon(100% 0, 100% 59%, 0 100%, 0 100%, 0 5%);
     background-color: white;
     font-size: larger;
+    transition: all 0.5s;
+  }
+
+  .navBar a:hover{
+    
+    border-bottom: thin solid rgba(0, 0, 0, 0.45);
+    clip-path: polygon(100% 0, 100% 59%, 92% 100%, 0 100%, 0 5%);
   }
   .navBar a p{
     font-weight: lighter;

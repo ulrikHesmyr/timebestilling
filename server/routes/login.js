@@ -1,8 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
-
 const mailer = require("../configuration/mailer");
 const Bestiltetimer = require("../model/bestilling");
 const Environment = require("../model/env");
@@ -29,10 +27,7 @@ router.post('/auth', async (req,res)=>{
         const {brukernavn, passord} = req.body;
         const env = await Environment.findOne({bedrift:BEDRIFT});
         const {kontakt_epost, kontakt_tlf, sosialeMedier, admin_bruker, admin_pass, vakter_bruker, vakter_pass, bedrift, kategorier, tjenester, frisorer, klokkeslett} = env;
-        console.log(req.cookies);
         if((brukernavn === vakter_bruker && passord === vakter_pass) || (brukernavn === admin_bruker && passord === admin_pass)){
-            //console.log(jwt.verify(token, ACCESS_TOKEN_KEY));
-            //console.log(req.cookies());
             const accessToken = jwt.sign({brukernavn:brukernavn, passord:passord},ACCESS_TOKEN_KEY,{expiresIn:'180m'});
             const bestilteTimer = await Bestiltetimer.find();
             res.cookie("access_token", accessToken, {

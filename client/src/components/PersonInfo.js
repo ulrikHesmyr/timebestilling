@@ -6,6 +6,7 @@ function PersonInfo({totalTid, totalPris, dato, klokkeslettet, produkt, frisor, 
     const [harregistrert, sHarRegistrert] = useState(false); //For å passe på at en bruker ikke trykker to ganger før neste side rekker å laste inn
     let format = /[`!@#$%^&*()_+=[\]{};':"\\|,.<>/?~]/;
     async function registrerData(){
+        console.log("DATA SOM SENDES: ", data);
         const request = await fetch('http://localhost:3001/timebestilling/bestilltime', {
             method:"POST",
             headers:{
@@ -68,7 +69,7 @@ function PersonInfo({totalTid, totalPris, dato, klokkeslettet, produkt, frisor, 
 
                 <p>Bekreftelse på din reservasjon sendes på SMS</p>
                 <p>Jeg godkjenner <Link to="/personvaernserklaering-og-brukervilkaar">personvernserklæring og brukervilkår</Link> ved å trykke "send inn reservasjon"</p>
-                {(harregistrert?"Laster...":(<button style={{padding:"1rem", color:"var(--color4)", backgroundColor:"var(--farge4)"}} onClick={(e)=>{
+                {(harregistrert?"Laster...":(<button style={{padding:"1rem", color:"var(--color2)", backgroundColor:"var(--farge2)"}} onClick={(e)=>{
                     sHarRegistrert(true);
                     e.preventDefault();
                     if(telefonnummer.length === 8 && navn !== ""){

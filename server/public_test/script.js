@@ -1,4 +1,5 @@
 const logginnButton = document.getElementById("logginn");
+const loggUtButton = document.getElementById("loggut");
 
 async function alreadyLoggedIn(){
     const request = await fetch("/login/loggetinn");
@@ -32,4 +33,11 @@ async function logginn(){
     console.log(response);
 }
 
+async function loggut(){
+    const request = await fetch('/login/logout');
+    const response = await request.json();
+    console.log(response);
+}
+
 logginnButton.addEventListener('click',logginn);
+loggUtButton.addEventListener('click', loggut);

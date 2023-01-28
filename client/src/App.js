@@ -10,19 +10,10 @@ import PB from './pages/Personvern_Brukervilkaar'
 
 
 const App = ()=> {
-
   
-  
-  const [dato, setDato] = useState(hentDato());
-  const [produkt, setProdukt] = useState([]);
-  const [frisor, setFrisor] = useState(null);
-  const [klokkeslettet, setKlokkeslett] = useState(null);
-  const [navn, setNavn] = useState('');
-  const [telefonnummer, setTelefonnummer] = useState('');
-  const [registrertReservasjon, setReservasjon] = useState(undefined);
-  const [synligKomponent, setSynligKomponent] = useState(0);
   const [synligMeny, setSynligmeny] = useState(false);
   const [env, sEnv] = useState(null);
+  const [registrertReservasjon, setReservasjon] = useState(undefined);
 
 
   useEffect(()=>{
@@ -62,7 +53,7 @@ const App = ()=> {
               }} to="/kontakt-oss">Kontakt oss<p>Ta kontakt via epost, telefon eller sosiale medier</p></Link>
             </div>):(
             <Routes>
-              <Route exact path="/timebestilling" element={(registrertReservasjon?<DinReservasjon env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} registrertReservasjon={registrertReservasjon} />:(env !== null?<Timebestilling env={env} synligKomponent={synligKomponent} setSynligKomponent={setSynligKomponent} hentMaaned={hentMaaned} setReservasjon={setReservasjon} navn={navn} sNavn={setNavn} telefonnummer={telefonnummer} sTelefonnummer={setTelefonnummer} klokkeslettet={klokkeslettet} sKlokkeslett={setKlokkeslett} sDato={setDato} dato={dato} produkt={produkt} sProdukt={setProdukt} frisor={frisor} sFrisor={setFrisor}/>:"Laster..."))} />
+              <Route exact path="/timebestilling" element={(registrertReservasjon?<DinReservasjon env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} registrertReservasjon={registrertReservasjon} />:(env !== null?<Timebestilling env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} />:"Laster..."))} />
               <Route exact path="/" element={(env !== null?<Hjem env={env}/>:"Laster...")} />
               <Route exact path="/login" element={<Login/>} />
               <Route exact path="/kontakt-oss" element={(env !== null? <Kontakt env={env}/>:"Laster...")}/>

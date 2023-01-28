@@ -19,6 +19,9 @@ PROBLEMSTILLINGER:
 
 
 CLIENT:
+- Fri.js: Kunne slette fri elementer
+- Vakter.js: Displaye fri elementer
+- Klokkeslett.js: tilpasse ledige klokkeslett til frisører som har fri
 - Fortsett i Admin.js med sende nytt env til database
 - Gjør admin panel idiotsikkert m å gi kriterier til input felter
 - Legg til pattern for Login.js pattern="[0-9a-fA-F]{4,8}" for passord, slik at det er mer sikkert
@@ -30,7 +33,7 @@ CLIENT:
 
 
 SERVER:
-- Flytte keyname for sms api fra timebestilling.js til .env fil
+- schedule slette fri når sluttdatoen er datoen idag
 - Admin panel - Ansatt må kunne reservere vekk timer når de ikke er på jobb eller har ferie
 - Laste opp bilder for friøsrene
 - app.use(express.json({limit:'1kb'}))
@@ -40,6 +43,8 @@ SERVER:
     Reservere bort timer hvor de ikke skal jobbe
     Se og endre på reserverte timer (liksom hvis de ringer inn og endrer på timen sin)
 
+TODO:
+- Sjekke ut hva Jest er
 
 Ideer:
 Gavekort, betaling med stripe
@@ -50,6 +55,7 @@ Scenarioer:
     reservert for dameklipp
 
 Før produksjon
+Legge inn authorization som middleware for alle administrative routes
 endre variabler i .env filen
 endre request i Personinfo.js og Admin.js fra http://localhost til domenenavnet
 slette unødvendige filer og fjerne unødvendig kode

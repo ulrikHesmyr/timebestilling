@@ -1,11 +1,46 @@
 const express = require("express");
 const router = express.Router();
 const Environment = require("../model/env");
+const FriElementer = require("../model/fri");
+
 const mailer = require("../configuration/mailer");
-const bcryptjs = require("bcryptjs");
 const {BEDRIFT} = process.env;
 
+router.get('/fri', async(req,res)=>{
+    try {
+        const alleFriElementer = await FriElementer.find();
+        if(alleFriElementer){
+            return res.json(alleFriElementer);
+        }
+    } catch (error) {
+        console.log(error);
+    }
+})
 
+router.post('/opprettFri', async(req,res)=>{
+    const {lengreTid, fraDato, tilDato, fraKlokkeslett, tilKlokkeslett, friDag, frisor, medarbeider} = req.body;
+    console.log(req.body);
+    try {
+        const nyttFriElement = await FriElementer.create({
+            lengreTid:lengreTid,
+            fraDato:fraDato,
+            tilDato:tilDato,
+            fraKlokkeslett:fraKlokkeslett,
+            tilKlokkeslett:tilKlokkeslett,
+            friDag:friDag,
+            frisor:frisor,
+            medarbeider:medarbeider
+        })
+        if(nyttFriElement){
+            console.log("Fri er opprettet");
+            return res.send({message:"Fri er opprettet!", friElement:nyttFriElement});
+        } else {
+            return res.status(404);
+        }
+    } catch (error) {
+        
+    }
+})
 
 router.get('/env', async(req,res)=>{
     try {

@@ -3,6 +3,7 @@ import RedigerKontakt from '../components/RedigerKontakt';
 import RedigerPassord from '../components/RedigerPassord';
 import LeggTilFrisor from '../components/LeggTilFrisor';
 import DetaljerFrisor from '../components/DetaljerFrisor';
+import Fri from '../components/Fri';
 
 function Admin({env, bestilteTimer}){
     console.log(env);
@@ -74,21 +75,6 @@ function Admin({env, bestilteTimer}){
         console.log("sendte oppdaterte timereservasjoner til databasen");
     }
 
-    function rediger(i){
-        setValgtIndeks(i);
-    }
-
-    function lagre(){
-        setValgtIndeks(-1);
-    }
-    console.log(frisorer);
-    class Frisor{
-        constructor(navn, produkter){
-            this.navn = navn;
-            this.produkter = produkter;
-        }
-    }
-    console.log(Frisor);
     return(
         <div className='adminpanel'>
             <div>
@@ -106,6 +92,7 @@ function Admin({env, bestilteTimer}){
             </div>
             <div>
                 <h1>Environment</h1>
+                {env !== null? <Fri env={env}/>:""}
                 {env !== null?(
                 <div>
                     <div>
@@ -123,7 +110,8 @@ function Admin({env, bestilteTimer}){
                                 <DetaljerFrisor frisor={frisor} env={env} />
                             </div>
                         ))}
-                        <LeggTilFrisor env={env} setState={sFrisorer} state={frisorer}/>
+                        {env !== null?<LeggTilFrisor env={env} setState={sFrisorer} state={frisorer}/>:""}
+                        
                     </div>
                 </div>
                 ):"Laster..."}

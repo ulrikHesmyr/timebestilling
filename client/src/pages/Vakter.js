@@ -73,7 +73,8 @@ function Vakter({env, bestilteTimer}){
         eventPropGetter={event => {
           return {
             style:{ 
-              backgroundColor: farger[event.frisor]
+              backgroundColor: farger[event.frisor],
+              padding:"0.05rem"
             },
             className: 'eventWrapper'
 

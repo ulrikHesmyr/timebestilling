@@ -6,13 +6,23 @@ import PersonInfo from '../components/PersonInfo';
 import Dato from '../components/Dato';
 import { hentDato } from '../App';
 
-function Timebestilling({env, setSynligKomponent, synligKomponent, hentMaaned, setReservasjon, navn, sNavn, telefonnummer, sTelefonnummer, klokkeslettet, sKlokkeslett, sDato, dato, produkt, sProdukt, frisor, sFrisor}){
+function Timebestilling({env, hentMaaned, setReservasjon}){
     
     const [isMobile, setIsMobile] = useState(false);
     const [updateDataTrigger, setUpdate] = useState(false);
     const [bestilteTimer, setBestiltetimer] = useState(undefined);
     const [tilgjengeligeFrisorer, sTilgjengeligeFrisorer] = useState([]);
 
+    
+    const [dato, sDato] = useState(hentDato());
+    const [produkt, sProdukt] = useState([]);
+    const [frisor, sFrisor] = useState(null);
+    const [klokkeslettet, sKlokkeslett] = useState(null);
+    const [navn, sNavn] = useState('');
+    const [telefonnummer, sTelefonnummer] = useState('');
+    const [synligKomponent, setSynligKomponent] = useState(0);
+
+    const [forsteFrisor, sForsteFrisor] = useState(false);
 
     function nullstillData(){
         sDato(hentDato());
@@ -21,6 +31,7 @@ function Timebestilling({env, setSynligKomponent, synligKomponent, hentMaaned, s
         sKlokkeslett(null);
         sNavn('');
         sTelefonnummer('');
+        sForsteFrisor(false);
     }
 
     function displayKomponent(componentIndex){
@@ -99,7 +110,7 @@ function Timebestilling({env, setSynligKomponent, synligKomponent, hentMaaned, s
                 }
             }} style={{backgroundColor: dato !== null && klokkeslettet !== null ?"lightgreen":"white"}} ><p>3</p> Velg dato og tid</h2>
             {(synligKomponent === 2 && frisor !== null ? <Dato dato={dato} synligKomponent={synligKomponent} displayKomponent={displayKomponent} sDato={sDato} sKlokkeslett={sKlokkeslett} sProdukt={sProdukt} klokkeslettet={klokkeslettet} produkt={produkt} />:"")}
-            {(synligKomponent === 2 && frisor !== null && bestilteTimer !== null? <Klokkeslett tilgjengeligeFrisorer={tilgjengeligeFrisorer} sTilgjengeligeFrisorer={sTilgjengeligeFrisorer} env={env} synligKomponent={synligKomponent} displayKomponent={displayKomponent} klokkeslettet={klokkeslettet} produkt={produkt} bestilteTimer={bestilteTimer} frisor={frisor} sKlokkeslett={sKlokkeslett} dato={dato} hentMaaned={hentMaaned}/>:"")}
+            {(synligKomponent === 2 && frisor !== null && bestilteTimer !== null? <Klokkeslett sForsteFrisor={sForsteFrisor} forsteFrisor={forsteFrisor} tilgjengeligeFrisorer={tilgjengeligeFrisorer} sTilgjengeligeFrisorer={sTilgjengeligeFrisorer} env={env} synligKomponent={synligKomponent} displayKomponent={displayKomponent} klokkeslettet={klokkeslettet} produkt={produkt} bestilteTimer={bestilteTimer} frisor={frisor} sKlokkeslett={sKlokkeslett} dato={dato} hentMaaned={hentMaaned}/>:"")}
             
             <h2 className='overskrift' onClick={()=>{
                 if(synligKomponent === 3){
@@ -111,11 +122,11 @@ function Timebestilling({env, setSynligKomponent, synligKomponent, hentMaaned, s
             {(synligKomponent === 3 && klokkeslettet !== null?<PersonInfo totalPris={totalPris} totalTid={totalTid} klokkeslettet={klokkeslettet} produkt={produkt} frisor={frisor} hentMaaned={hentMaaned} dato={dato} isMobile={isMobile} synligKomponent={synligKomponent} displayKomponent={displayKomponent} telefonnummer={telefonnummer} navn={navn} nullstillData={nullstillData} setReservasjon={setReservasjon} setUpdate={setUpdate} updateDataTrigger={updateDataTrigger} sNavn={sNavn} sTelefonnummer={sTelefonnummer} data={{
                 dato:dato, 
                 tidspunkt:klokkeslettet,
-                frisor: env.frisorer.indexOf(frisor),
+                frisor: (frisor === false?env.frisorer.indexOf(forsteFrisor):env.frisorer.indexOf(frisor)),
                 behandlinger:produkt.map(tjeneste=>tjeneste.navn),
                 telefonnummer: parseInt(telefonnummer),
                 kunde:navn,
-                medarbeider:(frisor === false? "Første ledige frisør":frisor.navn)
+                medarbeider:(frisor === false? forsteFrisor.navn:frisor.navn)
             }} />:"")}
 
         </div>
