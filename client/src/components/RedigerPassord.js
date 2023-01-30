@@ -13,7 +13,7 @@ function RedigerPassord({state, setState, sendTilDatabase}){
             {redigeringsKnappSynlig?(<button className='rediger' onClick={(e)=>{
             e.preventDefault();
             sRedigeringsKnappSynlig(false);
-        }}><img src='rediger.png' style={{height:"1.4rem"}} alt="Rediger"></img> </button>):(<div className="passordBoks">
+        }}><img src='rediger.png' style={{height:"1.4rem"}} alt="Rediger"></img>Endre passord </button>):(<div className="passordBoks">
             <label>Nytt passord:<div><p className="litentekst">vis passord</p> <input checked={toggleViewPassord} type="checkbox" onChange={()=>{
                 sToggleView(!toggleViewPassord);
             }}></input><input value={nyttPassord} type={(toggleViewPassord?"text":"password")} onChange={(e)=>{

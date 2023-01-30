@@ -16,7 +16,7 @@ function RedigerKontakt({number, setState, state, sendTilDatabase}){
             sInputSynlig(!inputSynlig);
             sRedigeringsKnappSynlig(false);
             sAvbrytOgLagreSynlig(true)
-        }}><img src='rediger.png' style={{height:"1.4rem"}} alt="Rediger"></img> </button>):""}
+        }}><img src='rediger.png' style={{height:"1.4rem"}} alt="Rediger"></img>Rediger kontakt-info </button>):""}
         {inputSynlig?(<input type={number?"number":"text"} value={tempState} onChange={(e)=>{
             sTempState(e.target.value);
         }}></input>):""}

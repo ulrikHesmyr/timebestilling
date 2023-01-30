@@ -351,9 +351,12 @@ input, button{
   .vaktpanel{
     padding: 0.2rem;
   }
+
+  
   .adminpanel{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
+    margin: 0.2rem;
   }
   .adminpanel *{
     color:black;
@@ -391,10 +394,6 @@ input, button{
 @media (width <= 900px){
   
   .passordBoks label{
-    display: flex;
-    flex-direction: column;
-  }
-  .adminpanel{
     display: flex;
     flex-direction: column;
   }

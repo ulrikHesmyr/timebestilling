@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 
 function LeggTilFrisor({env, setState, state}){
 
@@ -39,21 +39,21 @@ function LeggTilFrisor({env, setState, state}){
             e.preventDefault();
             avbryt();
         }}>
-            <img src='avbryt.png' style={{height:"2rem"}}></img>
+            <img alt="Avbryt" src='avbryt.png' style={{height:"2rem"}}></img>
         </button>
         <button onClick={(e)=>{
                 e.preventDefault();
                 lagre();
             }}>
-            <img src='lagre.png' style={{height:"2rem"}}></img>
+            <img alt="lagre" src='lagre.png' style={{height:"2rem"}}></img>
         </button>
     </div>:
-    <button onClick={(e)=>{
+    <button style={{display:"flex", alignItems:"center"}} onClick={(e)=>{
         e.preventDefault();
         sLeggTil(true);
 
     }}>
-        <img src='leggtil.png' alt='Legg til Frisør' style={{height:"2rem"}}></img>
+        <img src='leggtil.png' alt='Legg til Frisør' style={{height:"2rem"}}></img>Ny Frisør
     </button>}
     </>
   )

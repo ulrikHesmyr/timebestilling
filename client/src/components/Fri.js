@@ -1,11 +1,10 @@
 import React, {useState, useEffect} from 'react'
-import { hentDato } from '../App';
+import { hentDato, hentMaaned } from '../App';
 import { minutterFraKlokkeslett } from './Klokkeslett';
 
-function Fri ({env}) {
-    const[visFriElementer, sVisFriElementer] = useState(false);
+function Fri ({env, bestilteTimer, synligKomponent}) {
     const[leggTilFri, sLeggTilFri] = useState(false);
-    const[dagsfraver, sDagsfraver] = useState(null);
+    const[dagsfraver, sDagsfraver] = useState(null); //"fler" eller "dag"
     const [friElementer, sFriElementer] = useState([]);
 
     //Frisør som skal ha fri, uavhengig av om det er dagsfravær eller lengre tid
@@ -40,6 +39,25 @@ function Fri ({env}) {
         sFrisor(null);
         sLeggTilFri(false);
         sDagsfraver(null);
+    }
+
+    function sjekkForKrasj(){
+        let funn = bestilteTimer.find((time)=>{
+            if(dagsfraver === "dag"){
+                if(time.medarbeider === frisor.navn && time.dato === datoDagsFraver && minutterFraKlokkeslett(starttidspunkt) <= minutterFraKlokkeslett(time.tidspunkt) && minutterFraKlokkeslett(time.tidspunkt) < minutterFraKlokkeslett(slutttidspunkt)){
+                    return time;
+                }
+            } else if(dagsfraver === "fler") {
+                let timeDato = new Date(`${time.dato}`);
+                let start = new Date(`${startDato}`);
+                let slutt = new Date(`${sluttDato}`);
+                if(time.medarbeider === frisor.navn && start <= timeDato && timeDato <= slutt){
+                    return time;
+                }
+            }
+        })
+        console.log("FUNN: ", funn?true:false);
+        return funn?true:false
     }
 
     async function hentFriElementer(){
@@ -81,34 +99,59 @@ function Fri ({env}) {
         }
     }
 
+    
+    async function slettFri(frielementet){
+
+        const data = {
+            lengreTid:frielementet.lengreTid,
+            fraDato:frielementet.fraDato,
+            tilDato:frielementet.tilDato,
+            fraKlokkeslett:frielementet.fraKlokkeslett,
+            tilKlokkeslett:frielementet.tilKlokkeslett,
+            friDag:frielementet.friDag,
+            frisor:frielementet.frisor,
+            medarbeider:frielementet.medarbeider 
+        }
+
+        const options = {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(data)
+        }
+
+        const request = await fetch("http://localhost:3001/env/slettFri", options);
+        const response = await request.json();
+        if(response){
+            console.log(response);
+            sUpdateTrigger(!updateTrigger);
+        }
+    }
 
     useEffect(()=>{
-        if(visFriElementer){
+        if(synligKomponent === 2){
             console.log("Henter fri elementer");
             hentFriElementer();
         }
-    },[visFriElementer, updateTrigger])
+    },[synligKomponent, updateTrigger])
   return (
     <>
-    <button onClick={(e)=>{
-        e.preventDefault();
-        sVisFriElementer(!visFriElementer);
-    }}>
-        FRIDAGER OG TIMER
-    </button>
-    {(visFriElementer?<div>
-        {friElementer.map((friElement)=>
-            (friElement.lengreTid?(
-                <div>{friElement.medarbeider}{friElement.fraDato} - {friElement.tilDato}</div>
-            ):(
-                <div>{friElement.medarbeider}{friElement.friDag} {friElement.fraKlokkeslett}-{friElement.tilKlokkeslett}</div>
-            ))
+    {(synligKomponent === 2?<div>
+        <h3>Fridager og fravær</h3>
+        {friElementer.map((friElement, index)=>
+            (
+                <div style={{display:"flex", justifyContent:"space-between", alignItems:"center"}} key={index}> {friElement.lengreTid? `${friElement.medarbeider}: ${parseInt(friElement.fraDato.substring(8,10))}. ${hentMaaned(parseInt(friElement.fraDato.substring(5,7)) -1)} - ${parseInt(friElement.tilDato.substring(8,10))}. ${hentMaaned(parseInt(friElement.tilDato.substring(5,7)) -1)}`:`${friElement.medarbeider}: ${parseInt(friElement.friDag.substring(8,10))}. ${hentMaaned(parseInt(friElement.friDag.substring(5,7)) -1)} ${friElement.fraKlokkeslett}-${friElement.tilKlokkeslett}`} <button onClick={(e)=>{
+                    e.preventDefault();
+                    slettFri(friElement);
+                }}><img alt='Slett fri-element' src='delete.png' style={{height:"1.4rem"}}></img></button> </div>
+            )
         )}
 
         {(!leggTilFri?<button onClick={(e)=>{
         e.preventDefault();
         sLeggTilFri(true);
-    }}> <img src='leggtil.png' style={{height:"1.4rem"}}></img> Nytt fravær/fri</button>:"")}
+    }}> <img alt='Opprett fri/fravær' src='leggtil.png' style={{height:"1.4rem"}}></img> Nytt fravær/fri</button>:"")}
     </div>:"")}
     {
     (leggTilFri?<>
@@ -116,7 +159,7 @@ function Fri ({env}) {
     <button onClick={(e)=>{
         e.preventDefault();
         reset();
-    }} > <img src='avbryt.png' style={{height:"1.4rem"}}></img> AVBRYT</button>
+    }} > <img alt='Avbryt' src='avbryt.png' style={{height:"1.4rem"}}></img> AVBRYT</button>
     
     <h3>Velg type fri:</h3>
     <div style={{display:"flex", flexDirection:"row"}}>
@@ -140,8 +183,6 @@ function Fri ({env}) {
     {(dagsfraver === "dag"?
     <form style={{display:"flex", flexDirection:"column"}}>
         
-
-    //HVIS det er "Dagsfravær", så kan de velge en dato, og deretter starttidspunkt og slutttidspunkt
     <input min={hentDato()} value={datoDagsFraver} onChange={(e)=>{
         sDatoDagsFraver(e.target.value);
     }} type="date"></input>
@@ -155,7 +196,12 @@ function Fri ({env}) {
 
 <button onClick={(e)=>{
     e.preventDefault();
-    if(frisor !== null && parseInt(starttidspunkt.substring(3,5))%15 === 0 && parseInt(slutttidspunkt.substring(3,5))%15 === 0 && !isNaN(parseInt(starttidspunkt.substring(0,2)))&& !isNaN(parseInt(slutttidspunkt.substring(0,2))) && starttidspunkt.substring(2,3) == ":" && slutttidspunkt.substring(2,3) == ":" && minutterFraKlokkeslett(starttidspunkt) < minutterFraKlokkeslett(slutttidspunkt)){ 
+    let krasj = sjekkForKrasj();
+    if(krasj){
+        alert("Fri kolliderer med timereservasjon, finn et annet tidspunkt");
+        return
+    }
+    if(frisor !== null && parseInt(starttidspunkt.substring(3,5))%15 === 0 && parseInt(slutttidspunkt.substring(3,5))%15 === 0 && !isNaN(parseInt(starttidspunkt.substring(0,2)))&& !isNaN(parseInt(slutttidspunkt.substring(0,2))) && starttidspunkt.substring(2,3) === ":" && slutttidspunkt.substring(2,3) === ":" && minutterFraKlokkeslett(starttidspunkt) < minutterFraKlokkeslett(slutttidspunkt)){ 
         console.log(datoDagsFraver);
         console.log(starttidspunkt);
         console.log(slutttidspunkt);
@@ -168,9 +214,9 @@ function Fri ({env}) {
     </form>:"")}
 
 
-    {(dagsfraver === "fler"?<>
+    {(dagsfraver === "fler"?
+    <>
     
-    //HVIS det er "Flere dager", så kan de velge en startdato og en sluttdato
     <div style={{display:"flex", flexDirection:"column"}}>
         <label>Fra: <input min={hentDato()} value={startDato} onChange={(e)=>{
             sStartDato(e.target.value);
@@ -187,6 +233,11 @@ function Fri ({env}) {
     
 <button onClick={(e)=>{
     e.preventDefault();
+    let krasj = sjekkForKrasj();
+    if(krasj){
+        alert("Fri kolliderer med timereservasjon, finn et annet tidspunkt");
+        return
+    }
     if(frisor !== null && startDato !== sluttDato){ 
         opprettFri();
         reset();

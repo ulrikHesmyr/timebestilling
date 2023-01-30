@@ -56,13 +56,9 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
       const request = await fetch('http://localhost:3001/timebestilling/hentBestiltetimer');
       const response = await request.json();
       
-      let tempBestilteTimer = response.sort((a,b)=>{
-        let datoA = new Date(a.dato + " " + a.tidspunkt);
-        let datoB = new Date(b.dato + " " + b.tidspunkt);
-        return datoA - datoB;
-        })
-    
-      setBestiltetimer(tempBestilteTimer);
+    if(response){
+        setBestiltetimer(response);
+    }
     }
     fetchData();
   },[updateDataTrigger])

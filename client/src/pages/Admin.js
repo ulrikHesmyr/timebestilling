@@ -26,10 +26,11 @@ function Admin({env, bestilteTimer}){
     const [kontakt_epost, sKontakt_epost] = useState(env.kontakt_epost); //String
     const [kontakt_tlf, sKontakt_tlf] = useState(env.kontakt_tlf); //Number
 
+    //const [tempBestilteTimer, setTempBestilteTimer] = useState();
 
-    const [valgtIndeks, setValgtIndeks] = useState(null);
-    
-    const [tempBestilteTimer, setTempBestilteTimer] = useState();
+    //Synlige sider
+    const [synligKomponent, setSynligKomponent] = useState(0);
+
 
     useEffect(()=>{
         setTempBestilteTimer(bestilteTimer)
@@ -41,7 +42,7 @@ function Admin({env, bestilteTimer}){
             || kategorier !== env.kategorier || kontakt_epost !== env.kontakt_epost || kontakt_tlf !== env.kontakt_tlf){
             sendTilDatabase();
         }
-    },[admin_pass, vakter_pass, frisorer, klokkeslett, tjenester, sosialeMedier, kategorier, kontakt_epost, kontakt_tlf, valgtIndeks]);
+    },[]);//Kan oppstå bugs, fjernet dependencies env, admin_pass, vakter_pass, frisorer, klokkeslett, tjenester, sosialeMedier, kategorier, kontakt_epost, kontakt_tlf
 
     async function sendTilDatabase(){
         console.log("sendte nytt env til database");
@@ -77,24 +78,47 @@ function Admin({env, bestilteTimer}){
 
     return(
         <div className='adminpanel'>
-            <div>
-                <h1>Timebestillinger</h1>
-                {(bestilteTimer !== null?(
+                <h1>Ditt skrivebord</h1>
+                {env !== null? <div style={{display:"flex", flexDirection:"row"}}>
+                
+                    <button style={{margin:"0", boxShadow:(synligKomponent === 1?"0px 2px 0px black":"0px 0px 0px white")}} onClick={(e)=>{
+                        e.preventDefault();
+                        setSynligKomponent(1);
+                    }}>TIMEBESTILLINGER</button>
+
+                
+                    <button style={{margin:"0", boxShadow:(synligKomponent === 2?"0px 2px 0px black":"0px 0px 0px white")}} onClick={(e)=>{
+                        e.preventDefault();
+                        setSynligKomponent(2);
+                    }}>FRIDAGER OG FRAVÆR</button>
+
+                    <button style={{margin:"0", boxShadow:(synligKomponent === 3?"0px 2px 0px black":"0px 0px 0px white")}} onClick={(e)=>{
+                        e.preventDefault();
+                        setSynligKomponent(3);
+                    }}>KONTAKT-INFO, PASSORD, FRISØRER etc.</button>
+
+                    </div>:""}
+
+                
+                <Fri env={env} bestilteTimer={bestilteTimer} synligKomponent={synligKomponent} />
+
+                {synligKomponent === 1 && bestilteTimer !== null?(<>
+                <h3>Timebestillinger</h3>
                     <div>
                         {bestilteTimer.map(time=>(
                             <div>
-                                <div>{time.dato}</div>
+                                <div>{time.medarbeider}: {time.dato} {time.tidspunkt}</div>
                             </div>
                         ))}
                     </div>
+                    </>
                         
-                ):"Laster...")}
-            </div>
-            <div>
-                <h1>Environment</h1>
-                {env !== null? <Fri env={env}/>:""}
-                {env !== null?(
+                ):""}
+
+
+                {synligKomponent === 3 && env !== null?(
                 <div>
+                    <h3>Frisører, behandlinger, kategorier, åpningstider, kontakt-info og passord</h3>
                     <div>
                         <div className='redigeringsBoks'> <p>Kontakt telefon: {kontakt_tlf}</p> <RedigerKontakt number={true} state={kontakt_tlf} setState={sKontakt_tlf} sendTilDatabase={sendTilDatabase} /></div>
                         <div className='redigeringsBoks'> <p>Kontakt e-post: {kontakt_epost}</p> <RedigerKontakt number={false} state={kontakt_epost} setState={sKontakt_epost} sendTilDatabase={sendTilDatabase} /></div>
@@ -114,8 +138,7 @@ function Admin({env, bestilteTimer}){
                         
                     </div>
                 </div>
-                ):"Laster..."}
-            </div>
+                ):""}
         </div>
     )
 }

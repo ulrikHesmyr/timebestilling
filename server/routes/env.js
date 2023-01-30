@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Environment = require("../model/env");
 const FriElementer = require("../model/fri");
+const Timebestillinger = require("../model/bestilling");
 
 const mailer = require("../configuration/mailer");
 const {BEDRIFT} = process.env;
@@ -17,10 +18,39 @@ router.get('/fri', async(req,res)=>{
     }
 })
 
+router.post('/slettFri', async(req,res)=>{
+    const {lengreTid, fraDato, tilDato, fraKlokkeslett, tilKlokkeslett, friDag, frisor, medarbeider} = req.body;
+    try {
+        const fjernetFriElement = await FriElementer.findOneAndDelete({
+            lengreTid:lengreTid,
+            fraDato:fraDato,
+            tilDato:tilDato,
+            fraKlokkeslett:fraKlokkeslett,
+            tilKlokkeslett:tilKlokkeslett,
+            friDag:friDag,
+            frisor:frisor,
+            medarbeider:medarbeider
+        })
+        if(fjernetFriElement){
+            console.log("Fri element er fjernet.");
+            return res.send({message:"Element fjernet", friElement:fjernetFriElement});
+        } else {
+            return res.status(404);
+        }
+    } catch (error) {
+        
+    }
+})
+
 router.post('/opprettFri', async(req,res)=>{
     const {lengreTid, fraDato, tilDato, fraKlokkeslett, tilKlokkeslett, friDag, frisor, medarbeider} = req.body;
     console.log(req.body);
     try {
+        //Sjekke for kollisjon? 
+        //if(lengreTid){
+        //    const krasjMedTimereservasjon = await Timebestillinger.find({medarbeider:medarbeider, })
+        //}
+
         const nyttFriElement = await FriElementer.create({
             lengreTid:lengreTid,
             fraDato:fraDato,

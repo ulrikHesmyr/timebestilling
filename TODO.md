@@ -19,24 +19,22 @@ PROBLEMSTILLINGER:
 
 
 CLIENT:
-- Fri.js: Kunne slette fri elementer
 - Vakter.js: Displaye fri elementer
 - Klokkeslett.js: tilpasse ledige klokkeslett til frisører som har fri
+- Admin.js: Kunne slette timebestillinger (dersom kunde må avbestille eller flytte på timen). Kun fjerne, så må kunden eller frisøren
+ legge inn ny
 - Fortsett i Admin.js med sende nytt env til database
 - Gjør admin panel idiotsikkert m å gi kriterier til input felter
 - Legg til pattern for Login.js pattern="[0-9a-fA-F]{4,8}" for passord, slik at det er mer sikkert
 - Ikke tillatte input dersom det ikke er bokstaver eller bindestrek
-- Lage footer med info om: Meg, google icons, personvernserklæring og brukervilkår,
-- I Vakter.js, dersom view i Calendar er på "week", så fjern all tekst utenom navn på frisøren
+- Lage footer med info om: Meg, google icons, personvernserklæring og brukervilkår
 
 - FØR PROD: Sjekke clientside om bruker er logget inn fra før med cookies (path: /login/loggetinn)
 
 
 SERVER:
-- schedule slette fri når sluttdatoen er datoen idag
-- Admin panel - Ansatt må kunne reservere vekk timer når de ikke er på jobb eller har ferie
+- scheduleJob index.js: slette fri når sluttdatoen er datoen idag
 - Laste opp bilder for friøsrene
-- app.use(express.json({limit:'1kb'}))
 
 - Sende bekreftelse på timebestilling på SMS
 - Når de logger inn så får de tilgang til: 

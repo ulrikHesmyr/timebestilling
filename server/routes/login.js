@@ -14,7 +14,12 @@ router.get("/loggetinn", authorization, async (req,res)=>{
         const env = await Environment.findOne({bedrift:BEDRIFT});
         const {kontakt_epost, kontakt_tlf, sosialeMedier, admin_bruker, admin_pass, vakter_bruker, vakter_pass, bedrift, kategorier, tjenester, frisorer, klokkeslett} = env;
         if((brukernavn === vakter_bruker && passord === vakter_pass) || (brukernavn === admin_bruker && passord === admin_pass)){
-            const bestilteTimer = await Bestiltetimer.find();
+            let bestilteTimer = await Bestiltetimer.find();
+            bestilteTimer = bestilteTimer.sort((a,b)=>{
+                let datoA = new Date(a.dato + " " + a.tidspunkt);
+                let datoB = new Date(b.dato + " " + b.tidspunkt);
+                return datoA - datoB;
+                })
             return res.json({valid:true, message:"Du er nå logget inn", brukertype: brukernavn, env:{kontakt_epost:kontakt_epost, kontakt_tlf:kontakt_tlf, sosialeMedier:sosialeMedier, bedrift:bedrift, kategorier:kategorier, tjenester:tjenester, frisorer:frisorer, klokkeslett:klokkeslett}, bestilteTimer:bestilteTimer});
         }
     } catch (error) {
@@ -29,7 +34,12 @@ router.post('/auth', async (req,res)=>{
         const {kontakt_epost, kontakt_tlf, sosialeMedier, admin_bruker, admin_pass, vakter_bruker, vakter_pass, bedrift, kategorier, tjenester, frisorer, klokkeslett} = env;
         if((brukernavn === vakter_bruker && passord === vakter_pass) || (brukernavn === admin_bruker && passord === admin_pass)){
             const accessToken = jwt.sign({brukernavn:brukernavn, passord:passord},ACCESS_TOKEN_KEY,{expiresIn:'180m'});
-            const bestilteTimer = await Bestiltetimer.find();
+            let bestilteTimer = await Bestiltetimer.find();
+            bestilteTimer = bestilteTimer.sort((a,b)=>{
+                let datoA = new Date(a.dato + " " + a.tidspunkt);
+                let datoB = new Date(b.dato + " " + b.tidspunkt);
+                return datoA - datoB;
+                })
             res.cookie("access_token", accessToken, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV == "production",

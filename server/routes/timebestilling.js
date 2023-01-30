@@ -74,6 +74,7 @@ router.get('/hentBestiltetimer', async (req,res)=>{
                 if(err){
                     mailer.sendMail(`Problem database: ${process.env.BEDRIFT}`, `Problemer med å returnere filtrerte documents fra mongodb for bestilte timer. Her er error melding: ${err}`);
                 } else {
+                    
                     return res.json(docs);
                 }
             });
