@@ -32,9 +32,9 @@ function Admin({env, bestilteTimer}){
     const [synligKomponent, setSynligKomponent] = useState(0);
 
 
-    useEffect(()=>{
-        setTempBestilteTimer(bestilteTimer)
-    }, [bestilteTimer]);
+    //useEffect(()=>{
+    //    setTempBestilteTimer(bestilteTimer)
+    //}, [bestilteTimer]);
 
     useEffect(()=>{
         if(frisorer !== env.frisorer || admin_pass !== env.admin_pass || vakter_pass !== env.vakter_pass
@@ -81,18 +81,18 @@ function Admin({env, bestilteTimer}){
                 <h1>Ditt skrivebord</h1>
                 {env !== null? <div style={{display:"flex", flexDirection:"row"}}>
                 
-                    <button style={{margin:"0", boxShadow:(synligKomponent === 1?"0px 2px 0px black":"0px 0px 0px white")}} onClick={(e)=>{
+                    <button style={{margin:"0", borderCollapse:"collapse", border:"2px solid black", borderBottom:(synligKomponent=== 1? "none":"2px solid black")}} onClick={(e)=>{
                         e.preventDefault();
                         setSynligKomponent(1);
                     }}>TIMEBESTILLINGER</button>
 
                 
-                    <button style={{margin:"0", boxShadow:(synligKomponent === 2?"0px 2px 0px black":"0px 0px 0px white")}} onClick={(e)=>{
+                    <button style={{margin:"0", borderCollapse:"collapse", border:"2px solid black", borderBottom:(synligKomponent=== 1? "none":"2px solid black")}} onClick={(e)=>{
                         e.preventDefault();
                         setSynligKomponent(2);
                     }}>FRIDAGER OG FRAVÆR</button>
 
-                    <button style={{margin:"0", boxShadow:(synligKomponent === 3?"0px 2px 0px black":"0px 0px 0px white")}} onClick={(e)=>{
+                    <button style={{margin:"0", border:"2px solid black", borderBottom:(synligKomponent=== 3? "none":"thin solid black")}} onClick={(e)=>{
                         e.preventDefault();
                         setSynligKomponent(3);
                     }}>KONTAKT-INFO, PASSORD, FRISØRER etc.</button>

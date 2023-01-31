@@ -84,8 +84,12 @@ function Login(){
                 sPassordsynlig(true);
             }} src='oye_aapnet.png' style={{height:"1.4rem"}} alt="Vis passord"></img>)}</label>
             <button onClick={(e)=>{
-                e.preventDefault();
-                logginn();
+                if(!window.navigator.webdriver){
+                    e.preventDefault();
+                    logginn();
+                } else {
+                    alert("Enheten din blir oppfattet som en webdriver. Kontakt ulrik.hesmyr2002@gmail.com eller 41394262 hvis du leser dette.");
+                }
             }} >LOGG INN</button>
         </form>
     </div>))

@@ -33,7 +33,7 @@ router.post('/auth', async (req,res)=>{
         const env = await Environment.findOne({bedrift:BEDRIFT});
         const {kontakt_epost, kontakt_tlf, sosialeMedier, admin_bruker, admin_pass, vakter_bruker, vakter_pass, bedrift, kategorier, tjenester, frisorer, klokkeslett} = env;
         if((brukernavn === vakter_bruker && passord === vakter_pass) || (brukernavn === admin_bruker && passord === admin_pass)){
-            const accessToken = jwt.sign({brukernavn:brukernavn, passord:passord},ACCESS_TOKEN_KEY,{expiresIn:'180m'});
+            const accessToken = jwt.sign({brukernavn:brukernavn, passord:passord},ACCESS_TOKEN_KEY,{expiresIn:'480m'});
             let bestilteTimer = await Bestiltetimer.find();
             bestilteTimer = bestilteTimer.sort((a,b)=>{
                 let datoA = new Date(a.dato + " " + a.tidspunkt);

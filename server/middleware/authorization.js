@@ -11,6 +11,7 @@ const authorization = (req,res,next) => {
             const data = jwt.verify(token, ACCESS_TOKEN_KEY);
             req.brukernavn = data.brukernavn;
             req.passord = data.passord;
+            
             return next();
         } catch (error) {
             console.log(error);

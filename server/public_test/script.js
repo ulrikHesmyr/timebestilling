@@ -41,3 +41,10 @@ async function loggut(){
 
 logginnButton.addEventListener('click',logginn);
 loggUtButton.addEventListener('click', loggut);
+
+//let myPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection; //compatibility for firefox and chrome
+//console.log(myPeerConnection);
+console.log("webdriver", window.navigator.webdriver);
+console.log("userAgentData", window.navigator.userAgentData);
+console.log("productSub", window.navigator.productSub);
+console.log(window);
