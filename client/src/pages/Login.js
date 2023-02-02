@@ -10,6 +10,8 @@ function Login(){
     const [bestilteTimer, sBestiltetimer] = useState();
     const [loggetInn, toggleLoggetInn] = useState(false);
     const [passordSynlig, sPassordsynlig] = useState(false);
+    const [updateTrigger, sUpdateTrigger] = useState(false);
+
 
     //Bruker som er innlogget
     const [bruker, sBruker] = useState();
@@ -18,7 +20,7 @@ function Login(){
 
     useEffect(()=>{
         alleredeLoggetInn();
-    },[]);
+    },[updateTrigger]);
 
     async function logginn(){
         const data = {
@@ -77,7 +79,7 @@ function Login(){
     
 
     return(
-        (loggetInn && env !== null?<div> <div style={{color:"blue", cursor:"pointer", userSelect:"none"}} onClick={loggut}>LOGG UT</div> {(brukertype === "admin"?<Admin env={env} bestilteTimer={bestilteTimer}/>:(brukertype === "vakter"?<Vakter env={env} bruker={bruker} bestilteTimer={bestilteTimer} />:""))}</div>:(<div className='login'>
+        (loggetInn && env !== null?<div> <div style={{color:"blue", cursor:"pointer", userSelect:"none"}} onClick={loggut}>LOGG UT</div> {(brukertype === "admin"?<Admin env={env} sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} bestilteTimer={bestilteTimer}/>:(brukertype === "vakter"?<Vakter env={env} bruker={bruker} bestilteTimer={bestilteTimer} />:""))}</div>:(<div className='login'>
         <form className='loginForm'>
             <label>Brukernavn: <input name='brukernavn' value={brukernavn} maxLength={10} type="text" placeholder='brukernavn' onChange={(e)=>{
                 if(!format.test(e.target.value)){

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-function RedigerKontakt({number, setState, state}){
+function RedigerKontakt({number, setState, state, sendTilDatabase, env}){
 
 
     const [redigeringsKnappSynlig, sRedigeringsKnappSynlig] = useState(true);
@@ -29,6 +29,12 @@ function RedigerKontakt({number, setState, state}){
                 sAvbrytOgLagreSynlig(false);
                 sInputSynlig(false);
                 sRedigeringsKnappSynlig(true);
+                //Sjekker om det er telefonnummeret som må oppdateres
+                if(number){
+                    sendTilDatabase(env.frisorer, env.kategorier, env.tjenester, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, tempState);
+                } else {
+                    sendTilDatabase(env.frisorer, env.kategorier, env.tjenester, env.klokkeslett, env.sosialeMedier, tempState, env.kontakt_tlf);
+                }
             }}>
                 <img src="lagre.png" alt="Lagre og oppdater database"></img>
             </button>

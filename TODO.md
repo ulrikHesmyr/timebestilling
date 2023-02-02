@@ -69,6 +69,7 @@ FØR PROD:
 TODO:
 - Sjekke ut hva Jest er
 - Fikse patent?
+- Fikse betalingsskjerm som kobles opp til en betalingsterminal https://aera.id/betalingsterminal/#module-9
 
 Ideer:
 Gavekort, betaling med stripe
@@ -90,6 +91,7 @@ un-comment credentials i Login.js i client
 bytt fra mercedes bildet til logo
 bytte farge-variabler i App.css
 har salongen åpent søndager? Da må det endres i Klokkeslett.js
+Endre at når ansatt endrer tlf så endrer den på deres tlf og ikke elin sitt (routes/login.js /oppdaterTelefonnummer)
 
 MINE GARANTIER:
 - Umulig å bli dobbeltbooket eller at timer krasjer, først på nettsiden, så sjekker den med tidligere bestillinger, men også på serveren i det bestillingen sendes, så sjekker den momentnant om det krasjer med andre bestillinger.

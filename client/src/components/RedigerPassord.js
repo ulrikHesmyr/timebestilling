@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function RedigerPassord({state, setState, redigerPassordDB}){
+function RedigerPassord({redigerPassordDB}){
 
     const [redigeringsKnappSynlig, sRedigeringsKnappSynlig] = useState(true);
 
@@ -29,11 +29,10 @@ function RedigerPassord({state, setState, redigerPassordDB}){
             <div><button onClick={(e)=>{
                 e.preventDefault();
                 if(nyttPassord === gjentaPassord){
-                    setState(nyttPassord);
                     sRedigeringsKnappSynlig(true);
                     sNyttPassord("");
                     sGjentapassord("");
-                    redigerPassordDB();
+                    redigerPassordDB(nyttPassord);
                 } else {
                     alert("Passord ikke like");
                 }
@@ -43,7 +42,6 @@ function RedigerPassord({state, setState, redigerPassordDB}){
             </button>
             <button onClick={(e)=>{
                 e.preventDefault();
-                setState(state);
                 sRedigeringsKnappSynlig(true);
                 sNyttPassord("");
                 sGjentapassord("");

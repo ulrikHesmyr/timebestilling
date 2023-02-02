@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 
-function LeggTilFrisor({env, setState, state}){
+function LeggTilFrisor({env, sendTilDatabase}){
 
     const [leggtil, sLeggTil] = useState(false);
     const [nyFrisorNavn, sNyFrisorNavn] = useState("");
@@ -10,7 +10,6 @@ function LeggTilFrisor({env, setState, state}){
 
     async function lagre(){
         console.log("tilkalte 'lagret'");
-        setState([...state, {navn:nyFrisorNavn, produkter:frisorTjenester}]);//Skal være akkurat som env.frisorer i databasen
         sLeggTil(false);
         try {
             
@@ -18,7 +17,7 @@ function LeggTilFrisor({env, setState, state}){
             nyBrukernavn: nyFrisorNavn.toLowerCase(),
             nyTelefonnummer: parseInt(tlfNyFrisor)
         }
-console.log("data opprett frisør: ",data);
+        console.log("data opprett frisør: ",data);
         const options = {
             method:"POST",
             headers:{
@@ -39,6 +38,7 @@ console.log("data opprett frisør: ",data);
         sLeggTil(false);
         sTlfNyFrisor("");
         sNyFrisorNavn("");
+        sendTilDatabase([...env.frisorer, {navn:nyFrisorNavn, produkter:frisorTjenester}], env.kategorier, env.tjenester, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
 
     }
 

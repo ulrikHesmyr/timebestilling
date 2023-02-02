@@ -4,13 +4,12 @@ import RedigerPassord from '../components/RedigerPassord';
 import LeggTilFrisor from '../components/LeggTilFrisor';
 import DetaljerFrisor from '../components/DetaljerFrisor';
 import Fri from '../components/Fri';
+import RedigerAapningstider from '../components/RedigerAapningstider';
 
-function Admin({env, bestilteTimer}){
+function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger}){
     console.log(env);
     console.log(bestilteTimer);
     
-    const [admin_pass, sAPassord] = useState(""); //[{navn:String, produkter:[Number]}]   [OK]
-
     const [frisorer, sFrisorer] = useState(env.frisorer); //[{navn:String, produkter:[Number]}]   [OK]
     const [klokkeslett, sKlokkeslett] = useState(env.klokkeslett); //[{dag:String, open:String, closed:String}] []
     const [tjenester, sTjenester] = useState(env.tjenester); //[{navn:String, kategori: Number, pris: Number, tid: Number}] []
@@ -22,6 +21,17 @@ function Admin({env, bestilteTimer}){
     const [kontakt_epost, sKontakt_epost] = useState(env.kontakt_epost); //String
     const [kontakt_tlf, sKontakt_tlf] = useState(env.kontakt_tlf); //Number
 
+    const [visRedigerAapningstider, sVisRedigerAapningstider] = useState(false);
+
+    useEffect(()=>{
+        sFrisorer(env.frisorer);
+        sKlokkeslett(env.klokkeslett);
+        sTjenester(env.tjenester);
+        sSosialeMedier(env.sosialeMedier);
+        sKategorier(env.kategorier);
+        sKontakt_epost(env.kontakt_epost);
+        sKontakt_tlf(env.kontakt_tlf);
+    }, [env])
     //const [tempBestilteTimer, setTempBestilteTimer] = useState();
 
     //Synlige sider
@@ -31,28 +41,6 @@ function Admin({env, bestilteTimer}){
     //useEffect(()=>{
     //    setTempBestilteTimer(bestilteTimer)
     //}, [bestilteTimer]);
-
-    useEffect(()=>{
-        if(env !== null && (frisorer !== env.frisorer || klokkeslett !== env.klokkeslett || tjenester !== env.tjenester || sosialeMedier !== env.sosialeMedier)){
-
-            console.log("SKal oppdatere env: ", frisorer !== env.frisorer && env !== null)
-            console.log(frisorer, env.frisorer);
-            console.log(klokkeslett, env.klokkeslett);
-            console.log(tjenester, env.tjenester);
-            console.log(sosialeMedier, env.sosialeMedier);
-            console.log(kategorier, env.kategorier);
-            console.log(kontakt_epost, env.kontakt_epost);
-            console.log(kontakt_tlf, env.kontakt_tlf);
-            sendTilDatabase();
-        }
-    },[env.frisorer, env.klokkeslett, env.tjenester, env.sosialeMedier, env.kategorier, env.kontakt_epost, env.kontakt_tlf, frisorer, klokkeslett, tjenester, sosialeMedier, kategorier, kontakt_epost, kontakt_tlf]);
-
-    useEffect(()=>{
-        if(admin_pass !== ""){
-            console.log("Oppdaterte passord");
-            redigerPassordDB();
-        }
-    }, [admin_pass])
 
     async function slettFrisor(frisor){
 
@@ -82,22 +70,22 @@ function Admin({env, bestilteTimer}){
                 console.log(response);
             } 
             
-            } catch (error) {
-                console.log(error);
-            }
+        } catch (error) {
+            console.log(error);
+        }
     }
 
-    async function sendTilDatabase(){
+    async function sendTilDatabase(fri, kat, tje, klok, some, epost, tlf){
         console.log("sendte nytt env til database");
         //fetch
         const nyttEnv = {
-            frisorer:frisorer,
-            kategorier:kategorier,
-            tjenester:tjenester,
-            klokkeslett:klokkeslett,
-            sosialeMedier:sosialeMedier,
-            kontakt_epost:kontakt_epost,
-            kontakt_tlf:kontakt_tlf
+            frisorer:fri,
+            kategorier:kat,
+            tjenester:tje,
+            klokkeslett:klok,
+            sosialeMedier:some,
+            kontakt_epost:epost,
+            kontakt_tlf:tlf
         }
         const options = {
             method:"POST",
@@ -111,15 +99,16 @@ function Admin({env, bestilteTimer}){
         if(response){
             console.log(response);
         }
+        sUpdateTrigger(!updateTrigger);
     }
 
-    async function redigerPassordDB(){
+    async function redigerPassordDB(nyttPass){
         const options = {
             method:"POST",
             headers:{
                 "Content-Type":"application/json"
             },
-            body: JSON.stringify({admin_pass:admin_pass})
+            body: JSON.stringify({admin_pass:nyttPass})
         }
         const request = await fetch("http://localhost:3001/env/oppdaterAdminPass", options);
         const response = await request.json();
@@ -176,12 +165,12 @@ function Admin({env, bestilteTimer}){
                 <div>
                     <h3>Frisører, behandlinger, kategorier, åpningstider, kontakt-info og passord</h3>
                     <div>
-                        <div className='redigeringsBoks'> <p>Kontakt telefon: {kontakt_tlf}</p> <RedigerKontakt number={true} state={kontakt_tlf} setState={sKontakt_tlf} /></div>
-                        <div className='redigeringsBoks'> <p>Kontakt e-post: {kontakt_epost}</p> <RedigerKontakt number={false} state={kontakt_epost} setState={sKontakt_epost} /></div>
+                        <div className='redigeringsBoks'> <p>Kontakt telefon: {kontakt_tlf}</p> <RedigerKontakt number={true} state={kontakt_tlf} setState={sKontakt_tlf} env={env} sendTilDatabase={sendTilDatabase} /></div>
+                        <div className='redigeringsBoks'> <p>Kontakt e-post: {kontakt_epost}</p> <RedigerKontakt number={false} state={kontakt_epost} setState={sKontakt_epost} env={env} sendTilDatabase={sendTilDatabase} /></div>
                     </div>
 
                     <div>
-                        <div className='redigeringsBoks'><p>Passord for: admin</p> <RedigerPassord state={admin_pass} setState={sAPassord} redigerPassordDB={redigerPassordDB} /> </div>
+                        <div className='redigeringsBoks'><p>Passord for: admin</p> <RedigerPassord redigerPassordDB={redigerPassordDB} /> </div>
                     </div>
                     <div>
                         {frisorer.map((frisor)=>(
@@ -193,8 +182,21 @@ function Admin({env, bestilteTimer}){
                                 }}><img src='delete.png' style={{height:"1.4rem"}} alt="Slett frisør" ></img></button>
                             </div>
                         ))}
-                        {env !== null?<LeggTilFrisor env={env} setState={sFrisorer} state={frisorer}/>:""}
+                        {env !== null?<LeggTilFrisor env={env} sendTilDatabase={sendTilDatabase} />:""}
                         
+                    </div>
+                    <div>
+                        {visRedigerAapningstider?<>
+                            <RedigerAapningstider env={env} sendTilDatabase={sendTilDatabase} />
+                        </> :env.klokkeslett.map((klokkeslett, index)=>(
+                            <div key={index} style={{display:"flex", flexDirection:"row", alignItems:"center", margin:"0.3rem"}}>
+                             {klokkeslett.dag} {klokkeslett.open} - {klokkeslett.closed}
+                             <button onClick={()=>{
+                                console.log("trykket på rediger-knapp for åpningstider");
+                                sVisRedigerAapningstider(true);
+                             }}><img src="rediger.png" style={{height:"1.4rem"}}></img></button>
+                            </div>
+                        ))}
                     </div>
                 </div>
                 ):""}
