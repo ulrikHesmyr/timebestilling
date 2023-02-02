@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-function RedigerKontakt({number, setState, state, sendTilDatabase}){
+function RedigerKontakt({number, setState, state}){
 
 
     const [redigeringsKnappSynlig, sRedigeringsKnappSynlig] = useState(true);
@@ -26,7 +26,6 @@ function RedigerKontakt({number, setState, state, sendTilDatabase}){
             <button onClick={(e)=>{
                 e.preventDefault();
                 setState(tempState);
-                sendTilDatabase();
                 sAvbrytOgLagreSynlig(false);
                 sInputSynlig(false);
                 sRedigeringsKnappSynlig(true);

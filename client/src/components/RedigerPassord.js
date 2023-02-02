@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function RedigerPassord({state, setState, sendTilDatabase}){
+function RedigerPassord({state, setState, redigerPassordDB}){
 
     const [redigeringsKnappSynlig, sRedigeringsKnappSynlig] = useState(true);
 
@@ -33,7 +33,7 @@ function RedigerPassord({state, setState, sendTilDatabase}){
                     sRedigeringsKnappSynlig(true);
                     sNyttPassord("");
                     sGjentapassord("");
-                    sendTilDatabase();
+                    redigerPassordDB();
                 } else {
                     alert("Passord ikke like");
                 }

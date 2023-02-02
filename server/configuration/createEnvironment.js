@@ -1,9 +1,10 @@
 const Environment = require("../model/env");
-const {BEDRIFT} = process.env;
+const Brukere = require("../model/brukere");
+const {BEDRIFT, ADMIN_TLF} = process.env;
 
 async function opprettEnvironment(){
     try {
-        await Environment.create({
+        const nyttenv = await Environment.create({
             kontakt_epost:"eksempel@gmail.com",
             kontakt_tlf:41394262,
             sosialeMedier:[{
@@ -91,20 +92,8 @@ async function opprettEnvironment(){
             ],
             frisorer:[
                 {
-                    navn:"Robin",
-                    produkter:[0,1,2,3,4,5]
-                },
-                {
-                    navn:"Anine",
-                    produkter:[0,2,3,5]
-                },
-                {
-                    navn:"Ludvik",
-                    produkter:[0,1,4]
-                },
-                {
                     navn:"Ulrik",
-                    produkter:[0,4,5]
+                    produkter:[0,1,2,3,4,5]
                 }
                 
             ],
@@ -140,6 +129,24 @@ async function opprettEnvironment(){
                 closed:"14:00"
                 }]
             })
+            let tlf = parseInt(ADMIN_TLF)
+
+            const adminBruker = await Brukere.create({
+                brukernavn:"admin",
+                passord:"KongHarald",
+                telefonnummer: tlf
+            })
+
+            const frisorBruker = await Brukere.create({
+                brukernavn:"ulrik",
+                passord:"ulrik",
+                telefonnummer: tlf
+            })
+
+            
+            if(adminBruker && nyttenv && frisorBruker){
+                console.log("Opprettet nytt env!");
+            }
     } catch (error) {
         console.log(error)
     }

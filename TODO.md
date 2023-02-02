@@ -41,16 +41,17 @@ SERVER OG CLIENT:
 
         BRUKERFUNKSJONALITET
 - model/brukere.js: Opprett denne modellen, hver frisør skal ha en bruker hver slik at man må logge inn med 2FA. Modellen skal ha     
-    properties brukernavn, passord, produkter og telefon. 
-- routes/login.js: Kunne logge inn på vakter-panelet med egen bruker Brukere.findOne({brukernavn: req.body.brukernavn}), samt bcrypt på 
-    passord. Dersom brukernavnet er "admin" så setter brukertype til "admin". Så fjerne vakter_bruker, admin_bruker, vakter_pass og 
-    admin_pass. (Sjekk andre filer for dette også. Dette erstattes med å hente brukernavn og passord fra brukere i databasen)
+    properties brukernavn, passord og telefon. 
 - routes/login.js: Lage route for å opprette bruker, sender inn navn på frisør og telefonnummer. Passordet settes til det samme som 
     navnet på frisøren "/opprettBruker". Denne funksjonaliteten gjøres samtidig som "/oppdaterEnv" (bare admin som kan bruke), redigere 
-    passord og telefonnummer "/endreTlfPass"(bare frisøren selv), resette passord for en valgt bruker hvis de ikke husker passordet 
+    passord og telefonnummer "/endreTlfPass"(bare f
+    isøren selv), resette passord for en valgt bruker hvis de ikke husker passordet 
     sitt hvor passordet blir satt til samme som 
     brukernavn "/resetBruker" (bare admin som kan bruke) og slette bruker "/slettBruker" som må gjøres samtidig som "/oppdaterEnv" med 
     tanke på frisører osv (bare admin som kan bruke)
+- routes/login.js: Kunne logge inn på vakter-panelet med egen bruker Brukere.findOne({brukernavn: req.body.brukernavn}), samt bcrypt på 
+    passord. Dersom brukernavnet er "admin" så setter brukertype til "admin". Så fjerne vakter_bruker, admin_bruker, vakter_pass og 
+    admin_pass. (Sjekk andre filer for dette også. Dette erstattes med å hente brukernavn og passord fra brukere i databasen)
 - Vakter.js: Frisøren kan selv endre passord og telefonnummer.
 - Admin.js: Admin brukeren
 - configuration/createEnvironment.js: Opprett første brukeren som er admin-brukeren. Her er brukernavn og passord "admin", og 
@@ -58,6 +59,8 @@ SERVER OG CLIENT:
         APPLIKASJON
 - Laste opp bilder for friøsrene
 
+BUGS:
+- Admin passord blir satt til "" i noen scenarioer. 
 
 FØR PROD: 
 - Sjekke clientside om bruker er logget inn fra før med cookies (path: /login/loggetinn)
@@ -76,7 +79,8 @@ Scenarioer:
     reservert for dameklipp
 
 Før produksjon
-Legge inn authorization som middleware for alle administrative routes
+Legge inn authorization som middleware for alle administrative routes (er lagt til for alle hvor admin er eneste autoriserte, men 
+    må legge til for routes der vanlige ansatte kan gjøre endringer)
 endre variabler i .env filen
 endre request i Personinfo.js og Admin.js fra http://localhost til domenenavnet
 slette unødvendige filer og fjerne unødvendig kode

@@ -6,6 +6,7 @@ async function alreadyLoggedIn(){
     const response = await request.json();
     if(response.valid){
         console.log("Du er logget inn fra før!");
+        console.log(response);
     } else {
         console.log("Du er ikke logget inn");
     }

@@ -4,17 +4,49 @@ function LeggTilFrisor({env, setState, state}){
 
     const [leggtil, sLeggTil] = useState(false);
     const [nyFrisorNavn, sNyFrisorNavn] = useState("");
+    const [tlfNyFrisor, sTlfNyFrisor] = useState("");
     const [frisorTjenester, setFrisortjenester] = useState([]); //Skal være indekser, akkurat som i databasen
 
 
-    function lagre(){
+    async function lagre(){
+        console.log("tilkalte 'lagret'");
         setState([...state, {navn:nyFrisorNavn, produkter:frisorTjenester}]);//Skal være akkurat som env.frisorer i databasen
         sLeggTil(false);
+        try {
+            
+        const data = {
+            nyBrukernavn: nyFrisorNavn.toLowerCase(),
+            nyTelefonnummer: parseInt(tlfNyFrisor)
+        }
+console.log("data opprett frisør: ",data);
+        const options = {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body: JSON.stringify(data)
+        }
+        const request = await fetch("http://localhost:3001/login/opprettBruker", options);
+        const response = request.json();
+        if(response){
+            console.log(response);
+        } 
+        
+        } catch (error) {
+            console.log(error);
+        }
+        setFrisortjenester([]);
+        sLeggTil(false);
+        sTlfNyFrisor("");
+        sNyFrisorNavn("");
+
     }
 
     function avbryt(){
         setFrisortjenester([]);
         sLeggTil(false);
+        sTlfNyFrisor("");
+        sNyFrisorNavn("");
     }
   return (
     <>
@@ -22,6 +54,11 @@ function LeggTilFrisor({env, setState, state}){
         <label style={{fontWeight:"bold"}}>Navn på ny frisør: <input onChange={(e)=>{
             sNyFrisorNavn(e.target.value);
         }} value={nyFrisorNavn} type="text" placeholder='Navn navnesen' maxLength={20}></input></label>
+
+        <label style={{fontWeight:"bold"}}>Telefonnummeret til frisøren: <input style={{letterSpacing:"0.3rem"}} onChange={(e)=>{
+            sTlfNyFrisor(e.target.value);
+        }} value={tlfNyFrisor} type="text" placeholder='Navn navnesen' maxLength={8}></input></label>
+
         <p style={{fontWeight:"bold"}} >Velg behandlinger for frisør:</p>
         {env.tjenester.map((tjeneste, index)=>
         (<div style={{userSelect:"none", backgroundColor:(frisorTjenester.includes(index)?"lightgreen":"white"), cursor:"pointer"}} key={tjeneste.navn} onClick={()=>{
@@ -43,7 +80,15 @@ function LeggTilFrisor({env, setState, state}){
         </button>
         <button onClick={(e)=>{
                 e.preventDefault();
-                lagre();
+                console.log("Trykte på knappen");
+                console.log(tlfNyFrisor.length === 8);
+                console.log(nyFrisorNavn !== "");
+                console.log(!isNaN(parseInt(tlfNyFrisor)));
+                if(tlfNyFrisor.length===8 && nyFrisorNavn !== "" && !isNaN(parseInt(tlfNyFrisor))){
+                    lagre();
+                } else {
+                    alert("Ikke riktig format");
+                }
             }}>
             <img alt="lagre" src='lagre.png' style={{height:"2rem"}}></img>
         </button>

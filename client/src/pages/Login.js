@@ -11,6 +11,9 @@ function Login(){
     const [loggetInn, toggleLoggetInn] = useState(false);
     const [passordSynlig, sPassordsynlig] = useState(false);
 
+    //Bruker som er innlogget
+    const [bruker, sBruker] = useState();
+
     let format = /[ `!@#$%-^&*()_+=[\]{};':"\\|,.<>/?~]/;
 
     useEffect(()=>{
@@ -39,6 +42,9 @@ function Login(){
            setBukertype(response.brukertype);
            sEnv(response.env);
            sBestiltetimer(response.bestilteTimer);
+           sBruker(response.bruker);
+
+           //Nullstiller input
            setBrukernavn("");
            setPassord("");
         }
@@ -53,6 +59,8 @@ function Login(){
             setBukertype(response.brukertype);
             sEnv(response.env);
             sBestiltetimer(response.bestilteTimer);
+            console.log(response.bruker);
+            sBruker(response.bruker);
         } else {
             console.log(response.message);
         }
@@ -69,7 +77,7 @@ function Login(){
     
 
     return(
-        (loggetInn && env !== null?<div> <div style={{color:"blue", cursor:"pointer", userSelect:"none"}} onClick={loggut}>LOGG UT</div> {(brukertype === "admin"?<Admin env={env} bestilteTimer={bestilteTimer}/>:(brukertype === "vakter"?<Vakter env={env} bestilteTimer={bestilteTimer} />:""))}</div>:(<div className='login'>
+        (loggetInn && env !== null?<div> <div style={{color:"blue", cursor:"pointer", userSelect:"none"}} onClick={loggut}>LOGG UT</div> {(brukertype === "admin"?<Admin env={env} bestilteTimer={bestilteTimer}/>:(brukertype === "vakter"?<Vakter env={env} bruker={bruker} bestilteTimer={bestilteTimer} />:""))}</div>:(<div className='login'>
         <form className='loginForm'>
             <label>Brukernavn: <input name='brukernavn' value={brukernavn} maxLength={10} type="text" placeholder='brukernavn' onChange={(e)=>{
                 if(!format.test(e.target.value)){
