@@ -411,6 +411,24 @@ input, button{
     align-items: center;
 
   }
+  .varsling{
+    
+    position: fixed;
+    top: 0;
+    transition: 0.2s ease;
+    display: flex;
+    
+    width: 100%;
+    justify-content: center;
+    align-items: flex-end;
+    padding:2rem;
+    font-size: xx-large;
+  }
+  .varsling div{
+    padding: 1rem;
+    background: var(--background1);
+    color: var(--color1);
+  }
   
   /*******************************************************************************************************************/
 

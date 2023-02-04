@@ -6,22 +6,8 @@ INTERVJU:
     Er det noe som mangler på applikasjonen, for eksempel bekreftelse på SMS, og påminnelse på SMS dagen før timen?
     Noe som dere skulle ønske var annerledes? At kunde må logge seg på for å bestille time, at man kanskje ikke trenger det
 
-PROBLEMSTILLINGER:
-- Gjøre det mulig å velge første ledige frisør. Dersom dette velges så kan de velge mellom alle klokkeslett. Da får de en tilfeldig
-    frisør som er ledig på dette tidspunktet og som har tid til å gjennomføre alle behandlingene til kunden.
-
-    Frisor.js: Velger "første ledige frisør" --> sFrisor(false). Finner også alle tilgjengelige frisører som gjør alle de valgte
-                behandlingene. 
-    Klokkeslett.js: Hvis frisør er false, så blir alle klokkeslett hvor det finnes frisører som både kan gjennomføre alle behandlingene
-                og er ledig for totalTid for behandlingene som er i produkt (useState). Da bytter vi ut funksjonene for å finne ledige
-                timer for én spesifikt valgt frisør med funksjon som sjekker dersom én av de egnede frisørene er ledige.
-
-
 
 BARE CLIENT:
-- Admin.js: Ikke kunne opprette frisør uten at minst én behandling er valgt
-- Login.js som sender til Admin.js og Vakter.js: Melding som sier om ting ble lagret
-- App.js: "Bestill time" på startskjermen
 - Admin.js: Søkefelt for å søke etter spesifike timebestillinger
 - Vakter.js: Displaye fri elementer
 - Klokkeslett.js: tilpasse ledige klokkeslett til frisører som har fri
@@ -34,6 +20,7 @@ BARE CLIENT:
 - Lage footer med info om: Meg, google icons, strex SMS gateway, personvernserklæring og brukervilkår
 
 BARE SERVER:
+- Nedskalere bilder som blir lastet opp til server før de sendes til databasen
 - scheduleJob index.js: slette fri når sluttdatoen er datoen idag
 
 SERVER OG CLIENT:

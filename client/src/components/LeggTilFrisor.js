@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 
-function LeggTilFrisor({env}){
+function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle}){
 
     const [leggtil, sLeggTil] = useState(false);
     const [nyFrisorNavn, sNyFrisorNavn] = useState("");
@@ -30,15 +30,15 @@ function LeggTilFrisor({env}){
         }
         const request = await fetch("http://localhost:3001/login/opprettBruker", options);
         const response = request.json();
-        if(response){
-            console.log(response);
-        } 
+        
+        if(response){ 
+            opprettFrisor();
+        }
         
         } catch (error) {
             console.log(error);
         }
 
-        opprettFrisor();
 
     }
 
@@ -57,11 +57,11 @@ function LeggTilFrisor({env}){
             const request = await fetch("http://localhost:3001/env/opprettFrisor", options);
             const response = request.json();
             if(response){
-                console.log(response);
-                
-        setFrisortjenester([]);
-        sTlfNyFrisor("");
-        sNyFrisorNavn("");
+                sUpdateTrigger(!updateTrigger);
+                setFrisortjenester([]);
+                sTlfNyFrisor("");
+                sNyFrisorNavn("");
+                varsle();
             }
             
         } catch (error) {
@@ -115,7 +115,7 @@ function LeggTilFrisor({env}){
                 console.log(tlfNyFrisor.length === 8);
                 console.log(nyFrisorNavn !== "");
                 console.log(!isNaN(parseInt(tlfNyFrisor)));
-                if(tlfNyFrisor.length===8 && nyFrisorNavn !== "" && !isNaN(parseInt(tlfNyFrisor)) && bildeAvFrisor !== null){
+                if(frisorTjenester.length > 0 && tlfNyFrisor.length===8 && nyFrisorNavn !== "" && !isNaN(parseInt(tlfNyFrisor)) && bildeAvFrisor !== null){
                     lagre();
                 } else {
                     alert("Ikke riktig format");

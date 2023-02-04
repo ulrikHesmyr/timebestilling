@@ -20,6 +20,8 @@ function Frisor({tilgjengeligeFrisorer, env, synligKomponent, displayKomponent, 
             const array = new Uint8Array(env.frisorer[i].img.data.data);
             const base = window.btoa(String.fromCharCode.apply(null, array));
             const base64Image = `data:${env.frisorer[i].img.contentType};base64,${base}`;
+
+            //const base64Image = `data:${env.frisorer[i].img.contentType};base64,${window.btoa(env.frisorer[i].img.data.data)}`;
             midlertidigArray.push(base64Image);
         }
         //const array2 = new Uint8Array(env.frisorer[5].img.data.data);

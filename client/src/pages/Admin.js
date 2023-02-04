@@ -6,9 +6,8 @@ import DetaljerFrisor from '../components/DetaljerFrisor';
 import Fri from '../components/Fri';
 import RedigerAapningstider from '../components/RedigerAapningstider';
 
-function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger}){
+function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
     const [frisorer, sFrisorer] = useState(env.frisorer); //[{navn:String, produkter:[Number]}]   [OK]
-    const [klokkeslett, sKlokkeslett] = useState(env.klokkeslett); //[{dag:String, open:String, closed:String}] []
     const [tjenester, sTjenester] = useState(env.tjenester); //[{navn:String, kategori: Number, pris: Number, tid: Number}] []
 
     const [sosialeMedier, sSosialeMedier] = useState(env.sosialeMedier); //[{bruker:String, platform:String}] []
@@ -22,24 +21,19 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger}){
 
     const [dagForRedigering, sDagForRedigering] = useState();
 
+    
+    //Synlige sider
+    const [synligKomponent, setSynligKomponent] = useState(1);
+
     useEffect(()=>{
         sFrisorer(env.frisorer);
-        sKlokkeslett(env.klokkeslett);
         sTjenester(env.tjenester);
         sSosialeMedier(env.sosialeMedier);
         sKategorier(env.kategorier);
         sKontakt_epost(env.kontakt_epost);
         sKontakt_tlf(env.kontakt_tlf);
     }, [env])
-    //const [tempBestilteTimer, setTempBestilteTimer] = useState();
 
-    //Synlige sider
-    const [synligKomponent, setSynligKomponent] = useState(1);
-
-
-    //useEffect(()=>{
-    //    setTempBestilteTimer(bestilteTimer)
-    //}, [bestilteTimer]);
 
     async function slettFrisor(frisor){
 
@@ -65,8 +59,21 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger}){
             }
             const request = await fetch("http://localhost:3001/login/slettBruker", options);
             const response = request.json();
-            if(response){
+
+            const optionsEnv = {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body: JSON.stringify({navn:frisor})
+            }
+            const requestEnv = await fetch("http://localhost:3001/env/slettFrisor", optionsEnv);
+            const responseEnv = await requestEnv.json();
+
+
+            if(response && responseEnv){
                 console.log(response);
+                varsle();
             } 
             
         } catch (error) {
@@ -96,8 +103,9 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger}){
         const response = await request.json();
         if(response){
             console.log(response);
+            sUpdateTrigger(!updateTrigger);
+            varsle();
         }
-        sUpdateTrigger(!updateTrigger);
     }
 
     async function redigerPassordDB(nyttPass){
@@ -112,6 +120,7 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger}){
         const response = await request.json();
         if(response){
             console.log(response);
+            varsle();
         }
     }
 
@@ -143,7 +152,7 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger}){
                     </div>:""}
 
                 
-                <Fri env={env} bestilteTimer={bestilteTimer} synligKomponent={synligKomponent} />
+                <Fri env={env} bestilteTimer={bestilteTimer} synligKomponent={synligKomponent} varsle={varsle} />
 
                 {synligKomponent === 1 && bestilteTimer !== null?(<>
                 <h3>Timebestillinger</h3>
@@ -183,7 +192,7 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger}){
                                 }}><img src='delete.png' style={{height:"1.4rem"}} alt="Slett frisør" ></img></button>
                             </div>
                         ))}
-                        {env !== null?<LeggTilFrisor env={env} />:""}
+                        {env !== null?<LeggTilFrisor env={env} varsle={varsle} updateTrigger={updateTrigger} sUpdateTrigger={sUpdateTrigger} />:""}
                         
                     </div>
                     <div>

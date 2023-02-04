@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import { hentDato, hentMaaned } from '../App';
 import { minutterFraKlokkeslett } from './Klokkeslett';
 
-function Fri ({env, bestilteTimer, synligKomponent}) {
+function Fri ({env, bestilteTimer, synligKomponent, varsle}) {
     const[leggTilFri, sLeggTilFri] = useState(false);
     const[dagsfraver, sDagsfraver] = useState(null); //"fler" eller "dag"
     const [friElementer, sFriElementer] = useState([]);
@@ -94,8 +94,8 @@ function Fri ({env, bestilteTimer, synligKomponent}) {
         const request = await fetch("http://localhost:3001/env/opprettFri", options);
         const response = await request.json();
         if(response){
-            console.log(response);
             sUpdateTrigger(!updateTrigger);
+            varsle();
         }
     }
 
@@ -124,8 +124,8 @@ function Fri ({env, bestilteTimer, synligKomponent}) {
         const request = await fetch("http://localhost:3001/env/slettFri", options);
         const response = await request.json();
         if(response){
-            console.log(response);
             sUpdateTrigger(!updateTrigger);
+            varsle();
         }
     }
 

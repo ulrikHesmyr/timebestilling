@@ -49,7 +49,6 @@ router.post('/slettFri',authorization, async(req,res)=>{
 
 router.post('/opprettFri', authorization,async(req,res)=>{
     const {lengreTid, fraDato, tilDato, fraKlokkeslett, tilKlokkeslett, friDag, frisor, medarbeider} = req.body;
-    console.log(req.body);
     if(req.brukernavn === "admin"){    
         try {
 
@@ -89,16 +88,6 @@ router.get('/env', async(req,res)=>{
     }
 })
 
-
-//const storage = multer.diskStorage({
-//    destination: function(req, file, cb){
-//      cb(null, 'uploads');
-//    },
-//    filename: function(req, file, cb){
-//      cb(null, file.originalname);//file.fieldname byttes med req.body.navn?
-//    }
-//});
-
 const storage = multer.memoryStorage();
 
 const upload = multer({
@@ -128,11 +117,8 @@ router.post("/opprettFrisor", upload.single("uploaded_file"),authorization, asyn
             if(env){
                 let tempFrisorer = env.frisorer;
                 tempFrisorer.push({navn:nyFrisorNavn, produkter:nyFrisorTjenesterArray, img:img});
-
-                //console.log(tempFrisorer, "tempfrisorer");
                 const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {frisorer:tempFrisorer});
                 if(oppdatertEnv){
-                    console.log(img, "image");
                     return res.send({message:"Frisør opprettet!"});
                 } else {
                     return res.send({message:"Noe har skjedd gærent i /opprettFrisor!"});
@@ -141,6 +127,27 @@ router.post("/opprettFrisor", upload.single("uploaded_file"),authorization, asyn
         }
     } catch (error) {
         console.log(error, "error i opprettFrisor");
+    }
+})
+
+router.post("/slettFrisor",authorization, async (req,res)=>{
+    const {navn} = req.body;
+    try {
+        if(req.brukernavn === "admin"){
+            const env = await Environment.findOne({bedrift:BEDRIFT});
+            if(env){
+                let tempFrisorer = env.frisorer;
+                let nyFrisorer = tempFrisorer.filter(frisor => frisor.navn !== navn);
+                const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {frisorer:nyFrisorer});
+                if(oppdatertEnv){
+                    return res.send({message:"Frisør slettet!"});
+                } else {
+                    return res.send({message:"Noe har skjedd gærent i /slettFrisor!"});
+                }
+            }
+        }
+    } catch (error) {
+        console.log(error, "error i slettFrisor");
     }
 })
 
