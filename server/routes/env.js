@@ -4,6 +4,7 @@ const Environment = require("../model/env");
 const FriElementer = require("../model/fri");
 const Timebestillinger = require("../model/bestilling");
 const Brukere = require("../model/brukere");
+const multer = require('multer');
 
 const mailer = require("../configuration/mailer");
 const authorization = require("../middleware/authorization");
@@ -88,10 +89,65 @@ router.get('/env', async(req,res)=>{
     }
 })
 
+
+//const storage = multer.diskStorage({
+//    destination: function(req, file, cb){
+//      cb(null, 'uploads');
+//    },
+//    filename: function(req, file, cb){
+//      cb(null, file.originalname);//file.fieldname byttes med req.body.navn?
+//    }
+//});
+
+const storage = multer.memoryStorage();
+
+const upload = multer({
+    storage: storage,
+    dest: 'uploads/',
+    fileFilter: function (req, file, cb) {
+      if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+        return cb(new Error('Only image files are allowed!'), false);
+      }
+      cb(null, true);
+    }
+  });
+  
+
+router.post("/opprettFrisor", upload.single("uploaded_file"),authorization, async (req,res)=>{ 
+   
+    const {nyFrisorNavn, nyFrisorTjenester} = req.body;
+    let nyFrisorTjenesterArray = nyFrisorTjenester.split(",");
+    try {
+        if(req.brukernavn === "admin"){
+            const img = {
+                data: new Buffer.from(req.file.buffer),
+                contentType: req.file.mimetype
+            };
+            
+            const env = await Environment.findOne({bedrift:BEDRIFT});
+            if(env){
+                let tempFrisorer = env.frisorer;
+                tempFrisorer.push({navn:nyFrisorNavn, produkter:nyFrisorTjenesterArray, img:img});
+
+                //console.log(tempFrisorer, "tempfrisorer");
+                const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {frisorer:tempFrisorer});
+                if(oppdatertEnv){
+                    console.log(img, "image");
+                    return res.send({message:"Frisør opprettet!"});
+                } else {
+                    return res.send({message:"Noe har skjedd gærent i /opprettFrisor!"});
+                }
+            }
+        }
+    } catch (error) {
+        console.log(error, "error i opprettFrisor");
+    }
+})
+
 router.post('/oppdaterEnv',authorization, async(req,res)=>{
     const {frisorer, tjenester, kategorier, sosialeMedier, kontakt_tlf, kontakt_epost, klokkeslett} = req.body;
     try {
-        const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {frisorer:frisorer, tjenester:tjenester, kategorier:kategorier, sosialeMedier:sosialeMedier, kontakt_tlf:kontakt_tlf, kontakt_epost:kontakt_epost, klokkeslett:klokkeslett});
+        const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {tjenester:tjenester, kategorier:kategorier, sosialeMedier:sosialeMedier, kontakt_tlf:kontakt_tlf, kontakt_epost:kontakt_epost, klokkeslett:klokkeslett});
         
         if(oppdatertEnv){
             return res.send({message:"Environment ble oppdatert!"});
@@ -111,6 +167,11 @@ router.post("/oppdaterAdminPass", authorization, async (req,res)=>{
         if(AdminBrukeren){
             return res.send({message:"Passord oppdatert!"});
         }
+        const accessToken = jwt.sign({brukernavn:brukernavn, passord:admin_pass},ACCESS_TOKEN_KEY,{expiresIn:'480m'});
+            res.cookie("access_token", accessToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV == "production",
+        })
     }
 })
 

@@ -7,9 +7,6 @@ import Fri from '../components/Fri';
 import RedigerAapningstider from '../components/RedigerAapningstider';
 
 function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger}){
-    console.log(env);
-    console.log(bestilteTimer);
-    
     const [frisorer, sFrisorer] = useState(env.frisorer); //[{navn:String, produkter:[Number]}]   [OK]
     const [klokkeslett, sKlokkeslett] = useState(env.klokkeslett); //[{dag:String, open:String, closed:String}] []
     const [tjenester, sTjenester] = useState(env.tjenester); //[{navn:String, kategori: Number, pris: Number, tid: Number}] []
@@ -22,6 +19,8 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger}){
     const [kontakt_tlf, sKontakt_tlf] = useState(env.kontakt_tlf); //Number
 
     const [visRedigerAapningstider, sVisRedigerAapningstider] = useState(false);
+
+    const [dagForRedigering, sDagForRedigering] = useState();
 
     useEffect(()=>{
         sFrisorer(env.frisorer);
@@ -75,11 +74,10 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger}){
         }
     }
 
-    async function sendTilDatabase(fri, kat, tje, klok, some, epost, tlf){
+    async function sendTilDatabase(kat, tje, klok, some, epost, tlf){
         console.log("sendte nytt env til database");
         //fetch
         const nyttEnv = {
-            frisorer:fri,
             kategorier:kat,
             tjenester:tje,
             klokkeslett:klok,
@@ -162,8 +160,11 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger}){
 
 
                 {synligKomponent === 3 && env !== null?(
-                <div>
+                    <>
+                    
                     <h3>Frisører, behandlinger, kategorier, åpningstider, kontakt-info og passord</h3>
+                    
+                <div className='adminMain'>
                     <div>
                         <div className='redigeringsBoks'> <p>Kontakt telefon: {kontakt_tlf}</p> <RedigerKontakt number={true} state={kontakt_tlf} setState={sKontakt_tlf} env={env} sendTilDatabase={sendTilDatabase} /></div>
                         <div className='redigeringsBoks'> <p>Kontakt e-post: {kontakt_epost}</p> <RedigerKontakt number={false} state={kontakt_epost} setState={sKontakt_epost} env={env} sendTilDatabase={sendTilDatabase} /></div>
@@ -182,23 +183,24 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger}){
                                 }}><img src='delete.png' style={{height:"1.4rem"}} alt="Slett frisør" ></img></button>
                             </div>
                         ))}
-                        {env !== null?<LeggTilFrisor env={env} sendTilDatabase={sendTilDatabase} />:""}
+                        {env !== null?<LeggTilFrisor env={env} />:""}
                         
                     </div>
                     <div>
                         {visRedigerAapningstider?<>
-                            <RedigerAapningstider env={env} sendTilDatabase={sendTilDatabase} />
+                            <RedigerAapningstider env={env} sendTilDatabase={sendTilDatabase} dag={dagForRedigering} sVisRedigerAapningstider={sVisRedigerAapningstider}/>
                         </> :env.klokkeslett.map((klokkeslett, index)=>(
                             <div key={index} style={{display:"flex", flexDirection:"row", alignItems:"center", margin:"0.3rem"}}>
                              {klokkeslett.dag} {klokkeslett.open} - {klokkeslett.closed}
                              <button onClick={()=>{
                                 console.log("trykket på rediger-knapp for åpningstider");
+                                sDagForRedigering(klokkeslett);
                                 sVisRedigerAapningstider(true);
-                             }}><img src="rediger.png" style={{height:"1.4rem"}}></img></button>
+                             }}><img alt='rediger' src="rediger.png" style={{height:"1.4rem"}}></img></button>
                             </div>
                         ))}
                     </div>
-                </div>
+                </div></>
                 ):""}
         </div>
     )

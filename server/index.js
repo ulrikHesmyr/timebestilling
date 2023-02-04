@@ -4,11 +4,14 @@ const cors = require("cors");
 const schedule = require("node-schedule");
 const mailer = require("./configuration/mailer");
 const cookieParser = require("cookie-parser");
+
 require("dotenv").config();
 require("./configuration/database").connect();
 app.use(express.json({limit:'1mb'}));
+app.use(express.urlencoded({extended:false}));
 app.use(cors());
 app.use(cookieParser());
+
 const {BEDRIFT} = process.env;
 
 const Bestiltetimer = require("./model/bestilling");

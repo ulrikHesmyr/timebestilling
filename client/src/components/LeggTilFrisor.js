@@ -1,14 +1,17 @@
 import React, {useState} from 'react'
 
-function LeggTilFrisor({env, sendTilDatabase}){
+function LeggTilFrisor({env}){
 
     const [leggtil, sLeggTil] = useState(false);
     const [nyFrisorNavn, sNyFrisorNavn] = useState("");
     const [tlfNyFrisor, sTlfNyFrisor] = useState("");
     const [frisorTjenester, setFrisortjenester] = useState([]); //Skal være indekser, akkurat som i databasen
+    const [bildeAvFrisor, sBildeAvFrisor] = useState(null);
 
 
     async function lagre(){
+        
+        sLeggTil(false);
         console.log("tilkalte 'lagret'");
         sLeggTil(false);
         try {
@@ -34,12 +37,36 @@ function LeggTilFrisor({env, sendTilDatabase}){
         } catch (error) {
             console.log(error);
         }
+
+        opprettFrisor();
+
+    }
+
+    async function opprettFrisor(){
+        console.log("tilkalte 'opprettFrisor'");
+        try {
+            let formData = new FormData();
+            formData.append("uploaded_file", bildeAvFrisor);
+            formData.append("nyFrisorNavn", nyFrisorNavn);
+            formData.append("nyFrisorTlf", parseInt(tlfNyFrisor));
+            formData.append("nyFrisorTjenester", frisorTjenester);
+            const options = {
+                method:"POST",
+                body: formData
+            }
+            const request = await fetch("http://localhost:3001/env/opprettFrisor", options);
+            const response = request.json();
+            if(response){
+                console.log(response);
+                
         setFrisortjenester([]);
-        sLeggTil(false);
         sTlfNyFrisor("");
         sNyFrisorNavn("");
-        sendTilDatabase([...env.frisorer, {navn:nyFrisorNavn, produkter:frisorTjenester}], env.kategorier, env.tjenester, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
-
+            }
+            
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     function avbryt(){
@@ -57,7 +84,11 @@ function LeggTilFrisor({env, sendTilDatabase}){
 
         <label style={{fontWeight:"bold"}}>Telefonnummeret til frisøren: <input style={{letterSpacing:"0.3rem"}} onChange={(e)=>{
             sTlfNyFrisor(e.target.value);
-        }} value={tlfNyFrisor} type="text" placeholder='Navn navnesen' maxLength={8}></input></label>
+        }} value={tlfNyFrisor} type="text" maxLength={8}></input></label>
+        <label>Last opp bilde av Frisøren: <input onChange={(e)=>{
+            console.log(e.target.files[0]);
+            sBildeAvFrisor(e.target.files[0]);
+        }} type="file" name="uploaded_file"></input></label>
 
         <p style={{fontWeight:"bold"}} >Velg behandlinger for frisør:</p>
         {env.tjenester.map((tjeneste, index)=>
@@ -84,7 +115,7 @@ function LeggTilFrisor({env, sendTilDatabase}){
                 console.log(tlfNyFrisor.length === 8);
                 console.log(nyFrisorNavn !== "");
                 console.log(!isNaN(parseInt(tlfNyFrisor)));
-                if(tlfNyFrisor.length===8 && nyFrisorNavn !== "" && !isNaN(parseInt(tlfNyFrisor))){
+                if(tlfNyFrisor.length===8 && nyFrisorNavn !== "" && !isNaN(parseInt(tlfNyFrisor)) && bildeAvFrisor !== null){
                     lagre();
                 } else {
                     alert("Ikke riktig format");

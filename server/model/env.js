@@ -18,6 +18,10 @@ const env = new mongoose.Schema({
     frisorer:[
         {
             navn:String,
+            img:{
+                data:Buffer,
+                contentType:String
+            },
             produkter:[Number]
         }
         

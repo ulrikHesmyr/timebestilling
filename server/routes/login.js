@@ -10,8 +10,27 @@ const {BEDRIFT, ACCESS_TOKEN_KEY, NODE_ENV} = process.env;
 
 //ANSATTE ENDRE TELEFONNUMMER OG PASSORD
 
-router.post("/oppdaterTelefonnummer", async (req,res)=>{ //Legg til authorization når nettsiden skal lanseres
-    console.log(req.body);
+//Oppdatere passord til de ansatte
+
+router.post("/oppdaterPassord", authorization, async(req,res)=>{ //Legg til authorization når nettsiden skal lanseres
+    const {passord} = req.body;
+    let bruker;
+    if(NODE_ENV === "production"){
+        bruker = req.brukernavn;
+    } else {
+        bruker = "elin";
+    }
+    const oppdatertPassord = await Brukere.findOneAndUpdate({brukernavn:bruker}, {passord:passord});
+    if(oppdatertPassord){
+        console.log("Oppdatert passord");
+        return res.send({message:"Oppdatert passord"});
+    } else {
+        return res.status(404);
+    }
+
+})
+
+router.post("/oppdaterTelefonnummer", authorization, async (req,res)=>{ //Legg til authorization når nettsiden skal lanseres
     const {telefonnummer} = req.body;
     let bruker;
     if(NODE_ENV === "production"){
@@ -19,10 +38,8 @@ router.post("/oppdaterTelefonnummer", async (req,res)=>{ //Legg til authorizatio
     } else {
         bruker = "elin";
     }
-    console.log(bruker, "brukeren");
     const oppdatertBruker = await Brukere.findOneAndUpdate({brukernavn: bruker}, {telefonnummer:telefonnummer});
     if(oppdatertBruker){
-        console.log("Oppdatert bruker");
         return res.send({message:"Oppdatert bruker"});
     } else {
         return res.status(404);
@@ -33,7 +50,6 @@ router.post("/oppdaterTelefonnummer", async (req,res)=>{ //Legg til authorizatio
 //BRUKERE
 
 router.post("/opprettBruker", authorization, async (req,res)=>{
-    console.log(req.body);
     const {nyBrukernavn, nyTelefonnummer} = req.body;
     if(req.brukernavn === "admin"){
         const nyBruker = await Brukere.create({
@@ -68,7 +84,7 @@ router.post("/slettBruker", authorization, async (req,res)=>{
 })
 
 //LOGG INN, LOGG UT og ALLEREDE LOGGET INN
-router.get("/loggetinn",authorization, async (req,res)=>{
+router.get("/loggetinn", authorization, async (req,res)=>{
     console.log("brukernavn i /loggetinn", req.brukernavn);
     try {
         const brukernavn = req.brukernavn;

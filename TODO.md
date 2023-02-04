@@ -19,7 +19,10 @@ PROBLEMSTILLINGER:
 
 
 BARE CLIENT:
+- Admin.js: Ikke kunne opprette frisør uten at minst én behandling er valgt
+- Login.js som sender til Admin.js og Vakter.js: Melding som sier om ting ble lagret
 - App.js: "Bestill time" på startskjermen
+- Admin.js: Søkefelt for å søke etter spesifike timebestillinger
 - Vakter.js: Displaye fri elementer
 - Klokkeslett.js: tilpasse ledige klokkeslett til frisører som har fri
 - Admin.js: Kunne slette timebestillinger (dersom kunde må avbestille eller flytte på timen). Kun fjerne, så må kunden eller frisøren
@@ -57,10 +60,8 @@ SERVER OG CLIENT:
 - configuration/createEnvironment.js: Opprett første brukeren som er admin-brukeren. Her er brukernavn og passord "admin", og 
     telefonnummeret er bare mitt nummer. Første daglig leder gjør er å endre passordet og telefonnummeret inne på admin siden.
         APPLIKASJON
-- Laste opp bilder for friøsrene
-
-BUGS:
-- Admin passord blir satt til "" i noen scenarioer. 
+- model/env.js og configuration/createEnvironment: Legge inn ny property for sosialeMedier som er linken til for eksempel facebook siden
+- routes/env.js og routes/login.js: Kunne slette frisører. Både oppdatere environment og brukeren
 
 FØR PROD: 
 - Sjekke clientside om bruker er logget inn fra før med cookies (path: /login/loggetinn)

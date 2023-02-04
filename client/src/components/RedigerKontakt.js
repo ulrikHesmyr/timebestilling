@@ -31,12 +31,12 @@ function RedigerKontakt({number, setState, state, sendTilDatabase, env}){
                 sRedigeringsKnappSynlig(true);
                 //Sjekker om det er telefonnummeret som må oppdateres
                 if(number){
-                    sendTilDatabase(env.frisorer, env.kategorier, env.tjenester, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, tempState);
+                    sendTilDatabase(env.kategorier, env.tjenester, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, tempState);
                 } else {
-                    sendTilDatabase(env.frisorer, env.kategorier, env.tjenester, env.klokkeslett, env.sosialeMedier, tempState, env.kontakt_tlf);
+                    sendTilDatabase(env.kategorier, env.tjenester, env.klokkeslett, env.sosialeMedier, tempState, env.kontakt_tlf);
                 }
             }}>
-                <img src="lagre.png" alt="Lagre og oppdater database"></img>
+                Lagre
             </button>
             
             <button onClick={()=>{
@@ -45,7 +45,7 @@ function RedigerKontakt({number, setState, state, sendTilDatabase, env}){
                 sInputSynlig(false);
                 sRedigeringsKnappSynlig(true);
             }}>
-                <img src="avbryt.png" alt="Avbryt endringer"></img>
+                Avbryt
             </button>
             
             </div>

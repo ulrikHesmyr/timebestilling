@@ -8,6 +8,6 @@ const bestilling = new mongoose.Schema({
     medarbeider: {type:String},
     kunde: {type:String},
     telefonnummer: {type:Number}
-  })
+})
 
 module.exports = mongoose.model("bestilling", bestilling);

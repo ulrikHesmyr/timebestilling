@@ -18,7 +18,15 @@ body{
 
 footer{
   position: fixed;
-  bottom: 10rem;
+  bottom: 5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+a{
+  text-decoration: none;
 }
 
 button:hover{
@@ -388,11 +396,31 @@ input, button{
   .passordBoks input[type=password], .passordBoks input[type=text]{
     width:10rem;
   }
+  .adminMain{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .navBarBestillTime{
+    background: var(--background2);
+    color:var(--color1);
+    font-weight: bold;
+    text-shadow: 1px 1px 1px black;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+
+  }
   
   /*******************************************************************************************************************/
 
 @media (width <= 900px){
   
+  
+  .adminMain{
+    display: flex;
+    flex-direction: column;
+  }
   .passordBoks label{
     display: flex;
     flex-direction: column;

@@ -202,9 +202,6 @@ function Fri ({env, bestilteTimer, synligKomponent}) {
         return
     }
     if(frisor !== null && parseInt(starttidspunkt.substring(3,5))%15 === 0 && parseInt(slutttidspunkt.substring(3,5))%15 === 0 && !isNaN(parseInt(starttidspunkt.substring(0,2)))&& !isNaN(parseInt(slutttidspunkt.substring(0,2))) && starttidspunkt.substring(2,3) === ":" && slutttidspunkt.substring(2,3) === ":" && minutterFraKlokkeslett(starttidspunkt) < minutterFraKlokkeslett(slutttidspunkt)){ 
-        console.log(datoDagsFraver);
-        console.log(starttidspunkt);
-        console.log(slutttidspunkt);
         opprettFri();
         reset();
     } else {

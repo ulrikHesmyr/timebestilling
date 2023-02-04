@@ -38,7 +38,7 @@ function RedigerPassord({redigerPassordDB}){
                 }
 
             }}>
-                <img style={{height:"1.4rem"}} src="lagre.png" alt="Lagre passord og send til database"></img> 
+                Lagre 
             </button>
             <button onClick={(e)=>{
                 e.preventDefault();
@@ -46,7 +46,7 @@ function RedigerPassord({redigerPassordDB}){
                 sNyttPassord("");
                 sGjentapassord("");
             }}>
-                <img style={{height:"1.4rem"}} src="avbryt.png" alt="Avbryt endringer og behold gammelt passord"></img>
+                Avbryt
             </button></div>
         </div>)}
             

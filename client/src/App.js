@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {BrowserRouter, Route, Routes, Link} from 'react-router-dom'
+import {BrowserRouter, Route, Routes, Link, useLocation} from 'react-router-dom'
 import Timebestilling from './pages/Timebestilling'
 import Hjem from './pages/hjem'
 import DinReservasjon from './pages/DinReservasjon'
@@ -14,6 +14,7 @@ const App = ()=> {
   const [synligMeny, setSynligmeny] = useState(false);
   const [env, sEnv] = useState(null);
   const [registrertReservasjon, setReservasjon] = useState(undefined);
+  const [location, setLocation] = useState();
 
 
   useEffect(()=>{
@@ -26,18 +27,21 @@ const App = ()=> {
       }
     }
     fetchEnvironment();
+
   },[])
 
 
   return (
-      <BrowserRouter>
-            <div className='burger' aria-expanded={synligMeny} onClick={()=>{
+      <BrowserRouter><div style={{display:"flex", flexDirection:"row", justifyContent:"space-between"}}>
+        
+        <div className='burger' aria-expanded={synligMeny} onClick={()=>{
               setSynligmeny(!synligMeny);
             }}>
               <div></div>
               <div></div>
               <div></div>
             </div>
+      </div>
             {(synligMeny?(
             <div className='navBar' aria-hidden={!synligMeny}>
               <Link onClick={()=>{

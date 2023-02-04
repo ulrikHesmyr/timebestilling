@@ -17,11 +17,18 @@ function Vakter({env, bestilteTimer, bruker}){
     
     //Redigere ansatt info
     const [visRedigerTelefonnummer, sVisRedigerTelefonnummer] = useState(false);
+    const [visRedigerPassord, sVisRedigerPassord] = useState(false);
     const [visInnstillinger, sVisInnstillinger] = useState(false);
 
 
-    const [nyttTlf, sNyttTlf] = useState("");
+    const [nyttTlf, sNyttTlf] = useState(bruker.telefonnummer);
     const [lagretTlf, sLagretTlf] = useState(bruker.telefonnummer);
+
+    const [nyttPassord, sNyttPassord] = useState("");
+    const [gjentaNyttPassord, sGjentaNyttPassord] = useState("");
+
+    const [visNyttPassord, sVisNyttPassord] = useState(false);
+    const [visGjentaPassord, sVisGjentaPassord] = useState(false);
   
 
 
@@ -40,7 +47,6 @@ function Vakter({env, bestilteTimer, bruker}){
     useEffect(()=>{
 
       //Alle bestillinger som skal inn i vakter-kalenderen
-      console.log("ansatt",ansatt);
       const v = bestilteTimer.map((time)=>{
       if(ansatt.includes(time.medarbeider)){
         const gjeldendeTjenester = env.tjenester.filter(tjeneste => time.behandlinger.includes(tjeneste.navn)).reduce((total, element)=> total + element.tid, 0);
@@ -63,6 +69,25 @@ function Vakter({env, bestilteTimer, bruker}){
       timeGutterFormat: 'HH:mm',
     }
 
+    async function oppdaterPassord(){
+      //Oppdaterer passordet til brukeren i databasen ved å sende request til serveren
+      const options = {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body: JSON.stringify({passord: gjentaNyttPassord})
+      };
+      const request = await fetch("http://localhost:3001/login/oppdaterPassord", options);
+      const response = await request.json();
+      if(response){
+        console.log(response);
+        sVisRedigerPassord(false);
+      } else {  
+        alert("Noe gikk galt, prøv igjen");
+      }
+    }
+
     async function oppdaterTelefonnummer(){
       if(!isNaN(parseInt(nyttTlf)) && nyttTlf.length === 8){
         //Sender en request til serveren for å endre telefonnummeret til den ansatte
@@ -79,7 +104,12 @@ function Vakter({env, bestilteTimer, bruker}){
         if(response){
           console.log(response);
           sLagretTlf(nyttTlf);
+        } else {
+          alert("Noe gikk galt, prøv igjen");
         }
+      } else {
+        alert("Telefonnummeret er ikke riktig format");
+        sNyttTlf(lagretTlf);
       }
     }
 
@@ -89,24 +119,27 @@ function Vakter({env, bestilteTimer, bruker}){
           <p>Logget inn som: {bruker.navn}</p><button onClick={(e)=>{
             e.preventDefault();
             sVisInnstillinger(!visInnstillinger);
-          }}><img src="settings.png" alt="Innstillinger for ansatt" style={{height:"1.4rem"}}></img></button></div>
-          {visInnstillinger?<>
+            }}><img src="settings.png" alt="Innstillinger for ansatt" style={{height:"1.4rem"}}></img></button></div>
+          
+            {visInnstillinger?<>
           
             <p>Ditt telefonnummer: {lagretTlf} 
             {visRedigerTelefonnummer?<>
             <label>Skriv inn nytt telefonnummer: <input value={nyttTlf} maxLength={8} onChange={(e)=>{
-              sNyttTlf(e.target.value);
+              let newValue = e.target.value;
+              if(/^\d*$/.test(newValue)){
+                sNyttTlf(newValue);
+              }
             }}></input> </label>
             <button onClick={(e)=>{
               e.preventDefault();
               sVisRedigerTelefonnummer(false);
-              sNyttTlf("");
+              sNyttTlf(lagretTlf);
             }}>Avbryt</button>
             <button onClick={(e)=>{
               e.preventDefault();
               sVisRedigerTelefonnummer(false);
               oppdaterTelefonnummer();
-              sNyttTlf("");
             }}>Lagre</button>
             </>:<>
             <button onClick={(e)=>{
@@ -116,7 +149,43 @@ function Vakter({env, bestilteTimer, bruker}){
             }}>
               <img src="rediger.png" alt="Rediger telefonnummer" style={{height:"1.4rem"}}></img>
             </button>(brukes kun for tofaktorautentisering)</>  }
-          </p></>:""}
+          </p>
+          
+          <p>
+          Rediger passord
+          {visRedigerPassord?<>
+          <p>
+          <label>Nytt passord: <input type={visNyttPassord?"text":"password"} onChange={(e)=>{
+            sNyttPassord(e.target.value);
+          }} value={nyttPassord}></input><input type="checkbox" onChange={()=>{
+            sVisNyttPassord(!visNyttPassord);
+          }}></input> </label>
+          <label>Gjenta nytt passord: <input type={visGjentaPassord?"text":"password"} onChange={(e)=>{
+            sGjentaNyttPassord(e.target.value);
+          }} value={gjentaNyttPassord}></input><input type="checkbox" onChange={()=>{
+            sVisGjentaPassord(!visGjentaPassord);
+          }}></input></label>
+
+          <button onClick={()=>{sVisRedigerPassord(false); sNyttPassord(""); sGjentaNyttPassord("");}}>Avbryt</button>
+          <button onClick={()=>{
+            if(nyttPassord === gjentaNyttPassord){
+              sVisRedigerPassord(false);
+              sNyttPassord("");
+              sGjentaNyttPassord("");
+              oppdaterPassord();  
+            } else {
+              alert("Passordene er ikke like");
+            }
+          }} >Lagre</button>
+          </p>
+          </>:
+          <button onClick={()=>{
+            sVisRedigerPassord(true);
+          }} ><img src="rediger.png" alt='rediger passord' style={{height:"1.4rem"}}></img></button>
+          }</p>
+          
+
+           </>:""}
           <h3>Velg vakter for:</h3>
         <div className='velgFrisorVakter'>
         {env.frisorer.map((frisorElement)=>(

@@ -90,13 +90,7 @@ async function opprettEnvironment(){
                     kategori:5
                 }
             ],
-            frisorer:[
-                {
-                    navn:"Ulrik",
-                    produkter:[0,1,2,3,4,5]
-                }
-                
-            ],
+            frisorer:[],
             klokkeslett: [
                 {
                 dag: "Mandag",
@@ -137,11 +131,6 @@ async function opprettEnvironment(){
                 telefonnummer: tlf
             })
 
-            const frisorBruker = await Brukere.create({
-                brukernavn:"ulrik",
-                passord:"ulrik",
-                telefonnummer: tlf
-            })
 
             
             if(adminBruker && nyttenv && frisorBruker){
