@@ -70,9 +70,9 @@ function PersonInfo({totalTid, totalPris, dato, klokkeslettet, produkt, frisor, 
                 <p>Bekreftelse på din reservasjon sendes på SMS</p>
                 <p>Jeg godkjenner <Link to="/personvaernserklaering-og-brukervilkaar">personvernserklæring og brukervilkår</Link> ved å trykke "send inn reservasjon"</p>
                 {(harregistrert?"Laster...":(<button style={{padding:"1rem", color:"var(--color2)", backgroundColor:"var(--farge2)"}} onClick={(e)=>{
-                    sHarRegistrert(true);
                     e.preventDefault();
                     if(telefonnummer.length === 8 && navn !== ""){
+                        sHarRegistrert(true);
                         registrerData();
                     } else {
                         alert("Telefonnumeret eller navn er ikke gyldig");

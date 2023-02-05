@@ -13,7 +13,6 @@ BARE CLIENT:
 - Klokkeslett.js: tilpasse ledige klokkeslett til frisører som har fri
 - Admin.js: Kunne slette timebestillinger (dersom kunde må avbestille eller flytte på timen). Kun fjerne, så må kunden eller frisøren
  legge inn ny
-- Fortsett i Admin.js med sende nytt env til database
 - Gjør admin panel idiotsikkert m å gi kriterier til input felter
 - Legg til pattern for Login.js pattern="[0-9a-fA-F]{4,8}" for passord, slik at det er mer sikkert
 - Ikke tillatte input dersom det ikke er bokstaver eller bindestrek
@@ -49,10 +48,15 @@ SERVER OG CLIENT:
         APPLIKASJON
 - model/env.js og configuration/createEnvironment: Legge inn ny property for sosialeMedier som er linken til for eksempel facebook siden
 - routes/env.js og routes/login.js: Kunne slette frisører. Både oppdatere environment og brukeren
+- Admin.js og env.js: Admin kan resette passord til frisørene slik at de får logget inn dersom de har glemt passord 
+- Admin.js: og env.js: Kunne sette oppsigelsesdato for en frisør istedenfor å bare slette frisøren. Slettingen av frisøren kan 
+    gjøres med scheduleJob? Flytt funksjonalitet fra routes env/slettFrisør og login/slettBruker til scheduleJob i index.js
 
 FØR PROD: 
 - Sjekke clientside om bruker er logget inn fra før med cookies (path: /login/loggetinn)
 
+MULIGE BUGS SOM KAN KOMME I PROD:
+- Innloggingsforsøk. Test innloggingsfunksjonaliteten mtp antall innloggingsforsøk.
 
 TODO:
 - Sjekke ut hva Jest er

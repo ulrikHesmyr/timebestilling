@@ -113,6 +113,11 @@ router.post('/auth', async (req,res)=>{
         const {brukernavn, passord}= req.body;
         console.log(brukernavn, passord);
         const finnBruker = await Brukere.findOne({brukernavn: brukernavn});
+        if(req.cookies.f){
+            if(req.cookies.f === 0){
+                return res.send({message:"Du har brukt opp alle forsøkene dine. Vennligst kontakt daglig leder for å resette passord.", valid:false})
+            }
+        }
         if(finnBruker && finnBruker.passord === passord){
             
             const env = await Environment.findOne({bedrift:BEDRIFT});
@@ -127,15 +132,35 @@ router.post('/auth', async (req,res)=>{
 
             //Setter access token i cookies
             const accessToken = jwt.sign({brukernavn:brukernavn, passord:passord},ACCESS_TOKEN_KEY,{expiresIn:'480m'});
+
             res.cookie("access_token", accessToken, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV == "production",
             })
 
+            res.cookie("f", 5, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV == "production",
+            })
+            
+
             return res.json({valid:true,bruker:{navn:finnBruker.brukernavn, telefonnummer:finnBruker.telefonnummer}, message:"Du er nå logget inn", brukertype: (brukernavn==="admin"?"admin":"vakter"), env:{kontakt_epost:kontakt_epost, kontakt_tlf:kontakt_tlf, sosialeMedier:sosialeMedier, bedrift:bedrift, kategorier:kategorier, tjenester:tjenester, frisorer:frisorer, klokkeslett:klokkeslett}, bestilteTimer:bestilteTimer});
             
         } else {
-            return res.json({valid:false, message:"Feil passord eller brukernavn"});
+
+            if(req.cookies.f){
+                res.cookie("f", parseInt(req.cookies.f)-1, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV == "production",
+                })
+                return res.json({valid:false, message:`Feil passord eller brukernavn, du har ${parseInt(req.cookies.f) -1} forsøk igjen`});
+            } else {
+                res.cookie("f", 4, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV == "production",
+                })
+                return res.json({valid:false, message:`Feil passord eller brukernavn, du har 4 forsøk igjen`});
+            }
 
         }
     } catch (error) {

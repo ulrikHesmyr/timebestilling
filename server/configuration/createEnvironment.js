@@ -133,7 +133,7 @@ async function opprettEnvironment(){
 
 
             
-            if(adminBruker && nyttenv && frisorBruker){
+            if(adminBruker && nyttenv){
                 console.log("Opprettet nytt env!");
             }
     } catch (error) {

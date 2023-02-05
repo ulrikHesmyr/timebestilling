@@ -70,7 +70,7 @@ router.post('/bestilltime', async (req,res)=>{
 
 router.get('/hentBestiltetimer', async (req,res)=>{
     try {
-        await Bestilttime.find({},'dato tidspunkt frisor behandlinger', function(err, docs){
+        await Bestilttime.find({},'dato tidspunkt medarbeider behandlinger', function(err, docs){
                 if(err){
                     mailer.sendMail(`Problem database: ${process.env.BEDRIFT}`, `Problemer med å returnere filtrerte documents fra mongodb for bestilte timer. Her er error melding: ${err}`);
                 } else {

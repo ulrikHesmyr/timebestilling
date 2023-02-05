@@ -41,7 +41,8 @@ function Klokkeslett({env, sForsteFrisor, forsteFrisor, tilgjengeligeFrisorer, s
             let utilgjengelige = [];
             //Finner tidspunkter som er reservert fra før og hvilke som er utilgjengelige pga behandlingstid
             let reserverte = bestilteTimer.map(element =>{
-                if(element.dato === dato && element.frisor === env.frisorer.indexOf(frisorerVelgImellom[n])){
+                console.log(frisorerVelgImellom[n].navn, element.medarbeider, element);
+                if(element.dato === dato && element.medarbeider === frisorerVelgImellom[n].navn){
                     let okkupertTid = env.tjenester.filter(tjeneste=>element.behandlinger.includes(tjeneste.navn)).reduce((totalen, minutterFraTjeneste)=> totalen + minutterFraTjeneste.tid, 0);
                     let minutter = minutterFraKlokkeslett(element.tidspunkt);
                     while(minutter < (minutterFraKlokkeslett(element.tidspunkt) + okkupertTid-15)){
@@ -74,6 +75,16 @@ function Klokkeslett({env, sForsteFrisor, forsteFrisor, tilgjengeligeFrisorer, s
             //
             let ledigeTotaltTidspunkter = ledigeTotalt.map(ledig=>ledig.tid);
 
+            //Gjør sånn at ingen kan reservere time hos en frisør etter oppsigelsesdatoen
+            if(frisorerVelgImellom[n].oppsigelse !== "Ikke oppsagt"){
+                let oppsigelsesDato = new Date(frisorerVelgImellom[n].oppsigelse);
+                let valgtDato = new Date(dato);
+                if(valgtDato >= oppsigelsesDato){
+                    continue;
+                }
+
+            }
+
 
             //Finner til slutt de gjenværende ledige tidspunktene for den enkelte frisøren
             const ledige = aapningstider.map((element)=>{
@@ -94,6 +105,7 @@ function Klokkeslett({env, sForsteFrisor, forsteFrisor, tilgjengeligeFrisorer, s
             ledigeTotalt = ledigeTotalt.concat(ledige);
 
         }
+
         ledigeTotalt = ledigeTotalt.sort((a,b)=>{
             if(minutterFraKlokkeslett(a.tid) > minutterFraKlokkeslett(b.tid)){
                 return 1;
