@@ -13,18 +13,13 @@ BARE CLIENT:
 - Klokkeslett.js: tilpasse ledige klokkeslett til frisører som har fri
 - Admin.js: Kunne slette timebestillinger (dersom kunde må avbestille eller flytte på timen). Kun fjerne, så må kunden eller frisøren
  legge inn ny
-- Gjør admin panel idiotsikkert m å gi kriterier til input felter
-- Legg til pattern for Login.js pattern="[0-9a-fA-F]{4,8}" for passord, slik at det er mer sikkert
-- Ikke tillatte input dersom det ikke er bokstaver eller bindestrek
 - Lage footer med info om: Meg, google icons, strex SMS gateway, personvernserklæring og brukervilkår
 
 BARE SERVER:
-- Nedskalere bilder som blir lastet opp til server før de sendes til databasen
 - scheduleJob index.js: slette fri når sluttdatoen er datoen idag
 
 SERVER OG CLIENT:
         SIKKERHET
-- routes/login.js: Begrense antall passord-forsøk. bruke cookies? (kan slette cookies, men må ha en spesifik cookie for at applikasjonen skal fungere) 
 - routes/login.js: 2FA. Når man logger inn første gang, så sendes en SMS også lagres en cookie som signes med jwt,
     det sjekkes hver gang i /logginn routen om denne cookien finnes og kan verifies (jwt.verify), hvis ikke så sendes ny 2FA
 

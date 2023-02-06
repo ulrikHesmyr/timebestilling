@@ -17,7 +17,8 @@ const {BEDRIFT} = process.env;
 const Bestiltetimer = require("./model/bestilling");
 const Environment = require("./model/env");
 
-//app.use(express.static("public_test"));
+app.use(express.static("public_test"));
+
 
 schedule.scheduleJob('30 23 * * *', async ()=>{
   try {

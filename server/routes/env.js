@@ -5,10 +5,18 @@ const FriElementer = require("../model/fri");
 const Timebestillinger = require("../model/bestilling");
 const Brukere = require("../model/brukere");
 const multer = require('multer');
+const sharp = require("sharp");
+const rateLimiter = require("express-rate-limit");
 
 const mailer = require("../configuration/mailer");
 const authorization = require("../middleware/authorization");
 const {BEDRIFT} = process.env;
+
+const hentEnvLimiter = rateLimiter({
+    max:45,
+    windowMs:45*60*1000,
+    message:"MAX 45 requests"
+})
 
 router.get('/fri', async(req,res)=>{
     try {
@@ -74,7 +82,7 @@ router.post('/opprettFri', authorization,async(req,res)=>{
     }
 })
 
-router.get('/env', async(req,res)=>{
+router.get('/env', hentEnvLimiter, async(req,res)=>{
     try {
         await Environment.findOne({bedrift: BEDRIFT}).select('-antallBestillinger -_id -__v').exec((err, doc)=>{
             if(err){
@@ -102,14 +110,16 @@ const upload = multer({
   });
   
 
-router.post("/opprettFrisor", upload.single("uploaded_file"),authorization, async (req,res)=>{ 
+router.post("/opprettFrisor", upload.single("uploaded_file"), authorization, async (req,res)=>{ 
    
     const {nyFrisorNavn, nyFrisorTjenester} = req.body;
     let nyFrisorTjenesterArray = nyFrisorTjenester.split(",");
     try {
         if(req.brukernavn === "admin"){
+            sharp(req.file.buffer).resize({height: 200, width: 200, fit:'inside'}).toBuffer().then(async (data)=>{
+            console.log(req.file);
             const img = {
-                data: new Buffer.from(req.file.buffer),
+                data: new Buffer.from(data),
                 contentType: req.file.mimetype
             };
             
@@ -124,13 +134,15 @@ router.post("/opprettFrisor", upload.single("uploaded_file"),authorization, asyn
                     return res.send({message:"Noe har skjedd gærent i /opprettFrisor!"});
                 }
             }
+        })
         }
     } catch (error) {
         console.log(error, "error i opprettFrisor");
     }
 })
 
-router.post("/slettFrisor",authorization, async (req,res)=>{
+
+router.post("/slettFrisor", authorization, async (req,res)=>{
     const {navn} = req.body;
     try {
         if(req.brukernavn === "admin"){
@@ -154,7 +166,7 @@ router.post("/slettFrisor",authorization, async (req,res)=>{
 router.post('/oppdaterEnv',authorization, async(req,res)=>{
     const {frisorer, tjenester, kategorier, sosialeMedier, kontakt_tlf, kontakt_epost, klokkeslett} = req.body;
     try {
-        const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {tjenester:tjenester, kategorier:kategorier, sosialeMedier:sosialeMedier, kontakt_tlf:kontakt_tlf, kontakt_epost:kontakt_epost, klokkeslett:klokkeslett});
+        const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {frisorer:frisorer, tjenester:tjenester, kategorier:kategorier, sosialeMedier:sosialeMedier, kontakt_tlf:kontakt_tlf, kontakt_epost:kontakt_epost, klokkeslett:klokkeslett});
         
         if(oppdatertEnv){
             return res.send({message:"Environment ble oppdatert!"});

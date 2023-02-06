@@ -15,6 +15,13 @@ function Login(){
     //Varsling
     const[varslingSynlig, sVarslingSynlig] = useState(false);
 
+    //Fjerne logg inn knapp med en gang de har trykt
+    const[trykketLoggInn, sTrykketLoggInn] = useState(false);
+
+    //2FA, bruker må skrive inn PIN fra SMS
+    const [twoFApin, sTwoFApin] = useState();
+    const [vis2FA, sVis2FA] = useState(false);
+
     function varsle(){
         sVarslingSynlig(true);
         setTimeout(()=>{
@@ -47,9 +54,13 @@ function Login(){
         });
         const response = await request.json();
         console.log(response);
-        if(!response.valid){
+        if(!response.valid && response.two_FA){
+            sVis2FA(true);
+        } else if(!response.valid){
             alert(response.message); 
-        } else if(response.valid){
+            sTrykketLoggInn(false);
+        } 
+        else if(response.valid){
            toggleLoggetInn(true);
            setBukertype(response.brukertype);
            sEnv(response.env);
@@ -59,6 +70,7 @@ function Login(){
            //Nullstiller input
            setBrukernavn("");
            setPassord("");
+           sTrykketLoggInn(false);
         }
     }
 
@@ -91,6 +103,16 @@ function Login(){
     return(
         <>
         {varslingSynlig && <div className="varsling"><div>Endringene er lagret!</div></div>}
+        {vis2FA && <div>
+            <div>2FA</div><input type="text" onChange={(e)=>{
+            sTwoFApin(e.target.value);
+            }}></input>
+            
+            <button onClick={()=>{
+            sVis2FA(false);
+            }}>Send</button>
+            </div>
+        }
         {(loggetInn && env !== null?<div>
         
      <div style={{color:"blue", cursor:"pointer", userSelect:"none"}} onClick={loggut}>LOGG UT</div> {(brukertype === "admin"?<Admin env={env} sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} varsle={varsle} bestilteTimer={bestilteTimer}/>:(brukertype === "vakter"?<Vakter env={env} bruker={bruker} varsle={varsle} bestilteTimer={bestilteTimer} />:""))}</div>:(<div className='login'>
@@ -107,14 +129,15 @@ function Login(){
             }} src='oye_lukket.png' style={{height:"1.4rem"}} alt="Skjul passord"></img>:<img onClick={()=>{
                 sPassordsynlig(true);
             }} src='oye_aapnet.png' style={{height:"1.4rem"}} alt="Vis passord"></img>)}</label>
-            <button onClick={(e)=>{
+            {!trykketLoggInn?<button onClick={(e)=>{
                 if(!window.navigator.webdriver){
+                    sTrykketLoggInn(true);
                     e.preventDefault();
                     logginn();
                 } else {
                     alert("Enheten din blir oppfattet som en webdriver. Kontakt ulrik.hesmyr2002@gmail.com eller 41394262 hvis du leser dette.");
                 }
-            }} >LOGG INN</button>
+            }} >LOGG INN</button>:"Laster..."}
         </form>
     </div>))}
     </>

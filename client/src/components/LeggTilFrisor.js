@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useRef} from 'react'
 
 function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle}){
 
@@ -61,6 +61,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle}){
                 setFrisortjenester([]);
                 sTlfNyFrisor("");
                 sNyFrisorNavn("");
+                sBildeAvFrisor(null);
                 varsle();
             }
             
@@ -85,10 +86,16 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle}){
         <label style={{fontWeight:"bold"}}>Telefonnummeret til frisøren: <input style={{letterSpacing:"0.3rem"}} onChange={(e)=>{
             sTlfNyFrisor(e.target.value);
         }} value={tlfNyFrisor} type="text" maxLength={8}></input></label>
-        <label>Last opp bilde av Frisøren: <input onChange={(e)=>{
-            console.log(e.target.files[0]);
+        <label>Last opp bilde av Frisøren: <input accept="image/*" onChange={(e)=>{
+            //console.log(e.target.files[0].size);
+            //if(e.target.files[0].size < 10000){
+            //    sBildeAvFrisor(e.target.files[0]);
+            //} else {
+            //    alert("Bildet er for stort, maks 10KB. Skaler bilde ned og prøv igjen. Bildet ");
+            //}
             sBildeAvFrisor(e.target.files[0]);
         }} type="file" name="uploaded_file"></input></label>
+        {bildeAvFrisor && <img alt='Forhåndsvisning av bildet' src={URL.createObjectURL(bildeAvFrisor)}></img>}
 
         <p style={{fontWeight:"bold"}} >Velg behandlinger for frisør:</p>
         {env.tjenester.map((tjeneste, index)=>

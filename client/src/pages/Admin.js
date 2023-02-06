@@ -18,8 +18,15 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
     const [kontakt_tlf, sKontakt_tlf] = useState(env.kontakt_tlf); //Number
 
     const [visRedigerAapningstider, sVisRedigerAapningstider] = useState(false);
-
     const [dagForRedigering, sDagForRedigering] = useState();
+    
+    //Frisører
+    const [visRedigerFrisor, sVisRedigerFrisor] = useState(false);        
+    const [visSiOpp, sVisSiOpp] = useState(false);        
+    const [frisorRediger, sFrisorRediger] = useState(null);
+    const [oppsigelsesDato, sOppsigelsesDato] = useState(new Date());
+
+
 
     
     //Synlige sider
@@ -34,57 +41,64 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
         sKontakt_tlf(env.kontakt_tlf);
     }, [env])
 
+    async function siOppFrisor(){
+        let tempFrisorer = env.frisorer;
+        tempFrisorer.find((f)=>{return f.navn === frisorRediger.navn}).oppsigelse = oppsigelsesDato;
 
-    async function slettFrisor(frisor){
-
-        //Oppdaterer env i databasen
-        console.log("sletter frisor");
-        const nyFrisorer = frisorer.filter((f)=>{
-            return f.navn !== frisor;
-        })
-        sFrisorer(nyFrisorer);
-
-        //Fjerner brukeren til frisøren
-        try {
-            
-            const data = {
-                slettBrukernavn: frisor.toLowerCase()
-            }
-            const options = {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
-                },
-                body: JSON.stringify(data)
-            }
-            const request = await fetch("http://localhost:3001/login/slettBruker", options);
-            const response = request.json();
-
-            const optionsEnv = {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
-                },
-                body: JSON.stringify({navn:frisor})
-            }
-            const requestEnv = await fetch("http://localhost:3001/env/slettFrisor", optionsEnv);
-            const responseEnv = await requestEnv.json();
-
-
-            if(response && responseEnv){
-                console.log(response);
-                varsle();
-            } 
-            
-        } catch (error) {
-            console.log(error);
-        }
+        sendTilDatabase(tempFrisorer, env.kategorier, env.tjenester, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
+        
     }
 
-    async function sendTilDatabase(kat, tje, klok, some, epost, tlf){
+    //async function slettFrisor(frisor){
+//
+    //    //Oppdaterer env i databasen
+    //    const nyFrisorer = frisorer.filter((f)=>{
+    //        return f.navn !== frisor;
+    //    })
+    //    sFrisorer(nyFrisorer);
+//
+    //    //Fjerner brukeren til frisøren
+    //    try {
+    //        
+    //        const data = {
+    //            slettBrukernavn: frisor.toLowerCase()
+    //        }
+    //        const options = {
+    //            method:"POST",
+    //            headers:{
+    //                "Content-Type":"application/json"
+    //            },
+    //            body: JSON.stringify(data)
+    //        }
+    //        const request = await fetch("http://localhost:3001/login/slettBruker", options);
+    //        const response = request.json();
+//
+    //        const optionsEnv = {
+    //            method:"POST",
+    //            headers:{
+    //                "Content-Type":"application/json"
+    //            },
+    //            body: JSON.stringify({navn:frisor})
+    //        }
+    //        const requestEnv = await fetch("http://localhost:3001/env/slettFrisor", optionsEnv);
+    //        const responseEnv = await requestEnv.json();
+//
+//
+    //        if(response && responseEnv){
+    //            console.log(response);
+    //            varsle();
+    //        } 
+    //        
+    //    } catch (error) {
+    //        console.log(error);
+    //    }
+    //}
+
+    async function sendTilDatabase(fris, kat, tje, klok, some, epost, tlf){
         console.log("sendte nytt env til database");
         //fetch
         const nyttEnv = {
+            frisorer:fris,
             kategorier:kat,
             tjenester:tje,
             klokkeslett:klok,
@@ -183,15 +197,69 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
                         <div className='redigeringsBoks'><p>Passord for: admin</p> <RedigerPassord redigerPassordDB={redigerPassordDB} /> </div>
                     </div>
                     <div>
-                        {frisorer.map((frisor)=>(
-                            <div key={frisor.navn} style={{display:"flex", flexDirection:"row", alignItems:"center", margin:"0.3rem"}}>
-                                <DetaljerFrisor frisor={frisor} env={env} />
+                        {visRedigerFrisor?<>
+                            <button onClick={(e)=>{
+                                e.preventDefault();
+                                sVisRedigerFrisor(false);
+                                sFrisorRediger(null);
+                            }}>Lukk</button>
+                            <div>
+                                
+                            {frisorRediger.navn}
+
+                                <button onClick={(e)=>{
+                                            e.preventDefault();
+                                            //slettFrisor(frisor.navn);
+                                            sVisSiOpp(true);
+                                            if(frisorRediger.oppsigelse !== "Ikke oppsagt"){
+                                                sOppsigelsesDato(frisorRediger.oppsigelse);
+                                            }
+                                }}>{frisorRediger.oppsigelse == "Ikke oppsagt"?"Si opp (legg inn oppsigelsesdato)":"Rediger oppsigelse"}</button>
+                                 
+
+                            </div>   
+
+                            {visSiOpp?<>
+                            
+                                <h4>Legg inn oppsigelsesdato for {frisorRediger.navn}</h4>
+                                <p>Legg inn datoen som frisøren ikke lenger jobber. Frisøren vil kunne få reservasjoner før denne datoen men 
+                                    ikke på denne datoen eller etter. Dette er for å unngå at frisøren får reservasjoner som ikke kan gjennomføres.
+                                </p>
+                                <input type="date" value={oppsigelsesDato} onChange={(e)=>{
+                                    e.preventDefault();
+                                    sOppsigelsesDato(e.target.value);
+                                }} />
+                                <div>
                                 <button onClick={(e)=>{
                                     e.preventDefault();
-                                    slettFrisor(frisor.navn);
-                                }}><img src='delete.png' style={{height:"1.4rem"}} alt="Slett frisør" ></img></button>
-                            </div>
-                        ))}
+                                    sVisSiOpp(false);
+                                    sFrisorRediger(null);
+                                }} >Avbryt</button>
+                                <button onClick={(e)=>{
+                                    e.preventDefault();
+                                    sVisSiOpp(false);
+                                    siOppFrisor();
+                                }}>Lagre dato for oppsigelse</button>
+                                </div>
+                            </>:""}
+
+                        </>:<>
+                            {frisorer.map((frisor)=>(
+                                <div key={frisor.navn} style={{display:"flex", flexDirection:"row", alignItems:"center", margin:"0.3rem"}}>
+
+                                    <DetaljerFrisor frisor={frisor} env={env} />
+
+                                    <button onClick={(e)=>{
+                                        e.preventDefault();
+                                        sFrisorRediger(frisor);
+                                        sVisRedigerFrisor(true);
+                                    }} >Rediger</button>
+
+
+                                </div>
+                            ))}
+                        </>}
+
                         {env !== null?<LeggTilFrisor env={env} varsle={varsle} updateTrigger={updateTrigger} sUpdateTrigger={sUpdateTrigger} />:""}
                         
                     </div>

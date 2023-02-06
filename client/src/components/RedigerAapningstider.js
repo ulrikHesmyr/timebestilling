@@ -32,7 +32,7 @@ function RedigerAapningstider({env, sendTilDatabase, dag, sVisRedigerAapningstid
           } 
           return a;
         })
-        sendTilDatabase(env.kategorier, env.tjenester, nyeAapningstider, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
+        sendTilDatabase(env.frisorer, env.kategorier, env.tjenester, nyeAapningstider, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
     
       } else {
         alert("Ikke riktig format");

@@ -1,14 +1,28 @@
 const express = require("express");
 const router = express.Router();
-const mailer = require("../configuration/mailer");
-
-const Client = require("target365-sdk");
 const { v4: uuidv4 } = require('uuid');
+const Client = require("target365-sdk");
+const rateLimiter = require("express-rate-limit");
 
+const mailer = require("../configuration/mailer");
 const Bestilttime = require("../model/bestilling");
 const Env = require("../model/env");
 
-router.post('/bestilltime', async (req,res)=>{
+
+const bestillingLimiter = rateLimiter({
+    windowMs: 60 * 60 * 1000,
+    max: 5,
+    message: "BAD REQUEST"
+});
+
+const hentBestillingerLimiter = rateLimiter({
+    windowMs:60*60*1000,
+    max:60,
+    message:"BAD REQUEST"
+})
+  
+
+router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
     try {
         const env = await Env.findOne();
         const {dato, behandlinger, frisor, kunde, medarbeider, telefonnummer, tidspunkt} = req.body;
@@ -68,7 +82,7 @@ router.post('/bestilltime', async (req,res)=>{
     }
 })
 
-router.get('/hentBestiltetimer', async (req,res)=>{
+router.get('/hentBestiltetimer', hentBestillingerLimiter, async (req,res)=>{
     try {
         await Bestilttime.find({},'dato tidspunkt medarbeider behandlinger', function(err, docs){
                 if(err){

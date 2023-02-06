@@ -434,6 +434,9 @@ input, button{
 
 @media (width <= 900px){
   
+  body *{
+    padding:1px;
+  }
   
   .adminMain{
     display: flex;
