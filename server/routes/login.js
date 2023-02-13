@@ -89,7 +89,6 @@ router.post("/opprettBruker", authorization, async (req,res)=>{
 
 
 router.post("/slettBruker", authorization, async (req,res)=>{
-    console.log(req.body);
     //Sletter bruker fra databasen
     const {slettBrukernavn} = req.body;
     if(req.brukernavn === "admin"){
@@ -107,7 +106,6 @@ router.post("/slettBruker", authorization, async (req,res)=>{
 
 
 router.get("/loggetinn", authorization, async (req,res)=>{
-    console.log("brukernavn i /loggetinn", req.brukernavn);
     try {
         const brukernavn = req.brukernavn;
         //Find the user in the database
@@ -178,11 +176,14 @@ router.post('/auth',loginLimiter, async (req,res)=>{
 
         if(finnBruker && finnBruker.passord === passord){
             const allerede2FA = req.cookies.two_FA_valid;
-            if(allerede2FA){
-                const two_FA_valid = jwt.verify(allerede2FA, ACCESS_TOKEN_KEY);
-                if(!two_FA_valid.gyldig){
-                    return res.status(401).json({message:"Du har ikke gyldig 2FA token"});
+            if(allerede2FA || NODE_ENV === "development"){
+                if(NODE_ENV === "production"){
+                    const two_FA_valid = jwt.verify(allerede2FA, ACCESS_TOKEN_KEY);
+                    if(!two_FA_valid.gyldig){
+                        return res.status(401).json({message:"Du har ikke gyldig 2FA token"});
+                    }
                 }
+                
                 const env = await Environment.findOne({bedrift:BEDRIFT});
                 const {kontakt_epost, kontakt_tlf, sosialeMedier, bedrift, kategorier, tjenester, frisorer, klokkeslett} = env;
                 let bestilteTimer = await Bestiltetimer.find();

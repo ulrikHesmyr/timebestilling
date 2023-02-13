@@ -78,7 +78,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle}){
     }
   return (
     <>
-    {leggtil?<div >
+    {leggtil?<div className='fokus' >
         <label style={{fontWeight:"bold"}}>Navn på ny frisør: <input onChange={(e)=>{
             sNyFrisorNavn(e.target.value);
         }} value={nyFrisorNavn} type="text" placeholder='Navn navnesen' maxLength={20}></input></label>
@@ -95,7 +95,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle}){
             //}
             sBildeAvFrisor(e.target.files[0]);
         }} type="file" name="uploaded_file"></input></label>
-        {bildeAvFrisor && <img alt='Forhåndsvisning av bildet' src={URL.createObjectURL(bildeAvFrisor)}></img>}
+        {bildeAvFrisor && <img style={{height:"100px"}} alt='Forhåndsvisning av bildet' src={URL.createObjectURL(bildeAvFrisor)}></img>}
 
         <p style={{fontWeight:"bold"}} >Velg behandlinger for frisør:</p>
         {env.tjenester.map((tjeneste, index)=>

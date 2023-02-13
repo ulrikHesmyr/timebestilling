@@ -31,7 +31,8 @@ const env = new mongoose.Schema({
         {
         dag: {type:String},
         open:{type:String},
-        closed:{type:String}
+        closed:{type:String},
+        stengt:{type:Boolean, default:false},
         }]
 })
 

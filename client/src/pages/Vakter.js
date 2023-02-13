@@ -10,59 +10,87 @@ const localizer = momentLocalizer(moment);
 
 function Vakter({env, bestilteTimer, bruker}){
   
-    const farger = ["darkblue", "cadetblue", "chartreuse", "coral", "mediumorchid", "indigo","red","black","purple","peru", "burylwood"];
-    const ukedag = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
-    const [ansatt, setAnsatt] = useState([]);
-    const [vakterTimebestillinger, sVakterTimebestillinger] = useState();
-    
-    //Redigere ansatt info
-    const [visRedigerTelefonnummer, sVisRedigerTelefonnummer] = useState(false);
-    const [visRedigerPassord, sVisRedigerPassord] = useState(false);
-    const [visInnstillinger, sVisInnstillinger] = useState(false);
-
-
-    const [nyttTlf, sNyttTlf] = useState(bruker.telefonnummer);
-    const [lagretTlf, sLagretTlf] = useState(bruker.telefonnummer);
-
-    const [nyttPassord, sNyttPassord] = useState("");
-    const [gjentaNyttPassord, sGjentaNyttPassord] = useState("");
-
-    const [visNyttPassord, sVisNyttPassord] = useState(false);
-    const [visGjentaPassord, sVisGjentaPassord] = useState(false);
+  const farger = ["darkblue", "cadetblue", "chartreuse", "coral", "mediumorchid", "indigo","red","black","purple","peru", "burylwood"];
+  const ukedag = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
+  const [ansatt, setAnsatt] = useState([]);
+  //timebestillinger og fri
+  const [friElementer, sFriElementer] = useState([]);
+  const [vakterTimebestillinger, sVakterTimebestillinger] = useState();
   
+  //Redigere ansatt info
+  const [visRedigerTelefonnummer, sVisRedigerTelefonnummer] = useState(false);
+  const [visRedigerPassord, sVisRedigerPassord] = useState(false);
+  const [visInnstillinger, sVisInnstillinger] = useState(false);
+  const [nyttTlf, sNyttTlf] = useState(bruker.telefonnummer);
+  const [lagretTlf, sLagretTlf] = useState(bruker.telefonnummer);
+  const [nyttPassord, sNyttPassord] = useState("");
+  const [gjentaNyttPassord, sGjentaNyttPassord] = useState("");
+  const [visNyttPassord, sVisNyttPassord] = useState(false);
+  const [visGjentaPassord, sVisGjentaPassord] = useState(false);
 
-
-
-    const [isMobile, setisMobile] = useState(false);
-
-    useEffect(()=>{
-        if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
-            setisMobile(true);
-          }
-        let j = env.frisorer.map(e=>e.navn)
-        setAnsatt(j);
-    },[env.frisorer]);
-
-
-    useEffect(()=>{
-
-      //Alle bestillinger som skal inn i vakter-kalenderen
-      const v = bestilteTimer.map((time)=>{
-      if(ansatt.includes(time.medarbeider)){
-        const gjeldendeTjenester = env.tjenester.filter(tjeneste => time.behandlinger.includes(tjeneste.navn)).reduce((total, element)=> total + element.tid, 0);
-        time.start = new Date(`${time.dato}Z${time.tidspunkt}+1:00`);
-        time.end = new Date(`${time.dato}Z${klokkeslettFraMinutter(gjeldendeTjenester+minutterFraKlokkeslett(time.tidspunkt))}+1:00`);
-        time.slutt = klokkeslettFraMinutter(minutterFraKlokkeslett(time.tidspunkt)+gjeldendeTjenester);
-        time.title = `${time.medarbeider.toUpperCase()}, ${time.behandlinger.join(", ")} Kunde: ${time.kunde}, tlf.: ${time.telefonnummer}`
-        return time;
+  const [isMobile, setisMobile] = useState(false);
+  useEffect(()=>{
+    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+        setisMobile(true);
+    }
+      
+    let a = env.frisorer.map(e=>e.navn);
+    setAnsatt(a);
+      
+  },[env.frisorer]);
+  useEffect(()=>{
+    
+    //Henter fri
+    async function hentFri(){
+      console.log("Hentet fri elementer");
+      const request = await fetch("http://localhost:3001/env/fri");
+      const response = await request.json();
+      if(response){
+          console.log("Alle fri elementer", response);
+          let frii = response.map((element)=>{
+            if(ansatt.includes(element.medarbeider)){
+              if(element.lengreTid){
+                element.start = new Date(`${element.fraDato}Z00:30+1:00`);
+                element.end = new Date(`${element.tilDato}Z23:59+1:00`);
+                element.title = `${element.medarbeider}`;
+                element.color = "red";
+                element.tidspunkt = "LANGFRI";
+                return element;
+              } else {
+                element.start = new Date(`${element.friDag}Z${element.fraKlokkeslett}+1:00`);
+                element.end = new Date(`${element.friDag}Z${element.tilKlokkeslett}+1:00`);
+                element.title = `${element.medarbeider} - FRI`;
+                element.color = "red";
+                element.tidspunkt = element.fraKlokkeslett;
+                element.slutt = element.tilKlokkeslett;
+                return element;
+              }
+            } else {
+              return undefined;
+            }
+          }).filter(x=>x);
+          const v = bestilteTimer.map((time)=>{
+            if(ansatt.includes(time.medarbeider)){
+              const gjeldendeTjenester = env.tjenester.filter(tjeneste => time.behandlinger.includes(tjeneste.navn)).reduce((total, element)=> total + element.tid, 0);
+              time.start = new Date(`${time.dato}Z${time.tidspunkt}+1:00`);
+              time.end = new Date(`${time.dato}Z${klokkeslettFraMinutter(gjeldendeTjenester+minutterFraKlokkeslett(time.tidspunkt))}+1:00`);
+              time.slutt = klokkeslettFraMinutter(minutterFraKlokkeslett(time.tidspunkt)+gjeldendeTjenester);
+              time.title = `${time.medarbeider.toUpperCase()}, ${time.behandlinger.join(", ")} Kunde: ${time.kunde}, tlf.: ${time.telefonnummer}`
+              return time;
+            }
+            return undefined;
+          }).filter(x=>x);
+          let allevakter = v.concat(frii);
+          console.log("ddqwwdwefew");
+          console.log(allevakter, "allevakter");
+          sVakterTimebestillinger(allevakter);
+        }
       }
-      return undefined;
-      }).filter(x=>x) 
-      sVakterTimebestillinger(v);
 
-    },[ansatt, bestilteTimer, bruker.navn, env.frisorer, env.tjenester]);
+    hentFri();
+  },[ansatt, bestilteTimer, bruker.navn, env.frisorer, env.tjenester]);
 
-    const MIN_DATE = new Date(2020, 0, 1, 8, 0, 0); // 08:00
+    const MIN_DATE = new Date(2020, 0, 1, 7, 30, 0); // 08:00
     const MAX_DATE = new Date(2020, 0, 1, 17, 30, 0); // 17:30
 
     let formats = {
@@ -70,7 +98,7 @@ function Vakter({env, bestilteTimer, bruker}){
     }
 
     async function oppdaterPassord(){
-      //Oppdaterer passordet til brukeren i databasen ved å sende request til serveren
+      //Oppdaterer passordet til brukeren (gjelder kun frisører her og ikke admin) i databasen ved å sende request til serveren
       const options = {
         method:"POST",
         headers:{

@@ -8,45 +8,21 @@ INTERVJU:
 
 
 BARE CLIENT:
+- Admin.js: VIKTIG gi class til alle "pop-up" vinduer slik at de dekker hele skjermen. Dermed blir det vesentlig
+                ryddigere og ikke helt uoversiktlig.
 - Admin.js: Søkefelt for å søke etter spesifike timebestillinger
-- Vakter.js: Displaye fri elementer
-- Klokkeslett.js: tilpasse ledige klokkeslett til frisører som har fri
 - Admin.js: Kunne slette timebestillinger (dersom kunde må avbestille eller flytte på timen). Kun fjerne, så må kunden eller frisøren
  legge inn ny
+- DinReservasjon.js: Displaye bilde av frisøren
 - Lage footer med info om: Meg, google icons, strex SMS gateway, personvernserklæring og brukervilkår
 
 BARE SERVER:
-- scheduleJob index.js: slette fri når sluttdatoen er datoen idag
 
 SERVER OG CLIENT:
-        SIKKERHET
-- routes/login.js: 2FA. Når man logger inn første gang, så sendes en SMS også lagres en cookie som signes med jwt,
-    det sjekkes hver gang i /logginn routen om denne cookien finnes og kan verifies (jwt.verify), hvis ikke så sendes ny 2FA
-
-        BRUKERFUNKSJONALITET
-- model/brukere.js: Opprett denne modellen, hver frisør skal ha en bruker hver slik at man må logge inn med 2FA. Modellen skal ha     
-    properties brukernavn, passord og telefon. 
-- routes/login.js: Lage route for å opprette bruker, sender inn navn på frisør og telefonnummer. Passordet settes til det samme som 
-    navnet på frisøren "/opprettBruker". Denne funksjonaliteten gjøres samtidig som "/oppdaterEnv" (bare admin som kan bruke), redigere 
-    passord og telefonnummer "/endreTlfPass"(bare f
-    isøren selv), resette passord for en valgt bruker hvis de ikke husker passordet 
-    sitt hvor passordet blir satt til samme som 
-    brukernavn "/resetBruker" (bare admin som kan bruke) og slette bruker "/slettBruker" som må gjøres samtidig som "/oppdaterEnv" med 
-    tanke på frisører osv (bare admin som kan bruke)
-- routes/login.js: Kunne logge inn på vakter-panelet med egen bruker Brukere.findOne({brukernavn: req.body.brukernavn}), samt bcrypt på 
-    passord. Dersom brukernavnet er "admin" så setter brukertype til "admin". Så fjerne vakter_bruker, admin_bruker, vakter_pass og 
-    admin_pass. (Sjekk andre filer for dette også. Dette erstattes med å hente brukernavn og passord fra brukere i databasen)
-- Vakter.js: Frisøren kan selv endre passord og telefonnummer.
-- Admin.js: Admin brukeren
-- configuration/createEnvironment.js: Opprett første brukeren som er admin-brukeren. Her er brukernavn og passord "admin", og 
-    telefonnummeret er bare mitt nummer. Første daglig leder gjør er å endre passordet og telefonnummeret inne på admin siden.
         APPLIKASJON
 - model/env.js og configuration/createEnvironment: Legge inn ny property for sosialeMedier som er linken til for eksempel facebook siden
 - routes/env.js og routes/login.js: Kunne slette frisører. Både oppdatere environment og brukeren
 - Admin.js og env.js: Admin kan resette passord til frisørene slik at de får logget inn dersom de har glemt passord 
-- Admin.js: og env.js: Kunne sette oppsigelsesdato for en frisør istedenfor å bare slette frisøren. Slettingen av frisøren kan 
-    gjøres med scheduleJob? Flytt funksjonalitet fra routes env/slettFrisør og login/slettBruker til scheduleJob i index.js
-
 FØR PROD: 
 - Sjekke clientside om bruker er logget inn fra før med cookies (path: /login/loggetinn)
 

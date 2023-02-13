@@ -2,18 +2,21 @@ import React, {useEffect, useState} from 'react'
 import Fortsett from './Fortsett';
 import { hentDato } from '../App';
 
-function Klokkeslett({env, sForsteFrisor, forsteFrisor, tilgjengeligeFrisorer, synligKomponent, displayKomponent, klokkeslettet, produkt, bestilteTimer, sKlokkeslett, dato, hentMaaned, frisor}){
+function Klokkeslett({env, sForsteFrisor, forsteFrisor, friElementer, tilgjengeligeFrisorer, synligKomponent, displayKomponent, klokkeslettet, produkt, bestilteTimer, sKlokkeslett, dato, hentMaaned, frisor}){
     
     const [ledigeTimer, setLedigeTimer] = useState([]);
 
 
     useEffect(()=>{
+        
 
         let aapningstider = [];
-
+        
+        let frisorerVelgImellom;
+        let ledigeTotalt = [];
         //Sjekker åpningstider for den gjeldende dagen i uka
-        let gjeldendeDag = env.klokkeslett[new Date(dato).getDay() - 1];
-        if(new Date(dato).getDay() !== 0){ 
+        let gjeldendeDag = env.klokkeslett[new Date(dato).getDay()];
+        if(gjeldendeDag.stengt === false){ 
             for(let i = minutterFraKlokkeslett(gjeldendeDag.open); i <= minutterFraKlokkeslett(gjeldendeDag.closed);i+=15){
                 aapningstider.push(klokkeslettFraMinutter(i))
             }
@@ -23,25 +26,18 @@ function Klokkeslett({env, sForsteFrisor, forsteFrisor, tilgjengeligeFrisorer, s
         let total = env.tjenester.filter(element=>produkt.includes(element)).reduce((total, element)=> total + element.tid, 0);
         
         
-        let frisorerVelgImellom;
-        let ledigeTotalt = [];
 
         if(frisor === false){
             frisorerVelgImellom = tilgjengeligeFrisorer;
         } else {
             frisorerVelgImellom = [frisor];
         }
-        console.log("Frisører å velge mellom: ", frisorerVelgImellom);
-        
 
         for(let n = 0; n < frisorerVelgImellom.length; n++){
-            console.log("HEIHEI", frisorerVelgImellom[n]);
-
             let ekstra = [];
             let utilgjengelige = [];
             //Finner tidspunkter som er reservert fra før og hvilke som er utilgjengelige pga behandlingstid
             let reserverte = bestilteTimer.map(element =>{
-                console.log(frisorerVelgImellom[n].navn, element.medarbeider, element);
                 if(element.dato === dato && element.medarbeider === frisorerVelgImellom[n].navn){
                     let okkupertTid = env.tjenester.filter(tjeneste=>element.behandlinger.includes(tjeneste.navn)).reduce((totalen, minutterFraTjeneste)=> totalen + minutterFraTjeneste.tid, 0);
                     let minutter = minutterFraKlokkeslett(element.tidspunkt);
@@ -54,6 +50,37 @@ function Klokkeslett({env, sForsteFrisor, forsteFrisor, tilgjengeligeFrisorer, s
                     return undefined
                 }
             }).filter(x => x).concat(ekstra);
+
+            //Sjekker fritimene for personen
+            let friTimene = friElementer.filter(element=>element.medarbeider === frisorerVelgImellom[n].navn);
+            
+            console.log(total, "total");
+            friTimene = friTimene.map((element)=>{
+                if(element.lengreTid){
+                    let d = new Date(dato);
+                    let st = new Date(element.fraDato);
+                    let sl = new Date(element.tilDato);
+                    console.log(d, st, sl, "d, st, sl");
+                    console.log(st <= d && d <= sl);
+                    if(st <= d && d <= sl){
+                        reserverte = reserverte.concat(aapningstider);
+                    }
+                } else {
+                    if(dato === element.friDag){
+                        console.log(element, "element dersom ikke lengreTid");
+                        for(let i = minutterFraKlokkeslett(element.fraKlokkeslett); i <= minutterFraKlokkeslett(element.tilKlokkeslett); i+=15){
+                            reserverte.push(klokkeslettFraMinutter(i));
+                        }
+                        console.log(reserverte, "reserverte dersom ikke lengreTid");
+                    }
+                }
+            }) ;
+            //Dersom fritimene lengreTid og dato state er mellom eller lik start og slutt , 
+            // så pusher vi tidspunktet feks 10:30 til reserverte
+
+            //Sjekker dersom lengreTid
+                //
+
 
             //Sjekker hvilke tidspunkter som kunde ikke kan reservere slik at timer ikke kolliderer m hverandre
             for(let i = 0; i < aapningstider.length; i++){
@@ -72,7 +99,7 @@ function Klokkeslett({env, sForsteFrisor, forsteFrisor, tilgjengeligeFrisorer, s
             //Passer også på at kunde ikke med uhell reserverer tidspunkt som har vært tidligere samme dag
             let klokkeslettminutterNaa = minutterFraKlokkeslett(`${new Date().getHours()}:${new Date().getMinutes()}`);
 
-            //
+            //Sjekker for tidspunktene som allerede er i ledigeTotalt
             let ledigeTotaltTidspunkter = ledigeTotalt.map(ledig=>ledig.tid);
 
             //Gjør sånn at ingen kan reservere time hos en frisør etter oppsigelsesdatoen
@@ -116,7 +143,6 @@ function Klokkeslett({env, sForsteFrisor, forsteFrisor, tilgjengeligeFrisorer, s
             }
         })
         setLedigeTimer(ledigeTotalt);
-        console.log("ledigeTotalt: ", ledigeTotalt);
 
     }, [dato, produkt, env.klokkeslett, env.tjenester, frisor, env.frisorer, bestilteTimer, tilgjengeligeFrisorer])
 
@@ -126,10 +152,8 @@ function Klokkeslett({env, sForsteFrisor, forsteFrisor, tilgjengeligeFrisorer, s
                 {(ledigeTimer.length > 0? ledigeTimer.map((tid)=>(<div style={{backgroundColor: klokkeslettet===tid.tid ?"lightgreen": "white"}} className='klokkeslett' key={tid.tid} onClick={()=>{
                     //Velg frisør, sett random ut ifra klokkeslettet, altså tid bruk random som velger random indeks fra tid.frisorer
                     let randomFrisor = tid.frisorer[randomNumber(tid.frisorer.length)];
-                    console.log("Random frisør", randomFrisor);
                     sForsteFrisor(randomFrisor);
                     sKlokkeslett(tid.tid);
-                    console.log(tid.tid);
                 }}> {tid.tid} </div>)):`Ingen ledige timer for ${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}`)}
             </div>
             

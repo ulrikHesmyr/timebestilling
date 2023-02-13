@@ -154,12 +154,12 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle}) {
     }}> <img alt='Opprett fri/fravær' src='leggtil.png' style={{height:"1.4rem"}}></img> Nytt fravær/fri</button>:"")}
     </div>:"")}
     {
-    (leggTilFri?<>
-
-    <button onClick={(e)=>{
+    (leggTilFri?<div className='fokus'>
+    
+    <img alt='Avbryt' src='avbryt.png' className='lukk' onClick={(e)=>{
         e.preventDefault();
         reset();
-    }} > <img alt='Avbryt' src='avbryt.png' style={{height:"1.4rem"}}></img> AVBRYT</button>
+    }} ></img>
     
     <h3>Velg type fri:</h3>
     <div style={{display:"flex", flexDirection:"row"}}>
@@ -177,9 +177,11 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle}) {
         {env.frisorer.map((f)=>(
             <div style={{margin:"0.3rem",border:(frisor===f?"3px solid black":"thin solid black"),  cursor:"pointer", padding:"0.5rem", height:"1.4rem", width:"fit-content"}} onClick={()=>{
                 sFrisor(f);
+                console.log("setter frisør til:", f );
             }} key={f.navn}>{f.navn}</div>
         ))}
         </div></>:"")}
+
     {(dagsfraver === "dag"?
     <form style={{display:"flex", flexDirection:"column"}}>
         
@@ -196,14 +198,16 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle}) {
 
 <button onClick={(e)=>{
     e.preventDefault();
-    let krasj = sjekkForKrasj();
-    if(krasj){
-        alert("Fri kolliderer med timereservasjon, finn et annet tidspunkt");
-        return
-    }
+    
     if(frisor !== null && parseInt(starttidspunkt.substring(3,5))%15 === 0 && parseInt(slutttidspunkt.substring(3,5))%15 === 0 && !isNaN(parseInt(starttidspunkt.substring(0,2)))&& !isNaN(parseInt(slutttidspunkt.substring(0,2))) && starttidspunkt.substring(2,3) === ":" && slutttidspunkt.substring(2,3) === ":" && minutterFraKlokkeslett(starttidspunkt) < minutterFraKlokkeslett(slutttidspunkt)){ 
-        opprettFri();
-        reset();
+        let krasj = sjekkForKrasj();
+        if(krasj){
+            alert("Fri kolliderer med timereservasjon, finn et annet tidspunkt");
+            return;
+        } else {
+            opprettFri();
+            reset();
+        }
     } else {
         alert("Tidspunkt passer ikke formatet");
     }
@@ -244,7 +248,7 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle}) {
 }}>OPPRETT FRI/FRAVÆR</button>
     </>:"")}
 
-    </>
+    </div>
 
     :"")}
 

@@ -7,10 +7,13 @@ const rateLimiter = require("express-rate-limit");
 const mailer = require("../configuration/mailer");
 const Bestilttime = require("../model/bestilling");
 const Env = require("../model/env");
+const {NODE_ENV} = process.env;
 
+let intervall = 60 * 60 * 1000; // 1 time
+if(NODE_ENV === "development") intervall = 2* 60 * 1000; // 2 minutter
 
 const bestillingLimiter = rateLimiter({
-    windowMs: 60 * 60 * 1000,
+    windowMs: intervall,
     max: 5,
     message: "BAD REQUEST"
 });

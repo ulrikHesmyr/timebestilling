@@ -20,14 +20,6 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
     const [visRedigerAapningstider, sVisRedigerAapningstider] = useState(false);
     const [dagForRedigering, sDagForRedigering] = useState();
     
-    //Frisører
-    const [visRedigerFrisor, sVisRedigerFrisor] = useState(false);        
-    const [visSiOpp, sVisSiOpp] = useState(false);        
-    const [frisorRediger, sFrisorRediger] = useState(null);
-    const [oppsigelsesDato, sOppsigelsesDato] = useState(new Date());
-
-
-
     
     //Synlige sider
     const [synligKomponent, setSynligKomponent] = useState(1);
@@ -41,13 +33,6 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
         sKontakt_tlf(env.kontakt_tlf);
     }, [env])
 
-    async function siOppFrisor(){
-        let tempFrisorer = env.frisorer;
-        tempFrisorer.find((f)=>{return f.navn === frisorRediger.navn}).oppsigelse = oppsigelsesDato;
-
-        sendTilDatabase(tempFrisorer, env.kategorier, env.tjenester, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
-        
-    }
 
     //async function slettFrisor(frisor){
 //
@@ -189,86 +174,32 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
                     
                 <div className='adminMain'>
                     <div>
+                    <h4>Kontakt-info og administrator passord:</h4>
                         <div className='redigeringsBoks'> <p>Kontakt telefon: {kontakt_tlf}</p> <RedigerKontakt number={true} state={kontakt_tlf} setState={sKontakt_tlf} env={env} sendTilDatabase={sendTilDatabase} /></div>
                         <div className='redigeringsBoks'> <p>Kontakt e-post: {kontakt_epost}</p> <RedigerKontakt number={false} state={kontakt_epost} setState={sKontakt_epost} env={env} sendTilDatabase={sendTilDatabase} /></div>
-                    </div>
-
-                    <div>
                         <div className='redigeringsBoks'><p>Passord for: admin</p> <RedigerPassord redigerPassordDB={redigerPassordDB} /> </div>
                     </div>
+
                     <div>
-                        {visRedigerFrisor?<>
-                            <button onClick={(e)=>{
-                                e.preventDefault();
-                                sVisRedigerFrisor(false);
-                                sFrisorRediger(null);
-                            }}>Lukk</button>
-                            <div>
-                                
-                            {frisorRediger.navn}
-
-                                <button onClick={(e)=>{
-                                            e.preventDefault();
-                                            //slettFrisor(frisor.navn);
-                                            sVisSiOpp(true);
-                                            if(frisorRediger.oppsigelse !== "Ikke oppsagt"){
-                                                sOppsigelsesDato(frisorRediger.oppsigelse);
-                                            }
-                                }}>{frisorRediger.oppsigelse == "Ikke oppsagt"?"Si opp (legg inn oppsigelsesdato)":"Rediger oppsigelse"}</button>
-                                 
-
-                            </div>   
-
-                            {visSiOpp?<>
-                            
-                                <h4>Legg inn oppsigelsesdato for {frisorRediger.navn}</h4>
-                                <p>Legg inn datoen som frisøren ikke lenger jobber. Frisøren vil kunne få reservasjoner før denne datoen men 
-                                    ikke på denne datoen eller etter. Dette er for å unngå at frisøren får reservasjoner som ikke kan gjennomføres.
-                                </p>
-                                <input type="date" value={oppsigelsesDato} onChange={(e)=>{
-                                    e.preventDefault();
-                                    sOppsigelsesDato(e.target.value);
-                                }} />
-                                <div>
-                                <button onClick={(e)=>{
-                                    e.preventDefault();
-                                    sVisSiOpp(false);
-                                    sFrisorRediger(null);
-                                }} >Avbryt</button>
-                                <button onClick={(e)=>{
-                                    e.preventDefault();
-                                    sVisSiOpp(false);
-                                    siOppFrisor();
-                                }}>Lagre dato for oppsigelse</button>
-                                </div>
-                            </>:""}
-
-                        </>:<>
-                            {frisorer.map((frisor)=>(
+                        <h4>Frisører:</h4>
+                        {frisorer.map((frisor)=>(
                                 <div key={frisor.navn} style={{display:"flex", flexDirection:"row", alignItems:"center", margin:"0.3rem"}}>
 
-                                    <DetaljerFrisor frisor={frisor} env={env} />
-
-                                    <button onClick={(e)=>{
-                                        e.preventDefault();
-                                        sFrisorRediger(frisor);
-                                        sVisRedigerFrisor(true);
-                                    }} >Rediger</button>
-
+                                    <DetaljerFrisor frisor={frisor} env={env} sendTilDatabase={sendTilDatabase} />
 
                                 </div>
                             ))}
-                        </>}
 
                         {env !== null?<LeggTilFrisor env={env} varsle={varsle} updateTrigger={updateTrigger} sUpdateTrigger={sUpdateTrigger} />:""}
                         
                     </div>
                     <div>
+                    <h4>Åpningstider:</h4>
                         {visRedigerAapningstider?<>
                             <RedigerAapningstider env={env} sendTilDatabase={sendTilDatabase} dag={dagForRedigering} sVisRedigerAapningstider={sVisRedigerAapningstider}/>
                         </> :env.klokkeslett.map((klokkeslett, index)=>(
                             <div key={index} style={{display:"flex", flexDirection:"row", alignItems:"center", margin:"0.3rem"}}>
-                             {klokkeslett.dag} {klokkeslett.open} - {klokkeslett.closed}
+                             {klokkeslett.dag}: {klokkeslett.stengt?"Stengt" :klokkeslett.open} {klokkeslett.stengt?"": "-"} {klokkeslett.stengt?"": klokkeslett.closed}
                              <button onClick={()=>{
                                 console.log("trykket på rediger-knapp for åpningstider");
                                 sDagForRedigering(klokkeslett);

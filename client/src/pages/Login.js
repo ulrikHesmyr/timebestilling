@@ -59,8 +59,7 @@ function Login(){
         } else if(!response.valid){
             alert(response.message); 
             sTrykketLoggInn(false);
-        } 
-        else if(response.valid){
+        } else if(response.valid){
            toggleLoggetInn(true);
            setBukertype(response.brukertype);
            sEnv(response.env);
@@ -71,6 +70,8 @@ function Login(){
            setBrukernavn("");
            setPassord("");
            sTrykketLoggInn(false);
+        } else {
+            alert("Noe har skjedd galt. Sjekk om du har internett og prøv på nytt.");
         }
     }
 

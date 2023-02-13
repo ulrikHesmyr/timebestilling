@@ -11,6 +11,9 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
     const [isMobile, setIsMobile] = useState(false);
     const [updateDataTrigger, setUpdate] = useState(false);
     const [bestilteTimer, setBestiltetimer] = useState(undefined);
+    const [friElementer, sFriElementer] = useState(undefined);
+
+
     const [tilgjengeligeFrisorer, sTilgjengeligeFrisorer] = useState([]);
 
     
@@ -56,11 +59,21 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
       const request = await fetch('http://localhost:3001/timebestilling/hentBestiltetimer');
       const response = await request.json();
       
-    if(response){
-        setBestiltetimer(response);
-    }
+        if(response){
+            setBestiltetimer(response);
+        }
     }
     fetchData();
+
+    async function hentFri(){
+        console.log("Hentet fri elementer");
+      const request = await fetch("http://localhost:3001/env/fri");
+      const response = await request.json();
+      if(response){
+        sFriElementer(response);
+      }
+    }
+    hentFri();
   },[updateDataTrigger])
 
   
@@ -106,7 +119,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
                 }
             }} style={{backgroundColor: dato !== null && klokkeslettet !== null ?"lightgreen":"white"}} ><p>3</p> Velg dato og tid</h2>
             {(synligKomponent === 2 && frisor !== null ? <Dato dato={dato} synligKomponent={synligKomponent} displayKomponent={displayKomponent} sDato={sDato} sKlokkeslett={sKlokkeslett} sProdukt={sProdukt} klokkeslettet={klokkeslettet} produkt={produkt} />:"")}
-            {(synligKomponent === 2 && frisor !== null && bestilteTimer !== null? <Klokkeslett sForsteFrisor={sForsteFrisor} forsteFrisor={forsteFrisor} tilgjengeligeFrisorer={tilgjengeligeFrisorer} sTilgjengeligeFrisorer={sTilgjengeligeFrisorer} env={env} synligKomponent={synligKomponent} displayKomponent={displayKomponent} klokkeslettet={klokkeslettet} produkt={produkt} bestilteTimer={bestilteTimer} frisor={frisor} sKlokkeslett={sKlokkeslett} dato={dato} hentMaaned={hentMaaned}/>:"")}
+            {(synligKomponent === 2 && frisor !== null && bestilteTimer !== null? <Klokkeslett friElementer={friElementer} sForsteFrisor={sForsteFrisor} forsteFrisor={forsteFrisor} tilgjengeligeFrisorer={tilgjengeligeFrisorer} sTilgjengeligeFrisorer={sTilgjengeligeFrisorer} env={env} synligKomponent={synligKomponent} displayKomponent={displayKomponent} klokkeslettet={klokkeslettet} produkt={produkt} bestilteTimer={bestilteTimer} frisor={frisor} sKlokkeslett={sKlokkeslett} dato={dato} hentMaaned={hentMaaned}/>:"")}
             
             <h2 className='overskrift' onClick={()=>{
                 if(synligKomponent === 3){

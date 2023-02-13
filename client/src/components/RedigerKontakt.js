@@ -9,46 +9,47 @@ function RedigerKontakt({number, setState, state, sendTilDatabase, env}){
     const [tempState, sTempState] = useState(state);
 
     return(
-        <div>
+        <div >
             {redigeringsKnappSynlig?(
         <button className='rediger' onClick={(e)=>{
             e.preventDefault();
             sInputSynlig(!inputSynlig);
             sRedigeringsKnappSynlig(false);
             sAvbrytOgLagreSynlig(true)
-        }}><img src='rediger.png' style={{height:"1.4rem"}} alt="Rediger"></img>Rediger kontakt-info </button>):""}
-        {inputSynlig?(<input type={number?"number":"text"} value={tempState} onChange={(e)=>{
+        }}><img src='rediger.png' style={{height:"1.4rem"}} alt="Rediger"></img></button>):""}
+        
+        {inputSynlig && avbrytOgLagreSynlig?(<div className='fokus'>
+        
+        <label>{number?"Nytt kontaktnummer: ": "Ny kontakt-epost: "}<input type={number?"number":"text"} value={tempState} onChange={(e)=>{
             sTempState(e.target.value);
-        }}></input>):""}
-        {avbrytOgLagreSynlig?(
-            <div>
+        }}></input></label>
+        
                 
-            <button onClick={(e)=>{
-                e.preventDefault();
-                setState(tempState);
-                sAvbrytOgLagreSynlig(false);
-                sInputSynlig(false);
-                sRedigeringsKnappSynlig(true);
-                //Sjekker om det er telefonnummeret som må oppdateres
-                if(number){
-                    sendTilDatabase(env.frisorer, env.kategorier, env.tjenester, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, tempState);
-                } else {
-                    sendTilDatabase(env.frisorer, env.kategorier, env.tjenester, env.klokkeslett, env.sosialeMedier, tempState, env.kontakt_tlf);
-                }
-            }}>
-                Lagre
-            </button>
-            
-            <button onClick={()=>{
-                sTempState(state);
-                sAvbrytOgLagreSynlig(false);
-                sInputSynlig(false);
-                sRedigeringsKnappSynlig(true);
-            }}>
-                Avbryt
-            </button>
-            
-            </div>
+        <button onClick={(e)=>{
+            e.preventDefault();
+            setState(tempState);
+            sAvbrytOgLagreSynlig(false);
+            sInputSynlig(false);
+            sRedigeringsKnappSynlig(true);
+            //Sjekker om det er telefonnummeret som må oppdateres
+            if(number){
+                sendTilDatabase(env.frisorer, env.kategorier, env.tjenester, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, tempState);
+            } else {
+                sendTilDatabase(env.frisorer, env.kategorier, env.tjenester, env.klokkeslett, env.sosialeMedier, tempState, env.kontakt_tlf);
+            }
+        }}>
+            Lagre
+        </button>
+        
+        <button onClick={()=>{
+            sTempState(state);
+            sAvbrytOgLagreSynlig(false);
+            sInputSynlig(false);
+            sRedigeringsKnappSynlig(true);
+        }}>
+            Avbryt
+        </button>
+        </div>
         ):""}
         </div>
     )

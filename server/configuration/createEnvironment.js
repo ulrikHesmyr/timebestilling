@@ -92,6 +92,13 @@ async function opprettEnvironment(){
             ],
             frisorer:[],
             klokkeslett: [
+                
+                {
+                    dag: "Søndag",
+                    open:"10:00",
+                    closed:"14:00",
+                    stengt:true
+                },
                 {
                 dag: "Mandag",
                 open:"09:00",

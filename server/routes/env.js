@@ -117,7 +117,6 @@ router.post("/opprettFrisor", upload.single("uploaded_file"), authorization, asy
     try {
         if(req.brukernavn === "admin"){
             sharp(req.file.buffer).resize({height: 200, width: 200, fit:'inside'}).toBuffer().then(async (data)=>{
-            console.log(req.file);
             const img = {
                 data: new Buffer.from(data),
                 contentType: req.file.mimetype
