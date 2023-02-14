@@ -32,7 +32,7 @@ const App = ()=> {
 
 
   return (
-      <BrowserRouter><div style={{display:"flex", flexDirection:"row", justifyContent:"space-between"}}>
+      <BrowserRouter><div style={{display:"flex", flexDirection:"row", justifyContent:"space-between", padding:"1rem"}}>
         
         <div className='burger' aria-expanded={synligMeny} onClick={()=>{
               setSynligmeny(!synligMeny);

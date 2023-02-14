@@ -16,6 +16,22 @@ body{
   box-sizing: border-box;
 }
 
+header{
+  width: 100vw;
+  background-image: url("../public/startside.jpg");
+  background-position-y: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+}
+header h1{
+
+  mix-blend-mode: exclusion ; /* differance */
+  color:white;
+  font-size: max(3rem, 5vw);
+  text-align: center;
+}
 footer{
   position: fixed;
   bottom: 5rem;
@@ -413,17 +429,27 @@ input, button{
 
   .navBarBestillTime{
     position: fixed;
-    top: 0.5rem;
-    right: 0.5rem;
-    background: var(--background2);
+    top: 0.3rem;
+    right: 0.3rem;
+    background: url("../public/startside.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    object-fit: contain;
     color:var(--color1);
     font-weight: bold;
     text-shadow: 1px 1px 1px black;
-    padding: 1rem;
     display: flex;
     align-items: center;
-    border-radius: 0.3rem;
-
+    outline:groove 0.2rem ;
+    
+  }
+  .navBarBestillTime div{
+    padding: 1rem;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(5px);
+    font-size: fit-content;
   }
   .varsling{
     z-index: 2000;
@@ -472,7 +498,17 @@ input, button{
     aspect-ratio: 1/1;
     border-radius:50%;
   }
+  .startside{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    justify-items: stretch;
+    padding: 1rem;
+  }
 
+  .startside h2{
+    text-align: center;
+  }
   /*******************************************************************************************************************/
 
 @media (width <= 900px){
@@ -488,6 +524,11 @@ input, button{
     
     margin:0 !important;
     padding:2.5rem;
+  }
+  
+  .startside{
+    display: flex;
+    flex-direction: column;
   }
   .adminMain{
     display: flex;

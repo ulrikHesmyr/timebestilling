@@ -56,5 +56,9 @@ bytte farge-variabler i App.css
 har salongen åpent søndager? Da må det endres i Klokkeslett.js
 Endre at når ansatt endrer tlf så endrer den på deres tlf og ikke elin sitt (routes/login.js /oppdaterTelefonnummer)
 
+FÅ FRA KUNDE FØR PROD
+- Logo og bakgrunnsvideo (må være mp4 H.264)
+- Bilde til startside
+
 MINE GARANTIER:
 - Umulig å bli dobbeltbooket eller at timer krasjer, først på nettsiden, så sjekker den med tidligere bestillinger, men også på serveren i det bestillingen sendes, så sjekker den momentnant om det krasjer med andre bestillinger.

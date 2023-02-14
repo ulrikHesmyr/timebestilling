@@ -9,11 +9,13 @@ async function opprettEnvironment(){
             kontakt_tlf:41394262,
             sosialeMedier:[{
                 platform:"Instagram",
-                bruker:"UlrikFrisor"
+                bruker:"UlrikFrisor",
+                link:"https://www.instagram.com/bjoerkum/"
             },
             {
                 platform:"Facebook",
-                bruker:"UlrikFrisor"
+                bruker:"UlrikFrisor",
+                link:"https://www.facebook.com/LogNTNU"
             }],
             admin_bruker:"admin",
             admin_pass:"KongHarald",
@@ -91,6 +93,7 @@ async function opprettEnvironment(){
                 }
             ],
             frisorer:[],
+            adresse:"Ulrik Frisør, Storgata 1, 1234 Sted",
             klokkeslett: [
                 
                 {

@@ -3,10 +3,11 @@ const mongoose = require("mongoose");
 const env = new mongoose.Schema({
     kontakt_epost:{type:String},
     kontakt_tlf:{type: Number},
-    sosialeMedier:[{platform: String, bruker: String}],
+    sosialeMedier:[{platform: String, bruker: String, link: String}],
     bedrift:{type:String},
     antallBestillinger:{type:Number},
     kategorier: [String],
+    adresse:{type:String},
     tjenester: [
         {
             navn: String,
