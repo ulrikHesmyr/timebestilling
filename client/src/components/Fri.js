@@ -47,7 +47,7 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle}) {
                 if(time.medarbeider === frisor.navn && time.dato === datoDagsFraver && minutterFraKlokkeslett(starttidspunkt) <= minutterFraKlokkeslett(time.tidspunkt) && minutterFraKlokkeslett(time.tidspunkt) < minutterFraKlokkeslett(slutttidspunkt)){
                     return time;
                 }
-            } else if(dagsfraver === "fler") {
+            } else {
                 let timeDato = new Date(`${time.dato}`);
                 let start = new Date(`${startDato}`);
                 let slutt = new Date(`${sluttDato}`);
@@ -55,8 +55,8 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle}) {
                     return time;
                 }
             }
+            return false;
         })
-        console.log("FUNN: ", funn?true:false);
         return funn?true:false
     }
 

@@ -5,8 +5,11 @@ const Client = require("target365-sdk");
 const rateLimiter = require("express-rate-limit");
 
 const mailer = require("../configuration/mailer");
+
 const Bestilttime = require("../model/bestilling");
 const Env = require("../model/env");
+const FriTimene = require("../model/fri");
+
 const {NODE_ENV} = process.env;
 
 let intervall = 60 * 60 * 1000; // 1 time
@@ -28,7 +31,7 @@ const hentBestillingerLimiter = rateLimiter({
 router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
     try {
         const env = await Env.findOne();
-        const {dato, behandlinger, frisor, kunde, medarbeider, telefonnummer, tidspunkt} = req.body;
+        const {dato, behandlinger, kunde, medarbeider, telefonnummer, tidspunkt} = req.body; //frisor
         const t = await Bestilttime.findOne({dato: dato, medarbeider: medarbeider, tidspunkt:tidspunkt});
         
         let finnesIkkeKollisjon = true; 
@@ -38,12 +41,34 @@ router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
             let f = await Bestilttime.findOne({dato: dato, medarbeider: medarbeider, tidspunkt:klokkeslettFraMinutter(i)});
             if(f) finnesIkkeKollisjon = false;
         }
+        const fritimene = await FriTimene.find({medarbeider: medarbeider});
+        if(fritimene){
+            fritimene.forEach(fri => {
+                if(fri.lengreTid){
+                    let fraDato = new Date(fri.fraDato);
+                    let tilDato = new Date(fri.tilDato);
+                    let bestillingDato = new Date(dato);    
+                    if(bestillingDato >= fraDato && bestillingDato <= tilDato){
+                        finnesIkkeKollisjon = false;
+                    }
+                } else {
+                    let friDag = fri.friDag;
+                    if(dato === friDag){
+                        for(let i = minutterFraKlokkeslett(fri.fraKlokkeslett); i < minutterFraKlokkeslett(fri.tilKlokkeslett);i+=15){
+                            if(i === minutterFraKlokkeslett(tidspunkt)){
+                                finnesIkkeKollisjon = false;
+                            }
+                        }
+                    }
+                }
+            });
+        }
         
         if(!t && finnesIkkeKollisjon){
             const bestillNyTime = await Bestilttime.create({
                 dato: dato,
                 tidspunkt: tidspunkt,
-                frisor: frisor,
+                //frisor: frisor,
                 behandlinger: behandlinger,
                 medarbeider: medarbeider,
                 kunde: kunde,

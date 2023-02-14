@@ -1,8 +1,8 @@
 :root{
   --farge1:darkblue;
   --farge2:rgb(54, 115, 188);
-  --farge3:lightgreen;
-  --farge4:green;
+  --farge3:rgba(144, 182, 238, 0.432);
+  --farge4:rgba(115, 47, 160, 0.299);
   --color1:white;
   --color2:white;
   --color3:black;

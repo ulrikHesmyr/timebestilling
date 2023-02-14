@@ -55,32 +55,24 @@ function Klokkeslett({env, sForsteFrisor, forsteFrisor, friElementer, tilgjengel
             let friTimene = friElementer.filter(element=>element.medarbeider === frisorerVelgImellom[n].navn);
             
             console.log(total, "total");
-            friTimene = friTimene.map((element)=>{
-                if(element.lengreTid){
+            for(let k = 0; k < friTimene.length; k++){
+                
+                if(friTimene[k].lengreTid){
                     let d = new Date(dato);
-                    let st = new Date(element.fraDato);
-                    let sl = new Date(element.tilDato);
-                    console.log(d, st, sl, "d, st, sl");
-                    console.log(st <= d && d <= sl);
+                    let st = new Date(friTimene[k].fraDato);
+                    let sl = new Date(friTimene[k].tilDato);
                     if(st <= d && d <= sl){
                         reserverte = reserverte.concat(aapningstider);
                     }
                 } else {
-                    if(dato === element.friDag){
-                        console.log(element, "element dersom ikke lengreTid");
-                        for(let i = minutterFraKlokkeslett(element.fraKlokkeslett); i <= minutterFraKlokkeslett(element.tilKlokkeslett); i+=15){
+                    if(dato === friTimene[k].friDag){
+                        for(let i = minutterFraKlokkeslett(friTimene[k].fraKlokkeslett); i < minutterFraKlokkeslett(friTimene[k].tilKlokkeslett); i+=15){
                             reserverte.push(klokkeslettFraMinutter(i));
                         }
-                        console.log(reserverte, "reserverte dersom ikke lengreTid");
                     }
                 }
-            }) ;
-            //Dersom fritimene lengreTid og dato state er mellom eller lik start og slutt , 
-            // så pusher vi tidspunktet feks 10:30 til reserverte
-
-            //Sjekker dersom lengreTid
-                //
-
+            }
+            
 
             //Sjekker hvilke tidspunkter som kunde ikke kan reservere slik at timer ikke kolliderer m hverandre
             for(let i = 0; i < aapningstider.length; i++){
@@ -144,12 +136,12 @@ function Klokkeslett({env, sForsteFrisor, forsteFrisor, friElementer, tilgjengel
         })
         setLedigeTimer(ledigeTotalt);
 
-    }, [dato, produkt, env.klokkeslett, env.tjenester, frisor, env.frisorer, bestilteTimer, tilgjengeligeFrisorer])
+    }, [dato, friElementer, produkt, env.klokkeslett, env.tjenester, frisor, env.frisorer, bestilteTimer, tilgjengeligeFrisorer])
 
     return(
         <div className="animer-inn">
             <div className='klokkeslettene'>
-                {(ledigeTimer.length > 0? ledigeTimer.map((tid)=>(<div style={{backgroundColor: klokkeslettet===tid.tid ?"lightgreen": "white"}} className='klokkeslett' key={tid.tid} onClick={()=>{
+                {(ledigeTimer.length > 0? ledigeTimer.map((tid)=>(<div style={{backgroundColor: klokkeslettet===tid.tid ?"var(--farge4)": "white"}} className='klokkeslett' key={tid.tid} onClick={()=>{
                     //Velg frisør, sett random ut ifra klokkeslettet, altså tid bruk random som velger random indeks fra tid.frisorer
                     let randomFrisor = tid.frisorer[randomNumber(tid.frisorer.length)];
                     sForsteFrisor(randomFrisor);

@@ -14,7 +14,6 @@ function Vakter({env, bestilteTimer, bruker}){
   const ukedag = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
   const [ansatt, setAnsatt] = useState([]);
   //timebestillinger og fri
-  const [friElementer, sFriElementer] = useState([]);
   const [vakterTimebestillinger, sVakterTimebestillinger] = useState();
   
   //Redigere ansatt info
@@ -234,7 +233,7 @@ function Vakter({env, bestilteTimer, bruker}){
               <div onClick={()=>{
                 alert(`${ukedag[new Date(event.dato).getDay() -1]} ${parseInt(event.dato.substring(8,10))}. ${hentMaaned(parseInt(event.dato.substring(5,7)) -1)} ${event.tidspunkt}-${event.slutt} ${event.title}  `)
               }}>
-                {event.tidspunkt}-{event.slutt}: {event.title}
+                {event.lengreTid?`${event.tidspunkt} - ${event.title}` :`${event.tidspunkt}-${event.slutt}: ${event.title}`}
               </div>
             )
           }}
@@ -245,7 +244,7 @@ function Vakter({env, bestilteTimer, bruker}){
         eventPropGetter={event => {
           return {
             style:{ 
-              backgroundColor: farger[event.frisor],
+              backgroundColor: farger[env.frisorer.map(f=>f.navn).indexOf(event.medarbeider)],
               padding:"0.05rem"
             },
             className: 'eventWrapper'
