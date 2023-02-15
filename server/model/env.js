@@ -13,7 +13,8 @@ const env = new mongoose.Schema({
             navn: String,
             pris: Number,
             tid: Number,
-            kategori:Number
+            kategori:String,
+            beskrivelse: String
         }
     ],
     frisorer:[

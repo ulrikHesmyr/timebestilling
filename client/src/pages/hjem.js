@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { Link } from "react-router-dom";
 
 
@@ -9,6 +9,33 @@ import { Link } from "react-router-dom";
                 </video>
  */
 function Hjem({env}){
+
+    //Bildene til frisørene
+    const [frisorBildeArray, sFrisorBildeArray] = useState(null);
+    
+    //Behandlinger
+    const [kategoriSynlig, setKategoriSynlig] = useState(env.kategorier.map(kategori=>kategori = false));
+    const [K, sK] = useState(false);
+
+    useEffect(()=>{
+        //Lager et array med base64 bilder
+        async function hentBilder(){
+            
+            let midlertidigArray = [];
+            for(let i = 0; i < env.frisorer.length; i++){
+                const array = new Uint8Array(env.frisorer[i].img.data.data);
+                const base = window.btoa(String.fromCharCode.apply(null, array));
+                const base64Image = `data:${env.frisorer[i].img.contentType};base64,${base}`;
+
+                //const base64Image = `data:${env.frisorer[i].img.contentType};base64,${window.btoa(env.frisorer[i].img.data.data)}`;
+                midlertidigArray.push(base64Image);
+            }
+            sFrisorBildeArray(midlertidigArray);
+            console.log(midlertidigArray, "FRISORBILDEARRAY");
+        }
+        hentBilder();
+    }, [env.frisorer])
+
     return(<>
         <div className="hjem">
             <header>
@@ -18,27 +45,77 @@ function Hjem({env}){
             <Link to="/timebestilling" className='navBarBestillTime'><div>Bestill time</div></Link>
 
         </div>
+        <div className="startContainer">
         <div className="startside">
-            <div>
-            <h2>Åpningstider</h2>
-            Åpningstider
+            <div className="hjemsideSeksjon">
+                <h2>Åpningstider</h2>
+                <div>
+                     {env.klokkeslett.map((tid, index)=>(
+                         <div key={tid.dag} style={{display:"flex", flexDirection:"row", justifyContent:"space-evenly", fontWeight:(new Date().getDay() === index? "bold":"400")}}>
+                             <p>{tid.dag}:</p> <p>{tid.open} - {tid.closed}</p>
+                         </div>
+                     ))}
+                </div>
             </div>
-            <div>
-            <h2>Om oss</h2>
-            Frisører
+            <div className="hjemsideSeksjon">
+                <h2>Om oss</h2>
+                <div style={{display:"flex", flexDirection:"row", flexWrap:"wrap"}}>
+                    {frisorBildeArray !== null? env.frisorer.map((frisor, index)=>(
+                    <div key={frisor.navn}>
+                        <h3>{frisor.navn}</h3>
+                        <img className="frisorbilde" src={frisorBildeArray[index]} alt={`Bilde av frisør ${frisor.navn}`} style={{height:"4rem"}}></img>
+                        </div>
+                    )):"hhh"}
+                </div>
             </div>
         </div>
         <div className="startside">
-            <div>
-            <h2>Hvor du finner oss</h2>
-            <p>{env.adresse}</p>
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d113630.82896655216!2d-109.40885519659055!3d-27.125962577807506!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9947f017a8d4ae2b%3A0xbbe5b3edc02a2db6!2sEaster%20Island!5e0!3m2!1sen!2sno!4v1676406864760!5m2!1sen!2sno" title="Kart"  style={{border:"none", width:"300", height:"225"}} allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <div className="hjemsideSeksjon">
+                <h2>Hvor du finner oss</h2>
+
+                <div>
+                    <p>{env.adresse}</p>
+                    <img alt="Bilde som viser adressen" src="adresse.png" style={{width:"200px"}}></img>
+                </div>
             </div>
-            <div>
-            <h2>Det siste fra vår instagram!</h2>
-            
+            <div className="hjemsideSeksjon">
+                <h2>Våre behandlinger:</h2>
+                <div>
+                {env.kategorier.map((kategori, index)=>(
+                    <div key={kategori} style={{transition:"0.2s ease all", padding:"0.3rem", borderRadius:(kategoriSynlig[index]?"0 0 1rem 1rem":"0 0 0 0")}}>
+                        <h3 style={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"space-between", borderBottom:"thin solid rgba(0,0,0,0.3)"}} onClick={()=>{
+                            let temp = kategoriSynlig;
+                            let n = env.kategorier.indexOf(kategori);
+                            if(kategoriSynlig[n]){
+                                temp[n] = false;
+                            } else {
+                                temp[n] = true;
+                            }
+                            setKategoriSynlig(temp);
+                            sK(!K);
+                        }}>{kategori} <img alt={(kategoriSynlig[env.kategorier.indexOf(kategori)] === true?`Innhold for kategorien ${kategori} vises`:`innhold for kategorien ${kategori} vises ikke`)} style={{height:"1.9rem"}} src={(kategoriSynlig[env.kategorier.indexOf(kategori)] === true?"aapnet.png":"lukket.png")}></img> </h3>
+                        <div className="tjenestene" style={kategoriSynlig[env.kategorier.indexOf(kategori)] === true?{ height:"auto", overflow:"visible", opacity:"1", transition:"0.3s ease 0.05s all"}:{height:"2rem", overflow:"hidden", opacity:"0", transition:"0.3s ease 0.05s all", transform:"translateY(-30px)"}}>
+                            {env.tjenester.filter(element=>element.kategori === kategori).map((tjeneste)=>(
+                                <div key={tjeneste.navn}>
+                                    <div>
+                                        <li style={{fontWeight:"500"}}>{tjeneste.navn}</li>
+                                        <p style={{fontWeight:"200"}}>{tjeneste.beskrivelse}</p>
+                                        <p>Pris: {tjeneste.pris} kr</p>
+                                        <p>Tid: {tjeneste.tid} minutter</p>
+                                    </div>
+                                </div>
+                                )
+                            )}
+                        </div>
+                    </div>
+                    
+                    
+                    ))}
+                </div>
             </div>
         </div>
+        </div>
+
         </>
     )
 }

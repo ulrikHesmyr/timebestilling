@@ -23,73 +23,35 @@ async function opprettEnvironment(){
             vakter_pass:"DronningSonja",
             bedrift:BEDRIFT,
             antallBestillinger:0,
-            kategorier: ["Klipp", "Kur", "Striper", "Barbering", "Vipper/bryn", "Vask of føhn"],
+            kategorier: ["Klipp", "Striper"],
             tjenester: [
                 {
                     navn: "Kort-hår klipp",
                     pris: 250,
                     tid: 30,
-                    kategori:0
+                    kategori:"Klipp",
+                    beskrivelse:"Klipp for langt hår, hår over skulderbladet"
                 },
                 {
                     navn: "Langt-hår klipp",
-                    pris: 350,
+                    pris: 400,
                     tid: 60,
-                    kategori:0
-                },
-                {
-                    navn: "Kur for å få lenger hår",
-                    pris: 250,
-                    tid: 75,
-                    kategori:1
+                    kategori:"Klipp",
+                    beskrivelse:"Klipp for langt hår, hår under skulderbladet"
                 },
                 {
                     navn: "Striper kort hår",
-                    pris: 600,
-                    tid: 45,
-                    kategori:2
-                },
-                {
-                    navn: "Barbere kort skjegg",
-                    pris: 150,
-                    tid: 15,
-                    kategori:3
-                },
-                {
-                    navn: "Barbere langt skjegg",
-                    pris: 250,
-                    tid: 30,
-                    kategori:3
+                    pris: 450,
+                    tid: 60,
+                    kategori:"Striper",
+                    beskrivelse:"Stripe håret i valgfri farge"
                 },
                 {
                     navn: "Striper langt hår",
-                    pris: 560,
-                    tid: 60,
-                    kategori:2
-                },
-                {
-                    navn: "Nappe bryn",
-                    pris: 250,
-                    tid: 30,
-                    kategori:4
-                },
-                {
-                    navn: "Farge vipper",
-                    pris: 200,
-                    tid: 30,
-                    kategori:4
-                },
-                {
-                    navn: "Farge bryn",
-                    pris: 100,
-                    tid: 15,
-                    kategori:4
-                },
-                {
-                    navn: "Vask og føhn",
-                    pris: 560,
-                    tid: 45,
-                    kategori:5
+                    pris: 650,
+                    tid: 75,
+                    kategori:"Striper",
+                    beskrivelse:"Stripe håret i valgfri farge"
                 }
             ],
             frisorer:[],

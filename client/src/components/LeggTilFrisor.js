@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react'
+import React, {useState} from 'react'
 
 function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle}){
 
@@ -13,14 +13,13 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle}){
         
         sLeggTil(false);
         console.log("tilkalte 'lagret'");
-        sLeggTil(false);
+        
         try {
             
         const data = {
             nyBrukernavn: nyFrisorNavn.toLowerCase(),
             nyTelefonnummer: parseInt(tlfNyFrisor)
         }
-        console.log("data opprett frisør: ",data);
         const options = {
             method:"POST",
             headers:{
@@ -31,8 +30,25 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle}){
         const request = await fetch("http://localhost:3001/login/opprettBruker", options);
         const response = request.json();
         
-        if(response){ 
-            opprettFrisor();
+        
+        let formData = new FormData();
+        formData.append("uploaded_file", bildeAvFrisor);
+        formData.append("nyFrisorNavn", nyFrisorNavn);
+        formData.append("nyFrisorTlf", parseInt(tlfNyFrisor));
+        formData.append("nyFrisorTjenester", frisorTjenester);
+        const options2 = {
+            method:"POST",
+            body: formData
+        }
+        const request2 = await fetch("http://localhost:3001/env/opprettFrisor", options2);
+        const response2 = request2.json();
+        if(response && response2){
+            sUpdateTrigger(!updateTrigger);
+            setFrisortjenester([]);
+            sTlfNyFrisor("");
+            sNyFrisorNavn("");
+            sBildeAvFrisor(null);
+            varsle();
         }
         
         } catch (error) {
@@ -42,33 +58,6 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle}){
 
     }
 
-    async function opprettFrisor(){
-        console.log("tilkalte 'opprettFrisor'");
-        try {
-            let formData = new FormData();
-            formData.append("uploaded_file", bildeAvFrisor);
-            formData.append("nyFrisorNavn", nyFrisorNavn);
-            formData.append("nyFrisorTlf", parseInt(tlfNyFrisor));
-            formData.append("nyFrisorTjenester", frisorTjenester);
-            const options = {
-                method:"POST",
-                body: formData
-            }
-            const request = await fetch("http://localhost:3001/env/opprettFrisor", options);
-            const response = request.json();
-            if(response){
-                sUpdateTrigger(!updateTrigger);
-                setFrisortjenester([]);
-                sTlfNyFrisor("");
-                sNyFrisorNavn("");
-                sBildeAvFrisor(null);
-                varsle();
-            }
-            
-        } catch (error) {
-            console.log(error);
-        }
-    }
 
     function avbryt(){
         setFrisortjenester([]);
@@ -114,7 +103,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle}){
             e.preventDefault();
             avbryt();
         }}>
-            <img alt="Avbryt" src='avbryt.png' style={{height:"2rem"}}></img>
+            Avbryt
         </button>
         <button onClick={(e)=>{
                 e.preventDefault();
@@ -128,7 +117,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle}){
                     alert("Ikke riktig format");
                 }
             }}>
-            <img alt="lagre" src='lagre.png' style={{height:"2rem"}}></img>
+            Lagre
         </button>
     </div>:
     <button style={{display:"flex", alignItems:"center"}} onClick={(e)=>{
