@@ -52,13 +52,13 @@ function Hjem({env}){
                 <div>
                      {env.klokkeslett.map((tid, index)=>(
                          <div key={tid.dag} style={{display:"flex", flexDirection:"row", justifyContent:"space-evenly", fontWeight:(new Date().getDay() === index? "bold":"400")}}>
-                             <p>{tid.dag}:</p> <p>{tid.open} - {tid.closed}</p>
+                             <p>{tid.dag}:</p> <p>{tid.stengt?"Stengt":`${tid.open} - ${tid.closed}`}</p>
                          </div>
                      ))}
                 </div>
             </div>
             <div className="hjemsideSeksjon">
-                <h2>Om oss</h2>
+                <h2>Våre frisører</h2>
                 <div style={{display:"flex", flexDirection:"row", flexWrap:"wrap"}}>
                     {frisorBildeArray !== null? env.frisorer.map((frisor, index)=>(
                     <div key={frisor.navn}>
@@ -79,11 +79,11 @@ function Hjem({env}){
                 </div>
             </div>
             <div className="hjemsideSeksjon">
-                <h2>Våre behandlinger:</h2>
+                <h2 >Våre behandlinger:</h2>
                 <div>
                 {env.kategorier.map((kategori, index)=>(
                     <div key={kategori} style={{transition:"0.2s ease all", padding:"0.3rem", borderRadius:(kategoriSynlig[index]?"0 0 1rem 1rem":"0 0 0 0")}}>
-                        <h3 style={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"space-between", borderBottom:"thin solid rgba(0,0,0,0.3)"}} onClick={()=>{
+                        <h3 style={{letterSpacing:"0.4rem", display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"space-between", borderBottom:"thin solid rgba(0,0,0,0.3)"}} onClick={()=>{
                             let temp = kategoriSynlig;
                             let n = env.kategorier.indexOf(kategori);
                             if(kategoriSynlig[n]){
@@ -94,7 +94,7 @@ function Hjem({env}){
                             setKategoriSynlig(temp);
                             sK(!K);
                         }}>{kategori} <img alt={(kategoriSynlig[env.kategorier.indexOf(kategori)] === true?`Innhold for kategorien ${kategori} vises`:`innhold for kategorien ${kategori} vises ikke`)} style={{height:"1.9rem"}} src={(kategoriSynlig[env.kategorier.indexOf(kategori)] === true?"aapnet.png":"lukket.png")}></img> </h3>
-                        <div className="tjenestene" style={kategoriSynlig[env.kategorier.indexOf(kategori)] === true?{ height:"auto", overflow:"visible", opacity:"1", transition:"0.3s ease 0.05s all"}:{height:"2rem", overflow:"hidden", opacity:"0", transition:"0.3s ease 0.05s all", transform:"translateY(-30px)"}}>
+                        <div className="tjenestene" style={kategoriSynlig[env.kategorier.indexOf(kategori)] === true?{ height:"auto", overflow:"visible", opacity:"1", transition:"0.3s ease 0.05s all"}:{height:"2rem", overflow:"hidden", opacity:"0", transition:"0.3s ease 0.05s all", transform:"translateY(-20px)"}}>
                             {env.tjenester.filter(element=>element.kategori === kategori).map((tjeneste)=>(
                                 <div key={tjeneste.navn}>
                                     <div>

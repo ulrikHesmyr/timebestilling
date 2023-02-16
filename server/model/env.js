@@ -24,7 +24,7 @@ const env = new mongoose.Schema({
                 data:Buffer,
                 contentType:String
             },
-            produkter:[Number],
+            produkter:[String],
             oppsigelse:{type: String, default: "Ikke oppsagt"},
         }
         

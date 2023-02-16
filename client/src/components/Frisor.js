@@ -5,6 +5,7 @@ function Frisor({tilgjengeligeFrisorer, env, synligKomponent, displayKomponent, 
 
     const [frisorBildeArray, sFrisorBildeArray] = useState(null);
     useEffect(()=>{
+        
         //Lager et array med base64 bilder
         let midlertidigArray = [];
         for(let i = 0; i < env.frisorer.length; i++){
@@ -16,7 +17,7 @@ function Frisor({tilgjengeligeFrisorer, env, synligKomponent, displayKomponent, 
             midlertidigArray.push(base64Image);
         }
         sFrisorBildeArray(midlertidigArray);
-    }, [tilgjengeligeFrisorer])
+    }, [tilgjengeligeFrisorer, env.frisorer])
     return(
         <div className={synligKomponent === 1? 'animer-inn':""}>
             {tilgjengeligeFrisorer.length > 0?<>

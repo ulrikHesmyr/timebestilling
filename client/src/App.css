@@ -2,7 +2,7 @@
   --farge1:darkblue;
   --farge2:rgb(54, 115, 188);
   --farge3:rgba(0, 102, 255, 0.689);
-  --farge4:rgba(115, 47, 160, 0.299);
+  --farge4:rgba(21, 0, 255, 0.758);
   --color1:white;
   --color2:white;
   --color3:black;
@@ -24,6 +24,11 @@ header{
   background-size: cover;
   display: flex;
   justify-content: center;
+  user-select: none;
+}
+
+select{
+  width: fit-content;
 }
 header h1{
 
@@ -398,9 +403,12 @@ input, button{
 
   .redigeringsBoks{
     display: flex;
-    justify-content: space-between;
-    flex-direction: row;
+    justify-content: center;
+    flex-direction: column;
     align-items: center;
+  }
+  .redigeringsElement{
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
   }
   .passordBoks{
     display: flex;
@@ -480,6 +488,12 @@ input, button{
     background-color: white;
     border: thin solid black;
     overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .fokus button, .fokus input{
+    width: fit-content;
   }
   .fokus .lukk{
     position: absolute;

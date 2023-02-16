@@ -15,8 +15,8 @@ const {BEDRIFT, ACCESS_TOKEN_KEY, NODE_ENV, TWOFA_SECRET, KEYNAME_SMS, PRIVATE_K
 
 
 const loginLimiter = rateLimiter({
-    windowMs: 15 * 60 * 1000,
-    max: 5,
+    windowMs: 35 * 60 * 1000,
+    max: 30,
     message: "Du har brukt opp alle forsøkene dine på å logge inn. Vennligst vent 15 minutter før du prøver igjen",
     requestPropertyName:"antForsok"
   });
@@ -48,6 +48,21 @@ router.post("/oppdaterPassord", authorization, async(req,res)=>{ //Legg til auth
         return res.status(404);
     }
 
+})
+
+router.post("/resetPassord", authorization, async(req,res)=>{
+    //Resetter passordet til en ansatt
+    const {navn} = req.body;
+    if(req.brukernavn === "admin"){
+        const bruker = await Brukere.findOneAndUpdate({brukernavn:navn}, {passord:navn});
+
+        if(bruker){
+            console.log("Reset passord");
+            return res.json({message:"Reset passord", valid:true});
+        } else {
+            return res.status(404);
+        }
+    }
 })
 
 router.post("/oppdaterTelefonnummer", authorization, async (req,res)=>{ //Legg til authorization når nettsiden skal lanseres

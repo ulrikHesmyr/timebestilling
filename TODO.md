@@ -11,6 +11,8 @@ BARE CLIENT:
 - Admin.js: VIKTIG gi class til alle "pop-up" vinduer slik at de dekker hele skjermen. Dermed blir det vesentlig
     ryddigere og ikke helt uoversiktlig.
 - Admin.js: Søkefelt for å søke etter spesifike timebestillinger
+- Login.js: RateLimiter på /auth route, så sjekk om response er json for å skrive om du har logget inn for mye 
+https://stackoverflow.com/questions/37121301/how-to-check-if-the-response-of-a-fetch-is-a-json-object-in-javascript
 
 - DinReservasjon.js: Displaye bilde av frisøren
 - Lage footer med info om: Meg, google icons, strex SMS gateway, personvernserklæring og brukervilkår
@@ -28,8 +30,6 @@ SERVER OG CLIENT:
 - Admin.js og env.js: Admin kan resette passord til frisørene slik at de får logget inn dersom de har glemt passord 
 - Admin.js: Kan legge til, redigere og slette behandlinger. Her skriver de navn, beskrivelse og pris. Deretter VELGEr de kategori og 
     estimert tid ved å trykke på bokser.
-
-- DetaljerFrisor.js: Kunne endre på behandlingene som frisøren tilbyr
 
 FØR PROD: 
 - Sjekke clientside om bruker er logget inn fra før med cookies (path: /login/loggetinn)

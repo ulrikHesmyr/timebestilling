@@ -9,7 +9,7 @@ function RedigerKontakt({number, setState, state, sendTilDatabase, env}){
     const [tempState, sTempState] = useState(state);
 
     return(
-        <div >
+    <div>
             {redigeringsKnappSynlig?(
         <button className='rediger' onClick={(e)=>{
             e.preventDefault();
@@ -24,32 +24,34 @@ function RedigerKontakt({number, setState, state, sendTilDatabase, env}){
             sTempState(e.target.value);
         }}></input></label>
         
-                
-        <button onClick={(e)=>{
-            e.preventDefault();
-            setState(tempState);
-            sAvbrytOgLagreSynlig(false);
-            sInputSynlig(false);
-            sRedigeringsKnappSynlig(true);
-            //Sjekker om det er telefonnummeret som må oppdateres
-            if(number){
-                sendTilDatabase(env.frisorer, env.kategorier, env.tjenester, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, tempState);
-            } else {
-                sendTilDatabase(env.frisorer, env.kategorier, env.tjenester, env.klokkeslett, env.sosialeMedier, tempState, env.kontakt_tlf);
-            }
-        }}>
-            Lagre
-        </button>
+        <div>
+                 
+            <button onClick={()=>{
+                sTempState(state);
+                sAvbrytOgLagreSynlig(false);
+                sInputSynlig(false);
+                sRedigeringsKnappSynlig(true);
+            }}>
+                Avbryt
+            </button>
+            <button onClick={(e)=>{
+                e.preventDefault();
+                setState(tempState);
+                sAvbrytOgLagreSynlig(false);
+                sInputSynlig(false);
+                sRedigeringsKnappSynlig(true);
+                //Sjekker om det er telefonnummeret som må oppdateres
+                if(number){
+                    sendTilDatabase(env.frisorer, env.kategorier, env.tjenester, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, tempState);
+                } else {
+                    sendTilDatabase(env.frisorer, env.kategorier, env.tjenester, env.klokkeslett, env.sosialeMedier, tempState, env.kontakt_tlf);
+                }
+            }}>
+                Lagre
+            </button>
         
-        <button onClick={()=>{
-            sTempState(state);
-            sAvbrytOgLagreSynlig(false);
-            sInputSynlig(false);
-            sRedigeringsKnappSynlig(true);
-        }}>
-            Avbryt
-        </button>
         </div>
+    </div>
         ):""}
         </div>
     )

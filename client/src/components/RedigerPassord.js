@@ -28,7 +28,16 @@ function RedigerPassord({redigerPassordDB}){
                 sGjentapassord(e.target.value);
             }}></input> 
                 </div> </label>
-            <div><button onClick={(e)=>{
+            <div>
+                <button onClick={(e)=>{
+                    e.preventDefault();
+                    sRedigeringsKnappSynlig(true);
+                    sNyttPassord("");
+                    sGjentapassord("");
+                }}>
+                    Avbryt
+                </button>
+                <button onClick={(e)=>{
                 e.preventDefault();
                 if(nyttPassord === gjentaPassord){
                     sRedigeringsKnappSynlig(true);
@@ -39,17 +48,9 @@ function RedigerPassord({redigerPassordDB}){
                     alert("Passord ikke like");
                 }
 
-            }}>
-                Lagre 
-            </button>
-            <button onClick={(e)=>{
-                e.preventDefault();
-                sRedigeringsKnappSynlig(true);
-                sNyttPassord("");
-                sGjentapassord("");
-            }}>
-                Avbryt
-            </button></div>
+                }}>Lagre</button>
+            
+            </div>
         </div>)}
             
         </>

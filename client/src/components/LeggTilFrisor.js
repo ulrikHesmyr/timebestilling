@@ -75,7 +75,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle}){
         <label style={{fontWeight:"bold"}}>Telefonnummeret til frisøren: <input style={{letterSpacing:"0.3rem"}} onChange={(e)=>{
             sTlfNyFrisor(e.target.value);
         }} value={tlfNyFrisor} type="text" maxLength={8}></input></label>
-        <label>Last opp bilde av Frisøren: <input accept="image/*" onChange={(e)=>{
+        <label style={{display:"flex", alignItems:"center"}}>Last opp bilde av Frisøren: <input accept="image/*" onChange={(e)=>{
             //console.log(e.target.files[0].size);
             //if(e.target.files[0].size < 10000){
             //    sBildeAvFrisor(e.target.files[0]);
@@ -83,42 +83,42 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle}){
             //    alert("Bildet er for stort, maks 10KB. Skaler bilde ned og prøv igjen. Bildet ");
             //}
             sBildeAvFrisor(e.target.files[0]);
-        }} type="file" name="uploaded_file"></input></label>
-        {bildeAvFrisor && <img style={{height:"100px"}} alt='Forhåndsvisning av bildet' src={URL.createObjectURL(bildeAvFrisor)}></img>}
+        }} type="file" name="uploaded_file"></input> {bildeAvFrisor && <img className='frisorbilde' style={{height:"300px"}} alt='Forhåndsvisning av bildet' src={URL.createObjectURL(bildeAvFrisor)}></img>}</label>
+        
 
         <p style={{fontWeight:"bold"}} >Velg behandlinger for frisør:</p>
-        {env.tjenester.map((tjeneste, index)=>
-        (<div style={{userSelect:"none", backgroundColor:(frisorTjenester.includes(index)?"lightgreen":"white"), cursor:"pointer"}} key={tjeneste.navn} onClick={()=>{
-            if(frisorTjenester.includes(index)){
-                setFrisortjenester(frisorTjenester.filter(element=>element !== index));
+
+        {env.tjenester.map((tjeneste)=>
+        (<div style={{userSelect:"none", backgroundColor:(frisorTjenester.includes(tjeneste.navn)?"lightgreen":"white"), cursor:"pointer"}} key={tjeneste.navn} onClick={()=>{
+            if(frisorTjenester.includes(tjeneste.navn)){
+                setFrisortjenester(frisorTjenester.filter(element=>element !== tjeneste.navn));
             } else {
-                setFrisortjenester([...frisorTjenester, index]);
+                setFrisortjenester([...frisorTjenester, tjeneste.navn]);
             }
         }}>
-            <input type="checkbox" readOnly checked={frisorTjenester.includes(index)}></input>
+            <input type="checkbox" readOnly checked={frisorTjenester.includes(tjeneste.navn)}></input>
             {tjeneste.navn}
         </div>)
         )}
-        <button onClick={(e)=>{
-            e.preventDefault();
-            avbryt();
-        }}>
-            Avbryt
-        </button>
-        <button onClick={(e)=>{
+
+        <div>
+            <button onClick={(e)=>{
                 e.preventDefault();
-                console.log("Trykte på knappen");
-                console.log(tlfNyFrisor.length === 8);
-                console.log(nyFrisorNavn !== "");
-                console.log(!isNaN(parseInt(tlfNyFrisor)));
-                if(frisorTjenester.length > 0 && tlfNyFrisor.length===8 && nyFrisorNavn !== "" && !isNaN(parseInt(tlfNyFrisor)) && bildeAvFrisor !== null){
-                    lagre();
-                } else {
-                    alert("Ikke riktig format");
-                }
+                avbryt();
             }}>
-            Lagre
-        </button>
+                Avbryt
+            </button>
+            <button onClick={(e)=>{
+                    e.preventDefault();
+                    if(frisorTjenester.length > 0 && tlfNyFrisor.length===8 && nyFrisorNavn !== "" && !isNaN(parseInt(tlfNyFrisor)) && bildeAvFrisor !== null){
+                        lagre();
+                    } else {
+                        alert("Ikke riktig format");
+                    }
+                }}>
+                Lagre
+            </button>
+        </div>
     </div>:
     <button style={{display:"flex", alignItems:"center"}} onClick={(e)=>{
         e.preventDefault();

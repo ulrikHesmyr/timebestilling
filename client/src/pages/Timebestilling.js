@@ -78,7 +78,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
 
   
     useEffect(()=>{
-        let behandlinger = produkt.map(tjeneste=>env.tjenester.indexOf(tjeneste));
+        let behandlinger = produkt.map(tjeneste=>tjeneste.navn);
         let tilgjengeligeFrisorer = env.frisorer.filter(frisor=>includesArray(frisor.produkter, behandlinger));
         sTilgjengeligeFrisorer(tilgjengeligeFrisorer);
     },[env.tjenester, produkt, env.frisorer]);

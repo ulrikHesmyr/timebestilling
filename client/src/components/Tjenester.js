@@ -30,6 +30,7 @@ function Tjenester({env, sFrisor, sKlokkeslett, displayKomponent, produkt, sProd
                                         sProdukt([...produkt, tjeneste]);
                                         sKlokkeslett(null);
                                         sFrisor(null);
+                                        console.log([...produkt, tjeneste], "produkt");
                                     } else {
                                         sProdukt(produkt.filter(p=>p !== tjeneste))
                                     }
