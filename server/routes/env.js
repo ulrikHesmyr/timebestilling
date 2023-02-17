@@ -98,6 +98,7 @@ router.get('/env', hentEnvLimiter, async(req,res)=>{
 
 const storage = multer.memoryStorage();
 
+//Multer instance for bilde når man oppretter ny frisør
 const upload = multer({
     storage: storage,
     dest: 'uploads/',
@@ -107,7 +108,52 @@ const upload = multer({
       }
       cb(null, true);
     }
-  });
+});
+
+//Multer instance for å oppdatere bilde av frisør
+const oppdaterBildeFrisor = multer({
+    storage: storage,
+    dest: 'uploads/',
+    fileFilter: function (req, file, cb) {
+      if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+        return cb(new Error('Only image files are allowed!'), false);
+      }
+      cb(null, true);
+    }
+});
+
+router.post("/oppdaterBildeFrisor", oppdaterBildeFrisor.single("uploaded_file"), authorization, async (req,res)=>{
+    const {navn} = req.body;
+    try {
+        if(req.brukernavn === "admin"){
+            //Konverterer bilde fra request til buffer, og reduserer størrelsen til 200x200px
+            sharp(req.file.buffer).resize({height: 200, width: 200, fit:'inside'}).toBuffer().then(async (data)=>{
+            const img = {
+                data: new Buffer.from(data),
+                contentType: req.file.mimetype
+            };
+
+            const env = await Environment.findOne({bedrift:BEDRIFT});
+            if(env){
+                let nyFrisorer = env.frisorer.map(frisor => {
+                    if(frisor.navn === navn){
+                        frisor.img = img;
+                    }
+                    return frisor;
+                })
+                const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {frisorer:nyFrisorer});
+                if(oppdatertEnv){
+                    return res.send({message:"Bilde oppdatert!", valid:true});
+                } else {
+                    return res.send({message:"Noe har skjedd gærent i /oppdaterBildeFrisor!"});
+                }
+            }
+        })
+        }
+    } catch (error) {
+        console.log(error, "error i oppdaterBildeFrisor");
+    }
+});
   
 
 router.post("/opprettFrisor", upload.single("uploaded_file"), authorization, async (req,res)=>{ 

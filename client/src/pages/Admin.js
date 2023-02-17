@@ -15,7 +15,10 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
     const [visRedigerAapningstider, sVisRedigerAapningstider] = useState(false);
     const [dagForRedigering, sDagForRedigering] = useState();
     
-    //Behandling for redigering
+    //Søk timebestilling
+    const [sok, sSok] = useState("");
+    //Vis timebestillinger
+    const [visRedigerTimebestillinger, sVisRedigerTimebestillinger] = useState(false);
 
     //Opprett ny behandling (vis/skjul) og opprett behandling
     const [visOpprettBehandling, sVisOpprettBehandling] = useState(null);
@@ -37,6 +40,22 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
         sKontakt_epost(env.kontakt_epost);
         sKontakt_tlf(env.kontakt_tlf);
     }, [env])
+
+    async function oppdaterTimebestillinger(slettetTime){
+        const options = {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body: JSON.stringify(slettetTime)
+        }
+        const request = await fetch("http://localhost:3001/timebestilling/oppdaterTimebestillinger", options);
+        const response = await request.json();
+        if(response.valid){
+            varsle();
+            sUpdateTrigger(!updateTrigger);
+        }
+    }
 
     async function sendTilDatabase(fris, kat, tje, klok, some, epost, tlf){
         console.log("sendte nytt env til database");
@@ -82,9 +101,6 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
         }
     }
 
-    //async function oppdaterTimebestillinger(){
-    //    console.log("sendte oppdaterte timereservasjoner til databasen");
-    //}
 
     return(
         <div className='adminpanel'>
@@ -118,209 +134,222 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
 
                 {synligKomponent === 1 && bestilteTimer !== null?(<>
                 <h3>Timebestillinger</h3>
-                    <div>
-                        {bestilteTimer.map((time, index)=>(
-                            <div key={index}>
-                                <div>{time.medarbeider}: {time.dato} {time.tidspunkt}</div>
-                            </div>
-                        ))}
-                    </div>
-                    </>
-                        
-                ):""}
 
+                {visRedigerTimebestillinger?
+                <div className='fokus'>
+                    <div alt='Lukk' className='lukk' onClick={()=>{
+                        sVisRedigerTimebestillinger(false);
+                        sSok("");
+                    }}></div>
 
-                {synligKomponent === 3 && env !== null?(
-                    <>
-                    
-                    <h3>Frisører, kategorier, åpningstider, kontakt-info og passord</h3>
-                    
-                <div className='adminMain'>
-                    <div>
-                    <h4>Kontakt-info og administrator passord:</h4>
-                        <div className='redigeringsBoks'> 
-                            <div style={{display:"flex", flexDirection:"row"}}>
-                                <RedigerKontakt number={true} state={kontakt_tlf} setState={sKontakt_tlf} env={env} sendTilDatabase={sendTilDatabase} /><p>Kontakt telefon: </p> 
-                            </div>
-                            <p className='redigeringsElement'>{kontakt_tlf}</p>
-                        </div>
+                    <label><br></br><br></br><br></br>Søk etter kunde eller telefonnummer: <input type="text" value={sok} onChange={(e)=>{
+                        sSok(e.target.value);
+                    }}></input></label>
 
-                        <div className='redigeringsBoks'> 
-                            <div style={{display:"flex", flexDirection:"row"}}>
-                                <RedigerKontakt number={false} state={kontakt_epost} setState={sKontakt_epost} env={env} sendTilDatabase={sendTilDatabase} /> <p>Kontakt e-post:</p>
-                            </div>
-                            <p className='redigeringsElement'>{kontakt_epost}</p>
-                        </div>
-                        <div className='redigeringsBoks'>
-                            <div style={{display:"flex", flexDirection:"row"}}>
-                                <RedigerPassord redigerPassordDB={redigerPassordDB} /> <p>Passord for: admin</p> 
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h4>Frisører:</h4>
-                        {env.frisorer.map((frisor)=>(
-                                <div key={frisor.navn} style={{display:"flex", flexDirection:"row", alignItems:"center", margin:"0.3rem"}}>
-
-                                    <DetaljerFrisor frisor={frisor} env={env} sendTilDatabase={sendTilDatabase} varsle={varsle}/>
-
+                    {bestilteTimer.map((time, index)=>{
+                        if(time.kunde.toUpperCase().indexOf(sok.toUpperCase()) > -1 || sok === ""){
+                            return (
+                                <div key={index}>
+                                    <li>{time.medarbeider}: {time.dato} {time.tidspunkt} KUNDE: {time.kunde} {time.telefonnummer}</li><img alt='Slett time' onClick={()=>{
+                                        if(window.confirm("Er du sikker på at du vil slette denne timebestillingen?")){
+                                            oppdaterTimebestillinger(time);
+                                        }
+                                    }} src="delete.png"></img>
                                 </div>
-                            ))}
+                            )
+                        } else {
+                            return "";      
+                        }
+                    })}
 
-                        {env !== null?<LeggTilFrisor env={env} varsle={varsle} updateTrigger={updateTrigger} sUpdateTrigger={sUpdateTrigger} />:""}
-                        
+                </div> : 
+                
+                <button onClick={()=>{
+                    sVisRedigerTimebestillinger(true);
+                }} style={{width:"fit-content"}}><img alt='Rediger timebestillinger' src="rediger.png"></img></button>}
+
+                <div>
+                    {bestilteTimer.map((time, index)=>(
+                                <div key={index}>
+                                    <li>{time.medarbeider}: {time.dato} {time.tidspunkt} KUNDE: {time.kunde} {time.telefonnummer}</li>
+                                </div>
+                            )
+                    )}
+                </div>
+                </>
+                    
+            ):""}
+
+
+            {synligKomponent === 3 && env !== null?(
+                <>
+                
+                <h3>Frisører, kategorier, åpningstider, kontakt-info og passord</h3>
+                
+            <div className='adminMain'>
+                <div>
+                <h4>Kontakt-info og administrator passord:</h4>
+                    <div className='redigeringsBoks'> 
+                        <div style={{display:"flex", flexDirection:"row"}}>
+                            <RedigerKontakt number={true} state={kontakt_tlf} setState={sKontakt_tlf} env={env} sendTilDatabase={sendTilDatabase} /><p>Kontakt telefon: </p> 
+                        </div>
+                        <p className='redigeringsElement'>{kontakt_tlf}</p>
                     </div>
-                    <div>
-                    <h4>Åpningstider:</h4>
-                        {visRedigerAapningstider?<>
-                            <RedigerAapningstider env={env} sendTilDatabase={sendTilDatabase} dag={dagForRedigering} sVisRedigerAapningstider={sVisRedigerAapningstider}/>
-                        </> :env.klokkeslett.map((klokkeslett, index)=>(
-                            <div key={index} style={{display:"flex", flexDirection:"row", alignItems:"center", margin:"0.3rem"}}>
-                             {klokkeslett.dag}: {klokkeslett.stengt?"Stengt" :klokkeslett.open} {klokkeslett.stengt?"": "-"} {klokkeslett.stengt?"": klokkeslett.closed}
-                             <button onClick={()=>{
-                                console.log("trykket på rediger-knapp for åpningstider");
-                                sDagForRedigering(klokkeslett);
-                                sVisRedigerAapningstider(true);
-                             }}><img alt='rediger' src="rediger.png" style={{height:"1.4rem"}}></img></button>
+                    <div className='redigeringsBoks'> 
+                        <div style={{display:"flex", flexDirection:"row"}}>
+                            <RedigerKontakt number={false} state={kontakt_epost} setState={sKontakt_epost} env={env} sendTilDatabase={sendTilDatabase} /> <p>Kontakt e-post:</p>
+                        </div>
+                        <p className='redigeringsElement'>{kontakt_epost}</p>
+                    </div>
+                    <div className='redigeringsBoks'>
+                        <div style={{display:"flex", flexDirection:"row"}}>
+                            <RedigerPassord redigerPassordDB={redigerPassordDB} /> <p>Passord for: admin</p> 
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h4>Frisører:</h4>
+                    {env.frisorer.map((frisor)=>(
+                            <div key={frisor.navn} style={{display:"flex", height:"3rem", fontSize:"larger", flexDirection:"row", alignItems:"center", margin:"0.3rem"}}>
+                                <DetaljerFrisor frisor={frisor} env={env} sendTilDatabase={sendTilDatabase} varsle={varsle} updateTrigger={updateTrigger} sUpdateTrigger={sUpdateTrigger} />
                             </div>
                         ))}
-                    </div>
+                    {env !== null?<LeggTilFrisor env={env} varsle={varsle} updateTrigger={updateTrigger} sUpdateTrigger={sUpdateTrigger} />:""}
                     
-                </div></>
-                ):""}
-
-
-                {synligKomponent === 4 && env !== null?(
-                <>
-                    <div>
-                    <h4>Behandlinger:</h4>
-                    {visOpprettBehandling?
-
-                        <div className='fokus'>
-
-                            <div style={{display:"flex", flexDirection:"column", margin:"0.3rem"}}>
-                                <label>Navn på ny behandling: 
-                                    <input maxLength={30} type="text" placeholder="Navn" value={nyBehandlingNavn} onChange={(e)=>{
-                                    sNyBehandlingNavn(e.target.value);
-                                    }}></input>
-                                </label>
-
-                                <label>Beskrivelse for behandlingen: 
-                                    <input maxLength={100} type="text" placeholder='Beskrivelse' onChange={(e)=>{
-                                        sNyBehandlingBeskrivelse(e.target.value);
-                                    }} value={nyBehandlingBeskrivelse}></input> 
-                                </label>
-
-                                <label>Pris for behandlingen:
-                                    <input type="number" placeholder='Pris' onChange={(e)=>{
-                                        sNyBehandlingPris(e.target.value);
-                                    }} value={nyBehandlingPris}></input>
-                                </label>
-
-                                <label>Kategori for behandlingen: <select onChange={(e)=>{
-                                        sNyBehandlingKategori(e.target.value);
-                                    }} value={nyBehandlingKategori}>
-                                        {env.kategorier.map((kategori)=>(
-                                            <option key={kategori} value={kategori}>{kategori}</option>
-                                        ))}
-                                    </select>
-                                </label>
-
-                                <label>Estimert tid for behandlingen: <select onChange={(e)=>{
-                                        sNyBehandlingTid(e.target.value);
-                                    }} value={nyBehandlingTid}>
-                                        {behandlingsEstimater.map((estimertTid)=>(
-                                            <option key={estimertTid} value={estimertTid}>{estimertTid}</option>
-                                        ))}
-                                    </select> minutter</label>
-
-                                <div>
-                                    <button onClick={()=>{
+                </div>
+                <div>
+                <h4>Åpningstider:</h4>
+                    {visRedigerAapningstider?<>
+                        <RedigerAapningstider env={env} sendTilDatabase={sendTilDatabase} dag={dagForRedigering} sVisRedigerAapningstider={sVisRedigerAapningstider}/>
+                    </> :env.klokkeslett.map((klokkeslett, index)=>(
+                        <div key={index} style={{display:"flex", flexDirection:"row", alignItems:"center", margin:"0.3rem"}}>
+                         {klokkeslett.dag}: {klokkeslett.stengt?"Stengt" :klokkeslett.open} {klokkeslett.stengt?"": "-"} {klokkeslett.stengt?"": klokkeslett.closed}
+                         <button onClick={()=>{
+                            console.log("trykket på rediger-knapp for åpningstider");
+                            sDagForRedigering(klokkeslett);
+                            sVisRedigerAapningstider(true);
+                         }}><img alt='rediger' src="rediger.png" style={{height:"1.4rem"}}></img></button>
+                        </div>
+                    ))}
+                </div>
+                
+            </div></>
+            ):""}
+            {synligKomponent === 4 && env !== null?(
+            <>
+                <div>
+                <h4>Behandlinger:</h4>
+                {visOpprettBehandling?
+                    <div className='fokus'>
+                        <div style={{display:"flex", flexDirection:"column", margin:"0.3rem"}}>
+                            <label>Navn på ny behandling: 
+                                <input maxLength={30} type="text" placeholder="Navn" value={nyBehandlingNavn} onChange={(e)=>{
+                                sNyBehandlingNavn(e.target.value);
+                                }}></input>
+                            </label>
+                            <label>Beskrivelse for behandlingen: 
+                                <input maxLength={100} type="text" placeholder='Beskrivelse' onChange={(e)=>{
+                                    sNyBehandlingBeskrivelse(e.target.value);
+                                }} value={nyBehandlingBeskrivelse}></input> 
+                            </label>
+                            <label>Pris for behandlingen:
+                                <input type="number" placeholder='Pris' onChange={(e)=>{
+                                    sNyBehandlingPris(e.target.value);
+                                }} value={nyBehandlingPris}></input>
+                            </label>
+                            <label>Kategori for behandlingen: <select onChange={(e)=>{
+                                    sNyBehandlingKategori(e.target.value);
+                                }} value={nyBehandlingKategori}>
+                                    {env.kategorier.map((kategori)=>(
+                                        <option key={kategori} value={kategori}>{kategori}</option>
+                                    ))}
+                                </select>
+                            </label>
+                            <label>Estimert tid for behandlingen: <select onChange={(e)=>{
+                                    sNyBehandlingTid(e.target.value);
+                                }} value={nyBehandlingTid}>
+                                    {behandlingsEstimater.map((estimertTid)=>(
+                                        <option key={estimertTid} value={estimertTid}>{estimertTid}</option>
+                                    ))}
+                                </select> minutter</label>
+                            <div>
+                                <button onClick={()=>{
+                                    sVisOpprettBehandling(false);
+                                    sNyBehandlingNavn("");
+                                    sNyBehandlingBeskrivelse("");
+                                    sNyBehandlingPris("");
+                                    sNyBehandlingKategori(env.kategorier[0]);
+                                    sNyBehandlingTid(behandlingsEstimater[0]);
+                                }}>Avbryt</button>
+                                <button onClick={()=>{
+                                    console.log(nyBehandlingKategori);
+                                    if(nyBehandlingNavn !== "" && nyBehandlingBeskrivelse !== "" && !isNaN(parseInt(nyBehandlingPris)) && nyBehandlingKategori !== "" && !isNaN(parseInt(nyBehandlingPris))){
+                                        let tempBehandlinger = env.tjenester;
+                                        tempBehandlinger.push({navn:nyBehandlingNavn, beskrivelse:nyBehandlingBeskrivelse, pris:parseInt(nyBehandlingPris), kategori:nyBehandlingKategori, tid:(parseInt(nyBehandlingTid))});
+                                        sendTilDatabase(env.frisorer, env.kategorier, tempBehandlinger, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
                                         sVisOpprettBehandling(false);
                                         sNyBehandlingNavn("");
                                         sNyBehandlingBeskrivelse("");
                                         sNyBehandlingPris("");
                                         sNyBehandlingKategori(env.kategorier[0]);
                                         sNyBehandlingTid(behandlingsEstimater[0]);
-                                    }}>Avbryt</button>
-
-                                    <button onClick={()=>{
-                                        console.log(nyBehandlingKategori);
-                                        if(nyBehandlingNavn !== "" && nyBehandlingBeskrivelse !== "" && !isNaN(parseInt(nyBehandlingPris)) && nyBehandlingKategori !== "" && !isNaN(parseInt(nyBehandlingPris))){
-                                            let tempBehandlinger = env.tjenester;
-                                            tempBehandlinger.push({navn:nyBehandlingNavn, beskrivelse:nyBehandlingBeskrivelse, pris:parseInt(nyBehandlingPris), kategori:nyBehandlingKategori, tid:(parseInt(nyBehandlingTid))});
-                                            sendTilDatabase(env.frisorer, env.kategorier, tempBehandlinger, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
-                                            sVisOpprettBehandling(false);
-                                            sNyBehandlingNavn("");
-                                            sNyBehandlingBeskrivelse("");
-                                            sNyBehandlingPris("");
-                                            sNyBehandlingKategori(env.kategorier[0]);
-                                            sNyBehandlingTid(behandlingsEstimater[0]);
-                                        }else{
-                                            alert("Alle felt må fylles ut på riktig format");
-                                        }
-                                    }}>Lagre</button>
-
-                                </div>
-                            </div>
-
-                        </div>
-                        
-                        :
-                        <>
-                        <button style={{display:"flex", alignItems:"center"}} onClick={()=>{
-                            sVisOpprettBehandling(true);
-                        }} ><img alt='Legg til frisør' src="leggtil.png" ></img>Opprett ny behandling</button>
-                        
-                        
-                        </>
-                        }
-                        
-
-                        {visSlettBehandling?
-                        <div className='fokus'>
-                            <h4>Velg behandling som skal slettes:</h4>
-                            <label>Behandling: <select onChange={(e)=>{
-                                sBehandlingForSletting(e.target.value);
-                            }}>
-                        {env.tjenester.map((behandling)=>(
-                            <option key={behandling.navn} value={behandling.navn}>{behandling.navn}</option>
-                        ))}
-                            </select></label>  
-
-                            <div>
-                                <button onClick={()=>{
-                                    sVisSlettBehandling(false);
-                                }}>Avbryt</button>
-                                <button onClick={()=>{
-                                    if(window.confirm("Ønsker du å slette " + behandlingForSletting + "?")){
-                                        let tempBehandlinger = env.tjenester;
-                                        tempBehandlinger = tempBehandlinger.filter((behandling)=>(behandling.navn !== behandlingForSletting));
-                                        sendTilDatabase(env.frisorer, env.kategorier, tempBehandlinger, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
-                                        sVisSlettBehandling(false);
+                                    }else{
+                                        alert("Alle felt må fylles ut på riktig format");
                                     }
-                                }}>Slett behandling</button>  
-                            </div>  
-                        </div>:<>
-                        <button style={{display:"flex", alignItems:"center"}} onClick={()=>{
-                            sVisSlettBehandling(true);
-                        }} ><img alt='Slett en behandling' src="delete.png" ></img>Slett én behandling</button>
-                        </>}
-
-
-                        <div style={{display:"flex", flexDirection:"row", flexWrap:"wrap", gap:"1rem"}}>
-                        {env.tjenester.map((behandling)=>(
-                            <div key={behandling.navn} style={{display:"flex", flexDirection:"row", alignItems:"center", margin:"0.3rem"}}>
-                                <DetaljerBehandling behandlingsEstimater={behandlingsEstimater} behandling={behandling} env={env} sendTilDatabase={sendTilDatabase} />
+                                }}>Lagre</button>
                             </div>
-                        ))}
                         </div>
-                        
-                        
                     </div>
-
-                </>):""}
+                    
+                    :
+                    <>
+                    <button style={{display:"flex", alignItems:"center"}} onClick={()=>{
+                        sVisOpprettBehandling(true);
+                    }} ><img alt='Legg til frisør' src="leggtil.png" ></img>Opprett ny behandling</button>
+                    
+                    
+                    </>
+                    }
+                    
+                    {visSlettBehandling?
+                    <div className='fokus'>
+                        <h4>Velg behandling som skal slettes:</h4>
+                        <label>Behandling: <select onChange={(e)=>{
+                            sBehandlingForSletting(e.target.value);
+                        }}>
+                    {env.tjenester.map((behandling)=>(
+                        <option key={behandling.navn} value={behandling.navn}>{behandling.navn}</option>
+                    ))}
+                        </select></label>  
+                        <div>
+                            <button onClick={()=>{
+                                sVisSlettBehandling(false);
+                            }}>Avbryt</button>
+                            <button onClick={()=>{
+                                if(window.confirm("Ønsker du å slette " + behandlingForSletting + "?")){
+                                    let tempBehandlinger = env.tjenester;
+                                    tempBehandlinger = tempBehandlinger.filter((behandling)=>(behandling.navn !== behandlingForSletting));
+                                    sendTilDatabase(env.frisorer, env.kategorier, tempBehandlinger, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
+                                    sVisSlettBehandling(false);
+                                }
+                            }}>Slett behandling</button>  
+                        </div>  
+                    </div>:<>
+                    <button style={{display:"flex", alignItems:"center"}} onClick={()=>{
+                        sVisSlettBehandling(true);
+                    }} ><img alt='Slett en behandling' src="delete.png" ></img>Slett én behandling</button>
+                    </>}
+                    <div style={{display:"flex", flexDirection:"row", flexWrap:"wrap", gap:"1rem"}}>
+                    {env.tjenester.map((behandling)=>(
+                        <div key={behandling.navn} style={{display:"flex", flexDirection:"row", alignItems:"center", margin:"0.3rem"}}>
+                            <DetaljerBehandling behandlingsEstimater={behandlingsEstimater} behandling={behandling} env={env} sendTilDatabase={sendTilDatabase} />
+                        </div>
+                    ))}
+                    </div>
+                    
+                    
+                </div>
+            </>):""}
                     
         </div>
     )

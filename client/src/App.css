@@ -504,6 +504,11 @@ input, button{
     cursor: pointer;
     height:3rem;
     border:none !important;
+    background:url("../public/avbryt.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    aspect-ratio: 1/1;
   }
 
   .fokus .lukk:active{

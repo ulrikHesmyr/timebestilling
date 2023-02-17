@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 
-function DetaljerFrisor({env, frisor, sendTilDatabase, varsle}){
+function DetaljerFrisor({env, frisor, sendTilDatabase, varsle, sUpdateTrigger, updateTrigger}){
 
     const [visDetaljer, sVisDetaljer] = useState(false);
 
@@ -10,15 +10,38 @@ function DetaljerFrisor({env, frisor, sendTilDatabase, varsle}){
     const [frisorRediger, sFrisorRediger] = useState(null);
     const [oppsigelsesDato, sOppsigelsesDato] = useState(new Date());
     const [ikkeSiOpp, sIkkeSiOpp] = useState((frisor.oppsigelse === "Ikke oppsagt")?true:false);
+    const [bildeAvFrisor, sBildeAvFrisor] = useState(null);
     
     //Viser redigeringssider
     const [visRedigerBehandlinger, sVisRedigerBehandlinger] = useState(false);     
     const [visSiOpp, sVisSiOpp] = useState(false);     
+    const [visRedigerBilde, sVisRedigerBilde] = useState(false);
 
     //Nye behandlinger
     const [frisorTjenester, setFrisortjenester] = useState(frisor.produkter); //Skal være indekser, akkurat som i databasen
 
 
+    async function oppdaterBilde(navn){
+      //Oppdaterer bilde i databasen ved å sende bildet og navn som new FormData()
+      let formData = new FormData();
+      formData.append("uploaded_file", bildeAvFrisor);
+      formData.append("navn", navn);
+
+      console.log(bildeAvFrisor);
+      console.log(navn);
+      const options = {
+        method: 'POST',
+        body: formData
+      }
+
+      const request = await fetch('http://localhost:3001/env/oppdaterBildeFrisor', options);
+      const response = await request.json();
+      if(response.valid){
+        varsle();
+        sUpdateTrigger(!updateTrigger);
+      }
+      
+    }
 
     async function siOppFrisor(){
       let tempFrisorer = env.frisorer;
@@ -84,7 +107,7 @@ function DetaljerFrisor({env, frisor, sendTilDatabase, varsle}){
       <div style={{fontSize:"small"}}>
       Behandlinger: 
       <ul>
-      {env.tjenester.filter((tjeneste)=>frisor.produkter.includes(tjeneste.navn)).map((element)=>(<li>{element.navn}</li>))}
+      {env.tjenester.filter((tjeneste)=>frisor.produkter.includes(tjeneste.navn)).map((element)=>(<li key={element.navn}>{element.navn}</li>))}
       </ul>
       </div>
       <div>{frisor.oppsigelse !== "Ikke oppsagt"?`Dato for oppsigelse: ${frisor.oppsigelse}`:""}</div>
@@ -96,7 +119,7 @@ function DetaljerFrisor({env, frisor, sendTilDatabase, varsle}){
           <div style={{display:"flex", justifyContent:"space-between", width:"100%"}}>
             
           <p style={{margin:"0.5rem"}}>Velg hva du vil redigere for ansatt: {frisorRediger.navn}</p>
-            <img onClick={(e)=>{
+            <img alt='Lukk' onClick={(e)=>{
                 e.preventDefault();
                 sVisRedigerFrisor(false);
             }} src='avbryt.png' style={{cursor:"pointer"}}></img>
@@ -120,41 +143,67 @@ function DetaljerFrisor({env, frisor, sendTilDatabase, varsle}){
                           
               }}>Rediger behandlinger</button>
 
+              <button onClick={()=>{
+                sVisRedigerBilde(true);
+              }}>Oppdater bilde</button>
+
               <button style={{backgroundColor:"red", color:"white"}} onClick={()=>{
                 //Resetter passord til ansatt
-                if(window.confirm("Er du sikker på at du vil resette passordet til " + frisorRediger.navn + "?" + "\nPassordet blir satt til samme som brukernavnet")){
+                if(window.confirm("Er du sikker på at du vil resette passordet til " + frisorRediger.navn + "? Passordet blir satt til samme som brukernavnet")){
                   resetPassord(frisorRediger.navn);
                 }
               }} >Resett innloggings-passord for {frisorRediger.navn}</button>
 
-                </div>   
+            </div>   
 
+            {visRedigerBilde?<div className='fokus'>
+            <h4>Last opp nytt bilde: </h4>
+              <label style={{display:"flex", alignItems:"center"}}>Last opp bilde av Frisøren: <input accept="image/*" onChange={(e)=>{
+              sBildeAvFrisor(e.target.files[0]);
+              }} type="file" name="uploaded_file"></input> {bildeAvFrisor && <img className='frisorbilde' style={{height:"300px"}} alt='Forhåndsvisning av bildet' src={URL.createObjectURL(bildeAvFrisor)}></img>}</label>
+      
+      <div>
+        <button onClick={(e)=>{
+          e.preventDefault();
+          sVisRedigerBilde(false);
+          sBildeAvFrisor(null);
+        }}>Avbryt</button>
+        <button onClick={(e)=>{
+          e.preventDefault();
+          if(bildeAvFrisor){  
+            oppdaterBilde(frisorRediger.navn);
+            sBildeAvFrisor(null);
+            sVisRedigerBilde(false);
+          }
+        }}>Lagre</button>
+      </div>
+            </div>:<></>}
 
-                {visSiOpp?<div className='fokus'>
-                
-                    <h4>Legg inn oppsigelsesdato for {frisorRediger.navn}</h4>
-                    <p>Legg inn datoen som frisøren ikke lenger jobber. Frisøren vil kunne få reservasjoner før denne datoen men 
-                        ikke på denne datoen eller etter. Dette er for å unngå at frisøren får reservasjoner som ikke kan gjennomføres.
-                    </p>
-                    <input type="date" disabled={ikkeSiOpp} value={oppsigelsesDato} onChange={(e)=>{
-                        e.preventDefault();
-                        sOppsigelsesDato(e.target.value);
-                    }} />
-                    <label>Ikke si opp: <input type="checkbox" checked={ikkeSiOpp} onChange={()=>{
-                      sIkkeSiOpp(!ikkeSiOpp);
-                    }}></input></label>
-                    <div>
-                    <button onClick={(e)=>{
-                        e.preventDefault();
-                        sVisSiOpp(false);
-                    }} >Avbryt</button>
-                    <button onClick={(e)=>{
-                        e.preventDefault();
-                        sVisSiOpp(false);
-                        siOppFrisor();
-                    }}>Lagre dato for oppsigelse</button>
-                    </div>
-                </div>:""}
+              {visSiOpp?<div className='fokus'>
+              
+                  <h4>Legg inn oppsigelsesdato for {frisorRediger.navn}</h4>
+                  <p>Legg inn datoen som frisøren ikke lenger jobber. Frisøren vil kunne få reservasjoner før denne datoen men 
+                      ikke på denne datoen eller etter. Dette er for å unngå at frisøren får reservasjoner som ikke kan gjennomføres.
+                  </p>
+                  <input type="date" disabled={ikkeSiOpp} value={oppsigelsesDato} onChange={(e)=>{
+                      e.preventDefault();
+                      sOppsigelsesDato(e.target.value);
+                  }} />
+                  <label>Ikke si opp: <input type="checkbox" checked={ikkeSiOpp} onChange={()=>{
+                    sIkkeSiOpp(!ikkeSiOpp);
+                  }}></input></label>
+                  <div>
+                  <button onClick={(e)=>{
+                      e.preventDefault();
+                      sVisSiOpp(false);
+                  }} >Avbryt</button>
+                  <button onClick={(e)=>{
+                      e.preventDefault();
+                      sVisSiOpp(false);
+                      siOppFrisor();
+                  }}>Lagre dato for oppsigelse</button>
+                  </div>
+              </div>:""}
 
 
                 
@@ -196,7 +245,7 @@ function DetaljerFrisor({env, frisor, sendTilDatabase, varsle}){
         e.preventDefault();
         sFrisorRediger(frisor);
         sVisRedigerFrisor(true);
-      }} ><img src='rediger.png' style={{height:"1.4rem"}}></img></button>}
+      }} ><img alt='Rediger frisør' src='rediger.png' style={{height:"1.4rem"}}></img></button>}
     </div>:""}
     </>
   )

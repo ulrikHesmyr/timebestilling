@@ -139,19 +139,23 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle}) {
     <>
     {(synligKomponent === 2?<div>
         <h3>Fridager og fravær</h3>
-        {friElementer.map((friElement, index)=>
+        
+        {(!leggTilFri?<button onClick={(e)=>{
+        e.preventDefault();
+        sLeggTilFri(true);
+        }}> <img alt='Opprett fri/fravær' src='leggtil.png' style={{height:"1.4rem"}}></img> Nytt fravær/fri</button>:"")}
+
+
+        {friElementer.slice(0).reverse().map((friElement, index)=>
             (
                 <div style={{display:"flex", justifyContent:"space-between", alignItems:"center"}} key={index}> {friElement.lengreTid? `${friElement.medarbeider}: ${parseInt(friElement.fraDato.substring(8,10))}. ${hentMaaned(parseInt(friElement.fraDato.substring(5,7)) -1)} - ${parseInt(friElement.tilDato.substring(8,10))}. ${hentMaaned(parseInt(friElement.tilDato.substring(5,7)) -1)}`:`${friElement.medarbeider}: ${parseInt(friElement.friDag.substring(8,10))}. ${hentMaaned(parseInt(friElement.friDag.substring(5,7)) -1)} ${friElement.fraKlokkeslett}-${friElement.tilKlokkeslett}`} <button onClick={(e)=>{
-                    e.preventDefault();
-                    slettFri(friElement);
+                    if(window.confirm("Er du sikker på at du vil slette dette elementet?")){
+                        slettFri(friElement);
+                    }
                 }}><img alt='Slett fri-element' src='delete.png' style={{height:"1.4rem"}}></img></button> </div>
             )
         )}
 
-        {(!leggTilFri?<button onClick={(e)=>{
-        e.preventDefault();
-        sLeggTilFri(true);
-    }}> <img alt='Opprett fri/fravær' src='leggtil.png' style={{height:"1.4rem"}}></img> Nytt fravær/fri</button>:"")}
     </div>:"")}
     {
     (leggTilFri?<div className='fokus'>

@@ -8,7 +8,6 @@ INTERVJU:
 
 
 BARE CLIENT:
-- Admin.js: Søkefelt for å søke etter spesifike timebestillinger
 - Login.js: RateLimiter på /auth route, så sjekk om response er json for å skrive om du har logget inn for mye 
 https://stackoverflow.com/questions/37121301/how-to-check-if-the-response-of-a-fetch-is-a-json-object-in-javascript
 
@@ -21,8 +20,7 @@ BARE SERVER:
 SERVER OG CLIENT:
         APPLIKASJON
 - hjem.js og public/: Kunne displaye video på startside dersom !isMobile 
-- Admin.js: Kunne slette timebestillinger (dersom kunde må avbestille eller flytte på timen). Kun fjerne, så må kunden eller frisøren
- legge inn ny
+- Admin.js: Opprette kategorier og slette kategorier dersom ingen tjenester har den kategorien
 
 FØR PROD: 
 - Sjekke clientside om bruker er logget inn fra før med cookies (path: /login/loggetinn) og 2FA
@@ -68,3 +66,5 @@ FÅ FRA KUNDE FØR PROD
 
 MINE GARANTIER:
 - Umulig å bli dobbeltbooket eller at timer krasjer, først på nettsiden, så sjekker den med tidligere bestillinger, men også på serveren i det bestillingen sendes, så sjekker den momentnant om det krasjer med andre bestillinger.
+
+new FormData() for bilder, ikke json

@@ -76,12 +76,6 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle}){
             sTlfNyFrisor(e.target.value);
         }} value={tlfNyFrisor} type="text" maxLength={8}></input></label>
         <label style={{display:"flex", alignItems:"center"}}>Last opp bilde av Frisøren: <input accept="image/*" onChange={(e)=>{
-            //console.log(e.target.files[0].size);
-            //if(e.target.files[0].size < 10000){
-            //    sBildeAvFrisor(e.target.files[0]);
-            //} else {
-            //    alert("Bildet er for stort, maks 10KB. Skaler bilde ned og prøv igjen. Bildet ");
-            //}
             sBildeAvFrisor(e.target.files[0]);
         }} type="file" name="uploaded_file"></input> {bildeAvFrisor && <img className='frisorbilde' style={{height:"300px"}} alt='Forhåndsvisning av bildet' src={URL.createObjectURL(bildeAvFrisor)}></img>}</label>
         

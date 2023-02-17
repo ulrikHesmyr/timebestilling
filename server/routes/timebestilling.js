@@ -5,6 +5,7 @@ const Client = require("target365-sdk");
 const rateLimiter = require("express-rate-limit");
 
 const mailer = require("../configuration/mailer");
+const authorization = require("../middleware/authorization");
 
 const Bestilttime = require("../model/bestilling");
 const Env = require("../model/env");
@@ -104,6 +105,22 @@ router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
             }
         } else {
             return res.send({bestillingAlreadyExcist: true});
+        }
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+//Sletter én enkelt timebestilling
+router.post('/oppdaterTimebestillinger', authorization, async (req,res)=>{
+    try {
+        if(req.brukernavn === "admin"){
+            const slettTime = await Bestilttime.findOneAndDelete({_id: req.body._id});
+            if(slettTime){
+                return res.send({message: "Timebestilling slettet", valid: true})
+            } else {
+                return res.send({message: "Noe har skjedd galt, prøv igjen"})
+            }
         }
     } catch (error) {
         console.log(error);
