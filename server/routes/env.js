@@ -165,12 +165,15 @@ router.post("/slettFrisor", authorization, async (req,res)=>{
 router.post('/oppdaterEnv',authorization, async(req,res)=>{
     const {frisorer, tjenester, kategorier, sosialeMedier, kontakt_tlf, kontakt_epost, klokkeslett} = req.body;
     try {
+        if(req.brukernavn === "admin"){
+            
         const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {frisorer:frisorer, tjenester:tjenester, kategorier:kategorier, sosialeMedier:sosialeMedier, kontakt_tlf:kontakt_tlf, kontakt_epost:kontakt_epost, klokkeslett:klokkeslett});
         
-        if(oppdatertEnv){
-            return res.send({message:"Environment ble oppdatert!"});
-        } else {
-            return res.send({message:"Noe har skjedd gærent i /oppdaterEnv!"});
+            if(oppdatertEnv){
+                return res.send({message:"Environment ble oppdatert!"});
+            } else {
+                return res.send({message:"Noe har skjedd gærent i /oppdaterEnv!"});
+            }
         }
     } catch (error) {
         

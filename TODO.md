@@ -8,8 +8,6 @@ INTERVJU:
 
 
 BARE CLIENT:
-- Admin.js: VIKTIG gi class til alle "pop-up" vinduer slik at de dekker hele skjermen. Dermed blir det vesentlig
-    ryddigere og ikke helt uoversiktlig.
 - Admin.js: Søkefelt for å søke etter spesifike timebestillinger
 - Login.js: RateLimiter på /auth route, så sjekk om response er json for å skrive om du har logget inn for mye 
 https://stackoverflow.com/questions/37121301/how-to-check-if-the-response-of-a-fetch-is-a-json-object-in-javascript
@@ -23,16 +21,11 @@ BARE SERVER:
 SERVER OG CLIENT:
         APPLIKASJON
 - hjem.js og public/: Kunne displaye video på startside dersom !isMobile 
-- model/env.js, configuration/createEnvironment og hjem.js: Gi alle behandlinger en beskrivelse. Beskrivelsene displayes på hjem siden med oversikt over "våre 
-    behandlinger"
 - Admin.js: Kunne slette timebestillinger (dersom kunde må avbestille eller flytte på timen). Kun fjerne, så må kunden eller frisøren
  legge inn ny
-- Admin.js og env.js: Admin kan resette passord til frisørene slik at de får logget inn dersom de har glemt passord 
-- Admin.js: Kan legge til, redigere og slette behandlinger. Her skriver de navn, beskrivelse og pris. Deretter VELGEr de kategori og 
-    estimert tid ved å trykke på bokser.
 
 FØR PROD: 
-- Sjekke clientside om bruker er logget inn fra før med cookies (path: /login/loggetinn)
+- Sjekke clientside om bruker er logget inn fra før med cookies (path: /login/loggetinn) og 2FA
 
 MULIGE BUGS SOM KAN KOMME I PROD:
 - Innloggingsforsøk. Test innloggingsfunksjonaliteten mtp antall innloggingsforsøk.

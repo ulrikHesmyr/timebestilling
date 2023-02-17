@@ -93,6 +93,7 @@ form{
 input, button{
   font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 1rem;
+  padding:0.4rem;
 }
 .timebestilling{
   display:grid;
@@ -531,9 +532,6 @@ input, button{
 
 @media (width <= 900px){
   
-  body *{
-    padding:1px;
-  }
   .fortsett{
     position: fixed;
     bottom: 0;
@@ -552,8 +550,8 @@ input, button{
   .startside h2{
     writing-mode: vertical-lr;
     text-align: left;
-    color:rgba(0, 0, 0, 0.5);
-    font-weight: 100;
+    color:rgba(0, 0, 0, 0.6);
+    font-weight: 200;
     border-bottom:thin solid rgba(0, 0, 0, 0.5);
   }
   .hjemsideSeksjon{
@@ -591,8 +589,8 @@ input, button{
 .infoboks{
   display: flex;
   justify-content: center;
-  align-items: center;
   height: max-content;
+  flex-direction: column;
 }
   
   h1{

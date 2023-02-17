@@ -8,6 +8,7 @@ import RedigerAapningstider from '../components/RedigerAapningstider';
 
 function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
     
+    const behandlingsEstimater = [15,30,45,60,75,90,105,120,135,150,165,180,195,210,225,240];
     const [kontakt_epost, sKontakt_epost] = useState(env.kontakt_epost);
     const [kontakt_tlf, sKontakt_tlf] = useState(env.kontakt_tlf);
 
@@ -15,7 +16,19 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
     const [dagForRedigering, sDagForRedigering] = useState();
     
     //Behandling for redigering
-    const [behandlingerRediger, sBehandlingRediger] = useState(null);
+
+    //Opprett ny behandling (vis/skjul) og opprett behandling
+    const [visOpprettBehandling, sVisOpprettBehandling] = useState(null);
+    const [nyBehandlingNavn, sNyBehandlingNavn] = useState("");
+    const [nyBehandlingPris, sNyBehandlingPris] = useState(0);
+    const [nyBehandlingBeskrivelse, sNyBehandlingBeskrivelse] = useState("");
+    const [nyBehandlingKategori, sNyBehandlingKategori] = useState(env.kategorier[0]);
+    const [nyBehandlingTid, sNyBehandlingTid] = useState(behandlingsEstimater[0]);
+
+    //Slett en behandling
+    const [visSlettBehandling, sVisSlettBehandling] = useState(null);
+    const [behandlingForSletting, sBehandlingForSletting] = useState(env.tjenester[0]);
+
     
     //Synlige sider
     const [synligKomponent, setSynligKomponent] = useState(1);
@@ -182,13 +195,129 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
                 <>
                     <div>
                     <h4>Behandlinger:</h4>
+                    {visOpprettBehandling?
+
+                        <div className='fokus'>
+
+                            <div style={{display:"flex", flexDirection:"column", margin:"0.3rem"}}>
+                                <label>Navn på ny behandling: 
+                                    <input maxLength={30} type="text" placeholder="Navn" value={nyBehandlingNavn} onChange={(e)=>{
+                                    sNyBehandlingNavn(e.target.value);
+                                    }}></input>
+                                </label>
+
+                                <label>Beskrivelse for behandlingen: 
+                                    <input maxLength={100} type="text" placeholder='Beskrivelse' onChange={(e)=>{
+                                        sNyBehandlingBeskrivelse(e.target.value);
+                                    }} value={nyBehandlingBeskrivelse}></input> 
+                                </label>
+
+                                <label>Pris for behandlingen:
+                                    <input type="number" placeholder='Pris' onChange={(e)=>{
+                                        sNyBehandlingPris(e.target.value);
+                                    }} value={nyBehandlingPris}></input>
+                                </label>
+
+                                <label>Kategori for behandlingen: <select onChange={(e)=>{
+                                        sNyBehandlingKategori(e.target.value);
+                                    }} value={nyBehandlingKategori}>
+                                        {env.kategorier.map((kategori)=>(
+                                            <option key={kategori} value={kategori}>{kategori}</option>
+                                        ))}
+                                    </select>
+                                </label>
+
+                                <label>Estimert tid for behandlingen: <select onChange={(e)=>{
+                                        sNyBehandlingTid(e.target.value);
+                                    }} value={nyBehandlingTid}>
+                                        {behandlingsEstimater.map((estimertTid)=>(
+                                            <option key={estimertTid} value={estimertTid}>{estimertTid}</option>
+                                        ))}
+                                    </select> minutter</label>
+
+                                <div>
+                                    <button onClick={()=>{
+                                        sVisOpprettBehandling(false);
+                                        sNyBehandlingNavn("");
+                                        sNyBehandlingBeskrivelse("");
+                                        sNyBehandlingPris("");
+                                        sNyBehandlingKategori(env.kategorier[0]);
+                                        sNyBehandlingTid(behandlingsEstimater[0]);
+                                    }}>Avbryt</button>
+
+                                    <button onClick={()=>{
+                                        console.log(nyBehandlingKategori);
+                                        if(nyBehandlingNavn !== "" && nyBehandlingBeskrivelse !== "" && !isNaN(parseInt(nyBehandlingPris)) && nyBehandlingKategori !== "" && !isNaN(parseInt(nyBehandlingPris))){
+                                            let tempBehandlinger = env.tjenester;
+                                            tempBehandlinger.push({navn:nyBehandlingNavn, beskrivelse:nyBehandlingBeskrivelse, pris:parseInt(nyBehandlingPris), kategori:nyBehandlingKategori, tid:(parseInt(nyBehandlingTid))});
+                                            sendTilDatabase(env.frisorer, env.kategorier, tempBehandlinger, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
+                                            sVisOpprettBehandling(false);
+                                            sNyBehandlingNavn("");
+                                            sNyBehandlingBeskrivelse("");
+                                            sNyBehandlingPris("");
+                                            sNyBehandlingKategori(env.kategorier[0]);
+                                            sNyBehandlingTid(behandlingsEstimater[0]);
+                                        }else{
+                                            alert("Alle felt må fylles ut på riktig format");
+                                        }
+                                    }}>Lagre</button>
+
+                                </div>
+                            </div>
+
+                        </div>
+                        
+                        :
+                        <>
+                        <button style={{display:"flex", alignItems:"center"}} onClick={()=>{
+                            sVisOpprettBehandling(true);
+                        }} ><img alt='Legg til frisør' src="leggtil.png" ></img>Opprett ny behandling</button>
+                        
+                        
+                        </>
+                        }
+                        
+
+                        {visSlettBehandling?
+                        <div className='fokus'>
+                            <h4>Velg behandling som skal slettes:</h4>
+                            <label>Behandling: <select onChange={(e)=>{
+                                sBehandlingForSletting(e.target.value);
+                            }}>
+                        {env.tjenester.map((behandling)=>(
+                            <option key={behandling.navn} value={behandling.navn}>{behandling.navn}</option>
+                        ))}
+                            </select></label>  
+
+                            <div>
+                                <button onClick={()=>{
+                                    sVisSlettBehandling(false);
+                                }}>Avbryt</button>
+                                <button onClick={()=>{
+                                    if(window.confirm("Ønsker du å slette " + behandlingForSletting + "?")){
+                                        let tempBehandlinger = env.tjenester;
+                                        tempBehandlinger = tempBehandlinger.filter((behandling)=>(behandling.navn !== behandlingForSletting));
+                                        sendTilDatabase(env.frisorer, env.kategorier, tempBehandlinger, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
+                                        sVisSlettBehandling(false);
+                                    }
+                                }}>Slett behandling</button>  
+                            </div>  
+                        </div>:<>
+                        <button style={{display:"flex", alignItems:"center"}} onClick={()=>{
+                            sVisSlettBehandling(true);
+                        }} ><img alt='Slett en behandling' src="delete.png" ></img>Slett én behandling</button>
+                        </>}
+
+
                         <div style={{display:"flex", flexDirection:"row", flexWrap:"wrap", gap:"1rem"}}>
                         {env.tjenester.map((behandling)=>(
                             <div key={behandling.navn} style={{display:"flex", flexDirection:"row", alignItems:"center", margin:"0.3rem"}}>
-                                <DetaljerBehandling behandling={behandling} env={env} sendTilDatabase={sendTilDatabase} sBehandlingRediger={sBehandlingRediger} />
+                                <DetaljerBehandling behandlingsEstimater={behandlingsEstimater} behandling={behandling} env={env} sendTilDatabase={sendTilDatabase} />
                             </div>
                         ))}
                         </div>
+                        
+                        
                     </div>
 
                 </>):""}
@@ -196,10 +325,9 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
         </div>
     )
 }
+/************************************************************************************************************************ */
+function DetaljerBehandling({behandling, env, sendTilDatabase, behandlingsEstimater}){
 
-function DetaljerBehandling({behandling, env, sendTilDatabase, sBehandlingRediger}){
-
-    let behandlingsEstimater = [15,30,45,60,75,90,105,120,135,150,165,180,195,210,225,240];
     const [visRedigerBehandling, sVisRedigerBehandling] = useState(false);
     const [behandlingBeskrivelse, sBehandlingBeskrivelse] = useState(behandling.beskrivelse);
     const [behandlingPris, sBehandlingPris] = useState(behandling.pris);
@@ -251,7 +379,7 @@ function DetaljerBehandling({behandling, env, sendTilDatabase, sBehandlingRedige
                     sBehandlingTid(e.target.value);
                 }}>
                     {behandlingsEstimater.map((tid)=>(
-                        <option key={tid} value={tid}>{tid}</option>
+                        <option key={tid} value={tid}>{tid} minutter</option>
                     ))}
                 </select>
             </>:""}
@@ -260,7 +388,6 @@ function DetaljerBehandling({behandling, env, sendTilDatabase, sBehandlingRedige
     <div>
         <button onClick={()=>{
             sVisRedigerBehandling(false);
-            sBehandlingRediger(null);
             sVisRedigerKategori(false);
             sVisRedigerTid(false);
             sBehandlingBeskrivelse(behandling.beskrivelse);
@@ -280,7 +407,6 @@ function DetaljerBehandling({behandling, env, sendTilDatabase, sBehandlingRedige
             gjeldendeBehandling.kategori = behandlingKategori;
             sendTilDatabase(env.frisorer, env.kategorier, tempBehandlinger, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
             sVisRedigerBehandling(false);
-            sBehandlingRediger(null);
             sVisRedigerKategori(false);
             sVisRedigerTid(false);
         }}>Lagre</button>
@@ -294,11 +420,12 @@ function DetaljerBehandling({behandling, env, sendTilDatabase, sBehandlingRedige
             <div className='redigeringsBoks'> <p>Kategori: {behandling.kategori}</p> </div>
             <button onClick={()=>{
                 sVisRedigerBehandling(true);
-                sBehandlingRediger(behandling);
             }} ><img alt='Rediger behandlinger' src='rediger.png' style={{height:"1.4rem"}}></img></button>
         </div>)}
+        
     </>
     )
+    
 }
 
 export default React.memo(Admin);
