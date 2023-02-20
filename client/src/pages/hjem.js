@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import { Link } from "react-router-dom";
+import Footer from '../components/Footer'
 
 
 /*
@@ -31,7 +32,6 @@ function Hjem({env}){
                 midlertidigArray.push(base64Image);
             }
             sFrisorBildeArray(midlertidigArray);
-            console.log(midlertidigArray, "FRISORBILDEARRAY");
         }
         hentBilder();
     }, [env.frisorer])
@@ -58,11 +58,11 @@ function Hjem({env}){
                 </div>
             </div>
             <div className="hjemsideSeksjon">
-                <h2>Våre frisører</h2>
-                <div style={{display:"flex", flexDirection:"row", flexWrap:"wrap"}}>
+                <h2>Våre ansatte</h2>
+                <div className="frisorene">
                     {frisorBildeArray !== null? env.frisorer.map((frisor, index)=>(
-                    <div key={frisor.navn}>
-                        <h3>{frisor.navn}</h3>
+                    <div key={frisor.navn}style={{margin:"1rem"}}>
+                        <h4>{frisor.navn}</h4>
                         <img className="frisorbilde" src={frisorBildeArray[index]} alt={`Bilde av frisør ${frisor.navn}`} style={{height:"4rem"}}></img>
                         </div>
                     )):"hhh"}
@@ -70,20 +70,22 @@ function Hjem({env}){
             </div>
         </div>
         <div className="startside">
+            
             <div className="hjemsideSeksjon">
                 <h2>Hvor du finner oss</h2>
 
                 <div>
                     <p>{env.adresse}</p>
                     <img alt="Bilde som viser adressen" src="adresse.png" style={{width:"200px"}}></img>
+                <img alt="Vaske håret meme" src="meme.png" style={{height:"10rem"}}></img>
                 </div>
             </div>
             <div className="hjemsideSeksjon">
-                <h2 >Våre behandlinger:</h2>
-                <div>
+                <h2 >Våre behandlinger</h2>
+                <div className="behandlingerHjemsiden">
                 {env.kategorier.map((kategori, index)=>(
                     <div key={kategori} style={{transition:"0.2s ease all", padding:"0.3rem", borderRadius:(kategoriSynlig[index]?"0 0 1rem 1rem":"0 0 0 0")}}>
-                        <h3 style={{letterSpacing:"0.4rem", display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"space-between", borderBottom:"thin solid rgba(0,0,0,0.3)"}} onClick={()=>{
+                        <h3 style={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"space-between", borderBottom:"thin solid rgba(0,0,0,0.3)"}} onClick={()=>{
                             let temp = kategoriSynlig;
                             let n = env.kategorier.indexOf(kategori);
                             if(kategoriSynlig[n]){
@@ -107,15 +109,18 @@ function Hjem({env}){
                                 )
                             )}
                         </div>
+                        
                     </div>
+                    
                     
                     
                     ))}
                 </div>
             </div>
         </div>
+        <Footer/>
         </div>
-
+            
         </>
     )
 }

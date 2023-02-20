@@ -13,21 +13,40 @@ function RedigerPassord({redigerPassordDB}){
             {redigeringsKnappSynlig?(<button className='rediger' onClick={(e)=>{
             e.preventDefault();
             sRedigeringsKnappSynlig(false);
-        }}><img src='rediger.png' style={{height:"1.4rem"}} alt="Rediger"></img></button>):(
+        }}><img className='ikonKnapper' src='rediger.png' alt="Rediger"></img></button>):(
         
         <div className="passordBoks fokus">
-            <label>Nytt administrator passord:<div><p className="litentekst">vis passord</p> <input checked={toggleViewPassord} type="checkbox" onChange={()=>{
-                sToggleView(!toggleViewPassord);
-            }}></input><input value={nyttPassord} type={(toggleViewPassord?"text":"password")} onChange={(e)=>{
-                sNyttPassord(e.target.value);
-            }}></input> </div> </label>
-            <label>Gjenta nytt passord: <div> <p className="litentekst">vis passord</p> 
-            <input checked={toggleViewPassordGjentagelse} type="checkbox" onChange={()=>{
-                sToggleViewG(!toggleViewPassordGjentagelse)
-            }}></input><input value={gjentaPassord} type={(toggleViewPassordGjentagelse?"text":"password")} onChange={(e)=>{
-                sGjentapassord(e.target.value);
-            }}></input> 
-                </div> </label>
+            <label style={{display:"flex", flexDirection:"row", alignItems:"center"}}>Nytt administrator passord:
+                <div>
+                    <input value={nyttPassord} type={(toggleViewPassord?"text":"password")} onChange={(e)=>{
+                        sNyttPassord(e.target.value);
+                    }}></input> 
+
+                    {(toggleViewPassord?<img onClick={()=>{
+                        sToggleView(false);
+                        }} src='oye_lukket.png' style={{height:"1.4rem"}} alt="Skjul passord"></img>:<img onClick={()=>{
+                            sToggleView(true);
+                        }} src='oye_aapnet.png' style={{height:"1.4rem"}} alt="Vis passord"></img>
+                    )}
+                </div>
+            </label>
+
+            <label style={{display:"flex", flexDirection:"row", alignItems:"center"}}>Gjenta nytt passord: 
+                <div> 
+                    <input value={gjentaPassord} type={(toggleViewPassordGjentagelse?"text":"password")} onChange={(e)=>{
+                        sGjentapassord(e.target.value);
+                    }}></input> 
+
+                
+                    {(toggleViewPassordGjentagelse?<img onClick={()=>{
+                        sToggleViewG(false);
+                        }} src='oye_lukket.png' style={{height:"1.4rem"}} alt="Skjul passord"></img>:<img onClick={()=>{
+                            sToggleViewG(true);
+                        }} src='oye_aapnet.png' style={{height:"1.4rem"}} alt="Vis passord"></img>
+                    )}
+                </div> 
+            </label>
+
             <div>
                 <button onClick={(e)=>{
                     e.preventDefault();

@@ -10,6 +10,8 @@ INTERVJU:
 BARE CLIENT:
 - Login.js: RateLimiter på /auth route, så sjekk om response er json for å skrive om du har logget inn for mye 
 https://stackoverflow.com/questions/37121301/how-to-check-if-the-response-of-a-fetch-is-a-json-object-in-javascript
+- Når kunde bestiller time, så sjekkes det om kunden har bestilt fra før av. Da får kunden varsling dersom de har bestilt to timer med  
+    feiltakelse
 
 - DinReservasjon.js: Displaye bilde av frisøren
 - Lage footer med info om: Meg, google icons, strex SMS gateway, personvernserklæring og brukervilkår
@@ -20,7 +22,6 @@ BARE SERVER:
 SERVER OG CLIENT:
         APPLIKASJON
 - hjem.js og public/: Kunne displaye video på startside dersom !isMobile 
-- Admin.js: Opprette kategorier og slette kategorier dersom ingen tjenester har den kategorien
 
 FØR PROD: 
 - Sjekke clientside om bruker er logget inn fra før med cookies (path: /login/loggetinn) og 2FA
@@ -58,6 +59,9 @@ bytt fra mercedes bildet til logo
 bytte farge-variabler i App.css
 har salongen åpent søndager? Da må det endres i Klokkeslett.js
 Endre at når ansatt endrer tlf så endrer den på deres tlf og ikke elin sitt (routes/login.js /oppdaterTelefonnummer)
+
+OM APPLIKASJONEN, PERSONVERN OG LOV:
+- Data som lagres om de ansatte går under firmaets egne kontrakter om personvern osv.
 
 FÅ FRA KUNDE FØR PROD
 - Logo 

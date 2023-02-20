@@ -16,10 +16,12 @@ function RedigerKontakt({number, setState, state, sendTilDatabase, env}){
             sInputSynlig(!inputSynlig);
             sRedigeringsKnappSynlig(false);
             sAvbrytOgLagreSynlig(true)
-        }}><img src='rediger.png' style={{height:"1.4rem"}} alt="Rediger"></img></button>):""}
+        }}><img className='ikonKnapper' src='rediger.png' alt="Rediger"></img></button>):""}
         
         {inputSynlig && avbrytOgLagreSynlig?(<div className='fokus'>
-        
+        <h4>Rediger kontakt info:</h4>
+        <p>Rediger kontakt-informasjonen som vil være tilgjengelig på "kontakt-oss" siden. 
+            Dersom du ønsker å endre telefonnummeret for tofaktor-autoriseringen for admin-brukeren, så ta kontakt</p>
         <label>{number?"Nytt kontaktnummer: ": "Ny kontakt-epost: "}<input type={number?"number":"text"} value={tempState} onChange={(e)=>{
             sTempState(e.target.value);
         }}></input></label>

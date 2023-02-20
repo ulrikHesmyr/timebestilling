@@ -127,7 +127,7 @@ router.get("/loggetinn", authorization, async (req,res)=>{
         
         const finnBruker = await Brukere.findOne({brukernavn: brukernavn});
         const env = await Environment.findOne({bedrift:BEDRIFT});
-        const {kontakt_epost, kontakt_tlf, sosialeMedier, bedrift, kategorier, tjenester, frisorer, klokkeslett} = env;
+        const {kontakt_epost, kontakt_tlf, sosialeMedier, bedrift, kategorier, tjenester, frisorer, klokkeslett, adresse} = env;
         
         let bestilteTimer = await Bestiltetimer.find();
         bestilteTimer = bestilteTimer.sort((a,b)=>{
@@ -136,7 +136,7 @@ router.get("/loggetinn", authorization, async (req,res)=>{
             return datoA - datoB;
         })
             
-        return res.json({bruker:{navn:finnBruker.brukernavn, telefonnummer:finnBruker.telefonnummer}, valid:true, message:"Du er nå logget inn", brukertype: (brukernavn==="admin"?"admin":"vakter"), env:{kontakt_epost:kontakt_epost, kontakt_tlf:kontakt_tlf, sosialeMedier:sosialeMedier, bedrift:bedrift, kategorier:kategorier, tjenester:tjenester, frisorer:frisorer, klokkeslett:klokkeslett}, bestilteTimer:bestilteTimer});
+        return res.json({valid:true,bruker:{navn:finnBruker.brukernavn, telefonnummer:finnBruker.telefonnummer}, message:"Du er nå logget inn", brukertype: (brukernavn==="admin"?"admin":"vakter"), env:{kontakt_epost:kontakt_epost, kontakt_tlf:kontakt_tlf, sosialeMedier:sosialeMedier, bedrift:bedrift, kategorier:kategorier, tjenester:tjenester, frisorer:frisorer, klokkeslett:klokkeslett, adresse: adresse}, bestilteTimer:bestilteTimer});
         
     } catch (error) {
         console.log(error);
@@ -200,7 +200,7 @@ router.post('/auth',loginLimiter, async (req,res)=>{
                 }
                 
                 const env = await Environment.findOne({bedrift:BEDRIFT});
-                const {kontakt_epost, kontakt_tlf, sosialeMedier, bedrift, kategorier, tjenester, frisorer, klokkeslett} = env;
+                const {kontakt_epost, kontakt_tlf, sosialeMedier, bedrift, kategorier, tjenester, frisorer, klokkeslett, adresse} = env;
                 let bestilteTimer = await Bestiltetimer.find();
                 bestilteTimer = bestilteTimer.sort((a,b)=>{
                     let datoA = new Date(a.dato + " " + a.tidspunkt);
@@ -213,7 +213,7 @@ router.post('/auth',loginLimiter, async (req,res)=>{
                     httpOnly: true,
                     secure: process.env.NODE_ENV == "production",
                 })
-                return res.json({valid:true,bruker:{navn:finnBruker.brukernavn, telefonnummer:finnBruker.telefonnummer}, message:"Du er nå logget inn", brukertype: (brukernavn==="admin"?"admin":"vakter"), env:{kontakt_epost:kontakt_epost, kontakt_tlf:kontakt_tlf, sosialeMedier:sosialeMedier, bedrift:bedrift, kategorier:kategorier, tjenester:tjenester, frisorer:frisorer, klokkeslett:klokkeslett}, bestilteTimer:bestilteTimer});
+                return res.json({valid:true,bruker:{navn:finnBruker.brukernavn, telefonnummer:finnBruker.telefonnummer}, message:"Du er nå logget inn", brukertype: (brukernavn==="admin"?"admin":"vakter"), env:{kontakt_epost:kontakt_epost, kontakt_tlf:kontakt_tlf, sosialeMedier:sosialeMedier, bedrift:bedrift, kategorier:kategorier, tjenester:tjenester, frisorer:frisorer, klokkeslett:klokkeslett, adresse: adresse}, bestilteTimer:bestilteTimer});
             
             } else {
                 //Dersom brukeren ikke har autorisert med 2FA i denne nettleseren enda

@@ -119,7 +119,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle}){
         sLeggTil(true);
 
     }}>
-        <img src='leggtil.png' alt='Legg til Frisør' style={{height:"2rem"}}></img>Ny Frisør
+        <img className='ikonKnapper' src='leggtil.png' alt='Legg til Frisør'></img>Ny Frisør
     </button>}
     </>
   )

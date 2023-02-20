@@ -1,4 +1,5 @@
 import React from 'react'
+import Footer from '../components/Footer'
 
 function Kontakt({env}){
     return(
@@ -17,10 +18,7 @@ function Kontakt({env}){
                     </div>
                 ))}
             </div>
-            <footer>
-                <p>Copyright &copy; 2022 Timereservasjon - Ulrik Hesmyr</p>
-                <p>Ikoner fra <a rel='noreferrer' target="_blank" href='https://fonts.google.com/icons'>google</a></p>
-            </footer>
+            <Footer/>
         </div>
     )
 }

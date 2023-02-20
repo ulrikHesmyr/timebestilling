@@ -140,7 +140,7 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle}) {
     {(synligKomponent === 2?<div>
         <h3>Fridager og fravær</h3>
         
-        {(!leggTilFri?<button onClick={(e)=>{
+        {(!leggTilFri?<button style={{display:"flex", flexDirection:"row", alignItems:"center"}} onClick={(e)=>{
         e.preventDefault();
         sLeggTilFri(true);
         }}> <img alt='Opprett fri/fravær' src='leggtil.png' style={{height:"1.4rem"}}></img> Nytt fravær/fri</button>:"")}

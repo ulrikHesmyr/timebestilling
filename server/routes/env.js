@@ -54,6 +54,23 @@ router.post('/slettFri',authorization, async(req,res)=>{
         }
     }
 })
+router.post('/oppdaterAdresse', authorization, async(req,res)=>{
+    const {adresse} = req.body;
+    if(req.brukernavn === "admin"){
+        try {
+            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {adresse:adresse});
+            if(oppdatertEnv){
+                console.log("Adresse oppdatert");
+                return res.send({message:"Adresse oppdatert", valid:true});
+            } else {
+                return res.status(404);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+});
+
 
 router.post('/opprettFri', authorization,async(req,res)=>{
     const {lengreTid, fraDato, tilDato, fraKlokkeslett, tilKlokkeslett, friDag, frisor, medarbeider} = req.body;

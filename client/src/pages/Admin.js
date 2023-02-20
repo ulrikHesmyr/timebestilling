@@ -7,18 +7,32 @@ import Fri from '../components/Fri';
 import RedigerAapningstider from '../components/RedigerAapningstider';
 
 function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
-    
     const behandlingsEstimater = [15,30,45,60,75,90,105,120,135,150,165,180,195,210,225,240];
     const [kontakt_epost, sKontakt_epost] = useState(env.kontakt_epost);
     const [kontakt_tlf, sKontakt_tlf] = useState(env.kontakt_tlf);
 
     const [visRedigerAapningstider, sVisRedigerAapningstider] = useState(false);
     const [dagForRedigering, sDagForRedigering] = useState();
-    
     //Søk timebestilling
     const [sok, sSok] = useState("");
     //Vis timebestillinger
     const [visRedigerTimebestillinger, sVisRedigerTimebestillinger] = useState(false);
+
+    //Adresse
+    const [visRedigerAdresse, sVisRedigerAdresse] = useState(false);
+    const [adresse, sAdresse] = useState("");
+    const [gatenavn, sGatenavn] = useState("");
+    const [husnummer, sHusnummer] = useState("");
+    const [postnummer, sPostnummer] = useState("");
+
+    const [muligeAdresser, sMuligeAdresser] = useState([]);
+    const [kanOppdatereAdresse, sKanOppdatereAdresse] = useState(false);
+
+
+    //Kategori
+    const [visNyKategori, sVisNyKategori] = useState(false);
+    const [nyKategori, sNyKategori] = useState("");
+    const [visSlettKategori, sVisSlettKategori] = useState(false);
 
     //Opprett ny behandling (vis/skjul) og opprett behandling
     const [visOpprettBehandling, sVisOpprettBehandling] = useState(null);
@@ -41,6 +55,32 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
         sKontakt_tlf(env.kontakt_tlf);
     }, [env])
 
+    async function velgAdresse(){
+        const res = await fetch(`https://ws.geonorge.no/adresser/v1/sok?fuzzy=false&adressenavn=${gatenavn}${(husnummer !== ""?`&nummer=${husnummer}`:"")}${(postnummer !== ""?`&postnummer=${postnummer}`:"")}&utkoordsys=4258&treffPerSide=30&side=0&asciiKompatibel=true`, {
+            mode:'cors',
+        })
+        const data = await res.json()
+
+        sMuligeAdresser(data.adresser);
+    }
+
+    async function oppdaterAdresse(){
+        const options = {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body: JSON.stringify({adresse:adresse})
+        }
+        const request = await fetch("http://localhost:3001/env/oppdaterAdresse", options);
+        const response = await request.json();
+        if(response){
+            sUpdateTrigger(!updateTrigger);
+            varsle();
+        }
+    }
+
+
     async function oppdaterTimebestillinger(slettetTime){
         const options = {
             method:"POST",
@@ -58,8 +98,6 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
     }
 
     async function sendTilDatabase(fris, kat, tje, klok, some, epost, tlf){
-        console.log("sendte nytt env til database");
-        //fetch
         const nyttEnv = {
             frisorer:fris,
             kategorier:kat,
@@ -79,7 +117,6 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
         const request = await fetch("http://localhost:3001/env/oppdaterEnv", options);
         const response = await request.json();
         if(response){
-            console.log(response);
             sUpdateTrigger(!updateTrigger);
             varsle();
         }
@@ -96,7 +133,6 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
         const request = await fetch("http://localhost:3001/env/oppdaterAdminPass", options);
         const response = await request.json();
         if(response){
-            console.log(response);
             varsle();
         }
     }
@@ -107,22 +143,22 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
                 <h1>Ditt skrivebord</h1>
                 {env !== null? <div style={{display:"flex", flexDirection:"row"}}>
                 
-                    <button style={{margin:"0", borderCollapse:"collapse", border:"2px solid black", borderBottom:(synligKomponent=== 1? "none":"2px solid black"), color:(synligKomponent=== 1? "black":"rgba(0,0,0,0.5)")}} onClick={(e)=>{
+                    <button className='adminKnapper' style={{ borderRadius:"0.5rem 0 0 0", margin:"0", borderCollapse:"collapse", border:"2px solid black", borderBottom:(synligKomponent=== 1? "none":"2px solid black"), color:(synligKomponent=== 1? "black":"rgba(0,0,0,0.5)")}} onClick={(e)=>{
                         e.preventDefault();
                         setSynligKomponent(1);
                     }}>TIMEBESTILLINGER</button>
 
                 
-                    <button style={{margin:"0", borderCollapse:"collapse", border:"2px solid black", borderBottom:(synligKomponent=== 2? "none":"2px solid black"), color:(synligKomponent=== 2? "black":"rgba(0,0,0,0.5)")}} onClick={(e)=>{
+                    <button className='adminKnapper' style={{margin:"0", border:"2px solid black", borderBottom:(synligKomponent=== 2? "none":"2px solid black"), color:(synligKomponent=== 2? "black":"rgba(0,0,0,0.5)")}} onClick={(e)=>{
                         e.preventDefault();
                         setSynligKomponent(2);
                     }}>FRIDAGER OG FRAVÆR</button>
 
-                    <button style={{margin:"0", border:"2px solid black", borderBottom:(synligKomponent=== 3? "none":"2px solid black"), color:(synligKomponent=== 3? "black":"rgba(0,0,0,0.5)")}} onClick={(e)=>{
+                    <button className='adminKnapper' style={{margin:"0", border:"2px solid black", borderBottom:(synligKomponent=== 3? "none":"2px solid black"), color:(synligKomponent=== 3? "black":"rgba(0,0,0,0.5)")}} onClick={(e)=>{
                         e.preventDefault();
                         setSynligKomponent(3);
-                    }}>KONTAKT-INFO, PASSORD, FRISØRER etc.</button>
-                    <button style={{margin:"0", border:"2px solid black", borderBottom:(synligKomponent=== 4? "none":"2px solid black"), color:(synligKomponent=== 4? "black":"rgba(0,0,0,0.5)")}} onClick={(e)=>{
+                    }}>KONTAKT-INFO, KATEGORIER, FRISØRER etc.</button>
+                    <button className='adminKnapper' style={{borderRadius:"0  0.5rem 0 0 ", margin:"0", border:"2px solid black", borderBottom:(synligKomponent=== 4? "none":"2px solid black"), color:(synligKomponent=== 4? "black":"rgba(0,0,0,0.5)")}} onClick={(e)=>{
                         e.preventDefault();
                         setSynligKomponent(4);
                     }}>BEHANDLINGER</button>
@@ -140,17 +176,23 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
                     <div alt='Lukk' className='lukk' onClick={()=>{
                         sVisRedigerTimebestillinger(false);
                         sSok("");
-                    }}></div>
+                    }}></div><br></br>
+                    <h4>Finn og slett en timebestilling</h4>
+                    <p>
+                        Søk etter navnet eller telefonnummeret til en kunde og trykk på søppel-ikonet og deretter trykk "Ok" i dialogboksen for å slette timen.
+                        <li>Dersom en kunde ønsker å flytte timen, så bestiller de en ny time, og  den forrige timen</li>
+                    </p>
 
-                    <label><br></br><br></br><br></br>Søk etter kunde eller telefonnummer: <input type="text" value={sok} onChange={(e)=>{
+                    <label>Søk etter kunde eller telefonnummer: <input type="text" value={sok} onChange={(e)=>{
                         sSok(e.target.value);
                     }}></input></label>
 
                     {bestilteTimer.map((time, index)=>{
                         if(time.kunde.toUpperCase().indexOf(sok.toUpperCase()) > -1 || sok === ""){
                             return (
-                                <div key={index}>
-                                    <li>{time.medarbeider}: {time.dato} {time.tidspunkt} KUNDE: {time.kunde} {time.telefonnummer}</li><img alt='Slett time' onClick={()=>{
+                                <div key={index} style={{display:'flex', flexDirection:"row", flexWrap:"wrap", padding:"0.3rem"}}>
+                                    <li>{time.medarbeider}: {time.dato} {time.tidspunkt} KUNDE: {time.kunde} {time.telefonnummer} </li>
+                                    <img alt='Slett time' className='ikonKnapper' onClick={()=>{
                                         if(window.confirm("Er du sikker på at du vil slette denne timebestillingen?")){
                                             oppdaterTimebestillinger(time);
                                         }
@@ -166,7 +208,7 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
                 
                 <button onClick={()=>{
                     sVisRedigerTimebestillinger(true);
-                }} style={{width:"fit-content"}}><img alt='Rediger timebestillinger' src="rediger.png"></img></button>}
+                }} style={{width:"fit-content"}}><img className='ikonKnapper' alt='Rediger timebestillinger' src="rediger.png"></img></button>}
 
                 <div>
                     {bestilteTimer.map((time, index)=>(
@@ -190,33 +232,203 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
                 <div>
                 <h4>Kontakt-info og administrator passord:</h4>
                     <div className='redigeringsBoks'> 
-                        <div style={{display:"flex", flexDirection:"row"}}>
+                        <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
                             <RedigerKontakt number={true} state={kontakt_tlf} setState={sKontakt_tlf} env={env} sendTilDatabase={sendTilDatabase} /><p>Kontakt telefon: </p> 
                         </div>
                         <p className='redigeringsElement'>{kontakt_tlf}</p>
                     </div>
                     <div className='redigeringsBoks'> 
-                        <div style={{display:"flex", flexDirection:"row"}}>
+                        <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
                             <RedigerKontakt number={false} state={kontakt_epost} setState={sKontakt_epost} env={env} sendTilDatabase={sendTilDatabase} /> <p>Kontakt e-post:</p>
                         </div>
                         <p className='redigeringsElement'>{kontakt_epost}</p>
                     </div>
                     <div className='redigeringsBoks'>
-                        <div style={{display:"flex", flexDirection:"row"}}>
-                            <RedigerPassord redigerPassordDB={redigerPassordDB} /> <p>Passord for: admin</p> 
+                        
+                        {visRedigerAdresse?<div>
+                            <div className='fokus'>
+                                <div alt='Lukk' className='lukk' onClick={()=>{
+                                    sVisRedigerAdresse(false);
+                                }}></div><br></br>
+                                <h4>Rediger adresse</h4>
+                                <p>
+                                    Her kan du redigere adressen til salongen. Søk på adressen du ønsker å endre til, klikk på riktig adresse fra adresseregisteret før du lagrer.
+                                </p>
+                                <p>Nåværende adresse: {env.adresse}</p>
+                                <label>Gatenavn: <input type="text" value={gatenavn} onChange={(e)=>{
+                                    sGatenavn(e.target.value);
+                                    sKanOppdatereAdresse(false);
+                                    sAdresse("");
+                                    sMuligeAdresser([]);
+                                    
+                                }}></input></label>
+                                <label>Husnummer: <input type="text" value={husnummer} onChange={(e)=>{
+                                    if(/^\d*$/.test(e.target.value)){
+                                        sHusnummer(e.target.value);
+                                        sKanOppdatereAdresse(false);
+                                        sAdresse("");
+                                        sMuligeAdresser([]);
+                                    }
+                                    
+                                }}></input></label>
+                                <label>Postnummer: <input type="text" value={postnummer} onChange={(e)=>{
+                                    if(/^\d*$/.test(e.target.value)){
+                                        sPostnummer(e.target.value);
+                                        sKanOppdatereAdresse(false);
+                                        sAdresse("");
+                                        sMuligeAdresser([]);
+                                    }
+                                    
+                                }}></input></label>
+
+                                <button onClick={()=>{
+                                    if(gatenavn !== "" && husnummer !== "" && postnummer !== ""){
+                                        velgAdresse();
+                                    } else {
+                                        alert("Du må fylle inn gatenavn, husnummer og postnummer for å søke etter adresser", 2);
+                                    }
+                                }}>Søk etter adresser</button>
+
+                                <div className='muligeAdresser'>
+                                    {muligeAdresser.map((adresse, index)=>{
+                                        return (
+                                            <div style={{fontWeight:"bold", margin:"0.2rem", padding:"0.3rem", cursor:"pointer", border:"thin solid black"}} key={index} onClick={()=>{
+                                                sAdresse(`${adresse.adressenavn} ${adresse.nummer}${adresse.bokstav}, ${adresse.postnummer} ${adresse.kommunenavn}`);
+                                                sKanOppdatereAdresse(true);
+                                            }}>{adresse.adressenavn} {adresse.nummer}{adresse.bokstav}, {adresse.postnummer} {adresse.kommunenavn}</div>
+                                        )}
+                                    )}
+                                </div>
+                                <p>{adresse !== ""?`Valgt adresse: ${adresse}`:""}</p>
+                                
+                                <div>
+                                <button onClick={()=>{
+                                    sVisRedigerAdresse(false);
+                                    sGatenavn("");
+                                    sHusnummer("");
+                                    sPostnummer("");
+                                    sAdresse("");
+                                    sMuligeAdresser([]);
+                                }}>Avbryt</button>
+                                <button onClick={()=>{
+                                   if(kanOppdatereAdresse){
+                                        if(window.confirm("Er du sikker på at du vil redigere adressen til: " + adresse + "?")){
+                                        oppdaterAdresse();
+                                        sGatenavn("");
+                                        sHusnummer("");
+                                        sPostnummer("");
+                                        sAdresse("");
+                                        sMuligeAdresser([]);
+                                        sVisRedigerAdresse(false);
+                                        }
+                                    } else {
+                                        alert("Du må velge en adresse fra adresseregisteret før du kan oppdatere adressen.");
+                                    }
+                                }}>Lagre</button>
+                                </div>
+                            </div>
+                        </div>:<> <div> <button onClick={()=>{
+                            sVisRedigerAdresse(true);
+                        }}><img alt="rediger adresse" src="rediger.png" className='ikonKnapper'></img></button> Adresse:</div><p className='redigeringsElement'>{env.adresse}</p></>}
+                    </div>
+                    <div className='redigeringsBoks'>
+                        <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
+                            <RedigerPassord redigerPassordDB={redigerPassordDB} /> <p>Passord for admin</p> 
                         </div>
                     </div>
+                    
                 </div>
                 <div>
                     <h4>Frisører:</h4>
-                    {env.frisorer.map((frisor)=>(
-                            <div key={frisor.navn} style={{display:"flex", height:"3rem", fontSize:"larger", flexDirection:"row", alignItems:"center", margin:"0.3rem"}}>
-                                <DetaljerFrisor frisor={frisor} env={env} sendTilDatabase={sendTilDatabase} varsle={varsle} updateTrigger={updateTrigger} sUpdateTrigger={sUpdateTrigger} />
-                            </div>
+                    <div className='frisorOversikt'>
+                        {env.frisorer.map((frisor)=>(
+                                <div key={frisor.navn}>
+                                    <DetaljerFrisor frisor={frisor} env={env} sendTilDatabase={sendTilDatabase} varsle={varsle} updateTrigger={updateTrigger} sUpdateTrigger={sUpdateTrigger} />
+                                </div>
                         ))}
+                    </div>
                     {env !== null?<LeggTilFrisor env={env} varsle={varsle} updateTrigger={updateTrigger} sUpdateTrigger={sUpdateTrigger} />:""}
                     
                 </div>
+
+                <div>
+                    <h4>Kategorier:</h4>
+                    
+                    <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
+                    {visNyKategori?
+                        <div className='fokus'>
+                            <label>Ny kategori: <input type="text" maxLength={30} value={nyKategori} onChange={(e)=>{
+                                sNyKategori(e.target.value);
+                            }}></input></label>
+
+                            <div>
+                                <button onClick={()=>{
+                                    sVisNyKategori(false);
+                                    sNyKategori("");
+                                }}>Avbryt</button>
+                                <button onClick={()=>{
+                                    if(nyKategori !== ""){
+                                        sVisNyKategori(false);
+                                        
+                                        let nyKategoriListe = env.kategorier;
+                                        nyKategoriListe.push(nyKategori);
+                                        sendTilDatabase(env.frisorer, nyKategoriListe, env.tjenester, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
+                                        sNyKategori("");
+                                    }
+                                }}>Opprett</button>
+                            </div>
+                        </div>
+                        
+                        :
+                        <button onClick={()=>{
+                            sVisNyKategori(true);
+                        }} style={{display:"flex", alignItems:"center"}}>
+                            <img className='ikonKnapper' alt='Opprett ny kategori' src="leggtil.png"></img>Opprett ny kategori
+                        </button>}
+
+                        {visSlettKategori?<div className='fokus'>
+                            <div>
+                                <div alt='Lukk' className='lukk' onClick={()=>{
+                                    sVisSlettKategori(false);
+                                }}></div>
+                                <h4><br></br>Kategorier:</h4>
+                                <p>Kun kategorier som ikke er oppført for en behandling, kan slettes. Dette sjekkes dersom du prøver 
+                                    å slette en kategori som fortsatt er i bruk, slik at det ikke oppstår feil.</p>
+                                {env.kategorier.map((kategori, index)=>(
+                                <div key={kategori}>
+                                    <p style={{display:"flex", alignItems:"center", fontSize:"larger"}}>{kategori} <img className='ikonKnapper' alt="Slett kategori" src="delete.png" onClick={()=>{
+                                       if(!env.tjenester.find(t=>t.kategori === kategori)){
+                                            if(window.confirm("Er du sikker på at du vil slette denne kategorien?")){
+                                                sVisSlettKategori(false);
+                                                let nyKategoriListe = env.kategorier;
+                                                nyKategoriListe.splice(index, 1);
+                                                sendTilDatabase(env.frisorer, nyKategoriListe, env.tjenester, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
+                                            }
+                                        } else {
+                                            alert("Det eksisterer tjenester i denne kategorien. Du må først slette eller endre disse tjenestene for å slette kategorien.")
+                                       }
+                                    }}></img></p>
+                                </div>
+                                ))}
+
+                            </div>
+                        </div>:
+                            <button style={{display:"flex", alignItems:"center"}} onClick={()=>{
+                                sVisSlettKategori(true);
+                            }}><img className='ikonKnapper'  alt='Rediger kategorier' src="rediger.png"></img>Rediger kategorier</button>
+                        }
+                        </div>
+
+
+                    {env.kategorier.map((kategori)=>(
+                        <div key={kategori}>
+                            <p>{kategori}</p>
+                        </div>
+                    ))}
+
+
+                </div>
+
                 <div>
                 <h4>Åpningstider:</h4>
                     {visRedigerAapningstider?<>
@@ -225,22 +437,27 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
                         <div key={index} style={{display:"flex", flexDirection:"row", alignItems:"center", margin:"0.3rem"}}>
                          {klokkeslett.dag}: {klokkeslett.stengt?"Stengt" :klokkeslett.open} {klokkeslett.stengt?"": "-"} {klokkeslett.stengt?"": klokkeslett.closed}
                          <button onClick={()=>{
-                            console.log("trykket på rediger-knapp for åpningstider");
                             sDagForRedigering(klokkeslett);
                             sVisRedigerAapningstider(true);
-                         }}><img alt='rediger' src="rediger.png" style={{height:"1.4rem"}}></img></button>
+                         }}><img className='ikonKnapper' alt='rediger' src="rediger.png"></img></button>
                         </div>
                     ))}
                 </div>
+
+                
+
                 
             </div></>
             ):""}
             {synligKomponent === 4 && env !== null?(
             <>
                 <div>
-                <h4>Behandlinger:</h4>
+                <h3>Behandlinger:</h3>
                 {visOpprettBehandling?
                     <div className='fokus'>
+                        <h4>Opprett ny behandling:</h4>
+                        <p>Legg til en ny behandling i applikasjonen. <br></br>
+                        Denne behandlingen vil da bli mulig å velge for kunder når de bestiller time.</p>
                         <div style={{display:"flex", flexDirection:"column", margin:"0.3rem"}}>
                             <label>Navn på ny behandling: 
                                 <input maxLength={30} type="text" placeholder="Navn" value={nyBehandlingNavn} onChange={(e)=>{
@@ -282,7 +499,6 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
                                     sNyBehandlingTid(behandlingsEstimater[0]);
                                 }}>Avbryt</button>
                                 <button onClick={()=>{
-                                    console.log(nyBehandlingKategori);
                                     if(nyBehandlingNavn !== "" && nyBehandlingBeskrivelse !== "" && !isNaN(parseInt(nyBehandlingPris)) && nyBehandlingKategori !== "" && !isNaN(parseInt(nyBehandlingPris))){
                                         let tempBehandlinger = env.tjenester;
                                         tempBehandlinger.push({navn:nyBehandlingNavn, beskrivelse:nyBehandlingBeskrivelse, pris:parseInt(nyBehandlingPris), kategori:nyBehandlingKategori, tid:(parseInt(nyBehandlingTid))});
@@ -305,7 +521,7 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
                     <>
                     <button style={{display:"flex", alignItems:"center"}} onClick={()=>{
                         sVisOpprettBehandling(true);
-                    }} ><img alt='Legg til frisør' src="leggtil.png" ></img>Opprett ny behandling</button>
+                    }} ><img className='ikonKnapper' alt='Legg til frisør' src="leggtil.png" ></img>Opprett ny behandling</button>
                     
                     
                     </>
@@ -314,6 +530,9 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
                     {visSlettBehandling?
                     <div className='fokus'>
                         <h4>Velg behandling som skal slettes:</h4>
+                        <p>Sletter behandling slik at det ikke er mulig for kunder å reservere time for denne behandlingen
+                        fra og med tidspunktet den er slettet. Dersom kunder allerede har reservert for følgende behandling, vil denne
+                        timesreservasjonen gjennomføres.</p>
                         <label>Behandling: <select onChange={(e)=>{
                             sBehandlingForSletting(e.target.value);
                         }}>
@@ -337,7 +556,7 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
                     </div>:<>
                     <button style={{display:"flex", alignItems:"center"}} onClick={()=>{
                         sVisSlettBehandling(true);
-                    }} ><img alt='Slett en behandling' src="delete.png" ></img>Slett én behandling</button>
+                    }} ><img className='ikonKnapper' alt='Slett en behandling' src="delete.png" ></img>Slett én behandling</button>
                     </>}
                     <div style={{display:"flex", flexDirection:"row", flexWrap:"wrap", gap:"1rem"}}>
                     {env.tjenester.map((behandling)=>(
@@ -440,16 +659,20 @@ function DetaljerBehandling({behandling, env, sendTilDatabase, behandlingsEstima
             sVisRedigerTid(false);
         }}>Lagre</button>
     </div>
-    </div>):(<div>
-            <h4>Behandling: {behandling.navn}</h4>
+    </div>):(<div style={{display:"flex", flexDirection:"column", flexWrap:"wrap", justifyContent:"center"}}>
+                <div style={{display:"flex", flexDirection:"row"}}>
+                    <h4>Behandling: {behandling.navn}</h4>
+                    <button onClick={()=>{
+                        sVisRedigerBehandling(true);
+                    }} ><img alt='Rediger behandlinger' src='rediger.png' className='ikonKnapper'></img>
+                    </button>
+                </div>
            
 
             <div className='redigeringsBoks'> <p>Pris: {behandling.pris} kr</p> </div>
             <div className='redigeringsBoks'> <p>Varighet: {behandling.tid} minutter</p> </div>
             <div className='redigeringsBoks'> <p>Kategori: {behandling.kategori}</p> </div>
-            <button onClick={()=>{
-                sVisRedigerBehandling(true);
-            }} ><img alt='Rediger behandlinger' src='rediger.png' style={{height:"1.4rem"}}></img></button>
+            
         </div>)}
         
     </>

@@ -125,11 +125,14 @@ function Login(){
             }}></input> </label>
             <label>Passord: <input name='passord' value={passord} type={passordSynlig?"text":"password"} maxLength={20} onChange={(e)=>{
                 setPassord(e.target.value);
-            }}></input> {(passordSynlig?<img onClick={()=>{
+            }}></input> 
+            {(passordSynlig?<img onClick={()=>{
                 sPassordsynlig(false);
-            }} src='oye_lukket.png' style={{height:"1.4rem"}} alt="Skjul passord"></img>:<img onClick={()=>{
+            }} src='oye_lukket.png' style={{height:"1.4rem", cursor:"pointer"}} alt="Skjul passord"></img>:<img onClick={()=>{
                 sPassordsynlig(true);
-            }} src='oye_aapnet.png' style={{height:"1.4rem"}} alt="Vis passord"></img>)}</label>
+            }} src='oye_aapnet.png' style={{height:"1.4rem", cursor:"pointer"}} alt="Vis passord"></img>)}
+            </label>
+
             {!trykketLoggInn?<button onClick={(e)=>{
                 if(!window.navigator.webdriver){
                     sTrykketLoggInn(true);

@@ -27,8 +27,6 @@ function DetaljerFrisor({env, frisor, sendTilDatabase, varsle, sUpdateTrigger, u
       formData.append("uploaded_file", bildeAvFrisor);
       formData.append("navn", navn);
 
-      console.log(bildeAvFrisor);
-      console.log(navn);
       const options = {
         method: 'POST',
         body: formData
@@ -87,18 +85,19 @@ function DetaljerFrisor({env, frisor, sendTilDatabase, varsle, sUpdateTrigger, u
     }, [frisor])
   return (
     <>
-    <img src='detaljer.png' style={{height:"100%", cursor:"pointer"}} alt="Detaljer om frisør" onClick={()=>{
-        sVisDetaljer(!visDetaljer);
-    }}></img>
-    <div style={{padding:"0.3rem"}}>{frisor.navn} </div>
-    <img className='frisorbilde' src={frisorBilde} style={{height:"1.6rem"}} alt={`Bilde av ${frisor.navn}`}></img>
-    
+    <div onClick={()=>{
+          sVisDetaljer(!visDetaljer);
+      }}  style={{display:"flex", height:"3rem", fontSize:"larger", flexDirection:"row", alignItems:"center", margin:"0.7rem",padding:"0.3rem", cursor:"pointer", borderLeft:"thin solid rgba(0,0,0,0.4)"}}>
+      <img className='ikonKnapper' src='detaljer.png' alt="Detaljer om frisør"></img>
+      <div style={{padding:"0.3rem"}}>{frisor.navn} </div>
+      <img className='frisorbilde' src={frisorBilde} style={{height:"1.6rem"}} alt={`Bilde av ${frisor.navn}`}></img>
+    </div>
     
 
     {visDetaljer?<div className='fokus'>
-    <img alt='Lukk pop-up vindu' className='lukk' src="avbryt.png" onClick={()=>{
+    <div className='lukk' onClick={()=>{
       sVisDetaljer(false);
-    }}></img>
+    }}></div>
     <div>
       <div style={{padding:"0.3rem"}}>{frisor.navn} </div>
       <img className='frisorbilde' src={frisorBilde} style={{objectFit:"contain", width:"200px"}} alt={`Bilde av ${frisor.navn}`}></img>
@@ -122,7 +121,7 @@ function DetaljerFrisor({env, frisor, sendTilDatabase, varsle, sUpdateTrigger, u
             <img alt='Lukk' onClick={(e)=>{
                 e.preventDefault();
                 sVisRedigerFrisor(false);
-            }} src='avbryt.png' style={{cursor:"pointer"}}></img>
+            }} src='avbryt.png' style={{cursor:"pointer", width:"3rem", height:"3rem"}}></img>
           </div>
 
           <div style={{width:"100%", boxSizing:"border-box"}}>
@@ -138,7 +137,6 @@ function DetaljerFrisor({env, frisor, sendTilDatabase, varsle, sUpdateTrigger, u
               
               <button onClick={(e)=>{
                           e.preventDefault();
-                          //Vis rediger behandlinger for frisør
                           sVisRedigerBehandlinger(true);
                           
               }}>Rediger behandlinger</button>
@@ -150,6 +148,7 @@ function DetaljerFrisor({env, frisor, sendTilDatabase, varsle, sUpdateTrigger, u
               <button style={{backgroundColor:"red", color:"white"}} onClick={()=>{
                 //Resetter passord til ansatt
                 if(window.confirm("Er du sikker på at du vil resette passordet til " + frisorRediger.navn + "? Passordet blir satt til samme som brukernavnet")){
+                  sVisRedigerFrisor(false);
                   resetPassord(frisorRediger.navn);
                 }
               }} >Resett innloggings-passord for {frisorRediger.navn}</button>
@@ -210,6 +209,8 @@ function DetaljerFrisor({env, frisor, sendTilDatabase, varsle, sUpdateTrigger, u
                 {visRedigerBehandlinger?
                 <div className='fokus'>
                   <h4>Rediger behandlinger for {frisorRediger.navn}</h4>
+                  <p>Velg behandlinger for den ansatte</p>
+                  <br></br>
 
                   {env.tjenester.map((tjeneste)=>
                     (<div style={{userSelect:"none", backgroundColor:(frisorTjenester.includes(tjeneste.navn)?"lightgreen":"white"), cursor:"pointer"}} key={tjeneste.navn} onClick={()=>{

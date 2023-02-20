@@ -8,15 +8,16 @@ function Frisor({tilgjengeligeFrisorer, env, synligKomponent, displayKomponent, 
         
         //Lager et array med base64 bilder
         let midlertidigArray = [];
-        for(let i = 0; i < env.frisorer.length; i++){
-            const array = new Uint8Array(env.frisorer[i].img.data.data);
+        for(let i = 0; i < tilgjengeligeFrisorer.length; i++){
+            const array = new Uint8Array(tilgjengeligeFrisorer[i].img.data.data);
             const base = window.btoa(String.fromCharCode.apply(null, array));
-            const base64Image = `data:${env.frisorer[i].img.contentType};base64,${base}`;
+            const base64Image = `data:${tilgjengeligeFrisorer[i].img.contentType};base64,${base}`;
 
             //const base64Image = `data:${env.frisorer[i].img.contentType};base64,${window.btoa(env.frisorer[i].img.data.data)}`;
             midlertidigArray.push(base64Image);
         }
         sFrisorBildeArray(midlertidigArray);
+        console.log(midlertidigArray);
     }, [tilgjengeligeFrisorer, env.frisorer])
     return(
         <div className={synligKomponent === 1? 'animer-inn':""}>
