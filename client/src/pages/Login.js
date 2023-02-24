@@ -53,13 +53,13 @@ function Login(){
             brukernavn:brukernavn.toLowerCase(), 
             passord:passord
         }
-        const request = await fetch('http://localhost:3001/login/auth', {
+        const request = await fetch('/login/auth', {
             method:"POST",
             headers:{
                 "Content-Type":"application/json",
             },
             body: JSON.stringify(data),
-            //credentials:'include'
+            credentials:'include'
         });
         
         const response = await request.json();
@@ -97,15 +97,15 @@ function Login(){
 
     async function send2FA(){
         //Sender request til TWOFA route på server for å sjekke om PIN stemmer
-        const request = await fetch("http://localhost:3001/login/twoFA", {
+        const request = await fetch("/login/twoFA", {
             method:"POST",
             headers:{
                 "Content-Type":"application/json",
             },
             body: JSON.stringify({pin:twoFApin}),
+            credentials:'include'
         });
         const response = await request.json();
-        console.log(response);
         
         if(response.valid){
             toggleLoggetInn(true);
@@ -115,30 +115,25 @@ function Login(){
             sBruker(response.bruker);
         } else {
             alert(response.message);
-    }
+        }
     }
 
     async function alleredeLoggetInn(){
-        console.log("allerede logget inn funksjon");
-        const request = await fetch("http://localhost:3001/login/loggetinn");
+        const request = await fetch("/login/loggetinn",{method:"GET", credentials:'include'});
         const response = await request.json();
         if(response.valid){
             toggleLoggetInn(true);
             setBukertype(response.brukertype);
             sEnv(response.env);
             sBestiltetimer(response.bestilteTimer);
-            console.log(response.bruker);
             sBruker(response.bruker);
-        } else {
-            console.log(response.message);
         }
     }
 
     async function loggut(){
-        const request = await fetch("http://localhost:3001/login/logout");
+        const request = await fetch("/login/logout", {method:"GET", credentials:'include'});
         const response = await request.json();
         if(response){
-            console.log(response);
             toggleLoggetInn(false);
         }
     }

@@ -44,12 +44,11 @@ fjerne http://localhost fra request i Personinfo.js og Admin.js
 slette unødvendige filer og fjerne unødvendig kode
 endre tittel i index.html
 sette NODE_ENV til "production" i .env filen
-un-comment credentials i Login.js i client
-bytt fra mercedes bildet til logo
+un-comment credentials i Login.js, Vakter.js og Admin.js i client
 bytte farge-variabler i App.css
-har salongen åpent søndager? Da må det endres i Klokkeslett.js
-Endre at når ansatt endrer tlf så endrer den på deres tlf og ikke elin sitt (routes/login.js /oppdaterTelefonnummer)
 Legge inn riktig link for google reviews https://developers.google.com/my-business/content/review-data#list_all_reviews
+
+git clone -b release-v1.0.0 https://github.com/ulrikHesmyr/timebestilling.git
 
 OM APPLIKASJONEN, PERSONVERN OG LOV:
 - Data som lagres om de ansatte går under firmaets egne kontrakter om personvern osv.

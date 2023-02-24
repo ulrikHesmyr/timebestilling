@@ -33,7 +33,7 @@ function DetaljerFrisor({env, frisor, sendTilDatabase, varsle, lagreVarsel, sUpd
         body: formData
       }
 
-      const request = await fetch('http://localhost:3001/env/oppdaterBildeFrisor', options);
+      const request = await fetch('/env/oppdaterBildeFrisor', options);
       const response = await request.json();
       if(response.valid){
         varsle();
@@ -71,7 +71,7 @@ function DetaljerFrisor({env, frisor, sendTilDatabase, varsle, lagreVarsel, sUpd
         },
         body: JSON.stringify({navn:navn.toLowerCase()})
       }
-      const request = await fetch('http://localhost:3001/login/resetPassord', options);
+      const request = await fetch('/login/resetPassord', options);
       const response = await request.json();
       if(response.valid){
         varsle();

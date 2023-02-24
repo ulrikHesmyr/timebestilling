@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 
-function DinReservasjon({env, hentMaaned, setReservasjon , registrertReservasjon}){
+function DinReservasjon({env, hentMaaned, registrertReservasjon}){
     
     const gjeldendeTjenester = env.tjenester.filter(element=>registrertReservasjon.behandlinger.includes(element.navn));
     const totalTid = gjeldendeTjenester.reduce((total, element)=> total + element.tid, 0);

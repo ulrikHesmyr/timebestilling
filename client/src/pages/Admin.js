@@ -82,9 +82,10 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle, lagre
             headers:{
                 "Content-Type":"application/json"
             },
-            body: JSON.stringify({adresse:adresse})
+            body: JSON.stringify({adresse:adresse}),
+            credentials:'include'
         }
-        const request = await fetch("http://localhost:3001/env/oppdaterAdresse", options);
+        const request = await fetch("/env/oppdaterAdresse", options);
         const response = await request.json();
         if(response){
             sUpdateTrigger(!updateTrigger);
@@ -100,9 +101,10 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle, lagre
             headers:{
                 "Content-Type":"application/json"
             },
-            body: JSON.stringify(slettetTime)
+            body: JSON.stringify(slettetTime),
+            credentials:'include'
         }
-        const request = await fetch("http://localhost:3001/timebestilling/oppdaterTimebestillinger", options);
+        const request = await fetch("/timebestilling/oppdaterTimebestillinger", options);
         const response = await request.json();
         if(response.valid){
             varsle();
@@ -126,9 +128,10 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle, lagre
             headers:{
                 "Content-Type":"application/json"
             },
-            body: JSON.stringify(nyttEnv)
+            body: JSON.stringify(nyttEnv),
+            credentials:'include'
         }
-        const request = await fetch("http://localhost:3001/env/oppdaterEnv", options);
+        const request = await fetch("/env/oppdaterEnv", options);
         const response = await request.json();
         if(response){
             sUpdateTrigger(!updateTrigger);
@@ -143,9 +146,10 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle, lagre
             headers:{
                 "Content-Type":"application/json"
             },
-            body: JSON.stringify({admin_pass:nyttPass})
+            body: JSON.stringify({admin_pass:nyttPass}),
+            credentials:'include'
         }
-        const request = await fetch("http://localhost:3001/env/oppdaterAdminPass", options);
+        const request = await fetch("/env/oppdaterAdminPass", options);
         const response = await request.json();
         if(response){
             varsle();

@@ -41,11 +41,9 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel}){
     
     //Henter fri
     async function hentFri(){
-      console.log("Hentet fri elementer");
-      const request = await fetch("http://localhost:3001/env/fri");
+      const request = await fetch("/env/fri");
       const response = await request.json();
       if(response){
-          console.log("Alle fri elementer", response);
           let frii = response.map((element)=>{
             if(ansatt.includes(element.medarbeider)){
               if(element.lengreTid){
@@ -80,8 +78,6 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel}){
             return undefined;
           }).filter(x=>x);
           let allevakter = v.concat(frii);
-          console.log("ddqwwdwefew");
-          console.log(allevakter, "allevakter");
           sVakterTimebestillinger(allevakter);
         }
       }
@@ -104,9 +100,10 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel}){
         headers:{
           "Content-Type":"application/json"
         },
-        body: JSON.stringify({passord: gjentaNyttPassord})
+        body: JSON.stringify({passord: gjentaNyttPassord}),
+        credentials:'include'
       };
-      const request = await fetch("http://localhost:3001/login/oppdaterPassord", options);
+      const request = await fetch("/login/oppdaterPassord", options);
       const response = await request.json();
       if(response){
         varsle();
@@ -125,10 +122,11 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel}){
           headers:{
             "Content-Type":"application/json"
           },
-          body: JSON.stringify({telefonnummer: parseInt(nyttTlf)})
+          body: JSON.stringify({telefonnummer: parseInt(nyttTlf)}),
+          credentials:'include'
         };
 
-        const request = await fetch("http://localhost:3001/login/oppdaterTelefonnummer", options);
+        const request = await fetch("/login/oppdaterTelefonnummer", options);
         const response = await request.json();
         if(response){
           varsle();

@@ -77,7 +77,7 @@ router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
             })
 
             //Sender SMS med bekreftelse
-            let SMS_ENABLED = false;
+            let SMS_ENABLED = true;
             if(SMS_ENABLED){
                 
                 let baseUrl = "https://shared.target365.io/";

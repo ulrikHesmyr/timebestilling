@@ -12,9 +12,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel}
     async function lagre(){
         lagreVarsel();
         sLeggTil(false);
-        console.log("tilkalte 'lagret'");
         
-        try {
             
         const data = {
             nyBrukernavn: nyFrisorNavn.toLowerCase(),
@@ -27,7 +25,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel}
             },
             body: JSON.stringify(data)
         }
-        const request = await fetch("http://localhost:3001/login/opprettBruker", options);
+        const request = await fetch("/login/opprettBruker", options);
         const response = request.json();
         
         
@@ -40,7 +38,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel}
             method:"POST",
             body: formData
         }
-        const request2 = await fetch("http://localhost:3001/env/opprettFrisor", options2);
+        const request2 = await fetch("/env/opprettFrisor", options2);
         const response2 = request2.json();
         if(response && response2){
             sUpdateTrigger(!updateTrigger);
@@ -51,9 +49,6 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel}
             varsle();
         }
         
-        } catch (error) {
-            console.log(error);
-        }
 
 
     }

@@ -6,8 +6,7 @@ function PersonInfo({totalTid, totalPris, dato, klokkeslettet, produkt, frisor, 
     const [harregistrert, sHarRegistrert] = useState(false); //For å passe på at en bruker ikke trykker to ganger før neste side rekker å laste inn
     let format = /[`!@#$%^&*()_+=[\]{};':"\\|,.<>/?~]/;
     async function registrerData(){
-        console.log("DATA SOM SENDES: ", data);
-        const request = await fetch('http://localhost:3001/timebestilling/bestilltime', {
+        const request = await fetch('/timebestilling/bestilltime', {
             method:"POST",
             headers:{
                 "Content-Type":"application/json",

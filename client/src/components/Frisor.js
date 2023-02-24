@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import Fortsett from "./Fortsett";
 
-function Frisor({tilgjengeligeFrisorer, env, synligKomponent, displayKomponent, produkt, klokkeslettet, sKlokkeslett ,frisor, sFrisor}){
+function Frisor({tilgjengeligeFrisorer, env, synligKomponent, displayKomponent, klokkeslettet, sKlokkeslett ,frisor, sFrisor}){
 
     const [frisorBildeArray, sFrisorBildeArray] = useState(null);
     useEffect(()=>{
@@ -17,7 +17,6 @@ function Frisor({tilgjengeligeFrisorer, env, synligKomponent, displayKomponent, 
             midlertidigArray.push(base64Image);
         }
         sFrisorBildeArray(midlertidigArray);
-        console.log(midlertidigArray);
     }, [tilgjengeligeFrisorer, env.frisorer])
     return(
         <div className={synligKomponent === 1? 'animer-inn':""}>

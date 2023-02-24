@@ -40,7 +40,6 @@ schedule.scheduleJob('30 23 * * *', async ()=>{
   try {
     const idag = hentDatoIDag();
     const gamleTimebestillinger = await Bestiltetimer.deleteMany({dato: idag}).exec();
-    console.log(gamleTimebestillinger);
     const gamle = gamleTimebestillinger;
     const oppdatert = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {$inc:{antallBestillinger:gamle.deletedCount}});
     if(!oppdatert || !gamleTimebestillinger){

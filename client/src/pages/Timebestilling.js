@@ -54,9 +54,8 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
     }, []);
     
   useEffect(()=>{
-    console.log("Hentet bestilte timer");
     async function fetchData(){
-      const request = await fetch('http://localhost:3001/timebestilling/hentBestiltetimer');
+      const request = await fetch('/timebestilling/hentBestiltetimer');
       const response = await request.json();
       
         if(response){
@@ -66,8 +65,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
     fetchData();
 
     async function hentFri(){
-        console.log("Hentet fri elementer");
-      const request = await fetch("http://localhost:3001/env/fri");
+      const request = await fetch("/env/fri");
       const response = await request.json();
       if(response){
         sFriElementer(response);
@@ -109,7 +107,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
                     displayKomponent(1);
                 }
             }} style={{backgroundColor: frisor !== null?"var(--farge3)":"white"}}><p>2</p>Velg frisør</h2>
-            {(synligKomponent === 1 && produkt.length > 0? <div role="region" aria-labelledby='visFrisorAria' id="fri" aria-hidden={!(synligKomponent === 1 && produkt.length > 0)}> <Frisor tilgjengeligeFrisorer={tilgjengeligeFrisorer} sTilgjengeligeFrisorer={sTilgjengeligeFrisorer} env={env} synligKomponent={synligKomponent} displayKomponent={displayKomponent} klokkeslettet={klokkeslettet} produkt={produkt} sKlokkeslett={sKlokkeslett} frisor={frisor} sFrisor={sFrisor} sProdukt={sProdukt}/> </div>:"")}
+            {(synligKomponent === 1 && produkt.length > 0? <div role="region" aria-labelledby='visFrisorAria' id="fri" aria-hidden={!(synligKomponent === 1 && produkt.length > 0)}> <Frisor tilgjengeligeFrisorer={tilgjengeligeFrisorer} sTilgjengeligeFrisorer={sTilgjengeligeFrisorer} env={env} synligKomponent={synligKomponent} displayKomponent={displayKomponent} klokkeslettet={klokkeslettet} sKlokkeslett={sKlokkeslett} frisor={frisor} sFrisor={sFrisor} sProdukt={sProdukt}/> </div>:"")}
            
             <h2 role="button" aria-label='Vis: "valg av klokkeslett og dato"-boks ' aria-expanded={synligKomponent === 2 && frisor !== null } aria-controls="dat" id="visDatoOgKlokkeslettAria" className='overskrift' onClick={()=>{
                 if(synligKomponent === 2){
@@ -120,7 +118,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
             }} style={{backgroundColor: dato !== null && klokkeslettet !== null ?"var(--farge3)":"white"}} ><p>3</p> Velg dato og tid</h2>
             <div  role="region" aria-labelledby='visDatoOgKlokkeslettAria' id="dat" aria-hidden={!(synligKomponent === 2 && frisor !== null )}>
                 {(synligKomponent === 2 && frisor !== null ? <Dato dato={dato} synligKomponent={synligKomponent} displayKomponent={displayKomponent} sDato={sDato} sKlokkeslett={sKlokkeslett} sProdukt={sProdukt} klokkeslettet={klokkeslettet} produkt={produkt} />:"")}
-                {(synligKomponent === 2 && frisor !== null && bestilteTimer !== null? <Klokkeslett friElementer={friElementer} sForsteFrisor={sForsteFrisor} forsteFrisor={forsteFrisor} tilgjengeligeFrisorer={tilgjengeligeFrisorer} sTilgjengeligeFrisorer={sTilgjengeligeFrisorer} env={env} synligKomponent={synligKomponent} displayKomponent={displayKomponent} klokkeslettet={klokkeslettet} produkt={produkt} bestilteTimer={bestilteTimer} frisor={frisor} sKlokkeslett={sKlokkeslett} dato={dato} hentMaaned={hentMaaned}/>:"")}
+                {(synligKomponent === 2 && frisor !== null && bestilteTimer !== null? <Klokkeslett friElementer={friElementer} sForsteFrisor={sForsteFrisor} tilgjengeligeFrisorer={tilgjengeligeFrisorer} sTilgjengeligeFrisorer={sTilgjengeligeFrisorer} env={env}  displayKomponent={displayKomponent} klokkeslettet={klokkeslettet} produkt={produkt} bestilteTimer={bestilteTimer} frisor={frisor} sKlokkeslett={sKlokkeslett} dato={dato} hentMaaned={hentMaaned}/>:"")}
             </div>
 
             <h2 role="button" aria-label='Vis: "sjekk ut"-boks ' aria-expanded={synligKomponent === 3 && klokkeslettet !== null} aria-controls="per" id="visPersonInfoAria" className='overskrift' onClick={()=>{

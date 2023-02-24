@@ -26,7 +26,7 @@ const loginLimiter = rateLimiter({
 
     //Oppdatere passord til de ansatte
 
-router.post("/oppdaterPassord", authorization, async(req,res)=>{ //Legg til authorization når nettsiden skal lanseres
+router.post("/oppdaterPassord", authorization, async(req,res)=>{
     const {passord} = req.body;
     let bruker;
     if(NODE_ENV === "production"){
@@ -36,7 +36,6 @@ router.post("/oppdaterPassord", authorization, async(req,res)=>{ //Legg til auth
     }
     const oppdatertPassord = await Brukere.findOneAndUpdate({brukernavn:bruker}, {passord:passord});
     if(oppdatertPassord){
-        console.log("Oppdatert passord");
         const accessToken = jwt.sign({brukernavn:bruker, passord:passord},ACCESS_TOKEN_KEY,{expiresIn:'480m'});
 
         res.cookie("access_token", accessToken, {
@@ -57,7 +56,6 @@ router.post("/resetPassord", authorization, async(req,res)=>{
         const bruker = await Brukere.findOneAndUpdate({brukernavn:navn}, {passord:navn});
 
         if(bruker){
-            console.log("Reset passord");
             return res.json({message:"Reset passord", valid:true});
         } else {
             return res.status(404);
@@ -94,7 +92,6 @@ router.post("/opprettBruker", authorization, async (req,res)=>{
         });
 
         if(nyBruker){
-            console.log("opprettet ny bruker");
             return res.send({message:"Ny bruker opprettet"});
         } else {
             return res.status(404);
@@ -109,7 +106,6 @@ router.post("/slettBruker", authorization, async (req,res)=>{
     if(req.brukernavn === "admin"){
         const slettetBruker = await Brukere.findOneAndDelete({brukernavn:slettBrukernavn});
         if(slettetBruker){
-            console.log("slettet brukeren");
             return res.send({message:"Slettet brukeren"});
         } else {
             return res.status(404);

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import Fortsett from './Fortsett';
 import { hentDato } from '../App';
 
-function Klokkeslett({env, sForsteFrisor, forsteFrisor, friElementer, tilgjengeligeFrisorer, synligKomponent, displayKomponent, klokkeslettet, produkt, bestilteTimer, sKlokkeslett, dato, hentMaaned, frisor}){
+function Klokkeslett({env, sForsteFrisor, friElementer, tilgjengeligeFrisorer, displayKomponent, klokkeslettet, produkt, bestilteTimer, sKlokkeslett, dato, hentMaaned, frisor}){
     
     const [ledigeTimer, setLedigeTimer] = useState([]);
 
@@ -54,7 +54,6 @@ function Klokkeslett({env, sForsteFrisor, forsteFrisor, friElementer, tilgjengel
             //Sjekker fritimene for personen
             let friTimene = friElementer.filter(element=>element.medarbeider === frisorerVelgImellom[n].navn);
             
-            console.log(total, "total");
             for(let k = 0; k < friTimene.length; k++){
                 
                 if(friTimene[k].lengreTid){

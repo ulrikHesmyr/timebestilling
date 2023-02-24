@@ -2,13 +2,11 @@ const express = require("express");
 const router = express.Router();
 const Environment = require("../model/env");
 const FriElementer = require("../model/fri");
-const Timebestillinger = require("../model/bestilling");
 const Brukere = require("../model/brukere");
 const multer = require('multer');
 const sharp = require("sharp");
 const rateLimiter = require("express-rate-limit");
 
-const mailer = require("../configuration/mailer");
 const authorization = require("../middleware/authorization");
 const {BEDRIFT} = process.env;
 
@@ -29,7 +27,7 @@ router.get('/fri', async(req,res)=>{
     }
 })
 
-router.post('/slettFri',authorization, async(req,res)=>{
+router.post('/slettFri', authorization, async(req,res)=>{
     const {lengreTid, fraDato, tilDato, fraKlokkeslett, tilKlokkeslett, friDag, frisor, medarbeider} = req.body;
     if(req.brukernavn === "admin"){
         try {
@@ -44,7 +42,6 @@ router.post('/slettFri',authorization, async(req,res)=>{
                 medarbeider:medarbeider
             })
             if(fjernetFriElement){
-                console.log("Fri element er fjernet.");
                 return res.send({message:"Element fjernet", friElement:fjernetFriElement});
             } else {
                 return res.status(404);
@@ -60,7 +57,6 @@ router.post('/oppdaterAdresse', authorization, async(req,res)=>{
         try {
             const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {adresse:adresse});
             if(oppdatertEnv){
-                console.log("Adresse oppdatert");
                 return res.send({message:"Adresse oppdatert", valid:true});
             } else {
                 return res.status(404);
@@ -88,7 +84,6 @@ router.post('/opprettFri', authorization,async(req,res)=>{
                 medarbeider:medarbeider
             })
             if(nyttFriElement){
-                console.log("Fri er opprettet");
                 return res.send({message:"Fri er opprettet!", friElement:nyttFriElement});
             } else {
                 return res.status(404);
