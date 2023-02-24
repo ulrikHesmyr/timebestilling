@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {BrowserRouter, Route, Routes, Link, useLocation} from 'react-router-dom'
+import {BrowserRouter, Route, Routes, Link} from 'react-router-dom'
 import Timebestilling from './pages/Timebestilling'
 import Hjem from './pages/hjem'
 import DinReservasjon from './pages/DinReservasjon'
@@ -14,7 +14,6 @@ const App = ()=> {
   const [synligMeny, setSynligmeny] = useState(false);
   const [env, sEnv] = useState(null);
   const [registrertReservasjon, setReservasjon] = useState(undefined);
-  const [location, setLocation] = useState();
 
 
   useEffect(()=>{
@@ -32,9 +31,9 @@ const App = ()=> {
 
 
   return (
-      <BrowserRouter><div style={{display:"flex", flexDirection:"row", justifyContent:"space-between", padding:"1rem"}}>
+      <BrowserRouter><div style={{borderBottom:"thin solid black", display:"flex", flexDirection:"row", justifyContent:"space-between", padding:"1rem"}}>
         
-        <div className='burger' aria-expanded={synligMeny} onClick={()=>{
+        <div id="burgerButton" className='burger' aria-label='Vis navigasjonsmeny' aria-expanded={synligMeny} aria-controls="navigation" onClick={()=>{
               setSynligmeny(!synligMeny);
             }}>
               <div></div>
@@ -43,7 +42,7 @@ const App = ()=> {
             </div>
       </div>
             {(synligMeny?(
-            <div className='navBar' aria-hidden={!synligMeny}>
+            <nav id="navigation" className='navBar' role="region" aria-labelledby='burgerButton' aria-hidden={!synligMeny}>
               <Link onClick={()=>{
                 setSynligmeny(false);
               }} to="/">VI ER {(env !== null? env.bedrift:"")} <p>Bli kjent</p></Link>
@@ -55,7 +54,7 @@ const App = ()=> {
               <Link onClick={()=>{
                 setSynligmeny(false);
               }} to="/kontakt-oss">Kontakt oss<p>Ta kontakt via epost, telefon eller sosiale medier</p></Link>
-            </div>):(
+            </nav >):(
             <Routes>
               <Route exact path="/timebestilling" element={(registrertReservasjon?<DinReservasjon env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} registrertReservasjon={registrertReservasjon} />:(env !== null?<Timebestilling env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} />:"Laster..."))} />
               <Route exact path="/" element={(env !== null?<Hjem env={env}/>:"Laster...")} />

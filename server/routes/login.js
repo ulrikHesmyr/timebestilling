@@ -15,9 +15,9 @@ const {BEDRIFT, ACCESS_TOKEN_KEY, NODE_ENV, TWOFA_SECRET, KEYNAME_SMS, PRIVATE_K
 
 
 const loginLimiter = rateLimiter({
-    windowMs: 35 * 60 * 1000,
-    max: 30,
-    message: "Du har brukt opp alle forsøkene dine på å logge inn. Vennligst vent 15 minutter før du prøver igjen",
+    windowMs: 15 * 60 * 1000,
+    max: 8,
+    message: {m:"Du har brukt opp alle forsøkene dine på å logge inn. Vennligst vent 15 minutter før du prøver igjen"},
     requestPropertyName:"antForsok"
   });
   

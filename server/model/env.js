@@ -7,7 +7,7 @@ const env = new mongoose.Schema({
     bedrift:{type:String},
     antallBestillinger:{type:Number},
     kategorier: [String],
-    adresse:{type:String},
+    adresse:{gatenavn:String, husnummer:String, postnummer:String, poststed:String, bokstav:String, rep:{lat:String,lng:String}},
     tjenester: [
         {
             navn: String,

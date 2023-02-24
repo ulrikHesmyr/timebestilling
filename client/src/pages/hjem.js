@@ -38,8 +38,8 @@ function Hjem({env}){
 
     return(<>
         <div className="hjem">
-            <header>
-                <h1>Vi er {env.bedrift}</h1>
+            <header style={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"flex-end", flexWrap:"wrap"}}>
+                <p className="viEr" >Vi er </p><p className="bedriftNavnHeader">{env.bedrift}</p>
                 
             </header>
             <Link to="/timebestilling" className='navBarBestillTime'><div>Bestill time</div></Link>
@@ -75,17 +75,19 @@ function Hjem({env}){
                 <h2>Hvor du finner oss</h2>
 
                 <div>
-                    <p>{env.adresse}</p>
-                    <img alt="Bilde som viser adressen" src="adresse.png" style={{width:"200px"}}></img>
-                <img alt="Vaske håret meme" src="meme.png" style={{height:"10rem"}}></img>
+                    
+                    <div onClick={()=>{
+                        window.open(`https://www.google.com/maps/place/${env.adresse.gatenavn.replace(/ /g, "+")}+${env.adresse.husnummer}${env.adresse.bokstav},+${env.adresse.postnummer}+${env.adresse.poststed}/@${env.adresse.rep.lat},${env.adresse.rep.lng}`);
+                    }} className="adresseLink"><div className="adresseBlur"><p>{env.adresse.gatenavn} {env.adresse.husnummer}{env.adresse.bokstav}, {env.adresse.postnummer} {env.adresse.poststed}</p><div>GÅ TIL KART</div></div></div>
+                
                 </div>
             </div>
             <div className="hjemsideSeksjon">
                 <h2 >Våre behandlinger</h2>
                 <div className="behandlingerHjemsiden">
                 {env.kategorier.map((kategori, index)=>(
-                    <div key={kategori} style={{transition:"0.2s ease all", padding:"0.3rem", borderRadius:(kategoriSynlig[index]?"0 0 1rem 1rem":"0 0 0 0")}}>
-                        <h3 style={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"space-between", borderBottom:"thin solid rgba(0,0,0,0.3)"}} onClick={()=>{
+                    <div key={kategori} style={{cursor:"pointer", transition:"0.2s ease all", padding:"0.3rem", borderRadius:(kategoriSynlig[index]?"0 0 1rem 1rem":"0 0 0 0")}}>
+                        <h3 role="button" aria-label={`Vis behandlingene for kategorien ${kategori}`} aria-expanded={kategoriSynlig[index]} aria-controls={`${kategori}tjeneste`} id={kategori} style={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"space-between", borderBottom:"thin solid rgba(0,0,0,0.3)"}} onClick={()=>{
                             let temp = kategoriSynlig;
                             let n = env.kategorier.indexOf(kategori);
                             if(kategoriSynlig[n]){
@@ -95,8 +97,8 @@ function Hjem({env}){
                             }
                             setKategoriSynlig(temp);
                             sK(!K);
-                        }}>{kategori} <img alt={(kategoriSynlig[env.kategorier.indexOf(kategori)] === true?`Innhold for kategorien ${kategori} vises`:`innhold for kategorien ${kategori} vises ikke`)} style={{height:"1.9rem"}} src={(kategoriSynlig[env.kategorier.indexOf(kategori)] === true?"aapnet.png":"lukket.png")}></img> </h3>
-                        <div className="tjenestene" style={kategoriSynlig[env.kategorier.indexOf(kategori)] === true?{ height:"auto", overflow:"visible", opacity:"1", transition:"0.3s ease 0.05s all"}:{height:"2rem", overflow:"hidden", opacity:"0", transition:"0.3s ease 0.05s all", transform:"translateY(-20px)"}}>
+                        }}>{kategori} <img className={(kategoriSynlig[env.kategorier.indexOf(kategori)] === true?"rotert":"")} alt={(kategoriSynlig[env.kategorier.indexOf(kategori)] === true?`Innhold for kategorien ${kategori} vises`:`innhold for kategorien ${kategori} vises ikke`)} style={{height:"1.9rem", transition:"0.5s ease all"}} src="lukket.png"></img> </h3>
+                        <div aria-hidden={!(kategoriSynlig[index])} role="region" id={`${kategori}tjeneste`} aria-labelledby={kategori} className="tjenestene" style={kategoriSynlig[env.kategorier.indexOf(kategori)] === true?{ height:"auto", overflow:"visible", opacity:"1", transition:"0.3s ease 0.05s all"}:{height:"2rem", overflow:"hidden", opacity:"0", transition:"0.3s ease 0.05s all", transform:"translateY(-20px)"}}>
                             {env.tjenester.filter(element=>element.kategori === kategori).map((tjeneste)=>(
                                 <div key={tjeneste.navn}>
                                     <div>

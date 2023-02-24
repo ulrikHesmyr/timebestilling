@@ -16,7 +16,7 @@ function RedigerPassord({redigerPassordDB}){
         }}><img className='ikonKnapper' src='rediger.png' alt="Rediger"></img></button>):(
         
         <div className="passordBoks fokus">
-            <label style={{display:"flex", flexDirection:"row", alignItems:"center"}}>Nytt administrator passord:
+            <label style={{display:"flex", flexDirection:"column"}}>Nytt administrator passord:
                 <div>
                     <input value={nyttPassord} type={(toggleViewPassord?"text":"password")} onChange={(e)=>{
                         sNyttPassord(e.target.value);
@@ -31,7 +31,7 @@ function RedigerPassord({redigerPassordDB}){
                 </div>
             </label>
 
-            <label style={{display:"flex", flexDirection:"row", alignItems:"center"}}>Gjenta nytt passord: 
+            <label style={{display:"flex", flexDirection:"column"}}>Gjenta nytt passord: 
                 <div> 
                     <input value={gjentaPassord} type={(toggleViewPassordGjentagelse?"text":"password")} onChange={(e)=>{
                         sGjentapassord(e.target.value);

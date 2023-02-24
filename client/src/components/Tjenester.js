@@ -11,8 +11,8 @@ function Tjenester({env, sFrisor, sKlokkeslett, displayKomponent, produkt, sProd
             <div className="kategorier">
             Les mer om våre behandlinger på startsiden
                 {env.kategorier.map((kategori, index)=>(
-                    <div key={kategori} style={{transition:"0.2s ease all", border:"thin solid black", padding:"0.3rem", borderRadius:(kategoriSynlig[index]?"0 0 1rem 1rem":"0 0 0 0")}}>
-                        <h3 className="kategori" onClick={()=>{
+                    <div   key={kategori} style={{transition:"0.2s ease all", border:"thin solid black", padding:"0.3rem", borderRadius:(kategoriSynlig[index]?"0 0 1rem 1rem":"0 0 0 0")}}>
+                        <h3 id={kategori}  role="button" aria-controls={`${kategori}tjenestene`} aria-label={`Vis behandlingene for kategorien: ${kategori}`} aria-expanded={kategoriSynlig[env.kategorier.indexOf(kategori)]} className="kategori" onClick={()=>{
                             let temp = kategoriSynlig;
                             let n = env.kategorier.indexOf(kategori);
                             if(kategoriSynlig[n]){
@@ -22,10 +22,11 @@ function Tjenester({env, sFrisor, sKlokkeslett, displayKomponent, produkt, sProd
                             }
                             setKategoriSynlig(temp);
                             sK(!K);
-                        }}>{kategori} <img alt={(kategoriSynlig[env.kategorier.indexOf(kategori)] === true?`Innhold for kategorien ${kategori} vises`:`innhold for kategorien ${kategori} vises ikke`)} style={{height:"1.9rem"}} src={(kategoriSynlig[env.kategorier.indexOf(kategori)] === true?"aapnet.png":"lukket.png")}></img> </h3>
-                        {(kategoriSynlig[env.kategorier.indexOf(kategori)] === true?(<div className="tjenestene">
+                        }}>{kategori} <img className={kategoriSynlig[env.kategorier.indexOf(kategori)] === true?"rotert":""} alt={(kategoriSynlig[env.kategorier.indexOf(kategori)] === true?`Innhold for kategorien ${kategori} vises`:`innhold for kategorien ${kategori} vises ikke`)} style={{height:"1.9rem", transition:"0.5s ease all"}} src="lukket.png"></img> </h3>
+                        <div role="region" aria-labelledby={kategori} aria-hidden={!kategoriSynlig[env.kategorier.indexOf(kategori)]} className="tjenestene" id={`${kategori}tjenestene`} style={kategoriSynlig[env.kategorier.indexOf(kategori)] === true?{overflow:"visible", opacity:"1"}:{height:"0.1rem", overflow:"hidden", opacity:"0", transform:"translateY(-20px)"}}>
                             {env.tjenester.filter(element=>element.kategori === kategori).map((tjeneste)=>(
-                                <div className="tjeneste" key={tjeneste.navn} onClick={()=>{
+
+                                <div role="button" aria-label={`Velg behandlingen: ${tjeneste.navn}`} className={`tjeneste`} key={tjeneste.navn} onClick={()=>{
                                     if(!produkt.includes(tjeneste)){
                                         sProdukt([...produkt, tjeneste]);
                                         sKlokkeslett(null);
@@ -44,7 +45,7 @@ function Tjenester({env, sFrisor, sKlokkeslett, displayKomponent, produkt, sProd
                                 </div>
                                 )
                             )}
-                        </div>):"")}
+                        </div>
                     </div>
                     
                     

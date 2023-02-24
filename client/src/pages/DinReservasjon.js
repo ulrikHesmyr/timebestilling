@@ -33,13 +33,13 @@ function DinReservasjon({env, hentMaaned, setReservasjon , registrertReservasjon
                     <div>Estimert pris {totalPris} kr</div>
                     <div>Estimert tid {totalTid} minutter</div>
                     <p></p>
-                    <li>{env.adresse}</li>
+                    <li>{env.adresse.gatenavn} {env.adresse.husnummer}{env.adresse.bokstav}, {env.adresse.postnummer} {env.adresse.poststed}</li>
+                    <p>Bekreftelse er sendt på SMS</p>
                     <div>Vi gleder oss til å se deg!</div>
                 </div>):"")}
                 <button style={{padding:"1rem"}} onClick={(e)=>{
                     e.preventDefault();
-                    setReservasjon(undefined);
-                    window.location.href="/"
+                    window.location.href="/";
                 }}>GÅ TILBAKE</button>
             </div>:<p>Laster inn...</p>)
     )

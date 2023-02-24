@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 
-function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle}){
+function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel}){
 
     const [leggtil, sLeggTil] = useState(false);
     const [nyFrisorNavn, sNyFrisorNavn] = useState("");
@@ -10,7 +10,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle}){
 
 
     async function lagre(){
-        
+        lagreVarsel();
         sLeggTil(false);
         console.log("tilkalte 'lagret'");
         

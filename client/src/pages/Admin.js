@@ -6,7 +6,7 @@ import DetaljerFrisor from '../components/DetaljerFrisor';
 import Fri from '../components/Fri';
 import RedigerAapningstider from '../components/RedigerAapningstider';
 
-function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
+function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle, lagreVarsel}){
     const behandlingsEstimater = [15,30,45,60,75,90,105,120,135,150,165,180,195,210,225,240];
     const [kontakt_epost, sKontakt_epost] = useState(env.kontakt_epost);
     const [kontakt_tlf, sKontakt_tlf] = useState(env.kontakt_tlf);
@@ -20,7 +20,8 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
 
     //Adresse
     const [visRedigerAdresse, sVisRedigerAdresse] = useState(false);
-    const [adresse, sAdresse] = useState("");
+    const [adresseTekst, sAdresseTekst] = useState(`${env.adresse.gatenavn} ${env.adresse.husnummer}${env.adresse.bokstav?env.adresse.bokstav:""}, ${env.adresse.postnummer} ${env.adresse.poststed}`);
+    const [adresse, sAdresse] = useState(env.adresse);
     const [gatenavn, sGatenavn] = useState("");
     const [husnummer, sHusnummer] = useState("");
     const [postnummer, sPostnummer] = useState("");
@@ -50,6 +51,16 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
     //Synlige sider
     const [synligKomponent, setSynligKomponent] = useState(1);
 
+    //Sosiale medier
+        //Opprett nytt sosialt medie
+    let muligeSosialeMedier = ["YouTube", "Twitter", "Tiktok","Snapchat","LinkedIn", "Facebook", "Instagram"];
+    const [visLeggTilSosialtMedie, sVisLeggTilSosialtMedie] = useState(false);
+    const [nyttMedie, sNyttMedie] = useState(muligeSosialeMedier.filter(m=>!env.sosialeMedier.map(e=>e.platform).includes(m))[0]);
+    const [brukerNyttMedie, sBrukerNyttMedie] = useState("");
+    const [linkNyttMedie, sLinkNyttMedie] = useState("");
+        //Slett sosialt medie
+    const [visSlettSosialtMedie, sVisSlettSosialtMedie] = useState(false);
+
     useEffect(()=>{
         sKontakt_epost(env.kontakt_epost);
         sKontakt_tlf(env.kontakt_tlf);
@@ -65,6 +76,7 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
     }
 
     async function oppdaterAdresse(){
+        lagreVarsel();
         const options = {
             method:"POST",
             headers:{
@@ -82,6 +94,7 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
 
 
     async function oppdaterTimebestillinger(slettetTime){
+        lagreVarsel();
         const options = {
             method:"POST",
             headers:{
@@ -98,6 +111,7 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
     }
 
     async function sendTilDatabase(fris, kat, tje, klok, some, epost, tlf){
+        lagreVarsel();
         const nyttEnv = {
             frisorer:fris,
             kategorier:kat,
@@ -123,6 +137,7 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
     }
 
     async function redigerPassordDB(nyttPass){
+        lagreVarsel();
         const options = {
             method:"POST",
             headers:{
@@ -141,24 +156,24 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
     return(
         <div className='adminpanel'>
                 <h1>Ditt skrivebord</h1>
-                {env !== null? <div style={{display:"flex", flexDirection:"row"}}>
+                {env !== null? <div className='adminKnapper'>
                 
-                    <button className='adminKnapper' style={{ borderRadius:"0.5rem 0 0 0", margin:"0", borderCollapse:"collapse", border:"2px solid black", borderBottom:(synligKomponent=== 1? "none":"2px solid black"), color:(synligKomponent=== 1? "black":"rgba(0,0,0,0.5)")}} onClick={(e)=>{
+                    <button style={{ borderRadius:"0.5rem 0 0 0", margin:"0", borderCollapse:"collapse", border:"2px solid black", borderBottom:(synligKomponent=== 1? "none":"2px solid black"), color:(synligKomponent=== 1? "black":"rgba(0,0,0,0.5)")}} onClick={(e)=>{
                         e.preventDefault();
                         setSynligKomponent(1);
                     }}>TIMEBESTILLINGER</button>
 
                 
-                    <button className='adminKnapper' style={{margin:"0", border:"2px solid black", borderBottom:(synligKomponent=== 2? "none":"2px solid black"), color:(synligKomponent=== 2? "black":"rgba(0,0,0,0.5)")}} onClick={(e)=>{
+                    <button style={{margin:"0", border:"2px solid black", borderBottom:(synligKomponent=== 2? "none":"2px solid black"), color:(synligKomponent=== 2? "black":"rgba(0,0,0,0.5)")}} onClick={(e)=>{
                         e.preventDefault();
                         setSynligKomponent(2);
                     }}>FRIDAGER OG FRAVÆR</button>
 
-                    <button className='adminKnapper' style={{margin:"0", border:"2px solid black", borderBottom:(synligKomponent=== 3? "none":"2px solid black"), color:(synligKomponent=== 3? "black":"rgba(0,0,0,0.5)")}} onClick={(e)=>{
+                    <button  style={{margin:"0", border:"2px solid black", borderBottom:(synligKomponent=== 3? "none":"2px solid black"), color:(synligKomponent=== 3? "black":"rgba(0,0,0,0.5)")}} onClick={(e)=>{
                         e.preventDefault();
                         setSynligKomponent(3);
                     }}>KONTAKT-INFO, KATEGORIER, FRISØRER etc.</button>
-                    <button className='adminKnapper' style={{borderRadius:"0  0.5rem 0 0 ", margin:"0", border:"2px solid black", borderBottom:(synligKomponent=== 4? "none":"2px solid black"), color:(synligKomponent=== 4? "black":"rgba(0,0,0,0.5)")}} onClick={(e)=>{
+                    <button  style={{borderRadius:"0  0.5rem 0 0 ", margin:"0", border:"2px solid black", borderBottom:(synligKomponent=== 4? "none":"2px solid black"), color:(synligKomponent=== 4? "black":"rgba(0,0,0,0.5)")}} onClick={(e)=>{
                         e.preventDefault();
                         setSynligKomponent(4);
                     }}>BEHANDLINGER</button>
@@ -166,7 +181,7 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
                     </div>:""}
 
                 
-                <Fri env={env} bestilteTimer={bestilteTimer} synligKomponent={synligKomponent} varsle={varsle} />
+                <Fri env={env} bestilteTimer={bestilteTimer} synligKomponent={synligKomponent} lagreVarsel={lagreVarsel} varsle={varsle} />
 
                 {synligKomponent === 1 && bestilteTimer !== null?(<>
                 <h3>Timebestillinger</h3>
@@ -254,11 +269,11 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
                                 <p>
                                     Her kan du redigere adressen til salongen. Søk på adressen du ønsker å endre til, klikk på riktig adresse fra adresseregisteret før du lagrer.
                                 </p>
-                                <p>Nåværende adresse: {env.adresse}</p>
+                                <p>Nåværende adresse: {adresseTekst}</p>
                                 <label>Gatenavn: <input type="text" value={gatenavn} onChange={(e)=>{
                                     sGatenavn(e.target.value);
                                     sKanOppdatereAdresse(false);
-                                    sAdresse("");
+                                    sAdresse({});
                                     sMuligeAdresser([]);
                                     
                                 }}></input></label>
@@ -266,7 +281,7 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
                                     if(/^\d*$/.test(e.target.value)){
                                         sHusnummer(e.target.value);
                                         sKanOppdatereAdresse(false);
-                                        sAdresse("");
+                                        sAdresse({});
                                         sMuligeAdresser([]);
                                     }
                                     
@@ -275,7 +290,7 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
                                     if(/^\d*$/.test(e.target.value)){
                                         sPostnummer(e.target.value);
                                         sKanOppdatereAdresse(false);
-                                        sAdresse("");
+                                        sAdresse({});
                                         sMuligeAdresser([]);
                                     }
                                     
@@ -290,16 +305,17 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
                                 }}>Søk etter adresser</button>
 
                                 <div className='muligeAdresser'>
-                                    {muligeAdresser.map((adresse, index)=>{
+                                    {muligeAdresser.map((a, index)=>{
                                         return (
                                             <div style={{fontWeight:"bold", margin:"0.2rem", padding:"0.3rem", cursor:"pointer", border:"thin solid black"}} key={index} onClick={()=>{
-                                                sAdresse(`${adresse.adressenavn} ${adresse.nummer}${adresse.bokstav}, ${adresse.postnummer} ${adresse.kommunenavn}`);
+                                                sAdresse({gatenavn:a.adressenavn, husnummer:a.nummer, postnummer:a.postnummer, poststed:a.kommunenavn, bokstav:a.bokstav, rep:{lat:a.representasjonspunkt.lat, lon:a.representasjonspunkt.lon}});
+                                                sAdresseTekst(`${a.adressenavn} ${a.nummer}${a.bokstav}, ${a.postnummer} ${a.kommunenavn}`);
                                                 sKanOppdatereAdresse(true);
-                                            }}>{adresse.adressenavn} {adresse.nummer}{adresse.bokstav}, {adresse.postnummer} {adresse.kommunenavn}</div>
+                                            }}>{a.adressenavn} {a.nummer}{a.bokstav}, {a.postnummer} {a.kommunenavn}</div>
                                         )}
                                     )}
                                 </div>
-                                <p>{adresse !== ""?`Valgt adresse: ${adresse}`:""}</p>
+                                <p>{adresse !== {}?`Valgt adresse: ${adresseTekst}`:""}</p>
                                 
                                 <div>
                                 <button onClick={()=>{
@@ -307,17 +323,18 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
                                     sGatenavn("");
                                     sHusnummer("");
                                     sPostnummer("");
-                                    sAdresse("");
+                                    sAdresse({});
+                                    sAdresseTekst(`${env.adresse.gatenavn} ${env.adresse.husnummer}${env.adresse.bokstav?env.adresse.bokstav:""}, ${env.adresse.postnummer} ${env.adresse.poststed}`);
                                     sMuligeAdresser([]);
                                 }}>Avbryt</button>
                                 <button onClick={()=>{
                                    if(kanOppdatereAdresse){
-                                        if(window.confirm("Er du sikker på at du vil redigere adressen til: " + adresse + "?")){
+                                        if(window.confirm("Er du sikker på at du vil redigere adressen til: " + adresseTekst + "?")){
                                         oppdaterAdresse();
                                         sGatenavn("");
                                         sHusnummer("");
                                         sPostnummer("");
-                                        sAdresse("");
+                                        sAdresse({});
                                         sMuligeAdresser([]);
                                         sVisRedigerAdresse(false);
                                         }
@@ -329,7 +346,7 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
                             </div>
                         </div>:<> <div> <button onClick={()=>{
                             sVisRedigerAdresse(true);
-                        }}><img alt="rediger adresse" src="rediger.png" className='ikonKnapper'></img></button> Adresse:</div><p className='redigeringsElement'>{env.adresse}</p></>}
+                        }}><img alt="rediger adresse" src="rediger.png" className='ikonKnapper'></img></button> Adresse:</div><p className='redigeringsElement'>{adresseTekst}</p></>}
                     </div>
                     <div className='redigeringsBoks'>
                         <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
@@ -343,11 +360,11 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
                     <div className='frisorOversikt'>
                         {env.frisorer.map((frisor)=>(
                                 <div key={frisor.navn}>
-                                    <DetaljerFrisor frisor={frisor} env={env} sendTilDatabase={sendTilDatabase} varsle={varsle} updateTrigger={updateTrigger} sUpdateTrigger={sUpdateTrigger} />
+                                    <DetaljerFrisor frisor={frisor} env={env} sendTilDatabase={sendTilDatabase} lagreVarsel={lagreVarsel} varsle={varsle} updateTrigger={updateTrigger} sUpdateTrigger={sUpdateTrigger} />
                                 </div>
                         ))}
                     </div>
-                    {env !== null?<LeggTilFrisor env={env} varsle={varsle} updateTrigger={updateTrigger} sUpdateTrigger={sUpdateTrigger} />:""}
+                    {env !== null?<LeggTilFrisor env={env} lagreVarsel={lagreVarsel} varsle={varsle} updateTrigger={updateTrigger} sUpdateTrigger={sUpdateTrigger} />:""}
                     
                 </div>
 
@@ -425,6 +442,101 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
                             <p>{kategori}</p>
                         </div>
                     ))}
+
+
+                </div>
+
+                <div>
+                    <h4>Sosiale medier:</h4>
+                    <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
+                        <button onClick={()=>{
+                            sVisLeggTilSosialtMedie(true);
+                        }} style={{display:"flex", flexDirection:"row", alignItems:"center"}}><img alt='Legg til platform' className='ikonKnapper' src="leggtil.png"></img>Legg til sosialt medie</button>
+                        <button onClick={()=>{
+                            sVisSlettSosialtMedie(true);
+                        }}><img alt='Rediger sosiale medier' className='ikonKnapper' src="rediger.png"></img></button>
+                    </div>
+
+                    {visSlettSosialtMedie?<div className='fokus'>
+                        <div>
+                            <div alt='Lukk' className='lukk' onClick={()=>{
+                                sVisSlettSosialtMedie(false);
+                            }}></div>
+                            <h4><br></br>Sosiale medier:</h4>
+                            <p>Her kan du slette sosiale medier som ikke lenger er i bruk, eller om de skal redigeres, så slettes de og opprettes på nytt.</p>
+                            {env.sosialeMedier.map((medie, index)=>(
+                            <div key={medie.platform}>
+                                <p style={{display:"flex", alignItems:"center", fontSize:"larger"}}>{medie.platform} <img className='ikonKnapper' alt="Slett sosialt medium" src="delete.png" onClick={()=>{
+
+                                    if(window.confirm("Er du sikker på at du vil slette dette sosiale mediet?")){
+                                        sVisSlettSosialtMedie(false);
+                                        let nyttMedieListe = env.sosialeMedier;
+                                        nyttMedieListe.splice(index, 1);
+                                        sendTilDatabase(env.frisorer, env.kategorier, env.tjenester, env.klokkeslett, nyttMedieListe, env.kontakt_epost, env.kontakt_tlf);
+                                    }
+                                }}></img></p>
+                            </div>
+                            ))}
+                        </div>
+                    </div>:""}
+
+                    {visLeggTilSosialtMedie?<div className='fokus'>
+                    <div className='lukk' onClick={()=>{
+                        sVisLeggTilSosialtMedie(false);
+                    }}></div>
+                    <h4><br></br>Legg til nytt medie:</h4>
+                    <p>Legg til nytt sosialt medium som automatisk kommer på "kontakt-oss" siden men ikon og link som legges inn her!</p>
+                    
+                    <div style={{display:"flex", flexDirection:"column"}}>
+                        <label>Velg platform:
+                            <select value={nyttMedie} onChange={(e)=>{
+                                sNyttMedie(e.target.value);
+                            }}>
+                            {muligeSosialeMedier.filter(m=>!env.sosialeMedier.map(e=>e.platform).includes(m)).map((medie)=>(
+                                <option key={medie} value={medie}>{medie}</option>
+                            )
+                            )}
+                            </select>
+                        </label>
+                        <label>Brukernavn på platformen: <input type="text" value={brukerNyttMedie} onChange={(e)=>{
+                            sBrukerNyttMedie(e.target.value);
+                        }}></input></label>
+                        <label>Link til siden: <input value={linkNyttMedie} onChange={(e)=>{
+                            sLinkNyttMedie(e.target.value);
+                        }} type="text" placeholder='https://www.instagram.com/gulsetfades/'></input></label>
+
+                        <div>
+                            <button onClick={()=>{
+                                sVisLeggTilSosialtMedie(false);
+                                sNyttMedie(muligeSosialeMedier.filter(m=>!env.sosialeMedier.map(e=>e.platform).includes(m))[0]);
+                                sBrukerNyttMedie("");
+                                sLinkNyttMedie("");
+                            }}>Avbryt</button>
+
+                            <button onClick={()=>{
+                                if(brukerNyttMedie === "" || linkNyttMedie === ""){
+                                    alert("Du må fylle ut alle feltene!");
+                                } else {
+                                    let nyListe = env.sosialeMedier;
+                                    nyListe.push({platform:nyttMedie, bruker:brukerNyttMedie, link:linkNyttMedie});
+                                    sendTilDatabase(env.frisorer, env.kategorier, env.tjenester, env.klokkeslett, nyListe, env.kontakt_epost, env.kontakt_tlf);
+                                    sVisLeggTilSosialtMedie(false);
+                                    sNyttMedie(muligeSosialeMedier.filter(m=>!nyListe.map(e=>e.platform).includes(m))[0]);
+                                    sBrukerNyttMedie("");
+                                    sLinkNyttMedie("");
+                                }
+                            }}>Lagre</button>
+                        </div>
+                    </div>
+                    </div>
+                    :
+                    <div>
+                        {env.sosialeMedier.map((medie)=>(
+                            <div key={medie.platform} >
+                                <p >{medie.platform}: <a rel='noreferrer' target="_blank" href={medie.link} >{medie.bruker}</a></p>
+                            </div>
+                        ))}
+                    </div>}
 
 
                 </div>
@@ -559,7 +671,7 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle}){
                     }} ><img className='ikonKnapper' alt='Slett en behandling' src="delete.png" ></img>Slett én behandling</button>
                     </>}
                     <div style={{display:"flex", flexDirection:"row", flexWrap:"wrap", gap:"1rem"}}>
-                    {env.tjenester.map((behandling)=>(
+                    {env.tjenester.slice(0).reverse().map((behandling)=>(
                         <div key={behandling.navn} style={{display:"flex", flexDirection:"row", alignItems:"center", margin:"0.3rem"}}>
                             <DetaljerBehandling behandlingsEstimater={behandlingsEstimater} behandling={behandling} env={env} sendTilDatabase={sendTilDatabase} />
                         </div>

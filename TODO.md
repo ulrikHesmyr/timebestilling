@@ -8,32 +8,22 @@ INTERVJU:
 
 
 BARE CLIENT:
-- Login.js: RateLimiter på /auth route, så sjekk om response er json for å skrive om du har logget inn for mye 
-https://stackoverflow.com/questions/37121301/how-to-check-if-the-response-of-a-fetch-is-a-json-object-in-javascript
-- Når kunde bestiller time, så sjekkes det om kunden har bestilt fra før av. Da får kunden varsling dersom de har bestilt to timer med  
-    feiltakelse
-
-- DinReservasjon.js: Displaye bilde av frisøren
-- Lage footer med info om: Meg, google icons, strex SMS gateway, personvernserklæring og brukervilkår
-
 BARE SERVER:
-- Legge inn limiter på alle resterende routes, 100 requests på 100 minutter
-
 SERVER OG CLIENT:
-        APPLIKASJON
-- hjem.js og public/: Kunne displaye video på startside dersom !isMobile 
 
-FØR PROD: 
-- Sjekke clientside om bruker er logget inn fra før med cookies (path: /login/loggetinn) og 2FA
 
 MULIGE BUGS SOM KAN KOMME I PROD:
 - Innloggingsforsøk. Test innloggingsfunksjonaliteten mtp antall innloggingsforsøk.
+- 2FA, sjekk om alt stemmer med 2FA
 
 TODO:
 - Sjekke ut hva Jest er
 - Fikse patent?
 - Fikse betalingsskjerm som kobles opp til en betalingsterminal https://aera.id/betalingsterminal/#module-9
 - Kontrakt som frilanser (for at arbeidsgiver kan sende a-melding)
+- Sjekke uutilsynet.no for universell utforming
+- Google tilbakemeldinger API
+
 
 TESTE:
 - Legge inn oppsigelse på frisøren idag og prøve å bestille time fra han samtidig
@@ -59,16 +49,19 @@ bytt fra mercedes bildet til logo
 bytte farge-variabler i App.css
 har salongen åpent søndager? Da må det endres i Klokkeslett.js
 Endre at når ansatt endrer tlf så endrer den på deres tlf og ikke elin sitt (routes/login.js /oppdaterTelefonnummer)
+Legge inn riktig link for google reviews https://developers.google.com/my-business/content/review-data#list_all_reviews
 
 OM APPLIKASJONEN, PERSONVERN OG LOV:
 - Data som lagres om de ansatte går under firmaets egne kontrakter om personvern osv.
 
 FÅ FRA KUNDE FØR PROD
-- Logo 
-- Bakgrunnsvideo (må være mp4 H.264 codec)
+- Logo?
 - Bilde til startside
 
 MINE GARANTIER:
 - Umulig å bli dobbeltbooket eller at timer krasjer, først på nettsiden, så sjekker den med tidligere bestillinger, men også på serveren i det bestillingen sendes, så sjekker den momentnant om det krasjer med andre bestillinger.
 
 new FormData() for bilder, ikke json
+body: formData
+
+font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;

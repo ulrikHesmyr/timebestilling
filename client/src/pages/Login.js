@@ -14,6 +14,7 @@ function Login(){
     
     //Varsling
     const[varslingSynlig, sVarslingSynlig] = useState(false);
+    const[lagrerVarslingSynlig, sLagrerVarslingSynlig] = useState(false);
 
     //Fjerne logg inn knapp med en gang de har trykt
     const[trykketLoggInn, sTrykketLoggInn] = useState(false);
@@ -26,6 +27,14 @@ function Login(){
         sVarslingSynlig(true);
         setTimeout(()=>{
             sVarslingSynlig(false);
+        }, 3000);
+
+    }
+
+    function lagreVarsel(){
+        sLagrerVarslingSynlig(true);
+        setTimeout(()=>{
+            sLagrerVarslingSynlig(false);
         }, 3000);
 
     }
@@ -52,27 +61,61 @@ function Login(){
             body: JSON.stringify(data),
             //credentials:'include'
         });
+        
+        const response = await request.json();
+
+        //Sjekker om brukeren har prøvd å logge inn for mange ganger
+        if(response.m){
+            alert("Du har prøvd å logge inn for mange ganger. Vennligst vent 5 minutter og prøv igjen.");
+            sTrykketLoggInn(false);
+        } else {
+            if(!response.valid && response.two_FA){
+                sVis2FA(true);
+            } else if(!response.valid){
+                alert(response.message); 
+                sTrykketLoggInn(false);
+            } else if(response.valid){
+               toggleLoggetInn(true);
+               setBukertype(response.brukertype);
+               sEnv(response.env);
+               sBestiltetimer(response.bestilteTimer);
+               sBruker(response.bruker);
+    
+               //Nullstiller input
+               setBrukernavn("");
+               setPassord("");
+               sTrykketLoggInn(false);
+            } else {
+                alert("Noe har skjedd galt. Sjekk om du har internett og prøv på nytt.");
+            }
+        }
+
+            
+        
+        
+    }
+
+    async function send2FA(){
+        //Sender request til TWOFA route på server for å sjekke om PIN stemmer
+        const request = await fetch("http://localhost:3001/login/twoFA", {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json",
+            },
+            body: JSON.stringify({pin:twoFApin}),
+        });
         const response = await request.json();
         console.log(response);
-        if(!response.valid && response.two_FA){
-            sVis2FA(true);
-        } else if(!response.valid){
-            alert(response.message); 
-            sTrykketLoggInn(false);
-        } else if(response.valid){
-           toggleLoggetInn(true);
-           setBukertype(response.brukertype);
-           sEnv(response.env);
-           sBestiltetimer(response.bestilteTimer);
-           sBruker(response.bruker);
-
-           //Nullstiller input
-           setBrukernavn("");
-           setPassord("");
-           sTrykketLoggInn(false);
+        
+        if(response.valid){
+            toggleLoggetInn(true);
+            setBukertype(response.brukertype);
+            sEnv(response.env);
+            sBestiltetimer(response.bestilteTimer);
+            sBruker(response.bruker);
         } else {
-            alert("Noe har skjedd galt. Sjekk om du har internett og prøv på nytt.");
-        }
+            alert(response.message);
+    }
     }
 
     async function alleredeLoggetInn(){
@@ -103,20 +146,33 @@ function Login(){
 
     return(
         <>
-        {varslingSynlig && <div className="varsling"><div>Endringene er lagret!</div></div>}
-        {vis2FA && <div>
+
+        <div className={lagrerVarslingSynlig?"varsling varsel":"skjul varsel"}><div>Lagrer...</div></div>
+        <div className={varslingSynlig?"varsling varsel":"skjul varsel"}><div>Endringene er lagret!</div></div>
+        {vis2FA && <div className='fokus'>
             <div>2FA</div><input type="text" onChange={(e)=>{
             sTwoFApin(e.target.value);
             }}></input>
             
+            <div>
             <button onClick={()=>{
-            sVis2FA(false);
+                sTrykketLoggInn(false);
+                sVis2FA(false);
+                sTwoFApin("");
+            }}>Avbryt</button>
+
+            <button onClick={()=>{
+                if(twoFApin.length === 4){
+                    sVis2FA(false);
+                    send2FA();
+                }
             }}>Send</button>
+            </div>
             </div>
         }
         {(loggetInn && env !== null?<div>
         
-     <div style={{color:"blue", cursor:"pointer", userSelect:"none"}} onClick={loggut}>LOGG UT</div> {(brukertype === "admin"?<Admin env={env} sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} varsle={varsle} bestilteTimer={bestilteTimer}/>:(brukertype === "vakter"?<Vakter env={env} bruker={bruker} varsle={varsle} bestilteTimer={bestilteTimer} />:""))}</div>:(<div className='login'>
+     <div style={{ padding:"0.5rem",color:"blue", cursor:"pointer", userSelect:"none"}} onClick={loggut}>LOGG UT</div> {(brukertype === "admin"?<Admin env={env} sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} lagreVarsel={lagreVarsel} varsle={varsle} bestilteTimer={bestilteTimer}/>:(brukertype === "vakter"?<Vakter env={env} bruker={bruker} varsle={varsle} lagreVarsel={lagreVarsel} bestilteTimer={bestilteTimer} />:""))}</div>:(<div className='login'>
         <form className='loginForm'>
             <label>Brukernavn: <input name='brukernavn' value={brukernavn} maxLength={10} type="text" placeholder='brukernavn' onChange={(e)=>{
                 if(!format.test(e.target.value)){

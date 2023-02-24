@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import { hentDato, hentMaaned } from '../App';
 import { minutterFraKlokkeslett } from './Klokkeslett';
 
-function Fri ({env, bestilteTimer, synligKomponent, varsle}) {
+function Fri ({env, bestilteTimer, synligKomponent, varsle, lagreVarsel}) {
     const[leggTilFri, sLeggTilFri] = useState(false);
     const[dagsfraver, sDagsfraver] = useState(null); //"fler" eller "dag"
     const [friElementer, sFriElementer] = useState([]);
@@ -71,6 +71,7 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle}) {
     }
 
     async function opprettFri(){
+        lagreVarsel();
 
         const data = {
             lengreTid:(dagsfraver === "fler"),
@@ -101,7 +102,7 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle}) {
 
     
     async function slettFri(frielementet){
-
+        lagreVarsel();
         const data = {
             lengreTid:frielementet.lengreTid,
             fraDato:frielementet.fraDato,

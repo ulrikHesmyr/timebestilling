@@ -8,7 +8,7 @@ import {klokkeslettFraMinutter, minutterFraKlokkeslett} from '../components/Klok
 
 const localizer = momentLocalizer(moment);
 
-function Vakter({env, bestilteTimer, bruker}){
+function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel}){
   
   const farger = ["darkblue", "cadetblue", "chartreuse", "coral", "mediumorchid", "indigo","red","black","purple","peru", "burylwood"];
   const ukedag = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
@@ -98,6 +98,7 @@ function Vakter({env, bestilteTimer, bruker}){
 
     async function oppdaterPassord(){
       //Oppdaterer passordet til brukeren (gjelder kun frisører her og ikke admin) i databasen ved å sende request til serveren
+      lagreVarsel();
       const options = {
         method:"POST",
         headers:{
@@ -108,7 +109,7 @@ function Vakter({env, bestilteTimer, bruker}){
       const request = await fetch("http://localhost:3001/login/oppdaterPassord", options);
       const response = await request.json();
       if(response){
-        console.log(response);
+        varsle();
         sVisRedigerPassord(false);
       } else {  
         alert("Noe gikk galt, prøv igjen");
@@ -116,6 +117,7 @@ function Vakter({env, bestilteTimer, bruker}){
     }
 
     async function oppdaterTelefonnummer(){
+      lagreVarsel();
       if(!isNaN(parseInt(nyttTlf)) && nyttTlf.length === 8){
         //Sender en request til serveren for å endre telefonnummeret til den ansatte
         const options = {
@@ -129,7 +131,7 @@ function Vakter({env, bestilteTimer, bruker}){
         const request = await fetch("http://localhost:3001/login/oppdaterTelefonnummer", options);
         const response = await request.json();
         if(response){
-          console.log(response);
+          varsle();
           sLagretTlf(nyttTlf);
         } else {
           alert("Noe gikk galt, prøv igjen");

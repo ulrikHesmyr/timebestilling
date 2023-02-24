@@ -12,7 +12,7 @@ function Kontakt({env}){
             <div>{env.kontakt_tlf}</div>
             <div className='sosialemedier'>
                 {env.sosialeMedier.map((medie)=>(
-                    <div key={medie.platform}>
+                    <div key={medie.platform} style={{display:"flex", flexDirection:"row", alignItems:"center", width:"100%"}}>
                         <img src={`${medie.platform}.png`} style={{height:"5rem", aspectRatio:3/2, objectFit:"contain", mixBlendMode:"color-burn"}} alt={`${medie.platform}`}></img>
                         <a rel='noreferrer' target="_blank" href={medie.link}>{medie.bruker}</a>
                     </div>

@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
-
-function DetaljerFrisor({env, frisor, sendTilDatabase, varsle, sUpdateTrigger, updateTrigger}){
+import {hentDato} from '../App'
+function DetaljerFrisor({env, frisor, sendTilDatabase, varsle, lagreVarsel, sUpdateTrigger, updateTrigger}){
 
     const [visDetaljer, sVisDetaljer] = useState(false);
 
@@ -22,6 +22,7 @@ function DetaljerFrisor({env, frisor, sendTilDatabase, varsle, sUpdateTrigger, u
 
 
     async function oppdaterBilde(navn){
+      lagreVarsel();
       //Oppdaterer bilde i databasen ved å sende bildet og navn som new FormData()
       let formData = new FormData();
       formData.append("uploaded_file", bildeAvFrisor);
@@ -37,6 +38,8 @@ function DetaljerFrisor({env, frisor, sendTilDatabase, varsle, sUpdateTrigger, u
       if(response.valid){
         varsle();
         sUpdateTrigger(!updateTrigger);
+      } else {
+        alert("Noe gikk galt, prøv på nytt");
       }
       
     }
@@ -60,6 +63,7 @@ function DetaljerFrisor({env, frisor, sendTilDatabase, varsle, sUpdateTrigger, u
       sendTilDatabase(tempFrisorer, env.kategorier, env.tjenester, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
     }
     async function resetPassord(navn){
+      lagreVarsel();
       const options = {
         method: 'POST',
         headers: {
@@ -184,7 +188,7 @@ function DetaljerFrisor({env, frisor, sendTilDatabase, varsle, sUpdateTrigger, u
                   <p>Legg inn datoen som frisøren ikke lenger jobber. Frisøren vil kunne få reservasjoner før denne datoen men 
                       ikke på denne datoen eller etter. Dette er for å unngå at frisøren får reservasjoner som ikke kan gjennomføres.
                   </p>
-                  <input type="date" disabled={ikkeSiOpp} value={oppsigelsesDato} onChange={(e)=>{
+                  <input type="date" disabled={ikkeSiOpp} min={hentDato()} value={oppsigelsesDato} onChange={(e)=>{
                       e.preventDefault();
                       sOppsigelsesDato(e.target.value);
                   }} />

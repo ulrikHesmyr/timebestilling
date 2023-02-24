@@ -19,7 +19,7 @@ if(NODE_ENV === "development") intervall = 2* 60 * 1000; // 2 minutter
 const bestillingLimiter = rateLimiter({
     windowMs: intervall,
     max: 5,
-    message: "BAD REQUEST"
+    message: {m:"Du har bestilt for mange ganger"}
 });
 
 const hentBestillingerLimiter = rateLimiter({
@@ -90,7 +90,7 @@ router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
                     transactionId: uuidv4(),
                     sender:'Target365',
                     recipient:`+47${telefonnummer}`,
-                    content:`Takk for din timebestilling hos ${process.env.BEDRIFT}!\n\nDette er en bekreftelse på din reservasjon for "${behandlinger.join(", ")}" hos vår medarbeider ${medarbeider}\n${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}, kl.:${tidspunkt}\n\nTimen er registrert på: ${kunde}\n\nTa kontakt på: ${env.kontakt_tlf} dersom det skulle oppstå noe uforutsett!💇 Avbestilling må skje senest 1 døgn før avtalt time.`
+                    content:`Takk for din timebestilling hos ${process.env.BEDRIFT}!\n\nDette er en bekreftelse på din reservasjon for "${behandlinger.join(", ")}" hos vår medarbeider ${medarbeider}\n${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}, kl.:${tidspunkt}\n\nTimen er registrert på: ${kunde}\n\nTa kontakt på: ${env.kontakt_tlf} dersom det skulle oppstå noe uforutsett!💇 Avbestilling må skje senest 1 døgn før avtalt time. \n\n${env.adresse}, velkommen!`
                 }
                 await serviceClient.postOutMessage(outMessage);
 

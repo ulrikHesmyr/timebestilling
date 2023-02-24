@@ -120,7 +120,7 @@ const upload = multer({
     storage: storage,
     dest: 'uploads/',
     fileFilter: function (req, file, cb) {
-      if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+      if (!file.originalname.match(/\.(jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF)$/)) {
         return cb(new Error('Only image files are allowed!'), false);
       }
       cb(null, true);
@@ -132,14 +132,14 @@ const oppdaterBildeFrisor = multer({
     storage: storage,
     dest: 'uploads/',
     fileFilter: function (req, file, cb) {
-      if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+      if (!file.originalname.match(/\.(jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF)$/)) {
         return cb(new Error('Only image files are allowed!'), false);
       }
       cb(null, true);
     }
 });
 
-router.post("/oppdaterBildeFrisor", oppdaterBildeFrisor.single("uploaded_file"), authorization, async (req,res)=>{
+router.post("/oppdaterBildeFrisor", authorization, oppdaterBildeFrisor.single("uploaded_file"), async (req,res)=>{
     const {navn} = req.body;
     try {
         if(req.brukernavn === "admin"){
@@ -160,9 +160,9 @@ router.post("/oppdaterBildeFrisor", oppdaterBildeFrisor.single("uploaded_file"),
                 })
                 const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {frisorer:nyFrisorer});
                 if(oppdatertEnv){
-                    return res.send({message:"Bilde oppdatert!", valid:true});
+                    return res.send({valid:true});
                 } else {
-                    return res.send({message:"Noe har skjedd gærent i /oppdaterBildeFrisor!"});
+                    return res.send({valid:false});
                 }
             }
         })

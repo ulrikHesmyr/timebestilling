@@ -9,6 +9,7 @@ function Footer(){
     <Link to="/personvaernserklaering-og-brukervilkaar">personvernserklæring og brukervilkår</Link>
     <Link to="/kontakt-oss">Kontakt oss</Link>
     <p>SMS bekreftelse: <a rel='noreferrer' target="_blank" href='https://strex.no/'>Strex</a></p>
+    <p>Universell utforming: uutilsynet.no</p>
 
 </footer>
   )
