@@ -37,6 +37,7 @@ Scenarioer:
     reservert for dameklipp
 
 Før produksjon
+    FILER
 Legge inn authorization som middleware for alle administrative routes (er lagt til for alle hvor admin er eneste autoriserte, men 
     må legge til for routes der vanlige ansatte kan gjøre endringer)
 endre variabler i .env filen
@@ -47,8 +48,9 @@ sette NODE_ENV til "production" i .env filen
 un-comment credentials i Login.js, Vakter.js og Admin.js i client
 bytte farge-variabler i App.css
 Legge inn riktig link for google reviews https://developers.google.com/my-business/content/review-data#list_all_reviews
-
-git clone -b release-v1.0.0 https://github.com/ulrikHesmyr/timebestilling.git
+Endre bedriftens navn i personvernserklæringen
+    SERVER
+Opprette nytt env
 
 OM APPLIKASJONEN, PERSONVERN OG LOV:
 - Data som lagres om de ansatte går under firmaets egne kontrakter om personvern osv.

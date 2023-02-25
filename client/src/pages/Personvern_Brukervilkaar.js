@@ -1,11 +1,11 @@
 import React from 'react'
 
-function PB(){
+function PB({env}){
     return(
         <div style={{margin:"1rem"}}>
         <h1 style={{fontSize:"xx-large", textDecoration:"underline"}}>Terms of Use</h1>
 
-<p>Welcome to ULRIKS FRISØRSALONG's website. By accessing or using this website, you agree to be bound by these Terms of Use.
+<p>Welcome to {env.bedrift}'s website. By accessing or using this website, you agree to be bound by these Terms of Use.
  If you do not agree to these terms, please do not use the website.</p>
 
 <h2>Use of the Website</h2>
@@ -15,14 +15,14 @@ You agree to provide accurate and complete information when making an appointmen
 
 <h2>Intellectual Property</h2>
 <p>All content on the website, including text, images, graphics, and logos, is the property
- of ULRIKS FRISØRSALONG or its licensors and is protected by applicable copyright and trademark laws.</p>
+ of {env.bedrift} or its licensors and is protected by applicable copyright and trademark laws.</p>
 
 <h2>Limitation of Liability</h2>
-<p>ULRIKS FRISØRSALONG is not liable for any damages arising from the use of the website or the inability
+<p>{env.bedrift} is not liable for any damages arising from the use of the website or the inability
  to use the website, including direct, indirect, incidental, or consequential damages.</p>
 
 <h2>Indemnification</h2>
-<p>You agree to indemnify and hold ULRIKS FRISØRSALONG and its affiliates, employees, agents, and representatives
+<p>You agree to indemnify and hold {env.bedrift} and its affiliates, employees, agents, and representatives
  harmless from and against any and all claims, liabilities, damages, losses, and expenses, including reasonable
   attorneys' fees, arising from your use of the website.</p>
 
@@ -31,7 +31,7 @@ You agree to provide accurate and complete information when making an appointmen
 
 <h1 style={{fontSize:"xx-large", textDecoration:"underline"}}>Privacy Policy</h1>
 
-<p>ULRIKS FRISØRSALONG is committed to protecting your privacy. This Privacy Policy describes the types 
+<p>{env.bedrift} is committed to protecting your privacy. This Privacy Policy describes the types 
 of information we collect and how we use and protect that information.</p>
 
 <h2>Information We Collect</h2>

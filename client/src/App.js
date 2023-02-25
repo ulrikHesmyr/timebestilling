@@ -59,7 +59,7 @@ const App = ()=> {
               <Route exact path="/" element={(env !== null?<Hjem env={env}/>:"Laster...")} />
               <Route exact path="/login" element={<Login/>} />
               <Route exact path="/kontakt-oss" element={(env !== null? <Kontakt env={env}/>:"Laster...")}/>
-              <Route exact path="/personvaernserklaering-og-brukervilkaar" element={<PB/>}/>
+              <Route exact path="/personvaernserklaering-og-brukervilkaar" element={env !== null?<PB env={env}/>:"Laster..."}/>
             </Routes>))}
             
         

@@ -12,7 +12,7 @@ const {BEDRIFT} = process.env;
 
 const hentEnvLimiter = rateLimiter({
     max:45,
-    windowMs:45*60*1000,
+    windowMs:30*60*1000,
     message:"MAX 45 requests"
 })
 
@@ -95,12 +95,13 @@ router.post('/opprettFri', authorization,async(req,res)=>{
 })
 
 router.get('/env', hentEnvLimiter, async(req,res)=>{
+
     try {
         await Environment.findOne({bedrift: BEDRIFT}).select('-antallBestillinger -_id -__v').exec((err, doc)=>{
             if(err){
                 console.log(err);
             } else {
-                return res.send(doc);
+                return res.json(doc);
             }
         })
     } catch (error) {

@@ -50,7 +50,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
 
     useEffect(() => {
         const userAgent = window.navigator.userAgent;
-        setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent) || window.navigator.userAgentData.mobile);
+        setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent));
     }, []);
     
   useEffect(()=>{

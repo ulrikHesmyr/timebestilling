@@ -19,9 +19,18 @@ async function opprettEnvironment(){
             }],
             admin_bruker:"admin",
             admin_pass:"KongHarald",
-            vakter_bruker:"vakter",
-            vakter_pass:"DronningSonja",
             bedrift:BEDRIFT,
+            adresse:{
+                gatenavn:"Jernbanetorget",
+                husnummer:"1",
+                postnummer:"0154",
+                poststed:"Oslo",
+                bokstav:"",
+                rep:{
+                    lat:"59.9138698",
+                    lng:"10.7522454"
+                }
+            },
             antallBestillinger:0,
             kategorier: ["Klipp", "Striper"],
             tjenester: [
