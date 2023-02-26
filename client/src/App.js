@@ -18,7 +18,7 @@ const App = ()=> {
 
   useEffect(()=>{
     async function fetchEnvironment(){
-      const environmentRequest = await fetch("http://localhost:1226/env/env");
+      const environmentRequest = await fetch("/env/env");
       const environment = await environmentRequest.json();
       if(environment){
         sEnv(environment);

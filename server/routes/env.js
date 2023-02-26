@@ -128,7 +128,6 @@ const oppdaterBildeFrisor = multer({
     storage: storage,
     dest: 'uploads/',
     fileFilter: function (req, file, cb) {
-        console.log(file.originalname);
       if (!file.originalname.match(/\.(jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF)$/)) {
         return cb(new Error('Only image files are allowed!'), false);
       }

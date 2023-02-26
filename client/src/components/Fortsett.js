@@ -3,12 +3,11 @@ import React from 'react'
 function Fortsett({displayKomponent, previous, number, disabled}){
     return (
         <div className='fortsett'>
-            {number !== 1? <button className='fortsettKnapp' style={{backgroundColor:"rgba(0,0,0,0.25) !important"}} onClick={(e)=>{
+            <button className='fortsettKnapp'  disabled={number === 1} onClick={(e)=>{
+                console.log("TILBAKE");
                 e.preventDefault();
-                displayKomponent(previous);
-            }} >
-                TILBAKE
-            </button>:<div></div>}
+                displayKomponent(previous -1);
+            }}>TILBAKE</button>
         
             <button className='fortsettKnapp'  disabled={disabled} onClick={(e)=>{
                 e.preventDefault();

@@ -62,7 +62,18 @@ async function opprettEnvironment(){
                 }
             ],
             frisorer:[],
-            adresse:"Ulrik Frisør, Storgata 1, 1234 Sted",
+            adresse:{
+                
+                    gatenavn:"Teknologivegen",
+                    husnummer:"22",
+                    postnummer:"2815",
+                    poststed:"GJØVIK",
+                    bokstav:"",
+                    rep: {
+                    lat:"60.788817855104554",
+                    lng:"10.689999999999998"
+                    },
+                },
             klokkeslett: [
                 
                 {
@@ -103,8 +114,14 @@ async function opprettEnvironment(){
                 }]
             })
             
-            const adminBruker = await Brukere.create({
+            const bruker = await Brukere.create({
                 brukernavn:ADMIN_BRUKER,
+                passord:ADMIN_PASS,
+                telefonnummer: parseInt(ADMIN_TLF),
+                admin:true
+            })
+            const adminBruker = await Brukere.create({
+                brukernavn:"admin",
                 passord:ADMIN_PASS,
                 telefonnummer: parseInt(ADMIN_TLF),
                 admin:true
@@ -112,7 +129,7 @@ async function opprettEnvironment(){
 
 
             
-            if(adminBruker && nyttenv){
+            if(adminBruker && nyttenv && bruker){
                 console.log("Opprettet nytt env!");
             }
     } catch (error) {

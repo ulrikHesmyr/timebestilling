@@ -17,7 +17,7 @@ function Frisor({tilgjengeligeFrisorer, env, synligKomponent, displayKomponent, 
             midlertidigArray.push(base64Image);
         }
         sFrisorBildeArray(midlertidigArray);
-    }, [tilgjengeligeFrisorer, env.frisorer])
+    }, [tilgjengeligeFrisorer])
     return(
         <div className={synligKomponent === 1? 'animer-inn':""}>
             {tilgjengeligeFrisorer.length > 0?<>

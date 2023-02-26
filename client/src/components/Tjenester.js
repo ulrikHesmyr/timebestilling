@@ -2,11 +2,11 @@ import React, {useState} from "react";
 import Fortsett from "./Fortsett.js";
 
 
-function Tjenester({env, sFrisor, sKlokkeslett, displayKomponent, produkt, sProdukt}){
+function Tjenester({env, antallBehandlinger, sAntallBehandlinger, sFrisor, sKlokkeslett, displayKomponent, produkt, sProdukt}){
     
     const [kategoriSynlig, setKategoriSynlig] = useState(env.kategorier.map(kategori=>kategori = false));
     const [K, sK] = useState(false);
-    const [antallBehandlinger, sAntallBehandlinger] = useState(env.kategorier.map(kategori=>kategori = 0));
+    
     return(
         <div className='animer-inn'>
             <div className="kategorier">
@@ -23,7 +23,7 @@ function Tjenester({env, sFrisor, sKlokkeslett, displayKomponent, produkt, sProd
                             }
                             setKategoriSynlig(temp);
                             sK(!K);
-                        }}><div style={{display:"flex", flexDirection:"row"}}>{kategori} <p style={{background:"var(--background1)", borderRadius:"50%", aspectRatio:"1/1", height:"75%", display:"flex", alignItems:"center", justifyContent:"center"}}>{antallBehandlinger[index] > 0? antallBehandlinger[index]:"" }</p></div><img className={kategoriSynlig[env.kategorier.indexOf(kategori)] === true?"rotert":""} alt={(kategoriSynlig[env.kategorier.indexOf(kategori)] === true?`Innhold for kategorien ${kategori} vises`:`innhold for kategorien ${kategori} vises ikke`)} style={{height:"1.9rem", transition:"0.5s ease all"}} src="lukket.png"></img> </h3>
+                        }}><div style={{display:"flex", flexDirection:"row"}}>{kategori} {antallBehandlinger[index] > 0? <p style={{background:"var(--background1)", borderRadius:"50%", aspectRatio:"1/1", height:"75%", display:"flex", alignItems:"center", justifyContent:"center"}}>{antallBehandlinger[index] > 0? antallBehandlinger[index]:"" }</p>:""}</div><img className={kategoriSynlig[env.kategorier.indexOf(kategori)] === true?"rotert":""} alt={(kategoriSynlig[env.kategorier.indexOf(kategori)] === true?`Innhold for kategorien ${kategori} vises`:`innhold for kategorien ${kategori} vises ikke`)} style={{height:"1.9rem", transition:"0.5s ease all"}} src="lukket.png"></img> </h3>
                         <div role="region" aria-labelledby={kategori} aria-hidden={!kategoriSynlig[env.kategorier.indexOf(kategori)]} className="tjenestene" id={`${kategori}tjenestene`} style={kategoriSynlig[env.kategorier.indexOf(kategori)] === true?{overflow:"visible", opacity:"1"}:{height:"0.1rem", overflow:"hidden", opacity:"0", transform:"translateY(-20px)"}}>
                             {env.tjenester.filter(element=>element.kategori === kategori).map((tjeneste)=>(
 

@@ -27,6 +27,9 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
 
     const [forsteFrisor, sForsteFrisor] = useState(false);
 
+    //Viser antall valgte behandlinger i hver kategori
+    const [antallBehandlinger, sAntallBehandlinger] = useState(env.kategorier.map(k=>k = 0));
+
     function nullstillData(){
         sDato(hentDato());
         sProdukt([]);
@@ -38,6 +41,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
     }
 
     function displayKomponent(componentIndex){
+        console.log(componentIndex);
         setSynligKomponent(componentIndex);
     }
 
@@ -102,7 +106,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
                     displayKomponent(0);
                 }
             }} style={{backgroundColor: produkt.length > 0?"var(--farge3)":"white"}}><p>1</p>Behandlinger</h2>
-            {(synligKomponent === 0 && env !== null?<div role="region" aria-labelledby='visTjeneseterAria' id="tje" aria-hidden={!(synligKomponent === 0)} > <Tjenester sFrisor={sFrisor} sKlokkeslett={sKlokkeslett} env={env} synligKomponent={synligKomponent} displayKomponent={displayKomponent} produkt={produkt} sProdukt={sProdukt} frisor={frisor} /></div>:"")}
+            {(synligKomponent === 0 && env !== null?<div role="region" aria-labelledby='visTjeneseterAria' id="tje" aria-hidden={!(synligKomponent === 0)} > <Tjenester sFrisor={sFrisor} antallBehandlinger={antallBehandlinger} sAntallBehandlinger={sAntallBehandlinger} sKlokkeslett={sKlokkeslett} env={env} synligKomponent={synligKomponent} displayKomponent={displayKomponent} produkt={produkt} sProdukt={sProdukt} frisor={frisor} /></div>:"")}
            
            
             <h2 role="button" aria-label='Vis: "Velg frisør"-boks ' aria-expanded={synligKomponent === 1 && produkt.length > 0} aria-controls="fri" id="visFrisorAria" className='overskrift' onClick={()=>{

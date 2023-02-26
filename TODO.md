@@ -49,6 +49,13 @@ Legge inn riktig link for google reviews https://developers.google.com/my-busine
 Endre bedriftens navn i personvernserklæringen
     SERVER
 Opprette nytt env
+apt-get update && apt-get install npm
+npm i -g n
+n latest
+opprette .env på serveren
+npm uninstall uuid
+npm install uuid
+endre på domenenavn i /etc/nginx/sites-available
 
 OM APPLIKASJONEN, PERSONVERN OG LOV:
 - Data som lagres om de ansatte går under firmaets egne kontrakter om personvern osv.

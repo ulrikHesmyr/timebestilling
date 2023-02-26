@@ -58,6 +58,7 @@ footer{
   background-color: rgba(0, 0, 0, 0.9);
   margin-top: 2rem;
   text-align: center;
+  width: inherit;
 }
 footer *{
   margin:0.5rem;
@@ -375,6 +376,11 @@ input, button, select, option{
     padding: 1rem;
     background-color: var(--farge2);
     color:var(--color2);
+  }
+  .fortsett .fortsettKnapp:disabled{
+    background-color: rgba(0, 0, 0, 0.25);
+    color:var(--color1);
+    cursor:not-allowed;
   }
 
   .eventWrapper{

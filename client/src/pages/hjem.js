@@ -34,7 +34,7 @@ function Hjem({env}){
             sFrisorBildeArray(midlertidigArray);
         }
         hentBilder();
-    }, [env.frisorer])
+    })
 
     return(<>
         <div className="hjem">
