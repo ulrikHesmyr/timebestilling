@@ -38,10 +38,8 @@ Scenarioer:
 
 Før produksjon
     FILER
-Legge inn authorization som middleware for alle administrative routes (er lagt til for alle hvor admin er eneste autoriserte, men 
-    må legge til for routes der vanlige ansatte kan gjøre endringer)
 endre variabler i .env filen
-fjerne http://localhost fra request i Personinfo.js og Admin.js 
+fjerne http://localhost:1226 fra request i Personinfo.js og Admin.js 
 slette unødvendige filer og fjerne unødvendig kode
 endre tittel i index.html
 sette NODE_ENV til "production" i .env filen

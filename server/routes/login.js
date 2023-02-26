@@ -36,12 +36,6 @@ router.post("/oppdaterPassord", authorization, async(req,res)=>{
     }
     const oppdatertPassord = await Brukere.findOneAndUpdate({brukernavn:bruker}, {passord:passord});
     if(oppdatertPassord){
-        const accessToken = jwt.sign({brukernavn:bruker, passord:passord},ACCESS_TOKEN_KEY,{expiresIn:'480m'});
-
-        res.cookie("access_token", accessToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV == "production",
-        })
         return res.send({message:"Oppdatert passord"});
     } else {
         return res.status(404);
@@ -52,7 +46,7 @@ router.post("/oppdaterPassord", authorization, async(req,res)=>{
 router.post("/resetPassord", authorization, async(req,res)=>{
     //Resetter passordet til en ansatt
     const {navn} = req.body;
-    if(req.brukernavn === "admin"){
+    if(req.admin){
         const bruker = await Brukere.findOneAndUpdate({brukernavn:navn}, {passord:navn});
 
         if(bruker){
@@ -69,7 +63,7 @@ router.post("/oppdaterTelefonnummer", authorization, async (req,res)=>{ //Legg t
     if(NODE_ENV === "production"){
         bruker = req.brukernavn;
     } else {
-        bruker = "elin";
+        bruker = "ulrik";
     }
     const oppdatertBruker = await Brukere.findOneAndUpdate({brukernavn: bruker}, {telefonnummer:telefonnummer});
     if(oppdatertBruker){
@@ -83,12 +77,13 @@ router.post("/oppdaterTelefonnummer", authorization, async (req,res)=>{ //Legg t
 //BRUKERE
 
 router.post("/opprettBruker", authorization, async (req,res)=>{
-    const {nyBrukernavn, nyTelefonnummer} = req.body;
-    if(req.brukernavn === "admin"){
+    const {nyBrukernavn, nyTelefonnummer, adminTilgang} = req.body;
+    if(req.admin){
         const nyBruker = await Brukere.create({
             brukernavn: nyBrukernavn,
             passord:nyBrukernavn,
-            telefonnummer: nyTelefonnummer
+            telefonnummer: nyTelefonnummer,
+            admin: adminTilgang
         });
 
         if(nyBruker){
@@ -103,7 +98,7 @@ router.post("/opprettBruker", authorization, async (req,res)=>{
 router.post("/slettBruker", authorization, async (req,res)=>{
     //Sletter bruker fra databasen
     const {slettBrukernavn} = req.body;
-    if(req.brukernavn === "admin"){
+    if(req.admin){
         const slettetBruker = await Brukere.findOneAndDelete({brukernavn:slettBrukernavn});
         if(slettetBruker){
             return res.send({message:"Slettet brukeren"});
@@ -119,7 +114,7 @@ router.post("/slettBruker", authorization, async (req,res)=>{
 router.get("/loggetinn", authorization, async (req,res)=>{
     try {
         const brukernavn = req.brukernavn;
-        //Find the user in the database
+        //Find the user in the database     //NB DENNE ER IKKE I BRUK
         
         const finnBruker = await Brukere.findOne({brukernavn: brukernavn});
         const env = await Environment.findOne({bedrift:BEDRIFT});
@@ -132,7 +127,7 @@ router.get("/loggetinn", authorization, async (req,res)=>{
             return datoA - datoB;
         })
             
-        return res.json({valid:true,bruker:{navn:finnBruker.brukernavn, telefonnummer:finnBruker.telefonnummer}, message:"Du er nå logget inn", brukertype: (brukernavn==="admin"?"admin":"vakter"), env:{kontakt_epost:kontakt_epost, kontakt_tlf:kontakt_tlf, sosialeMedier:sosialeMedier, bedrift:bedrift, kategorier:kategorier, tjenester:tjenester, frisorer:frisorer, klokkeslett:klokkeslett, adresse: adresse}, bestilteTimer:bestilteTimer});
+        return res.json({valid:true,bruker:{navn:finnBruker.brukernavn, telefonnummer:finnBruker.telefonnummer}, message:"Du er nå logget inn", brukertype: (req.brukertype==="admin"?"admin":"vakter"), env:{kontakt_epost:kontakt_epost, kontakt_tlf:kontakt_tlf, sosialeMedier:sosialeMedier, bedrift:bedrift, kategorier:kategorier, tjenester:tjenester, frisorer:frisorer, klokkeslett:klokkeslett, adresse: adresse}, bestilteTimer:bestilteTimer});
         
     } catch (error) {
         console.log(error);
@@ -142,19 +137,19 @@ router.get("/loggetinn", authorization, async (req,res)=>{
 
 router.post("/TWOFA", async (req,res)=>{
     //Tar høyde for at brukeren allerede har fått SMS med PIN og har dermed også cookie med kryptert PIN
-    const {pin} = req.body;
+    const {pin, brukertype} = req.body;
     const two_FA = jwt.verify(req.cookies.two_FA, TWOFA_SECRET);
     if(two_FA.pin === parseInt(pin)){
         //Setter cookie slik at brukeren ikke trenger å autorisere med 2FA neste gang
         const newToken = jwt.sign({brukernavn:two_FA.brukernavn, gyldig:true},ACCESS_TOKEN_KEY);
         res.cookie("two_FA_valid", newToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV == "production"
+            secure: process.env.HTTPS_ENABLED == "secure"
         })
         
         const finnBruker = await Brukere.findOne({brukernavn: two_FA.brukernavn});
         const env = await Environment.findOne({bedrift:BEDRIFT});
-        const {kontakt_epost, kontakt_tlf, sosialeMedier, bedrift, kategorier, tjenester, frisorer, klokkeslett} = env;
+        const {kontakt_epost, kontakt_tlf, sosialeMedier, bedrift, kategorier, tjenester, frisorer, klokkeslett, adresse} = env;
         
         let bestilteTimer = await Bestiltetimer.find();
         bestilteTimer = bestilteTimer.sort((a,b)=>{
@@ -162,16 +157,16 @@ router.post("/TWOFA", async (req,res)=>{
             let datoB = new Date(b.dato + " " + b.tidspunkt);
             return datoA - datoB;
         })
-        const accessToken = jwt.sign({brukernavn:two_FA.brukernavn, passord:finnBruker.passord}, ACCESS_TOKEN_KEY, {expiresIn:'480m'});
+        const accessToken = jwt.sign({brukernavn:two_FA.brukernavn, passord:finnBruker.passord, brukertype:brukertype}, ACCESS_TOKEN_KEY, {expiresIn:'480m'});
 
         //Setter cookie for å holde brukeren logget inn
         res.cookie("access_token", accessToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV == "production",
+            secure: process.env.HTTPS_ENABLED == "secure",
         })
         res.clearCookie("two_FA");
             
-        return res.json({bruker:{navn:finnBruker.brukernavn, telefonnummer:finnBruker.telefonnummer}, valid:true, message:"Du er nå logget inn", brukertype: (finnBruker.brukernavn==="admin"?"admin":"vakter"), env:{kontakt_epost:kontakt_epost, kontakt_tlf:kontakt_tlf, sosialeMedier:sosialeMedier, bedrift:bedrift, kategorier:kategorier, tjenester:tjenester, frisorer:frisorer, klokkeslett:klokkeslett}, bestilteTimer:bestilteTimer});
+        return res.json({valid:true,bruker:{navn:finnBruker.brukernavn, telefonnummer:finnBruker.telefonnummer}, message:"Du er nå logget inn", brukertype: (brukertype==="admin"?"admin":"vakter"), env:{kontakt_epost:kontakt_epost, kontakt_tlf:kontakt_tlf, sosialeMedier:sosialeMedier, bedrift:bedrift, kategorier:kategorier, tjenester:tjenester, frisorer:frisorer, klokkeslett:klokkeslett, adresse: adresse}, bestilteTimer:bestilteTimer});
         
 
     } else {
@@ -182,18 +177,51 @@ router.post("/TWOFA", async (req,res)=>{
 router.post('/auth',loginLimiter, async (req,res)=>{
 
     try {
-        const {brukernavn, passord}= req.body;
+        const {brukernavn, passord, valgtBrukertype, brukertype}= req.body;
         const finnBruker = await Brukere.findOne({brukernavn: brukernavn});
+        
 
         if(finnBruker && finnBruker.passord === passord){
-            const allerede2FA = req.cookies.two_FA_valid;
-            if(allerede2FA || NODE_ENV === "development"){
-                if(NODE_ENV === "production"){
-                    const two_FA_valid = jwt.verify(allerede2FA, ACCESS_TOKEN_KEY);
-                    if(!two_FA_valid.gyldig){
-                        return res.status(401).json({message:"Du har ikke gyldig 2FA token"});
-                    }
+
+            if(finnBruker.admin){
+
+                if(!valgtBrukertype){
+                    return res.json({velgBrukertype:true});
                 }
+                
+                const allerede2FA = req.cookies.two_FA_valid;
+                if(allerede2FA || NODE_ENV === "development"){
+                    if(NODE_ENV === "production"){
+                        const two_FA_valid = jwt.verify(allerede2FA, ACCESS_TOKEN_KEY);
+                        if(!two_FA_valid.gyldig){
+                            res.clearCookie("two_FA_valid");
+                            return res.status(401).json({message:"Du har ikke gyldig 2FA token"});
+                        }
+                    }
+                } else {
+                    
+                    //Dersom brukeren ikke har autorisert med 2FA i denne nettleseren enda
+                    const randomGeneratedPIN = randomNumber(2000, 9999);
+                    const newToken = jwt.sign({brukernavn: finnBruker.brukernavn, pin: randomGeneratedPIN},TWOFA_SECRET,{expiresIn:'20m'});
+                    res.cookie("two_FA", newToken, {
+                        httpOnly: true,
+                        secure: process.env.HTTPS_ENABLED == "secure",
+                    })
+                    //Send SMS med pin
+                    let baseUrl = "https://shared.target365.io/";
+                    let keyName = KEYNAME_SMS;
+                    let privateKey = PRIVATE_KEY;
+                    let serviceClient = new Client(privateKey, { baseUrl, keyName });
+                    let outMessage = {
+                        transactionId: uuidv4(),
+                        sender:'Target365',
+                        recipient:`+47${finnBruker.telefonnummer}`,
+                        content:`Din PIN er ${randomGeneratedPIN}`
+                    }
+                    await serviceClient.postOutMessage(outMessage);
+                    return res.send({message:"Du må logge inn med 2FA", valid:false, two_FA:true});
+                }
+            }
                 
                 const env = await Environment.findOne({bedrift:BEDRIFT});
                 const {kontakt_epost, kontakt_tlf, sosialeMedier, bedrift, kategorier, tjenester, frisorer, klokkeslett, adresse} = env;
@@ -203,36 +231,15 @@ router.post('/auth',loginLimiter, async (req,res)=>{
                     let datoB = new Date(b.dato + " " + b.tidspunkt);
                     return datoA - datoB;
                 })
+
                 //Setter access token i cookies
-                const accessToken = jwt.sign({brukernavn:brukernavn, passord:passord},ACCESS_TOKEN_KEY,{expiresIn:'480m'});
+                const accessToken = jwt.sign({brukernavn:brukernavn, passord:passord, brukertype: brukertype},ACCESS_TOKEN_KEY,{expiresIn:'480m'});
                 res.cookie("access_token", accessToken, {
                     httpOnly: true,
-                    secure: process.env.NODE_ENV == "production",
+                    secure: process.env.HTTPS_ENABLED == "secure",
                 })
-                return res.json({valid:true,bruker:{navn:finnBruker.brukernavn, telefonnummer:finnBruker.telefonnummer}, message:"Du er nå logget inn", brukertype: (brukernavn==="admin"?"admin":"vakter"), env:{kontakt_epost:kontakt_epost, kontakt_tlf:kontakt_tlf, sosialeMedier:sosialeMedier, bedrift:bedrift, kategorier:kategorier, tjenester:tjenester, frisorer:frisorer, klokkeslett:klokkeslett, adresse: adresse}, bestilteTimer:bestilteTimer});
+                return res.json({valid:true,bruker:{navn:finnBruker.brukernavn, telefonnummer:finnBruker.telefonnummer}, message:"Du er nå logget inn", brukertype: (brukertype==="admin"?"admin":"vakter"), env:{kontakt_epost:kontakt_epost, kontakt_tlf:kontakt_tlf, sosialeMedier:sosialeMedier, bedrift:bedrift, kategorier:kategorier, tjenester:tjenester, frisorer:frisorer, klokkeslett:klokkeslett, adresse: adresse}, bestilteTimer:bestilteTimer});
             
-            } else {
-                //Dersom brukeren ikke har autorisert med 2FA i denne nettleseren enda
-                const randomGeneratedPIN = randomNumber(9999);
-                const newToken = jwt.sign({brukernavn: finnBruker.brukernavn, pin: randomGeneratedPIN},TWOFA_SECRET,{expiresIn:'20m'});
-                res.cookie("two_FA", newToken, {
-                    httpOnly: true,
-                    secure: process.env.NODE_ENV == "production",
-                })
-                //Send SMS med pin
-                let baseUrl = "https://shared.target365.io/";
-                let keyName = KEYNAME_SMS;
-                let privateKey = PRIVATE_KEY;
-                let serviceClient = new Client(privateKey, { baseUrl, keyName });
-                let outMessage = {
-                    transactionId: uuidv4(),
-                    sender:'Target365',
-                    recipient:`+47${finnBruker.telefonnummer}`,
-                    content:`Din PIN er ${randomGeneratedPIN}`
-                }
-                await serviceClient.postOutMessage(outMessage);
-                return res.send({message:"Du må logge inn med 2FA", valid:false, two_FA:true});
-            }
         } else {
 
             return res.json({valid:false, message:`Feil passord, du har ${req.antForsok.remaining} forsøk igjen!`});
@@ -249,8 +256,8 @@ router.get("/logout", (req, res) => {
 });
 
 
-function randomNumber(max){
-    return Math.floor(Math.random() * max);
+function randomNumber(min, max){
+    return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 

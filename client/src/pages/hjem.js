@@ -38,7 +38,7 @@ function Hjem({env}){
 
     return(<>
         <div className="hjem">
-            <header style={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"flex-end", flexWrap:"wrap"}}>
+            <header style={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"center", flexWrap:"wrap"}}>
                 <p className="viEr" >Vi er </p><p className="bedriftNavnHeader">{env.bedrift}</p>
                 
             </header>

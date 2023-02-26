@@ -18,7 +18,7 @@ const App = ()=> {
 
   useEffect(()=>{
     async function fetchEnvironment(){
-      const environmentRequest = await fetch("/env/env");
+      const environmentRequest = await fetch("http://localhost:1226/env/env");
       const environment = await environmentRequest.json();
       if(environment){
         sEnv(environment);
@@ -57,7 +57,7 @@ const App = ()=> {
             <Routes>
               <Route exact path="/timebestilling" element={(registrertReservasjon?<DinReservasjon env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} registrertReservasjon={registrertReservasjon} />:(env !== null?<Timebestilling env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} />:"Laster..."))} />
               <Route exact path="/" element={(env !== null?<Hjem env={env}/>:"Laster...")} />
-              <Route exact path="/login" element={<Login/>} />
+              <Route exact path="/logginn" element={<Login/>} />
               <Route exact path="/kontakt-oss" element={(env !== null? <Kontakt env={env}/>:"Laster...")}/>
               <Route exact path="/personvaernserklaering-og-brukervilkaar" element={env !== null?<PB env={env}/>:"Laster..."}/>
             </Routes>))}

@@ -11,13 +11,16 @@ function Login(){
     const [loggetInn, toggleLoggetInn] = useState(false);
     const [passordSynlig, sPassordsynlig] = useState(false);
     const [updateTrigger, sUpdateTrigger] = useState(false);
+
+    //Bruker må velge hvilken brukertype de er
+    const [brukertypeValg, sBrukertypeValg] = useState("");
     
     //Varsling
     const[varslingSynlig, sVarslingSynlig] = useState(false);
     const[lagrerVarslingSynlig, sLagrerVarslingSynlig] = useState(false);
 
     //Fjerne logg inn knapp med en gang de har trykt
-    const[trykketLoggInn, sTrykketLoggInn] = useState(false);
+    const[trykketLoggInn, sTrykketLoggInn] = useState(true);
 
     //2FA, bruker må skrive inn PIN fra SMS
     const [twoFApin, sTwoFApin] = useState();
@@ -51,7 +54,9 @@ function Login(){
     async function logginn(){
         const data = {
             brukernavn:brukernavn.toLowerCase(), 
-            passord:passord
+            passord:passord,
+            valgtBrukertype:false,
+            brukertype:brukertypeValg
         }
         const request = await fetch('/login/auth', {
             method:"POST",
@@ -69,7 +74,50 @@ function Login(){
             alert("Du har prøvd å logge inn for mange ganger. Vennligst vent 5 minutter og prøv igjen.");
             sTrykketLoggInn(false);
         } else {
-            if(!response.valid && response.two_FA){
+            if(response.velgBrukertype){
+                let hihi = window.confirm("Logge inn på administrator-panelet?\n\n Hvis du velger \"Ok\" vil du logge inn på admin-panelet\n\n Hvis du velger \"Avbryt\" vil du logge inn på vakter-panelet");
+                if(hihi){
+                    
+                    sBrukertypeValg("admin");
+                } else {
+                    sBrukertypeValg("vakter");
+                }
+                const d = {
+                    brukernavn:brukernavn.toLowerCase(), 
+                    passord:passord,
+                    valgtBrukertype:true,
+                    brukertype:(hihi ? "admin" : "vakter")
+                }
+
+                const r = await fetch('/login/auth', {
+                    method:"POST",
+                    headers:{
+                        "Content-Type":"application/json",
+                    },
+                    body: JSON.stringify(d),
+                    credentials:'include'
+                });
+                const res = await r.json();
+                if(!res.valid && res.two_FA){
+                    sVis2FA(true);
+                } else if(!res.valid){
+                    alert(res.message); 
+                    sTrykketLoggInn(false);
+                } else if(res.valid){
+                   toggleLoggetInn(true);
+                   setBukertype(res.brukertype);
+                   sEnv(res.env);
+                   sBestiltetimer(res.bestilteTimer);
+                   sBruker(res.bruker);
+        
+                   //Nullstiller input
+                   setBrukernavn("");
+                   setPassord("");
+                   sTrykketLoggInn(false);
+                } else {
+                    alert("Noe har skjedd galt. Sjekk om du har internett og prøv på nytt.");
+                }
+            }else if(!response.valid && response.two_FA){
                 sVis2FA(true);
             } else if(!response.valid){
                 alert(response.message); 
@@ -97,12 +145,12 @@ function Login(){
 
     async function send2FA(){
         //Sender request til TWOFA route på server for å sjekke om PIN stemmer
-        const request = await fetch("/login/twoFA", {
+        const request = await fetch("/login/TWOFA", {
             method:"POST",
             headers:{
                 "Content-Type":"application/json",
             },
-            body: JSON.stringify({pin:twoFApin}),
+            body: JSON.stringify({pin:twoFApin, brukertype:brukertypeValg}),
             credentials:'include'
         });
         const response = await request.json();
@@ -119,7 +167,9 @@ function Login(){
     }
 
     async function alleredeLoggetInn(){
-        const request = await fetch("/login/loggetinn",{method:"GET", credentials:'include'});
+        const request = await fetch("/login/loggetinn",{method:"GET",
+         credentials:'include'
+        });
         const response = await request.json();
         if(response.valid){
             toggleLoggetInn(true);
@@ -127,14 +177,20 @@ function Login(){
             sEnv(response.env);
             sBestiltetimer(response.bestilteTimer);
             sBruker(response.bruker);
+        } else {
+            sTrykketLoggInn(false);
         }
     }
 
     async function loggut(){
-        const request = await fetch("/login/logout", {method:"GET", credentials:'include'});
+        const request = await fetch("/login/logout", {method:"GET",
+         credentials:'include'
+        });
         const response = await request.json();
         if(response){
             toggleLoggetInn(false);
+            sTrykketLoggInn(false);
+            sBrukertypeValg("vakter");
         }
     }
     
@@ -167,7 +223,7 @@ function Login(){
         }
         {(loggetInn && env !== null?<div>
         
-     <div style={{ padding:"0.5rem",color:"blue", cursor:"pointer", userSelect:"none"}} onClick={loggut}>LOGG UT</div> {(brukertype === "admin"?<Admin env={env} sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} lagreVarsel={lagreVarsel} varsle={varsle} bestilteTimer={bestilteTimer}/>:(brukertype === "vakter"?<Vakter env={env} bruker={bruker} varsle={varsle} lagreVarsel={lagreVarsel} bestilteTimer={bestilteTimer} />:""))}</div>:(<div className='login'>
+     <div style={{ padding:"0.5rem",color:"blue", cursor:"pointer", userSelect:"none"}} onClick={loggut}>LOGG UT</div> {(brukertype === "admin"?<Admin env={env} bruker={bruker} sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} lagreVarsel={lagreVarsel} varsle={varsle} bestilteTimer={bestilteTimer}/>:(brukertype === "vakter"?<Vakter env={env} loggut={loggut} bruker={bruker} varsle={varsle} lagreVarsel={lagreVarsel} bestilteTimer={bestilteTimer} />:""))}</div>:(<div className='login'>
         <form className='loginForm'>
             <label>Brukernavn: <input name='brukernavn' value={brukernavn} maxLength={10} type="text" placeholder='brukernavn' onChange={(e)=>{
                 if(!format.test(e.target.value)){

@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import {hentDato} from '../App'
-function DetaljerFrisor({env, frisor, sendTilDatabase, varsle, lagreVarsel, sUpdateTrigger, updateTrigger}){
+function DetaljerFrisor({env, bruker, frisor, sendTilDatabase, varsle, lagreVarsel, sUpdateTrigger, updateTrigger}){
 
     const [visDetaljer, sVisDetaljer] = useState(false);
 
@@ -149,13 +149,13 @@ function DetaljerFrisor({env, frisor, sendTilDatabase, varsle, lagreVarsel, sUpd
                 sVisRedigerBilde(true);
               }}>Oppdater bilde</button>
 
-              <button style={{backgroundColor:"red", color:"white"}} onClick={()=>{
+              {bruker.navn.toLowerCase() !== frisorRediger.navn.toLowerCase()? <button style={{backgroundColor:"red", color:"white"}} onClick={()=>{
                 //Resetter passord til ansatt
                 if(window.confirm("Er du sikker på at du vil resette passordet til " + frisorRediger.navn + "? Passordet blir satt til samme som brukernavnet")){
                   sVisRedigerFrisor(false);
                   resetPassord(frisorRediger.navn);
                 }
-              }} >Resett innloggings-passord for {frisorRediger.navn}</button>
+              }} >Resett innloggings-passord for {frisorRediger.navn}</button>:<p>Rediger passordet ditt i "vakter"-panelet</p>}
 
             </div>   
 

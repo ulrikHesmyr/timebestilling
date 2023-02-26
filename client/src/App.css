@@ -15,6 +15,7 @@
   --font1:'Courier Prime', monospace;
   --font2:'Gloock', serif;
   --font3:'Sorts Mill Goudy', serif;
+  --font4:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 
 }
 
@@ -39,7 +40,7 @@ select{
   width: fit-content;
 }
 header .bedriftNavnHeader{
-  font-family: var(--font3);
+  font-family: var(--font4);
   mix-blend-mode: difference ; /* differance exclusion */
   text-shadow: 4px 4px 2px rgba(0, 0, 0, 0.5);
   color:white;
@@ -56,7 +57,7 @@ footer{
   padding:2rem;
   background-color: rgba(0, 0, 0, 0.9);
   margin-top: 2rem;
-  width: 90vw;
+  text-align: center;
 }
 footer *{
   margin:0.5rem;
@@ -231,8 +232,9 @@ input, button, select, option{
   .klokkeslettene *{
     cursor: pointer;
     border-radius: 1rem;
-    padding:2rem;
     color:black;
+    
+    padding:0.7rem;
     transition: 0.5s ease;
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
   }
@@ -360,13 +362,19 @@ input, button, select, option{
   }
   .fortsett{
     width: 20vw;
-    padding: 0.5rem;
     font-size: x-large;
+    letter-spacing: 0.25rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+  }
+  .fortsett .fortsettKnapp{
     cursor: pointer;
+    padding: 1rem;
     background-color: var(--farge2);
     color:var(--color2);
-    border: thin solid rgba(31, 62, 0, 0.5);
-    letter-spacing: 0.25rem;
   }
 
   .eventWrapper{
@@ -431,8 +439,12 @@ input, button, select, option{
     flex-direction: column;
     align-items: center;
   }
+  .container{
+    display: flex;
+    flex-direction: column;
+  }
   .redigeringsElement{
-    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   }
   .passordBoks{
     display: flex;
@@ -479,7 +491,7 @@ input, button, select, option{
     
   }
   .viEr{
-    font-family: var(--font3);
+    font-family: var(--font4);
     font-weight: bold;
     font-size: max(1.5rem, 3.5vw);
     margin-left: 0.4rem;
@@ -670,6 +682,9 @@ header * {
   .fokus .lukk{
     height:2.2rem;
   }
+  .rbc-toolbar{
+    flex-direction: column !important;
+  }
   .ikonKnapper{
     height:1.8rem;
   }
@@ -678,9 +693,14 @@ header * {
     bottom: 0;
     left:0;
     width:100vw;
-    
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     margin:0 !important;
-    padding:2.5rem;
+    padding-bottom: 1rem;
+    z-index: 3;
+  }
+  .fortsett *{
+    width: 100%;
   }
   
   .startside{
@@ -691,7 +711,7 @@ header * {
   .startside h2{
     writing-mode: vertical-lr;
     text-align: left;
-    color:rgba(0, 0, 0, 0.6);
+    color:rgba(0, 0, 0, 0.75);
     font-weight: 200;
     border-bottom:thin solid rgba(0, 0, 0, 0.5);
   }
@@ -735,6 +755,7 @@ header * {
   
 .timebestilling .container{
   width: 95%;
+  margin-bottom: 20rem; 
 }
 .infoboks{
   display: flex;

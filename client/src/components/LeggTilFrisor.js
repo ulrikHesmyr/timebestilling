@@ -7,26 +7,12 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel}
     const [tlfNyFrisor, sTlfNyFrisor] = useState("");
     const [frisorTjenester, setFrisortjenester] = useState([]); //Skal være indekser, akkurat som i databasen
     const [bildeAvFrisor, sBildeAvFrisor] = useState(null);
+    const [adminTilgang, sAdminTilgang] = useState(false);
 
 
     async function lagre(){
         lagreVarsel();
         sLeggTil(false);
-        
-            
-        const data = {
-            nyBrukernavn: nyFrisorNavn.toLowerCase(),
-            nyTelefonnummer: parseInt(tlfNyFrisor)
-        }
-        const options = {
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body: JSON.stringify(data)
-        }
-        const request = await fetch("/login/opprettBruker", options);
-        const response = request.json();
         
         
         let formData = new FormData();
@@ -39,15 +25,38 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel}
             body: formData
         }
         const request2 = await fetch("/env/opprettFrisor", options2);
-        const response2 = request2.json();
-        if(response && response2){
-            sUpdateTrigger(!updateTrigger);
-            setFrisortjenester([]);
-            sTlfNyFrisor("");
-            sNyFrisorNavn("");
-            sBildeAvFrisor(null);
-            varsle();
+        const response2 = await request2.json();
+        if(response2){
+
+            
+            const data = {
+                nyBrukernavn: nyFrisorNavn.toLowerCase(),
+                nyTelefonnummer: parseInt(tlfNyFrisor),
+                adminTilgang: adminTilgang
+            }
+            const options = {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body: JSON.stringify(data)
+            }
+            const request = await fetch("/login/opprettBruker", options);
+            const response = await request.json();
+
+            if(response){
+                sUpdateTrigger(!updateTrigger);
+                setFrisortjenester([]);
+                sTlfNyFrisor("");
+                sNyFrisorNavn("");
+                sBildeAvFrisor(null);
+                varsle();
+            }
+
+        } else {
+            alert("Noe gikk galt. Prøv igjen.");
         }
+            
         
 
 
@@ -89,6 +98,11 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel}
             {tjeneste.navn}
         </div>)
         )}
+        <p>Nedenfor krysser du av boksen (slik at den ikke er tom) dersom denne frisøren skal ha administrator-rettigheter og få tilgang til dette panelet.</p>
+        <label>Admin tilgang: <input type="checkbox" onChange={(e)=>{
+            sAdminTilgang(e.target.checked);
+            console.log(e.target.checked, "Skal ha admin tilgang");
+        }}></input> </label>
 
         <div>
             <button onClick={(e)=>{

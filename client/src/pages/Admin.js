@@ -6,7 +6,7 @@ import DetaljerFrisor from '../components/DetaljerFrisor';
 import Fri from '../components/Fri';
 import RedigerAapningstider from '../components/RedigerAapningstider';
 
-function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle, lagreVarsel}){
+function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsle, lagreVarsel}){
     const behandlingsEstimater = [15,30,45,60,75,90,105,120,135,150,165,180,195,210,225,240];
     const [kontakt_epost, sKontakt_epost] = useState(env.kontakt_epost);
     const [kontakt_tlf, sKontakt_tlf] = useState(env.kontakt_tlf);
@@ -245,11 +245,11 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle, lagre
             {synligKomponent === 3 && env !== null?(
                 <>
                 
-                <h3>Frisører, kategorier, åpningstider, kontakt-info og passord</h3>
+                <h3>Frisører, kategorier, åpningstider og kontakt-info</h3>
                 
             <div className='adminMain'>
                 <div>
-                <h4>Kontakt-info og administrator passord:</h4>
+                <h4>Kontakt-info:</h4>
                     <div className='redigeringsBoks'> 
                         <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
                             <RedigerKontakt number={true} state={kontakt_tlf} setState={sKontakt_tlf} env={env} sendTilDatabase={sendTilDatabase} /><p>Kontakt telefon: </p> 
@@ -352,11 +352,7 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle, lagre
                             sVisRedigerAdresse(true);
                         }}><img alt="rediger adresse" src="rediger.png" className='ikonKnapper'></img></button> Adresse:</div><p className='redigeringsElement'>{adresseTekst}</p></>}
                     </div>
-                    <div className='redigeringsBoks'>
-                        <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
-                            <RedigerPassord redigerPassordDB={redigerPassordDB} /> <p>Passord for admin</p> 
-                        </div>
-                    </div>
+                    
                     
                 </div>
                 <div>
@@ -364,7 +360,7 @@ function Admin({env, bestilteTimer, sUpdateTrigger, updateTrigger, varsle, lagre
                     <div className='frisorOversikt'>
                         {env.frisorer.map((frisor)=>(
                                 <div key={frisor.navn}>
-                                    <DetaljerFrisor frisor={frisor} env={env} sendTilDatabase={sendTilDatabase} lagreVarsel={lagreVarsel} varsle={varsle} updateTrigger={updateTrigger} sUpdateTrigger={sUpdateTrigger} />
+                                    <DetaljerFrisor frisor={frisor} bruker={bruker} env={env} sendTilDatabase={sendTilDatabase} lagreVarsel={lagreVarsel} varsle={varsle} updateTrigger={updateTrigger} sUpdateTrigger={sUpdateTrigger} />
                                 </div>
                         ))}
                     </div>

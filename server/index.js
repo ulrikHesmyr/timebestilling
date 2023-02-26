@@ -2,6 +2,7 @@ require("dotenv").config();
 require("./configuration/database").connect();
 const express = require('express');
 const app = express();
+const path = require('path');
 const cors = require("cors");
 const schedule = require("node-schedule");
 const mailer = require("./configuration/mailer");
@@ -21,7 +22,7 @@ app.use(express.json({limit:'1mb'}));
 app.use(express.urlencoded({extended:false}));
 app.use(cors());
 app.use(cookieParser());
-
+app.use(express.static('build'));
 
 const limiter = rateLimiter({
   windowMs: 50 * 50 * 1000,
@@ -31,9 +32,6 @@ const limiter = rateLimiter({
 
 
 app.use(limiter);
-
-
-//app.use(express.static("public_test"));
 
 //Sletter gamle timebestillinger
 schedule.scheduleJob('30 23 * * *', async ()=>{
@@ -106,6 +104,11 @@ schedule.scheduleJob('05 23 * * *', async ()=>{
 app.use('/timebestilling', require('./routes/timebestilling'));
 app.use('/login', require('./routes/login'));
 app.use('/env', require('./routes/env'));
+
+
+app.get('*', (req, res)=>{
+  res.sendFile(path.join(__dirname, 'build/index.html'));       
+})
 
 app.listen(process.env.SERVERPORT, () => {
   console.log(`Server listening on port ${process.env.SERVERPORT}`);

@@ -89,6 +89,11 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
 
     <div className='timebestilling'>
         <div className='container'>
+            <div style={{display:"flex", flexDirection:"row"}}>
+                <img src="logo.png" alt='Logo' style={{height:"5rem"}}></img>
+                <h1>Timereservasjon {env.bedrift}</h1>
+            </div>
+            <p>Her kan du reservere time hos oss! </p>
             
             <h2 role="button" aria-label='Vis: "Velg behandling"-boks ' aria-expanded={synligKomponent === 0} aria-controls="tje" id="visTjeneseterAria" className='overskrift' onClick={()=>{
                 if(synligKomponent === 0){

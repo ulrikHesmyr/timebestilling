@@ -47,15 +47,15 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel}){
           let frii = response.map((element)=>{
             if(ansatt.includes(element.medarbeider)){
               if(element.lengreTid){
-                element.start = new Date(`${element.fraDato}Z00:30+1:00`);
-                element.end = new Date(`${element.tilDato}Z23:59+1:00`);
+                element.start = new Date(`${element.fraDato}T00:30:00`);
+                element.end = new Date(`${element.tilDato}T23:59:00`);
                 element.title = `${element.medarbeider}`;
                 element.color = "red";
                 element.tidspunkt = "LANGFRI";
                 return element;
               } else {
-                element.start = new Date(`${element.friDag}Z${element.fraKlokkeslett}+1:00`);
-                element.end = new Date(`${element.friDag}Z${element.tilKlokkeslett}+1:00`);
+                element.start = new Date(`${element.friDag}T${element.fraKlokkeslett}:00`);
+                element.end = new Date(`${element.friDag}T${element.tilKlokkeslett}:00`);
                 element.title = `${element.medarbeider} - FRI`;
                 element.color = "red";
                 element.tidspunkt = element.fraKlokkeslett;
@@ -69,8 +69,8 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel}){
           const v = bestilteTimer.map((time)=>{
             if(ansatt.includes(time.medarbeider)){
               const gjeldendeTjenester = env.tjenester.filter(tjeneste => time.behandlinger.includes(tjeneste.navn)).reduce((total, element)=> total + element.tid, 0);
-              time.start = new Date(`${time.dato}Z${time.tidspunkt}+1:00`);
-              time.end = new Date(`${time.dato}Z${klokkeslettFraMinutter(gjeldendeTjenester+minutterFraKlokkeslett(time.tidspunkt))}+1:00`);
+              time.start = new Date(`${time.dato}T${time.tidspunkt}:00`);
+              time.end = new Date(`${time.dato}T${klokkeslettFraMinutter(gjeldendeTjenester+minutterFraKlokkeslett(time.tidspunkt))}:00`);
               time.slutt = klokkeslettFraMinutter(minutterFraKlokkeslett(time.tidspunkt)+gjeldendeTjenester);
               time.title = `${time.medarbeider.toUpperCase()}, ${time.behandlinger.join(", ")} Kunde: ${time.kunde}, tlf.: ${time.telefonnummer}`
               return time;
@@ -85,8 +85,8 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel}){
     hentFri();
   },[ansatt, bestilteTimer, bruker.navn, env.frisorer, env.tjenester]);
 
-    const MIN_DATE = new Date(2020, 0, 1, 7, 30, 0); // 08:00
-    const MAX_DATE = new Date(2020, 0, 1, 17, 30, 0); // 17:30
+    const MIN_DATE = new Date(2020, 0, 1, 7, 0, 0); // 08:00
+    const MAX_DATE = new Date(2020, 0, 1, 20, 0, 0); // 17:30
 
     let formats = {
       timeGutterFormat: 'HH:mm',

@@ -1,6 +1,6 @@
 const Environment = require("../model/env");
 const Brukere = require("../model/brukere");
-const {BEDRIFT, ADMIN_TLF} = process.env;
+const {BEDRIFT, ADMIN_TLF, ADMIN_BRUKER, ADMIN_PASS} = process.env;
 
 async function opprettEnvironment(){
     try {
@@ -17,8 +17,6 @@ async function opprettEnvironment(){
                 bruker:"UlrikFrisor",
                 link:"https://www.facebook.com/LogNTNU"
             }],
-            admin_bruker:"admin",
-            admin_pass:"KongHarald",
             bedrift:BEDRIFT,
             adresse:{
                 gatenavn:"Jernbanetorget",
@@ -104,12 +102,12 @@ async function opprettEnvironment(){
                 closed:"14:00"
                 }]
             })
-            let tlf = parseInt(ADMIN_TLF)
-
+            
             const adminBruker = await Brukere.create({
-                brukernavn:"admin",
-                passord:"KongHarald",
-                telefonnummer: tlf
+                brukernavn:ADMIN_BRUKER,
+                passord:ADMIN_PASS,
+                telefonnummer: parseInt(ADMIN_TLF),
+                admin:true
             })
 
 

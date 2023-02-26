@@ -114,7 +114,7 @@ router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
 //Sletter én enkelt timebestilling
 router.post('/oppdaterTimebestillinger', authorization, async (req,res)=>{
     try {
-        if(req.brukernavn === "admin"){
+        if(req.admin){
             const slettTime = await Bestilttime.findOneAndDelete({_id: req.body._id});
             if(slettTime){
                 return res.send({message: "Timebestilling slettet", valid: true})

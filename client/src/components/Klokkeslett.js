@@ -140,7 +140,7 @@ function Klokkeslett({env, sForsteFrisor, friElementer, tilgjengeligeFrisorer, d
     return(
         <div className="animer-inn">
             <div className='klokkeslettene'>
-                {(ledigeTimer.length > 0? ledigeTimer.map((tid)=>(<div style={{backgroundColor: klokkeslettet===tid.tid ?"var(--farge4)": "white"}} className='klokkeslett' key={tid.tid} onClick={()=>{
+                {(ledigeTimer.length > 0? ledigeTimer.map((tid)=>(<div style={{backgroundColor: klokkeslettet===tid.tid ?"var(--farge5)": "white"}} className='klokkeslett' key={tid.tid} onClick={()=>{
                     //Velg frisør, sett random ut ifra klokkeslettet, altså tid bruk random som velger random indeks fra tid.frisorer
                     let randomFrisor = tid.frisorer[randomNumber(tid.frisorer.length)];
                     sForsteFrisor(randomFrisor);
@@ -148,7 +148,7 @@ function Klokkeslett({env, sForsteFrisor, friElementer, tilgjengeligeFrisorer, d
                 }}> {tid.tid} </div>)):`Ingen ledige timer for ${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}`)}
             </div>
             
-            <Fortsett displayKomponent={displayKomponent} number={3} disabled={(klokkeslettet !== null? false:true)} />
+            <Fortsett displayKomponent={displayKomponent} previous={2} number={3} disabled={(klokkeslettet !== null? false:true)} />
         </div>
     )
 }

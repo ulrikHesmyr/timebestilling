@@ -47,7 +47,7 @@ function Frisor({tilgjengeligeFrisorer, env, synligKomponent, displayKomponent, 
                     
                 </div>)):""}
             </div></>:"Ingen tilgjengelige frisører for disse behandlingene"}
-            <Fortsett disabled={(frisor !== null?false:true)} number={2} displayKomponent={displayKomponent} />
+            <Fortsett disabled={(frisor !== null?false:true)} previous={1} number={2} displayKomponent={displayKomponent} />
         </div>
     )
 }

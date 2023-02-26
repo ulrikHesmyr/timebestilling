@@ -15,13 +15,16 @@ const authorization = async (req,res,next) => {
                 const funnetBruker = await Brukere.findOne({brukernavn: data.brukernavn});
                 if(funnetBruker && funnetBruker.passord === data.passord){
                     req.brukernavn = data.brukernavn;
+                    req.admin = funnetBruker.admin;
+                    req.brukertype = data.brukertype;
                     return next();
                 } else {
                     return res.send({message:"Ikke autorisert", valid:false});
                 }
             }
         } else {
-            req.brukernavn = "admin";
+            req.admin = true;
+            req.brukernavn = "ulrik";
             return next();
 
         }

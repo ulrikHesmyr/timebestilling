@@ -29,7 +29,7 @@ router.get('/fri', async(req,res)=>{
 
 router.post('/slettFri', authorization, async(req,res)=>{
     const {lengreTid, fraDato, tilDato, fraKlokkeslett, tilKlokkeslett, friDag, frisor, medarbeider} = req.body;
-    if(req.brukernavn === "admin"){
+    if(req.admin){
         try {
             const fjernetFriElement = await FriElementer.findOneAndDelete({
                 lengreTid:lengreTid,
@@ -53,7 +53,7 @@ router.post('/slettFri', authorization, async(req,res)=>{
 })
 router.post('/oppdaterAdresse', authorization, async(req,res)=>{
     const {adresse} = req.body;
-    if(req.brukernavn === "admin"){
+    if(req.admin){
         try {
             const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {adresse:adresse});
             if(oppdatertEnv){
@@ -70,7 +70,7 @@ router.post('/oppdaterAdresse', authorization, async(req,res)=>{
 
 router.post('/opprettFri', authorization,async(req,res)=>{
     const {lengreTid, fraDato, tilDato, fraKlokkeslett, tilKlokkeslett, friDag, frisor, medarbeider} = req.body;
-    if(req.brukernavn === "admin"){    
+    if(req.admin){    
         try {
 
             const nyttFriElement = await FriElementer.create({
@@ -128,6 +128,7 @@ const oppdaterBildeFrisor = multer({
     storage: storage,
     dest: 'uploads/',
     fileFilter: function (req, file, cb) {
+        console.log(file.originalname);
       if (!file.originalname.match(/\.(jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF)$/)) {
         return cb(new Error('Only image files are allowed!'), false);
       }
@@ -138,7 +139,7 @@ const oppdaterBildeFrisor = multer({
 router.post("/oppdaterBildeFrisor", authorization, oppdaterBildeFrisor.single("uploaded_file"), async (req,res)=>{
     const {navn} = req.body;
     try {
-        if(req.brukernavn === "admin"){
+        if(req.admin){
             //Konverterer bilde fra request til buffer, og reduserer størrelsen til 200x200px
             sharp(req.file.buffer).resize({height: 200, width: 200, fit:'inside'}).toBuffer().then(async (data)=>{
             const img = {
@@ -174,7 +175,7 @@ router.post("/opprettFrisor", upload.single("uploaded_file"), authorization, asy
     const {nyFrisorNavn, nyFrisorTjenester} = req.body;
     let nyFrisorTjenesterArray = nyFrisorTjenester.split(",");
     try {
-        if(req.brukernavn === "admin"){
+        if(req.admin){
             sharp(req.file.buffer).resize({height: 200, width: 200, fit:'inside'}).toBuffer().then(async (data)=>{
             const img = {
                 data: new Buffer.from(data),
@@ -203,7 +204,7 @@ router.post("/opprettFrisor", upload.single("uploaded_file"), authorization, asy
 router.post("/slettFrisor", authorization, async (req,res)=>{
     const {navn} = req.body;
     try {
-        if(req.brukernavn === "admin"){
+        if(req.admin){
             const env = await Environment.findOne({bedrift:BEDRIFT});
             if(env){
                 let tempFrisorer = env.frisorer;
@@ -224,7 +225,7 @@ router.post("/slettFrisor", authorization, async (req,res)=>{
 router.post('/oppdaterEnv',authorization, async(req,res)=>{
     const {frisorer, tjenester, kategorier, sosialeMedier, kontakt_tlf, kontakt_epost, klokkeslett} = req.body;
     try {
-        if(req.brukernavn === "admin"){
+        if(req.admin){
             
         const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {frisorer:frisorer, tjenester:tjenester, kategorier:kategorier, sosialeMedier:sosialeMedier, kontakt_tlf:kontakt_tlf, kontakt_epost:kontakt_epost, klokkeslett:klokkeslett});
         
@@ -242,7 +243,7 @@ router.post('/oppdaterEnv',authorization, async(req,res)=>{
 router.post("/oppdaterAdminPass", authorization, async (req,res)=>{
     const {admin_pass} = req.body;
     const brukernavn = req.brukernavn;
-    if(brukernavn === "admin"){ 
+    if(admin){ 
         const AdminBrukeren = await Brukere.findOneAndUpdate({brukernavn: brukernavn}, {passord: admin_pass});
         if(AdminBrukeren){
             return res.send({message:"Passord oppdatert!"});
@@ -250,7 +251,7 @@ router.post("/oppdaterAdminPass", authorization, async (req,res)=>{
         const accessToken = jwt.sign({brukernavn:brukernavn, passord:admin_pass},ACCESS_TOKEN_KEY,{expiresIn:'480m'});
             res.cookie("access_token", accessToken, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV == "production",
+                secure: process.env.HTTPS_ENABLED == "secure",
         })
     }
 })
