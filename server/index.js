@@ -8,7 +8,7 @@ const schedule = require("node-schedule");
 const mailer = require("./configuration/mailer");
 const cookieParser = require("cookie-parser");
 const helmet = require("helmet");
-
+//heihei
 
 const Bestiltetimer = require("./model/bestilling");
 const Environment = require("./model/env");
