@@ -19,7 +19,7 @@ if(NODE_ENV === "development") intervall = 2* 60 * 1000; // 2 minutter
 const bestillingLimiter = rateLimiter({
     windowMs: intervall,
     max: 5,
-    message: {m:"Du har bestilt for mange ganger"}
+    message: {m:"Du har bestilt for mange ganger, vent 1 time før du bestiller igjen"}
 });
 
 const hentBestillingerLimiter = rateLimiter({

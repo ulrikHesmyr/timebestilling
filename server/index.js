@@ -9,8 +9,6 @@ const mailer = require("./configuration/mailer");
 const cookieParser = require("cookie-parser");
 const helmet = require("helmet");
 
-const rateLimiter = require("express-rate-limit");
-
 
 const Bestiltetimer = require("./model/bestilling");
 const Environment = require("./model/env");
@@ -24,15 +22,6 @@ app.use(cors());
 app.use(cookieParser());
 app.use(helmet());
 app.use(express.static('build'));
-
-const limiter = rateLimiter({
-  windowMs: 50 * 50 * 1000,
-  max: 800,
-  message: "BAD REQUEST"
-});
-
-
-app.use(limiter);
 
 //Sletter gamle timebestillinger
 schedule.scheduleJob('30 23 * * *', async ()=>{

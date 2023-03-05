@@ -16,6 +16,7 @@ const hentEnvLimiter = rateLimiter({
     message:"MAX 45 requests"
 })
 
+
 router.get('/fri', async(req,res)=>{
     try {
         const alleFriElementer = await FriElementer.find();
