@@ -142,9 +142,12 @@ router.post("/TWOFA", async (req,res)=>{
     if(two_FA.pin === parseInt(pin)){
         //Setter cookie slik at brukeren ikke trenger å autorisere med 2FA neste gang
         const newToken = jwt.sign({brukernavn:two_FA.brukernavn, gyldig:true},ACCESS_TOKEN_KEY);
+        const expirationDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000 * 26); //26 uker
+        
         res.cookie("two_FA_valid", newToken, {
             httpOnly: true,
-            secure: process.env.HTTPS_ENABLED == "secure"
+            secure: process.env.HTTPS_ENABLED == "secure",
+            expires: expirationDate
         })
         
         const finnBruker = await Brukere.findOne({brukernavn: two_FA.brukernavn});
@@ -160,9 +163,12 @@ router.post("/TWOFA", async (req,res)=>{
         const accessToken = jwt.sign({brukernavn:two_FA.brukernavn, passord:finnBruker.passord, brukertype:brukertype}, ACCESS_TOKEN_KEY, {expiresIn:'480m'});
 
         //Setter cookie for å holde brukeren logget inn
+        
+        const expirationDateAccess = new Date(Date.now() + 24 * 60 * 60 * 1000); // 1 døgn
         res.cookie("access_token", accessToken, {
             httpOnly: true,
             secure: process.env.HTTPS_ENABLED == "secure",
+            expires: expirationDateAccess
         })
         res.clearCookie("two_FA");
             
