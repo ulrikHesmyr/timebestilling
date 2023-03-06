@@ -11,7 +11,9 @@
   --color3:black;
   --color4:rgba(0, 0, 0, 0.65);
   --background1:linear-gradient(0deg, var(--farge5) 0%, var(--farge6) 100%);
-  --background2:linear-gradient(0deg, rgba(39,77,211,1) 0%, rgba(45,133,253,1) 100%);
+  --background2:linear-gradient(0deg, rgb(33, 70, 115) 0%, rgb(54, 115, 188) 100%);
+  --background3:linear-gradient(0deg, rgb(54, 115, 188) 0%, rgb(0, 14, 33) 100%);
+  --background4:linear-gradient(0deg, rgba(211,157,39,1) 0%, var(--color3) 100%);
   --font1:'Courier Prime', monospace;
   --font2:'Gloock', serif;
   --font3:'Sorts Mill Goudy', serif;
@@ -22,7 +24,9 @@
 body{
   box-sizing: border-box;
 }
-
+.startContainer{
+  padding-bottom: 20rem;
+}
 header{
   width: 100vw;
   background-image: url("../public/startside.jpg");
@@ -30,9 +34,13 @@ header{
   background-repeat: no-repeat;
   background-size: cover;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
   user-select: none;
   padding: 1rem;
+  
+  height:80vh;
 }
 
 
@@ -41,12 +49,12 @@ select{
 }
 header .bedriftNavnHeader{
   font-family: var(--font4);
-  mix-blend-mode: difference ; /* differance exclusion */
   text-shadow: 4px 4px 2px rgba(0, 0, 0, 0.5);
   color:white;
   font-size: max(2rem, 4vw);
   margin-left: 0.8rem;
   margin-right: 1rem;
+  text-align: center;
 }
 footer{
   display: flex;
@@ -59,6 +67,10 @@ footer{
   margin-top: 2rem;
   text-align: center;
   width: inherit;
+  font-family: var(--font4);
+  margin-top: 20rem;
+  position: absolute;
+  bottom: 0;
 }
 footer *{
   margin:0.5rem;
@@ -66,6 +78,8 @@ footer *{
 
 a{
   text-decoration: none;
+  text-decoration-color: var(--color1);
+  color:var(--farge4);
 }
 
 h4{
@@ -92,6 +106,28 @@ button:active{
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: fit-content;
+  font-family: var(--font1);
+  background: rgba(255, 255, 255, 0.5);
+  padding: 2rem;
+
+}
+.kontaktbakgrunn{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  background: url("../public/kontaktOss.jpg");
+  width: 100%;
+  height:100vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.kontaktsiden h3{
+  font-size: 2rem;
+  font-family: var(--font2);
+  margin:1rem;
 }
 .litentekst{
   font-size: small;
@@ -110,6 +146,8 @@ form{
   display: flex;
   gap:1rem;
   flex-direction: column;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 }
 
 input, button, select, option{
@@ -122,9 +160,50 @@ input, button, select, option{
   display:grid;
   gap:1rem;
   grid-template-columns: 2fr 1fr;
+  margin-top: 6rem;
+  background: url("../public/bakgrunnsgifh.gif");
+  background-repeat: no-repeat;
 }
 .timebestilling * {
   margin:0.15rem;
+}
+.omOss{
+  padding:1rem;
+  width:inherit;
+  display: flex;
+  flex-direction: column;
+  
+  background: url("../public/omOss.jpg");
+  width: inherit;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.omOssChild{
+   background: rgba(255, 255, 255, 0.75);
+  padding: 0.6rem;
+  padding-bottom: 2rem;
+  font-size: larger;
+}
+.omOssChild h1{
+  font-size: 2rem;
+  font-family: var(--font2);
+}
+.omOssChild div{
+  font-family: var(--font1);
+}
+
+
+.navHeader{
+  
+  top:0;
+  display:flex;
+  flex-direction:row;
+  justify-content:space-between;
+  padding:1rem;
+  position: absolute;
+  z-index: 5;
 }
   
   .navBar{
@@ -134,18 +213,17 @@ input, button, select, option{
     font-size: large;
     justify-items: center;
     animation: animer-inn 0.3s;
+    margin-top: 6rem;
   }
 
   
   
   .navBar a {
     text-align: start;
-    margin: 0.1rem;
     padding: 2rem;
     text-align: start;
     cursor: pointer;
     text-decoration: none;
-    color: var(--farge4);
     width: 20rem;
     border-left: thin solid rgba(0, 0, 0, 0.45);
     border-bottom: thin solid rgba(0, 0, 0, 0.05);
@@ -177,7 +255,6 @@ input, button, select, option{
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding:1rem;
   }
   .kategorier .kategori{
     cursor: pointer;
@@ -193,6 +270,8 @@ input, button, select, option{
     display: flex;
     flex-direction: column;
     width:95%;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
   }
   
   .tjeneste{
@@ -219,11 +298,14 @@ input, button, select, option{
     flex-wrap: wrap;
     box-sizing: border-box;
     max-width: 100%;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
   }
 .klokkeslett{
   display: flex;
   justify-content: center;
   align-items: center;
+  border: thin solid black;
 }
 
   .klokkeslettene *:hover{
@@ -252,23 +334,41 @@ input, button, select, option{
     cursor: pointer;
     border: thin solid black;
     border-radius: 0.4rem;
+    color:var(--color3);
+    font-size: x-large;
+    background: var(--color1);
   }
-
+  .valgtFrisorTekst{
+    transition: 0.1s ease;
+    font-size: x-large;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+     background: rgba(255, 255, 255, 0.75);
+    
+  }
+  .vv{
+    opacity: 0.2;
+  }
+  .ss{
+    opacity: 1;
+  }
   input, label{
     padding:0.8rem;
   }
 
   .reservasjon{
-    width: 100vw;
     display: flex;
     justify-content: center;
     flex-direction: column;
     align-items: center;
+    padding:1.5rem;
+    margin-top: 6rem;
   }
 
   .login{
     display: flex;
     flex-wrap:wrap;
+    
   }
   .overskrift{
     display: flex;
@@ -339,7 +439,7 @@ input, button, select, option{
     cursor: pointer;
   }
   .burger div{
-    background-color: black;
+    background: var(--background4);
     width:80%;
     height:0.2rem;
   }
@@ -362,13 +462,11 @@ input, button, select, option{
     box-shadow: 1px 1px 1px black;
   }
   .fortsett{
-    width: 20vw;
     font-size: x-large;
     letter-spacing: 0.25rem;
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
     background-color: white;
   }
   .fortsett .fortsettKnapp{
@@ -403,6 +501,8 @@ input, button, select, option{
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
+    background-color: white;
+    margin-top: 6rem;
   }
   .loginForm label{
     display: flex;
@@ -479,21 +579,15 @@ input, button, select, option{
   }
 
   .navBarBestillTime{
-    position: fixed;
-    top: 5px;
-    right: 10px;
-    background: url("../public/startside.jpg");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    object-fit: contain;
-    color:var(--color1);
-    font-weight: bold;
+    font-family: var(--font1);
     text-shadow: 1px 1px 1px black;
     display: flex;
     align-items: center;
-    outline:groove 0.2rem ;
     z-index: 3;
+    
+    font-size: 1.5rem;
+    font-weight: 200;
+    border:solid thin black;
     
   }
   .viEr{
@@ -507,16 +601,27 @@ input, button, select, option{
 
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
+
+  }
+  .infoFrisorKnapp{
+    background:url("../public/infoHjem.png");
+    width: 1.7rem;
+    height: 1.7rem;
+    background-position: center;
+    background-size: cover;
+    background-repeat:no-repeat;
+    cursor:pointer;
 
   }
   .navBarBestillTime div{
     padding: 0.9rem;
-    width: 100%;
-    height: 100%;
+    width: inherit;
+    height: inherit;
     backdrop-filter: blur(5px);
-    font-size: 1.5rem;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-weight: 200;
+    -webkit-backdrop-filter: blur(5px);
+    color:white;
+    border:thin solid black;
   }
   .varsel{
     transition: 0.2s ease;
@@ -571,6 +676,16 @@ input, button, select, option{
     overflow-y: scroll;
     display: flex;
     flex-direction: column;
+    z-index: 4;
+  }
+  .detaljerFrisor{
+    font-size: larger;
+    font-weight: bolder;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
   }
 
   .fokus button, .fokus input{
@@ -599,9 +714,10 @@ input, button, select, option{
     cursor: pointer;
   }
   .frisorbilde{
-    object-fit: contain;
+    object-fit: cover;
     aspect-ratio: 1/1;
     border-radius:50%;
+    border: 2px solid var(--color3);
   }
   
   
@@ -702,7 +818,6 @@ header * {
     display: grid;
     grid-template-columns: 1fr 1fr;
     margin:0 !important;
-    padding-bottom: 1rem;
     z-index: 3;
   }
   .fortsett *{
@@ -757,6 +872,7 @@ header * {
     display:flex;
     flex-direction: column;
     align-items: center;
+    
   }
   
 .timebestilling .container{

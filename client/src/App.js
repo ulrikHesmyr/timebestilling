@@ -7,6 +7,7 @@ import Login from './pages/Login'
 import './App.css'
 import Kontakt from './pages/Kontakt'
 import PB from './pages/Personvern_Brukervilkaar'
+import OmOss from './pages/OmOss'
 
 
 const App = ()=> {
@@ -16,21 +17,22 @@ const App = ()=> {
   const [registrertReservasjon, setReservasjon] = useState(undefined);
 
 
-  useEffect(()=>{
-    async function fetchEnvironment(){
-      const environmentRequest = await fetch("/env/env");
-      const environment = await environmentRequest.json();
-      if(environment){
-        sEnv(environment);
-      }
+  async function fetchEnvironment(){
+    const environmentRequest = await fetch("http://localhost:1226/env/env");
+    const environment = await environmentRequest.json();
+    if(environment){
+      sEnv(environment);
     }
+  }
+  useEffect(()=>{
+    
     fetchEnvironment();
 
   },[])
 
 
   return (
-      <BrowserRouter><div style={{borderBottom:"thin solid black", display:"flex", flexDirection:"row", justifyContent:"space-between", padding:"1rem"}}>
+      <BrowserRouter><div className='navHeader'>
         
         <div id="burgerButton" className='burger' aria-label='Vis navigasjonsmeny' aria-expanded={synligMeny} aria-controls="navigation" onClick={()=>{
               setSynligmeny(!synligMeny);
@@ -44,7 +46,7 @@ const App = ()=> {
             <nav id="navigation" className='navBar' role="region" aria-labelledby='burgerButton' aria-hidden={!synligMeny}>
               <Link onClick={()=>{
                 setSynligmeny(false);
-              }} to="/">VI ER {(env !== null? env.bedrift:"")} <p>Bli kjent</p></Link>
+              }} to="/">VI ER {(env !== null? env.bedrift:"")} <p>Åpningstider, behandlinger, våre ansatte og hvor du finner oss!</p></Link>
 
               <Link onClick={()=>{
                 setSynligmeny(false);
@@ -53,6 +55,11 @@ const App = ()=> {
               <Link onClick={()=>{
                 setSynligmeny(false);
               }} to="/kontakt-oss">Kontakt oss<p>Ta kontakt via epost, telefon eller sosiale medier</p></Link>
+
+              <Link onClick={()=>{
+                setSynligmeny(false);
+              }} to="/om-oss">Om oss<p>Bli kjent</p></Link>
+
             </nav >):(
             <Routes>
               <Route exact path="/timebestilling" element={(registrertReservasjon?<DinReservasjon env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} registrertReservasjon={registrertReservasjon} />:(env !== null?<Timebestilling env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} />:"Laster..."))} />
@@ -60,6 +67,7 @@ const App = ()=> {
               <Route exact path="/logginn" element={<Login/>} />
               <Route exact path="/kontakt-oss" element={(env !== null? <Kontakt env={env}/>:"Laster...")}/>
               <Route exact path="/personvaernserklaering-og-brukervilkaar" element={env !== null?<PB env={env}/>:"Laster..."}/>
+              <Route exact path="/om-oss" element={env !== null?<OmOss env={env}/>:"Laster..."}/>
             </Routes>))}
             
         

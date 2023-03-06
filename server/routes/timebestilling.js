@@ -108,6 +108,7 @@ router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
         }
     } catch (error) {
         console.log(error);
+        mailer.sendMail(`FEIL i bestilltime: ${process.env.BEDRIFT}`, "FÅR IKKE BESTILT TIME ELLER SMS SENDTE IKKE");
     }
 })
 

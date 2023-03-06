@@ -61,6 +61,10 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
         //Slett sosialt medie
     const [visSlettSosialtMedie, sVisSlettSosialtMedie] = useState(false);
 
+    //Google review link
+    const [visRedigerGoogleReviewLink, sVisRedigerGoogleReviewLink] = useState(false);
+    const [googleReviewLink, sGoogleReviewLink] = useState(env.googleReviewLink);
+
     useEffect(()=>{
         sKontakt_epost(env.kontakt_epost);
         sKontakt_tlf(env.kontakt_tlf);
@@ -83,9 +87,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({adresse:adresse}),
-            credentials:'include'
+            //credentials:'include'
         }
-        const request = await fetch("/env/oppdaterAdresse", options);
+        const request = await fetch("http://localhost:1226/env/oppdaterAdresse", options);
         const response = await request.json();
         if(response){
             sUpdateTrigger(!updateTrigger);
@@ -102,9 +106,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify(slettetTime),
-            credentials:'include'
+            //credentials:'include'
         }
-        const request = await fetch("/timebestilling/oppdaterTimebestillinger", options);
+        const request = await fetch("http://localhost:1226/timebestilling/oppdaterTimebestillinger", options);
         const response = await request.json();
         if(response.valid){
             varsle();
@@ -129,9 +133,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify(nyttEnv),
-            credentials:'include'
+            //credentials:'include'
         }
-        const request = await fetch("/env/oppdaterEnv", options);
+        const request = await fetch("http://localhost:1226/env/oppdaterEnv", options);
         const response = await request.json();
         if(response){
             sUpdateTrigger(!updateTrigger);
@@ -147,9 +151,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({admin_pass:nyttPass}),
-            credentials:'include'
+            //credentials:'include'
         }
-        const request = await fetch("/env/oppdaterAdminPass", options);
+        const request = await fetch("http://localhost:1226/env/oppdaterAdminPass", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -256,12 +260,49 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                         </div>
                         <p className='redigeringsElement'>{kontakt_tlf}</p>
                     </div>
+
                     <div className='redigeringsBoks'> 
                         <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
                             <RedigerKontakt number={false} state={kontakt_epost} setState={sKontakt_epost} env={env} sendTilDatabase={sendTilDatabase} /> <p>Kontakt e-post:</p>
                         </div>
                         <p className='redigeringsElement'>{kontakt_epost}</p>
                     </div>
+
+                    <div className='redigeringsBoks'> 
+                        <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
+                            {visRedigerGoogleReviewLink?<div>
+                                <div className='fokus'>
+                                    <h4>Rediger google review link</h4>
+                                    <p>
+                                        Her kan du redigere linken til google reviews. Denne linken sendes pr SMS til kunder samme kveld som deres besøk.
+                                    </p>
+                                    <p>Nåværende link: {googleReviewLink}</p>
+                                    <label>Link: <input type="text" value={googleReviewLink} onChange={(e)=>{
+                                        sGoogleReviewLink(e.target.value);
+                                    }}></input></label>
+                                    <div>
+                                    <button onClick={()=>{
+                                        
+                                        sVisRedigerGoogleReviewLink(false); 
+                                        sGoogleReviewLink(env.googleReviewLink);
+                                    }}>Avbryt</button>
+                                    <button onClick={()=>{
+                                        sVisRedigerGoogleReviewLink(false); 
+                                    }}>Lagre</button>    
+                                    </div>
+                                </div>
+                            </div> :<button className='rediger' onClick={(e)=>{
+            sVisRedigerGoogleReviewLink(true);
+        }}><img className='ikonKnapper' src='rediger.png' alt="Rediger"></img></button>}
+                            <div>Rediger google review link: </div>
+                        </div>
+                        <p className='redigeringsElement'>{googleReviewLink}</p>
+                    </div>
+
+
+
+
+                    
                     <div className='redigeringsBoks'>
                         
                         {visRedigerAdresse?<div>

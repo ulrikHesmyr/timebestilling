@@ -2,7 +2,7 @@ import React from 'react'
 
 function PB({env}){
     return(
-        <div style={{margin:"1rem"}}>
+        <div style={{margin:"1rem", marginTop:"6rem"}}>
         <h1 style={{fontSize:"xx-large", textDecoration:"underline"}}>Terms of Use</h1>
 
 <p>Welcome to {env.bedrift}'s website. By accessing or using this website, you agree to be bound by these Terms of Use.
@@ -11,7 +11,8 @@ function PB({env}){
 <h2>Use of the Website</h2>
 <p>You may use the website to make appointments at our hair salon. By using the website, you represent and warrant
 that you are at least 18 years of age or have the permission of a parent or guardian. 
-You agree to provide accurate and complete information when making an appointment.</p>
+You agree to provide accurate and complete information when making an appointment.
+</p>
 
 <h2>Intellectual Property</h2>
 <p>All content on the website, including text, images, graphics, and logos, is the property

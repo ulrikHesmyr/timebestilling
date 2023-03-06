@@ -62,6 +62,8 @@ async function opprettEnvironment(){
                 }
             ],
             frisorer:[],
+            googleReviewLink: `${process.env.GOOGLE_REVIEW_LINK}`,
+            omOssArtikkel: "Hei, kjære kunde!\n\nVi er Ulrik Fades og vi ønsker velkommen til vår salong i Gjøvik Sentrum!",
             adresse:{
                 
                     gatenavn:"Teknologivegen",
@@ -120,16 +122,10 @@ async function opprettEnvironment(){
                 telefonnummer: parseInt(ADMIN_TLF),
                 admin:true
             })
-            const adminBruker = await Brukere.create({
-                brukernavn:"admin",
-                passord:ADMIN_PASS,
-                telefonnummer: parseInt(ADMIN_TLF),
-                admin:true
-            })
 
 
             
-            if(adminBruker && nyttenv && bruker){
+            if(nyttenv && bruker){
                 console.log("Opprettet nytt env!");
             }
     } catch (error) {

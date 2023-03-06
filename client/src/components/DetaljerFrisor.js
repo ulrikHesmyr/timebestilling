@@ -33,7 +33,7 @@ function DetaljerFrisor({env, bruker, frisor, sendTilDatabase, varsle, lagreVars
         body: formData
       }
 
-      const request = await fetch('/env/oppdaterBildeFrisor', options);
+      const request = await fetch('http://localhost:1226/env/oppdaterBildeFrisor', options);
       const response = await request.json();
       if(response.valid){
         varsle();
@@ -71,7 +71,7 @@ function DetaljerFrisor({env, bruker, frisor, sendTilDatabase, varsle, lagreVars
         },
         body: JSON.stringify({navn:navn.toLowerCase()})
       }
-      const request = await fetch('/login/resetPassord', options);
+      const request = await fetch('http://localhost:1226/login/resetPassord', options);
       const response = await request.json();
       if(response.valid){
         varsle();
@@ -104,7 +104,7 @@ function DetaljerFrisor({env, bruker, frisor, sendTilDatabase, varsle, lagreVars
     }}></div>
     <div>
       <div style={{padding:"0.3rem"}}>{frisor.navn} </div>
-      <img className='frisorbilde' src={frisorBilde} style={{objectFit:"contain", width:"200px"}} alt={`Bilde av ${frisor.navn}`}></img>
+      <img className='frisorbilde' src={frisorBilde} style={{width:"200px"}} alt={`Bilde av ${frisor.navn}`}></img>
     </div>
 
       <div style={{fontSize:"small"}}>

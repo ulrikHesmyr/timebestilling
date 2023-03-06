@@ -41,7 +41,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel}){
     
     //Henter fri
     async function hentFri(){
-      const request = await fetch("/env/fri");
+      const request = await fetch("http://localhost:1226/env/fri");
       const response = await request.json();
       if(response){
           let frii = response.map((element)=>{
@@ -101,9 +101,9 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel}){
           "Content-Type":"application/json"
         },
         body: JSON.stringify({passord: gjentaNyttPassord}),
-        credentials:'include'
+        //credentials:'include'
       };
-      const request = await fetch("/login/oppdaterPassord", options);
+      const request = await fetch("http://localhost:1226/login/oppdaterPassord", options);
       const response = await request.json();
       if(response){
         varsle();
@@ -123,10 +123,10 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel}){
             "Content-Type":"application/json"
           },
           body: JSON.stringify({telefonnummer: parseInt(nyttTlf)}),
-          credentials:'include'
+          //credentials:'include'
         };
 
-        const request = await fetch("/login/oppdaterTelefonnummer", options);
+        const request = await fetch("http://localhost:1226/login/oppdaterTelefonnummer", options);
         const response = await request.json();
         if(response){
           varsle();
@@ -152,7 +152,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel}){
           
             <p>Ditt telefonnummer: {lagretTlf} 
             {visRedigerTelefonnummer?<>
-            <label>Skriv inn nytt telefonnummer: <input value={nyttTlf} maxLength={8} onChange={(e)=>{
+            <label>Skriv inn nytt telefonnummer: <input inputMode="numeric" value={nyttTlf} maxLength={8} onChange={(e)=>{
               let newValue = e.target.value;
               if(/^\d*$/.test(newValue)){
                 sNyttTlf(newValue);

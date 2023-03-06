@@ -6,7 +6,7 @@ function PersonInfo({totalTid, totalPris, dato, klokkeslettet, produkt, frisor, 
     const [harregistrert, sHarRegistrert] = useState(false); //For å passe på at en bruker ikke trykker to ganger før neste side rekker å laste inn
     let format = /[`!@#$%^&*()_+=[\]{};':"\\|,.<>/?~]/;
     async function registrerData(){
-        const request = await fetch('/timebestilling/bestilltime', {
+        const request = await fetch('http://localhost:1226/timebestilling/bestilltime', {
             method:"POST",
             headers:{
                 "Content-Type":"application/json",
@@ -40,7 +40,7 @@ function PersonInfo({totalTid, totalPris, dato, klokkeslettet, produkt, frisor, 
                     }
                 }}></input> </label>
 
-                <label htmlFor="phone">Telefon: * <input required maxLength={8} value={telefonnummer} type="text" name="phone" onChange={(e)=>{
+                <label htmlFor="telefonnummer">Telefon: * <input required maxLength={8} inputMode="numeric" value={telefonnummer} type="text" name="telefonnummer" onChange={(e)=>{
                     const newValue = e.target.value;
                     if(/^\d*$/.test(newValue) && (e.target.value.length === 0 || e.target.value[0] === "4" || e.target.value[0] === "9")){
                         sTelefonnummer(newValue);
@@ -62,7 +62,7 @@ function PersonInfo({totalTid, totalPris, dato, klokkeslettet, produkt, frisor, 
             }
 
                 <p>Bekreftelse på din reservasjon sendes på SMS</p>
-                <p>Jeg godkjenner <Link to="/personvaernserklaering-og-brukervilkaar">personvernserklæring og brukervilkår</Link> ved å trykke "send inn reservasjon"</p>
+                <p>Jeg godkjenner <a rel='noreferrer' target="_blank" href='/personvaernserklaering-og-brukervilkaar'>personvernserkæringen og brukervilkår</a> ved å trykke "send inn reservasjon"</p>
                 {(harregistrert?"Laster...":(<button style={{padding:"1rem", color:"var(--color2)", backgroundColor:"var(--farge2)"}} onClick={(e)=>{
                     e.preventDefault();
                     if(telefonnummer.length === 8 && navn !== ""){

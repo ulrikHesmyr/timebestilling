@@ -11,38 +11,43 @@ import Footer from '../components/Footer'
  */
 function Hjem({env}){
 
-    //Bildene til frisørene
+    //Bildene til de ansatte
     const [frisorBildeArray, sFrisorBildeArray] = useState(null);
+
+    //Deltajer ansatte
+    const [visDetaljerFrisor, sVisDetaljerFrisor] = useState(false);
+    const [detaljerFrisor, sDetaljerFrisor] = useState(null);
     
     //Behandlinger
     const [kategoriSynlig, setKategoriSynlig] = useState(env.kategorier.map(kategori=>kategori = false));
     const [K, sK] = useState(false);
 
+    async function hentBilder(){
+            
+        let midlertidigArray = [];
+        for(let i = 0; i < env.frisorer.length; i++){
+            const array = new Uint8Array(env.frisorer[i].img.data.data);
+            const base = window.btoa(String.fromCharCode.apply(null, array));
+            const base64Image = `data:${env.frisorer[i].img.contentType};base64,${base}`;
+
+            //const base64Image = `data:${env.frisorer[i].img.contentType};base64,${window.btoa(env.frisorer[i].img.data.data)}`;
+            midlertidigArray.push(base64Image);
+        }
+        sFrisorBildeArray(midlertidigArray);
+    }
     useEffect(()=>{
         //Lager et array med base64 bilder
-        async function hentBilder(){
-            
-            let midlertidigArray = [];
-            for(let i = 0; i < env.frisorer.length; i++){
-                const array = new Uint8Array(env.frisorer[i].img.data.data);
-                const base = window.btoa(String.fromCharCode.apply(null, array));
-                const base64Image = `data:${env.frisorer[i].img.contentType};base64,${base}`;
-
-                //const base64Image = `data:${env.frisorer[i].img.contentType};base64,${window.btoa(env.frisorer[i].img.data.data)}`;
-                midlertidigArray.push(base64Image);
-            }
-            sFrisorBildeArray(midlertidigArray);
-        }
+        
         hentBilder();
-    })
+    }, [env])
 
-    return(<>
+    return(<div style={{position:"relative"}}>
         <div className="hjem">
-            <header style={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"center", flexWrap:"wrap"}}>
-                <p className="viEr" >Vi er </p><p className="bedriftNavnHeader">{env.bedrift}</p>
+            <header>
+                <div className="bedriftNavnHeader"> <p className="viEr" >Vi er </p>{env.bedrift}</div>
                 
-            </header>
             <Link to="/timebestilling" className='navBarBestillTime'><div>Bestill time</div></Link>
+            </header>
 
         </div>
         <div className="startContainer">
@@ -63,12 +68,34 @@ function Hjem({env}){
                     {frisorBildeArray !== null? env.frisorer.map((frisor, index)=>(
                     <div key={frisor.navn}style={{margin:"1rem"}}>
                         <h4>{frisor.navn}</h4>
-                        <img className="frisorbilde" src={frisorBildeArray[index]} alt={`Bilde av frisør ${frisor.navn}`} style={{height:"4rem"}}></img>
+                        <img className="frisorbilde" src={frisorBildeArray[index]} alt={`Bilde av ansatt ${frisor.navn}`} style={{height:"4rem"}}></img>
+                        <div className="infoFrisorKnapp" onClick={()=>{
+                            sDetaljerFrisor(frisor);
+                            sVisDetaljerFrisor(true);
+                        }}></div>
                         </div>
                     )):"hhh"}
+                    {visDetaljerFrisor && detaljerFrisor !== null?
+                    <>
+                        <div className="fokus detaljerFrisor">
+                            <div className="lukk" onClick={()=>{
+                                sVisDetaljerFrisor(false);
+                                sDetaljerFrisor(null);
+                            }}>
+                            </div>
+                            <img className="frisorbilde" src={frisorBildeArray[env.frisorer.indexOf(detaljerFrisor)]} alt={`Bilde av ansatt ${detaljerFrisor.navn}`} style={{height:"20rem", width:"20rem"}}></img>
+                                <div>
+                                    <h3 style={{margin:"0"}}>{detaljerFrisor.navn}</h3>
+                                    {detaljerFrisor.tittel}
+                                </div>
+                                <p>{detaljerFrisor.beskrivelse}</p>
+                        </div>
+                    </>:<></>}
                 </div>
             </div>
+            
         </div>
+
         <div className="startside">
             
             <div className="hjemsideSeksjon">
@@ -82,6 +109,7 @@ function Hjem({env}){
                 
                 </div>
             </div>
+            
             <div className="hjemsideSeksjon">
                 <h2 >Våre behandlinger</h2>
                 <div className="behandlingerHjemsiden">
@@ -120,10 +148,11 @@ function Hjem({env}){
                 </div>
             </div>
         </div>
-        <Footer/>
+        
         </div>
+        <Footer/>
             
-        </>
+        </div>
     )
 }
 

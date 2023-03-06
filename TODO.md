@@ -1,3 +1,5 @@
+HEIHEI
+
 INTERVJU:
 - Fixit leverer applikasjonen deres for timebestilling, hva mer gjør applikasjonen enn at kundene kan bestillte timer?
     (Vent på svar) deretter: Logge inn for å administrere bestillinger og andre ting i salongen? Registrerer hvem som har hatt 
@@ -61,8 +63,12 @@ OM APPLIKASJONEN, PERSONVERN OG LOV:
 - Data som lagres om de ansatte går under firmaets egne kontrakter om personvern osv.
 
 FÅ FRA KUNDE FØR PROD
-- Logo?
+- Logo
 - Bilde til startside
+- Farger til siden
+- Google review link hvis ønsket
+- Telefonnummer daglig leder
+- Navn daglig leder
 
 MINE GARANTIER:
 - Umulig å bli dobbeltbooket eller at timer krasjer, først på nettsiden, så sjekker den med tidligere bestillinger, men også på serveren i det bestillingen sendes, så sjekker den momentnant om det krasjer med andre bestillinger.

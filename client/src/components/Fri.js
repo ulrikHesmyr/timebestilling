@@ -61,11 +61,9 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle, lagreVarsel}) {
     }
 
     async function hentFriElementer(){
-        console.log("Hentet fri elementer");
-        const request = await fetch("/env/fri");
+        const request = await fetch("http://localhost:1226/env/fri");
         const response = await request.json();
         if(response){
-            console.log("Alle fri elementer", response);
             sFriElementer(response);
         }
     }
@@ -92,7 +90,7 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle, lagreVarsel}) {
             body:JSON.stringify(data)
         }
 
-        const request = await fetch("/env/opprettFri", options);
+        const request = await fetch("http://localhost:1226/env/opprettFri", options);
         const response = await request.json();
         if(response){
             sUpdateTrigger(!updateTrigger);
@@ -122,7 +120,7 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle, lagreVarsel}) {
             body:JSON.stringify(data)
         }
 
-        const request = await fetch("/env/slettFri", options);
+        const request = await fetch("http://localhost:1226/env/slettFri", options);
         const response = await request.json();
         if(response){
             sUpdateTrigger(!updateTrigger);
@@ -132,7 +130,6 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle, lagreVarsel}) {
 
     useEffect(()=>{
         if(synligKomponent === 2){
-            console.log("Henter fri elementer");
             hentFriElementer();
         }
     },[synligKomponent, updateTrigger])
@@ -182,7 +179,6 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle, lagreVarsel}) {
         {env.frisorer.map((f)=>(
             <div style={{margin:"0.3rem",border:(frisor===f?"3px solid black":"thin solid black"),  cursor:"pointer", padding:"0.5rem", height:"1.4rem", width:"fit-content"}} onClick={()=>{
                 sFrisor(f);
-                console.log("setter frisør til:", f );
             }} key={f.navn}>{f.navn}</div>
         ))}
         </div></>:"")}

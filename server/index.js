@@ -8,6 +8,8 @@ const schedule = require("node-schedule");
 const mailer = require("./configuration/mailer");
 const cookieParser = require("cookie-parser");
 const helmet = require("helmet");
+const { v4: uuidv4 } = require('uuid');
+const Client = require("target365-sdk");
 //heihei
 
 const Bestiltetimer = require("./model/bestilling");
@@ -23,10 +25,37 @@ app.use(cookieParser());
 app.use(helmet());
 app.use(express.static('build'));
 
+schedule.scheduleJob('30 19 * * *', async ()=>{
+  try {
+    const idag = hentDatoIDag();
+    const tilbakemeldingBestillinger = await Bestiltetimer.find({dato: idag});
+    
+    //Sender SMS med google review link, 18 timer etter at timebestillingen ble gjort
+    tilbakemeldingBestillinger.forEach(async timebestilling => {
+      let SMS_ENABLED = true;
+      if(SMS_ENABLED){
+          let baseUrl = "https://shared.target365.io/";
+          let keyName = process.env.KEYNAME_SMS;
+          let privateKey = process.env.PRIVATE_KEY;
+          let serviceClient = new Client(privateKey, { baseUrl, keyName });
+          let outMessage = {
+              transactionId: uuidv4(),
+              sender:'Target365',
+              recipient:`+47${timebestilling.telefonnummer}`,
+              content:`Hei ${timebestilling.kunde}! Vi håper du er fornøyd med ditt besøk hos oss.\n\n Dersom det er ønskelig, så legg gjerne igjen en tilbakemelding på besøket. Du kan gi oss en tilbakemelding ved å trykke på linken under. \n\n ${process.env.GOOGLE_REVIEW_LINK} \n\n Med vennlig hilsen \n ${BEDRIFT}`
+          }
+          await serviceClient.postOutMessage(outMessage);
+      } else {
+          console.log("SENDTE IKKE MELDING");
+      }
+    });
+  } catch (error) {
+    console.log(error);
+  }
+})
 //Sletter gamle timebestillinger
 schedule.scheduleJob('30 23 * * *', async ()=>{
   try {
-    const idag = hentDatoIDag();
     const gamleTimebestillinger = await Bestiltetimer.deleteMany({dato: idag}).exec();
     const gamle = gamleTimebestillinger;
     const oppdatert = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {$inc:{antallBestillinger:gamle.deletedCount}});
@@ -39,7 +68,6 @@ schedule.scheduleJob('30 23 * * *', async ()=>{
     mailer.sendMail(`Problemer med node-schedule for: ${process.env.BEDRIFT}`,"Problemer med scheduleJob slette gamle timebestillinger");
   }
 })
-
 //Sletter gamle friElementer
 schedule.scheduleJob('09 23 * * *', async ()=>{
   try {
@@ -95,6 +123,9 @@ app.use('/timebestilling', require('./routes/timebestilling'));
 app.use('/login', require('./routes/login'));
 app.use('/env', require('./routes/env'));
 
+app.use((req, res, next) => {
+  res.status(404).send('<h1>Denne siden eksisterer ikke. Skrevet riktig?</h1>');
+});
 
 app.get('*', (req, res)=>{
   res.sendFile(path.join(__dirname, 'build/index.html'));       

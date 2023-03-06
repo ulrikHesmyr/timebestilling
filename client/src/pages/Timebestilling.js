@@ -13,6 +13,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
     const [bestilteTimer, setBestiltetimer] = useState(undefined);
     const [friElementer, sFriElementer] = useState(undefined);
 
+    const [frisorBildeArray, sFrisorBildeArray] = useState(null);
 
     const [tilgjengeligeFrisorer, sTilgjengeligeFrisorer] = useState([]);
 
@@ -41,7 +42,6 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
     }
 
     function displayKomponent(componentIndex){
-        console.log(componentIndex);
         setSynligKomponent(componentIndex);
     }
 
@@ -59,7 +59,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
     
   useEffect(()=>{
     async function fetchData(){
-      const request = await fetch('/timebestilling/hentBestiltetimer');
+      const request = await fetch('http://localhost:1226/timebestilling/hentBestiltetimer');
       const response = await request.json();
       
         if(response){
@@ -69,7 +69,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
     fetchData();
 
     async function hentFri(){
-      const request = await fetch("/env/fri");
+      const request = await fetch("http://localhost:1226/env/fri");
       const response = await request.json();
       if(response){
         sFriElementer(response);
@@ -116,7 +116,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
                     displayKomponent(1);
                 }
             }} style={{backgroundColor: frisor !== null?"var(--farge3)":"white"}}><p>2</p>Velg frisør</h2>
-            {(synligKomponent === 1 && produkt.length > 0? <div role="region" aria-labelledby='visFrisorAria' id="fri" aria-hidden={!(synligKomponent === 1 && produkt.length > 0)}> <Frisor tilgjengeligeFrisorer={tilgjengeligeFrisorer} sTilgjengeligeFrisorer={sTilgjengeligeFrisorer} env={env} synligKomponent={synligKomponent} displayKomponent={displayKomponent} klokkeslettet={klokkeslettet} sKlokkeslett={sKlokkeslett} frisor={frisor} sFrisor={sFrisor} sProdukt={sProdukt}/> </div>:"")}
+            {(synligKomponent === 1 && produkt.length > 0? <div role="region" aria-labelledby='visFrisorAria' id="fri" aria-hidden={!(synligKomponent === 1 && produkt.length > 0)}> <Frisor sFrisorBildeArray={sFrisorBildeArray} frisorBildeArray={frisorBildeArray} tilgjengeligeFrisorer={tilgjengeligeFrisorer} sTilgjengeligeFrisorer={sTilgjengeligeFrisorer} env={env} synligKomponent={synligKomponent} displayKomponent={displayKomponent} klokkeslettet={klokkeslettet} sKlokkeslett={sKlokkeslett} frisor={frisor} sFrisor={sFrisor} sProdukt={sProdukt}/> </div>:"")}
            
             <h2 role="button" aria-label='Vis: "valg av klokkeslett og dato"-boks ' aria-expanded={synligKomponent === 2 && frisor !== null } aria-controls="dat" id="visDatoOgKlokkeslettAria" className='overskrift' onClick={()=>{
                 if(synligKomponent === 2){
@@ -164,7 +164,6 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
             <p>obs.: Prisene er kun estimert og kan øke dersom det blir brukt hårprodukter eller om det kreves vask osv.</p>
         </div>):"")}
 
-    
     
     </div>
     )

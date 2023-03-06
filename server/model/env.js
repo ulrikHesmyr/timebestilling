@@ -7,6 +7,8 @@ const env = new mongoose.Schema({
     bedrift:{type:String},
     antallBestillinger:{type:Number},
     kategorier: [String],
+    googleReviewLink: {type:String},
+    omOssArtikkel: {type:String},
     adresse:{gatenavn:String, husnummer:String, postnummer:String, poststed:String, bokstav:String, rep:{lat:String,lng:String}},
     tjenester: [
         {
@@ -19,13 +21,15 @@ const env = new mongoose.Schema({
     ],
     frisorer:[
         {
-            navn:String,
+            navn:{type:String},
             img:{
                 data:Buffer,
                 contentType:String
             },
             produkter:[String],
             oppsigelse:{type: String, default: "Ikke oppsagt"},
+            tittel:{type:String},
+            beskrivelse:{type:String}
         }
         
     ],

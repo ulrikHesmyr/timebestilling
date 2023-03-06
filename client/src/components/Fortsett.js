@@ -4,7 +4,6 @@ function Fortsett({displayKomponent, previous, number, disabled}){
     return (
         <div className='fortsett'>
             <button className='fortsettKnapp'  disabled={number === 1} onClick={(e)=>{
-                console.log("TILBAKE");
                 e.preventDefault();
                 displayKomponent(previous -1);
             }}>TILBAKE</button>

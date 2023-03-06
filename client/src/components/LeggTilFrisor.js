@@ -4,6 +4,8 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel}
 
     const [leggtil, sLeggTil] = useState(false);
     const [nyFrisorNavn, sNyFrisorNavn] = useState("");
+    const [nyFrisorTittel, sNyFrisorTittel] = useState("");
+    const [nyFrisorBeskrivelse, sNyFrisorBeskrivelse] = useState("");
     const [tlfNyFrisor, sTlfNyFrisor] = useState("");
     const [frisorTjenester, setFrisortjenester] = useState([]); //Skal være indekser, akkurat som i databasen
     const [bildeAvFrisor, sBildeAvFrisor] = useState(null);
@@ -20,11 +22,13 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel}
         formData.append("nyFrisorNavn", nyFrisorNavn);
         formData.append("nyFrisorTlf", parseInt(tlfNyFrisor));
         formData.append("nyFrisorTjenester", frisorTjenester);
+        formData.append("tittel", nyFrisorTittel);
+        formData.append("beskrivelse", nyFrisorBeskrivelse);
         const options2 = {
             method:"POST",
             body: formData
         }
-        const request2 = await fetch("/env/opprettFrisor", options2);
+        const request2 = await fetch("http://localhost:1226/env/opprettFrisor", options2);
         const response2 = await request2.json();
         if(response2){
 
@@ -41,7 +45,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel}
                 },
                 body: JSON.stringify(data)
             }
-            const request = await fetch("/login/opprettBruker", options);
+            const request = await fetch("http://localhost:1226/login/opprettBruker", options);
             const response = await request.json();
 
             if(response){
@@ -49,6 +53,8 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel}
                 setFrisortjenester([]);
                 sTlfNyFrisor("");
                 sNyFrisorNavn("");
+                sNyFrisorBeskrivelse("");
+                sNyFrisorTittel("");
                 sBildeAvFrisor(null);
                 varsle();
             }
@@ -68,6 +74,8 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel}
         sLeggTil(false);
         sTlfNyFrisor("");
         sNyFrisorNavn("");
+        sNyFrisorBeskrivelse("");
+        sNyFrisorTittel("");
     }
   return (
     <>
@@ -75,6 +83,14 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel}
         <label style={{fontWeight:"bold"}}>Navn på ny frisør: <input onChange={(e)=>{
             sNyFrisorNavn(e.target.value);
         }} value={nyFrisorNavn} type="text" placeholder='Navn navnesen' maxLength={20}></input></label>
+
+        <label style={{fontWeight:"bold"}}>Tittel: <input onChange={(e)=>{
+            sNyFrisorTittel(e.target.value);
+        }} value={nyFrisorTittel} type="text" placeholder='eks.: Frisør, Terapeut, etc.' maxLength={20}></input></label>
+
+        <label style={{fontWeight:"bold"}}>Info: <textarea onChange={(e)=>{
+            sNyFrisorBeskrivelse(e.target.value);
+        }} value={nyFrisorBeskrivelse} placeholder='Navn har jobbet hos oss siden... Hen er kreativ og liker å jobbe med... Nøyaktig og opptatt av å forstå kundens behov...'></textarea></label>
 
         <label style={{fontWeight:"bold"}}>Telefonnummeret til frisøren: <input style={{letterSpacing:"0.3rem"}} onChange={(e)=>{
             sTlfNyFrisor(e.target.value);
@@ -101,7 +117,6 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel}
         <p>Nedenfor krysser du av boksen (slik at den ikke er tom) dersom denne frisøren skal ha administrator-rettigheter og få tilgang til dette panelet.</p>
         <label>Admin tilgang: <input type="checkbox" onChange={(e)=>{
             sAdminTilgang(e.target.checked);
-            console.log(e.target.checked, "Skal ha admin tilgang");
         }}></input> </label>
 
         <div>
