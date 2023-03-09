@@ -11,6 +11,11 @@ function DetaljerFrisor({env, bruker, frisor, sendTilDatabase, varsle, lagreVars
     const [oppsigelsesDato, sOppsigelsesDato] = useState(new Date());
     const [ikkeSiOpp, sIkkeSiOpp] = useState((frisor.oppsigelse === "Ikke oppsagt")?true:false);
     const [bildeAvFrisor, sBildeAvFrisor] = useState(null);
+    const [visRedigerTelefonAnsatt, sVisRedigerTelefonAnsatt] = useState(false);
+    const [telefonAnsatt, sTelefonAnsatt] = useState();
+    const [visRedigerTittelOgBeskrivelse, sVisRedigerTittelOgBeskrivelse] = useState(false);
+    const [tittel, sTittel] = useState(frisor.tittel);
+    const [beskrivelse, sBeskrivelse] = useState(frisor.beskrivelse);
     
     //Viser redigeringssider
     const [visRedigerBehandlinger, sVisRedigerBehandlinger] = useState(false);     
@@ -20,6 +25,43 @@ function DetaljerFrisor({env, bruker, frisor, sendTilDatabase, varsle, lagreVars
     //Nye behandlinger
     const [frisorTjenester, setFrisortjenester] = useState(frisor.produkter); //Skal være indekser, akkurat som i databasen
 
+    //Oppdaterer tittel og beskrivelse for ansatt
+    async function oppdaterTittelOgBeskrivelse(){
+      lagreVarsel();
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({navn:frisorRediger.navn, tittel:tittel, beskrivelse:beskrivelse})
+      }
+      const request = await fetch('http://localhost:1226/env/oppdaterTittelOgBeskrivelse', options);
+      const response = await request.json();
+      if(response){
+        varsle();
+      } else {
+        alert("Noe gikk galt, prøv på nytt");
+      }
+    }
+    //Oppdaterer en ansatt sitt telefonnummer
+    async function oppdaterTelefonAnsatt(){
+      console.log({navn:frisorRediger.navn, telefon:parseInt(telefonAnsatt)})
+      lagreVarsel();
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({navn:frisorRediger.navn, telefon:parseInt(telefonAnsatt)})
+      }
+      const request = await fetch('http://localhost:1226/env/oppdaterTelefonAnsatt', options);
+      const response = await request.json();
+      if(response){
+        varsle();
+      } else {
+        alert("Noe gikk galt, prøv på nytt");
+      }
+    }
 
     async function oppdaterBilde(navn){
       lagreVarsel();
@@ -103,7 +145,11 @@ function DetaljerFrisor({env, bruker, frisor, sendTilDatabase, varsle, lagreVars
       sVisDetaljer(false);
     }}></div>
     <div>
-      <div style={{padding:"0.3rem"}}>{frisor.navn} </div>
+    <div>
+          <h3 style={{margin:"0"}}>{frisor.navn}</h3>
+          {frisor.tittel}
+      </div>
+      <p>{frisor.beskrivelse}</p>
       <img className='frisorbilde' src={frisorBilde} style={{width:"200px"}} alt={`Bilde av ${frisor.navn}`}></img>
     </div>
 
@@ -113,6 +159,7 @@ function DetaljerFrisor({env, bruker, frisor, sendTilDatabase, varsle, lagreVars
       {env.tjenester.filter((tjeneste)=>frisor.produkter.includes(tjeneste.navn)).map((element)=>(<li key={element.navn}>{element.navn}</li>))}
       </ul>
       </div>
+      
       <div>{frisor.oppsigelse !== "Ikke oppsagt"?`Dato for oppsigelse: ${frisor.oppsigelse}`:""}</div>
       
 
@@ -121,7 +168,7 @@ function DetaljerFrisor({env, bruker, frisor, sendTilDatabase, varsle, lagreVars
           
           <div style={{display:"flex", justifyContent:"space-between", width:"100%"}}>
             
-          <p style={{margin:"0.5rem"}}>Velg hva du vil redigere for ansatt: {frisorRediger.navn}</p>
+          <div style={{margin:"0.5rem"}}>Velg hva du vil redigere for ansatt: <p style={{fontWeight:"bolder", fontSize:"larger"}}>{frisorRediger.navn}</p></div>
             <img alt='Lukk' onClick={(e)=>{
                 e.preventDefault();
                 sVisRedigerFrisor(false);
@@ -129,15 +176,7 @@ function DetaljerFrisor({env, bruker, frisor, sendTilDatabase, varsle, lagreVars
           </div>
 
           <div style={{width:"100%", boxSizing:"border-box"}}>
-                    
-              <button onClick={(e)=>{
-                          e.preventDefault();
-                          //slettFrisor(frisor.navn);
-                          sVisSiOpp(true);
-                          if(frisorRediger.oppsigelse !== "Ikke oppsagt"){
-                              sOppsigelsesDato(frisorRediger.oppsigelse);
-                          }
-              }}>{frisorRediger.oppsigelse === "Ikke oppsagt"?"Si opp (legg inn oppsigelsesdato)":"Rediger oppsigelse"}</button>
+                   
               
               <button onClick={(e)=>{
                           e.preventDefault();
@@ -149,6 +188,16 @@ function DetaljerFrisor({env, bruker, frisor, sendTilDatabase, varsle, lagreVars
                 sVisRedigerBilde(true);
               }}>Oppdater bilde</button>
 
+              
+              <button onClick={()=>{
+                sVisRedigerTittelOgBeskrivelse(true);
+              }}>Rediger tittel eller beskrivelse</button>
+
+              
+              <button style={{background:"yellow"}} onClick={()=>{
+                sVisRedigerTelefonAnsatt(true);
+              }}>Endre telefonnummer</button>
+
               {bruker.navn.toLowerCase() !== frisorRediger.navn.toLowerCase()? <button style={{backgroundColor:"red", color:"white"}} onClick={()=>{
                 //Resetter passord til ansatt
                 if(window.confirm("Er du sikker på at du vil resette passordet til " + frisorRediger.navn + "? Passordet blir satt til samme som brukernavnet")){
@@ -156,6 +205,16 @@ function DetaljerFrisor({env, bruker, frisor, sendTilDatabase, varsle, lagreVars
                   resetPassord(frisorRediger.navn);
                 }
               }} >Resett innloggings-passord for {frisorRediger.navn}</button>:<p>Rediger passordet ditt i "vakter"-panelet</p>}
+
+               
+              <button style={{color:"white", background:"red"}} onClick={(e)=>{
+                          e.preventDefault();
+                          //slettFrisor(frisor.navn);
+                          sVisSiOpp(true);
+                          if(frisorRediger.oppsigelse !== "Ikke oppsagt"){
+                              sOppsigelsesDato(frisorRediger.oppsigelse);
+                          }
+              }}>{frisorRediger.oppsigelse === "Ikke oppsagt"?"Si opp (legg inn oppsigelsesdato)":"Rediger oppsigelse"}</button>
 
             </div>   
 
@@ -181,6 +240,60 @@ function DetaljerFrisor({env, bruker, frisor, sendTilDatabase, varsle, lagreVars
         }}>Lagre</button>
       </div>
             </div>:<></>}
+
+            {visRedigerTittelOgBeskrivelse?<div className='fokus'>
+              <h4>Rediger tittel og/eller beskrivelse for {frisorRediger.navn}</h4>
+              <label>Tittel: <input type="text" value={tittel} onChange={(e)=>{
+                e.preventDefault();
+                sTittel(e.target.value);
+              }}></input></label>
+              <label>Beskrivelse: <textarea value={beskrivelse} onChange={(e)=>{
+                e.preventDefault();
+                sBeskrivelse(e.target.value);
+              }}></textarea></label>
+              <div>
+                <button onClick={(e)=>{
+                  e.preventDefault();
+                  sVisRedigerTittelOgBeskrivelse(false);
+                  sTittel(frisor.tittel);
+                  sBeskrivelse(frisor.beskrivelse);
+                }}>Avbryt</button>
+                <button onClick={(e)=>{
+                  e.preventDefault();
+                  oppdaterTittelOgBeskrivelse();
+                  sVisRedigerTittelOgBeskrivelse(false);
+                }}>Lagre</button>
+              </div>
+            </div>:<></>}
+
+
+            {visRedigerTelefonAnsatt?<div className='fokus'>
+            <h4>Endre telefonnummer for {frisorRediger.navn}</h4>
+            <p>NB! Endre telefonnummeret til ansatt dersom den ansatte har fått nytt telefonnummer og 
+              ikke får loggett inn selv for å endre telefonnummer (ansatt kan bli sperret ute på grunn av tofaktor)</p>
+            <input inputMode="numeric" type="numeric" value={telefonAnsatt} onChange={(e)=>{
+              e.preventDefault();
+              sTelefonAnsatt(e.target.value);
+            }}></input>
+            <div>
+              <button onClick={(e)=>{
+                e.preventDefault();
+                sVisRedigerTelefonAnsatt(false);
+                sTelefonAnsatt("");
+              }}>Avbryt</button>
+              <button onClick={(e)=>{
+                e.preventDefault();
+                if(telefonAnsatt.length === 8){
+                  oppdaterTelefonAnsatt();
+                  sVisRedigerTelefonAnsatt(false);
+                  sTelefonAnsatt("");
+                } else {
+                  alert("Telefonnummeret må være på riktig format (8 siffer)");
+                }
+              }}>Lagre</button>
+            </div>
+            </div>:<></>}
+
 
               {visSiOpp?<div className='fokus'>
               

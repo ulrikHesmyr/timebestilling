@@ -28,16 +28,13 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel}){
   const [visGjentaPassord, sVisGjentaPassord] = useState(false);
 
   const [isMobile, setisMobile] = useState(false);
+  
   useEffect(()=>{
     if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
-        setisMobile(true);
+      setisMobile(true);
     }
-      
+    
     let a = env.frisorer.map(e=>e.navn);
-    setAnsatt(a);
-      
-  },[env.frisorer]);
-  useEffect(()=>{
     
     //Henter fri
     async function hentFri(){
@@ -45,7 +42,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel}){
       const response = await request.json();
       if(response){
           let frii = response.map((element)=>{
-            if(ansatt.includes(element.medarbeider)){
+            if(a.includes(element.medarbeider)){
               if(element.lengreTid){
                 element.start = new Date(`${element.fraDato}T00:30:00`);
                 element.end = new Date(`${element.tilDato}T23:59:00`);
@@ -67,7 +64,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel}){
             }
           }).filter(x=>x);
           const v = bestilteTimer.map((time)=>{
-            if(ansatt.includes(time.medarbeider)){
+            if(a.includes(time.medarbeider)){
               const gjeldendeTjenester = env.tjenester.filter(tjeneste => time.behandlinger.includes(tjeneste.navn)).reduce((total, element)=> total + element.tid, 0);
               time.start = new Date(`${time.dato}T${time.tidspunkt}:00`);
               time.end = new Date(`${time.dato}T${klokkeslettFraMinutter(gjeldendeTjenester+minutterFraKlokkeslett(time.tidspunkt))}:00`);
@@ -81,9 +78,9 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel}){
           sVakterTimebestillinger(allevakter);
         }
       }
-
+      setAnsatt(a);
     hentFri();
-  },[ansatt, bestilteTimer, bruker.navn, env.frisorer, env.tjenester]);
+  },[bestilteTimer, env.frisorer, env.tjenester]);
 
     const MIN_DATE = new Date(2020, 0, 1, 7, 0, 0); // 08:00
     const MAX_DATE = new Date(2020, 0, 1, 20, 0, 0); // 17:30

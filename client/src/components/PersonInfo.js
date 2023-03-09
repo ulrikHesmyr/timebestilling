@@ -1,5 +1,4 @@
 import React, {useState} from 'react'
-import { Link } from 'react-router-dom';
 
 function PersonInfo({totalTid, totalPris, dato, klokkeslettet, produkt, frisor, hentMaaned, isMobile, synligKomponent, displayKomponent, navn, telefonnummer, nullstillData, setReservasjon ,setUpdate ,updateDataTrigger, data, sNavn, sTelefonnummer}){
     
@@ -18,7 +17,7 @@ function PersonInfo({totalTid, totalPris, dato, klokkeslettet, produkt, frisor, 
             alert(response.m);
         } else if(response.bestillingAlreadyExcist){
             alert("Denne timen er opptatt, noen har bestilt time samtidig som deg, men sendte inn registrering først, prøv på nytt!");
-            window.location.reload();
+            sHarRegistrert(false);
         } else if(response){
             setUpdate(!updateDataTrigger);
             setReservasjon(response.bestiltTime);

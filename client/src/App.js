@@ -16,19 +16,20 @@ const App = ()=> {
   const [env, sEnv] = useState(null);
   const [registrertReservasjon, setReservasjon] = useState(undefined);
 
-
-  async function fetchEnvironment(){
-    const environmentRequest = await fetch("http://localhost:1226/env/env");
-    const environment = await environmentRequest.json();
-    if(environment){
-      sEnv(environment);
-    }
-  }
   useEffect(()=>{
+
+    const fetchEnvironment = async ()=>{
+      const data = await (
+        await fetch("http://localhost:1226/env/env")
+      ).json();
+      if(data){
+        sEnv(data);
+      }
+    }
     
     fetchEnvironment();
 
-  },[])
+  }, [])
 
 
   return (

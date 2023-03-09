@@ -1,6 +1,5 @@
-import React, {useEffect, useState} from 'react'
+import React, { useState} from 'react'
 import RedigerKontakt from '../components/RedigerKontakt';
-import RedigerPassord from '../components/RedigerPassord';
 import LeggTilFrisor from '../components/LeggTilFrisor';
 import DetaljerFrisor from '../components/DetaljerFrisor';
 import Fri from '../components/Fri';
@@ -65,10 +64,28 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
     const [visRedigerGoogleReviewLink, sVisRedigerGoogleReviewLink] = useState(false);
     const [googleReviewLink, sGoogleReviewLink] = useState(env.googleReviewLink);
 
-    useEffect(()=>{
-        sKontakt_epost(env.kontakt_epost);
-        sKontakt_tlf(env.kontakt_tlf);
-    }, [env])
+    //useEffect(()=>{
+    //    sKontakt_epost(env.kontakt_epost);
+    //    sKontakt_tlf(env.kontakt_tlf);
+    //}, [env])
+
+    async function oppdaterGoogleReviewLink(){
+        lagreVarsel();
+        const options = {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body: JSON.stringify({googleReviewLink:googleReviewLink}),
+            //credentials:'include'
+        }
+        const request = await fetch("http://localhost:1226/env/oppdaterGoogleReviewLink", options);
+        const response = await request.json();
+        if(response){
+            varsle();
+            sUpdateTrigger(!updateTrigger);
+        }
+    }
 
     async function velgAdresse(){
         const res = await fetch(`https://ws.geonorge.no/adresser/v1/sok?fuzzy=false&adressenavn=${gatenavn}${(husnummer !== ""?`&nummer=${husnummer}`:"")}${(postnummer !== ""?`&postnummer=${postnummer}`:"")}&utkoordsys=4258&treffPerSide=30&side=0&asciiKompatibel=true`, {
@@ -92,7 +109,6 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
         const request = await fetch("http://localhost:1226/env/oppdaterAdresse", options);
         const response = await request.json();
         if(response){
-            sUpdateTrigger(!updateTrigger);
             varsle();
         }
     }
@@ -139,23 +155,6 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
         const response = await request.json();
         if(response){
             sUpdateTrigger(!updateTrigger);
-            varsle();
-        }
-    }
-
-    async function redigerPassordDB(nyttPass){
-        lagreVarsel();
-        const options = {
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body: JSON.stringify({admin_pass:nyttPass}),
-            //credentials:'include'
-        }
-        const request = await fetch("http://localhost:1226/env/oppdaterAdminPass", options);
-        const response = await request.json();
-        if(response){
             varsle();
         }
     }
@@ -276,8 +275,8 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                                     <p>
                                         Her kan du redigere linken til google reviews. Denne linken sendes pr SMS til kunder samme kveld som deres besøk.
                                     </p>
-                                    <p>Nåværende link: {googleReviewLink}</p>
-                                    <label>Link: <input type="text" value={googleReviewLink} onChange={(e)=>{
+                                    <p>Nåværende link: {env.googleReviewLink}</p>
+                                    <label>Link: <input type="url" value={googleReviewLink} onChange={(e)=>{
                                         sGoogleReviewLink(e.target.value);
                                     }}></input></label>
                                     <div>
@@ -288,6 +287,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                                     }}>Avbryt</button>
                                     <button onClick={()=>{
                                         sVisRedigerGoogleReviewLink(false); 
+                                        oppdaterGoogleReviewLink();
                                     }}>Lagre</button>    
                                     </div>
                                 </div>
@@ -544,7 +544,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                         }}></input></label>
                         <label>Link til siden: <input value={linkNyttMedie} onChange={(e)=>{
                             sLinkNyttMedie(e.target.value);
-                        }} type="text" placeholder='https://www.instagram.com/gulsetfades/'></input></label>
+                        }} type="url" placeholder='https://www.instagram.com/gulsetfades/'></input></label>
 
                         <div>
                             <button onClick={()=>{

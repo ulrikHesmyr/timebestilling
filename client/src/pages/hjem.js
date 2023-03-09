@@ -44,14 +44,19 @@ function Hjem({env}){
     return(<div style={{position:"relative"}}>
         <div className="hjem">
             <header>
-                <div className="bedriftNavnHeader"> <p className="viEr" >Vi er </p>{env.bedrift}</div>
+                <div className="bedriftNavnHeader"> <div className="viEr" >Vi er </div>{env.bedrift}</div>
                 
             <Link to="/timebestilling" className='navBarBestillTime'><div>Bestill time</div></Link>
             </header>
 
         </div>
         <div className="startContainer">
+        <div className="hjemsideSeksjon" style={{padding:"2rem"}}>
+                <h1>Velkommen!</h1>
+                <p style={{fontSize:"larger"}}>{env.omOssArtikkel}</p>
+            </div>
         <div className="startside">
+            
             <div className="hjemsideSeksjon">
                 <h2>Åpningstider</h2>
                 <div>

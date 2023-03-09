@@ -34,7 +34,7 @@ router.post("/oppdaterPassord", authorization, async(req,res)=>{
     if(NODE_ENV === "production"){
         bruker = req.brukernavn;
     } else {
-        bruker = "elin";
+        bruker = "ludvik";
     }
     const oppdatertPassord = await Brukere.findOneAndUpdate({brukernavn:bruker}, {passord:passord});
     if(oppdatertPassord){
@@ -136,8 +136,15 @@ router.get("/loggetinn", authorization, async (req,res)=>{
     }
 })
 
+const twofaLimiter = rateLimiter({
+    windowMs: 15 * 60 * 1000,
+    max: 5,
+    message: {m:"Du har brukt opp alle forsøkene dine på å logge inn. Vennligst vent 15 minutter før du prøver igjen"},
+    requestPropertyName:"antForsok"
+});
 
-router.post("/TWOFA", async (req,res)=>{
+
+router.post("/TWOFA", twofaLimiter, async (req,res)=>{
     //Tar høyde for at brukeren allerede har fått SMS med PIN og har dermed også cookie med kryptert PIN
     const {pin, brukertype} = req.body;
     const two_FA = jwt.verify(req.cookies.two_FA, TWOFA_SECRET);

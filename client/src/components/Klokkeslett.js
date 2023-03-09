@@ -145,7 +145,7 @@ function Klokkeslett({env, sForsteFrisor, friElementer, tilgjengeligeFrisorer, d
                     let randomFrisor = tid.frisorer[randomNumber(tid.frisorer.length)];
                     sForsteFrisor(randomFrisor);
                     sKlokkeslett(tid.tid);
-                }}> {tid.tid} </div>)):(frisor !== false && frisor.oppsigelse !== "Ikke oppsagt"?"Kan ikke reservere time hos ansatt etter oppsigelsesdatoen":`Ingen ledige timer for ${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}`))}
+                }}> {tid.tid} </div>)):(frisor !== false && frisor.oppsigelse !== "Ikke oppsagt" && new Date(frisor.oppsigelse) <= new Date(dato) ?"Kan ikke reservere time hos ansatt etter oppsigelsesdatoen":`Ingen ledige timer for ${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}`))}
             </div>
             
             <Fortsett displayKomponent={displayKomponent} previous={2} number={3} disabled={(klokkeslettet !== null? false:true)} />

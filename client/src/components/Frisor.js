@@ -1,11 +1,10 @@
 import React, {useEffect} from "react";
 import Fortsett from "./Fortsett";
 
-function Frisor({tilgjengeligeFrisorer, frisorBildeArray, sFrisorBildeArray, env, synligKomponent, displayKomponent, klokkeslettet, sKlokkeslett ,frisor, sFrisor}){
+function Frisor({tilgjengeligeFrisorer, frisorBildeArray, sFrisorBildeArray, displayKomponent, klokkeslettet, sKlokkeslett ,frisor, sFrisor}){
 
-    useEffect(()=>{
-        console.log(tilgjengeligeFrisorer);
-        console.log(frisor);
+    function genererBilder(){
+        
         //Lager et array med base64 bilder
         let midlertidigArray = [];
         for(let i = 0; i < tilgjengeligeFrisorer.length; i++){
@@ -17,7 +16,10 @@ function Frisor({tilgjengeligeFrisorer, frisorBildeArray, sFrisorBildeArray, env
             midlertidigArray.push(base64Image);
         }
         sFrisorBildeArray(midlertidigArray);
-        //Setter frisør til "første ledige frisør"
+    }
+    
+    useEffect(()=>{
+        genererBilder();
     }, [tilgjengeligeFrisorer])
     return(
         <div>

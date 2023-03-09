@@ -52,31 +52,29 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
         });
     }
 
-    useEffect(() => {
-        const userAgent = window.navigator.userAgent;
-        setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent));
-    }, []);
-    
-  useEffect(()=>{
-    async function fetchData(){
-      const request = await fetch('http://localhost:1226/timebestilling/hentBestiltetimer');
-      const response = await request.json();
+    async function fetchBestilteTimer(){
+        const request = await fetch('http://localhost:1226/timebestilling/hentBestiltetimer');
+        const response = await request.json();
+        
+          if(response){
+              setBestiltetimer(response);
+          }
+    }
       
+    async function hentFri(){
+        const request = await fetch("http://localhost:1226/env/fri");
+        const response = await request.json();
         if(response){
-            setBestiltetimer(response);
+            sFriElementer(response);
         }
     }
-    fetchData();
-
-    async function hentFri(){
-      const request = await fetch("http://localhost:1226/env/fri");
-      const response = await request.json();
-      if(response){
-        sFriElementer(response);
-      }
-    }
+    
+  useEffect(()=>{
+    const userAgent = window.navigator.userAgent;
+    setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent));
+    fetchBestilteTimer();
     hentFri();
-  },[updateDataTrigger])
+  }, [])
 
   
     useEffect(()=>{

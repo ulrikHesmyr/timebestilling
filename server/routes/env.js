@@ -19,6 +19,7 @@ const hentEnvLimiter = rateLimiter({
 
 router.get('/fri', async(req,res)=>{
     try {
+        console.log("/fri");
         const alleFriElementer = await FriElementer.find();
         if(alleFriElementer){
             return res.json(alleFriElementer);
@@ -98,6 +99,7 @@ router.post('/opprettFri', authorization,async(req,res)=>{
 router.get('/env', hentEnvLimiter, async(req,res)=>{
 
     try {
+        console.log("/env");
         await Environment.findOne({bedrift: BEDRIFT}).select('-antallBestillinger -_id -__v').exec((err, doc)=>{
             if(err){
                 console.log(err);
@@ -117,7 +119,7 @@ const upload = multer({
     storage: storage,
     dest: 'uploads/',
     fileFilter: function (req, file, cb) {
-        console.log(file.originalname);
+        //console.log(file.originalname);
       if (!file.originalname.match(/\.(jpg|jpeg|HEIC|heic|heif|HEIF|png|gif|JPG|JPEG|PNG|GIF)$/)) {
         return cb(new Error('Only image files are allowed!'), false);
       }
@@ -130,7 +132,7 @@ const oppdaterBildeFrisor = multer({
     storage: storage,
     dest: 'uploads/',
     fileFilter: function (req, file, cb) {
-        console.log(file.originalname);
+        //console.log(file.originalname);
       if (!file.originalname.match(/\.(jpg|jpeg|HEIC|heic|heif|HEIF|png|gif|JPG|JPEG|PNG|GIF)$/)) {
         return cb(new Error('Only image files are allowed!'), false);
       }
@@ -199,6 +201,66 @@ router.post("/opprettFrisor", upload.single("uploaded_file"), authorization, asy
         }
     } catch (error) {
         console.log(error, "error i opprettFrisor");
+    }
+})
+
+router.post("/oppdaterTelefonAnsatt", authorization, async (req,res)=>{
+    const {telefon, navn} = req.body;
+    try {
+        if(req.admin){
+            const brukere = await Brukere.findOneAndUpdate({brukernavn:navn.toLowerCase()}, {telefonnummer:telefon});
+            if(brukere){
+                return res.send({message:"Telefon oppdatert!"});
+            } else {
+                return res.status(404).send("Kunne ikke oppdatere telefonnummer");
+            }
+        }
+    } catch (error) {
+        console.log(error, "error i oppdaterTelefonAnsatt");
+    }
+}
+)
+
+router.post("/oppdaterGoogleReviewLink", authorization, async (req,res)=>{
+    const {googleReviewLink} = req.body;
+    try {
+        if(req.admin){
+            const env = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {googleReviewLink:googleReviewLink});
+            if(env){
+                return res.send({message:"Google review link oppdatert!"});
+            } else {
+                return res.status(404).send("Kunne ikke oppdatere google review link");
+            }
+        }
+    } catch (error) {
+        console.log(error, "error i oppdaterGoogleReviewLink");
+    }
+}
+)
+
+router.post("/oppdaterTittelOgBeskrivelse", authorization, async (req,res)=>{
+    const {navn, tittel, beskrivelse} = req.body;
+    try {
+        if(req.admin){
+            const env = await Environment.findOne({bedrift:BEDRIFT});
+            if(env){
+                let nyFrisorer = env.frisorer.map(frisor => {
+                    if(frisor.navn === navn){
+                        frisor.tittel = tittel;
+                        frisor.beskrivelse = beskrivelse;
+                    }
+                    return frisor;
+                })
+                const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {frisorer:nyFrisorer});
+                if(oppdatertEnv){
+                    return res.send({message:"Tittel og beskrivelse oppdatert!"});
+                } else {
+                    return res.send({message:"Noe har skjedd gærent i /oppdaterTittelOgBeskrivelse!"});
+                }
+            }
+        }
+    } catch (error) {
+        console.log(error, "error i oppdaterTittelOgBeskrivelse");
     }
 })
 

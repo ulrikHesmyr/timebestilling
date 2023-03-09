@@ -1,5 +1,6 @@
 import React from 'react'
 import Footer from '../components/Footer'
+import {Link} from 'react-router-dom'
 
 function Kontakt({env}){
     return(
@@ -14,13 +15,17 @@ function Kontakt({env}){
                 <div>{env.kontakt_tlf}</div>
                 <div className='sosialemedier'>
                     {env.sosialeMedier.map((medie)=>(
-                        <div key={medie.platform} style={{display:"flex", flexDirection:"row", alignItems:"center", width:"100%"}}>
+                        <a key={medie.platform}  style={{display:"flex", flexDirection:"row", alignItems:"center", width:"100%"}}
+                         rel='noreferrer' target="_blank" href={medie.link}>
                             <img src={`${medie.platform}.png`} style={{height:"5rem", aspectRatio:3/2, objectFit:"contain"}} alt={`${medie.platform}`}></img>
-                            <a rel='noreferrer' target="_blank" href={medie.link}>{medie.bruker}</a>
-                        </div>
+                            {medie.bruker}
+                        </a>
                     ))}
+                    <div style={{display:"flex", flexDirection:"column"}}>
+                        <h4>Ønsker du å bestille time?</h4>
+                        <p>Bestill time her: <Link to="/timebestilling">bestill time</Link> </p>
+                    </div>
                 </div>
-                
             </div>
             <Footer/>
         </div>

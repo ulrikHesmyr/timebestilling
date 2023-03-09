@@ -5,7 +5,7 @@ function OmOss({env}){
   return (
     <div style={{position:"relative"}}>
     <div className='omOss'>
-        <div className='omOssChild' style={{marginTop:"6rem"}}>
+        <div className='omOssChild'>
             <h1 >Om oss</h1>
             <div>{env.omOssArtikkel}
             <br></br>
@@ -13,7 +13,6 @@ function OmOss({env}){
             <div><Link to="/"> Åpningstider, hvor du finner oss, våre ansatte og info om behandlinger</Link></div>
             <div><Link to="/kontakt-oss">Kontakt oss!</Link></div>
             </div>
-            
             
         </div>
     </div>

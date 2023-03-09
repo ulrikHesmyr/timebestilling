@@ -22,7 +22,7 @@ function RedigerKontakt({number, setState, state, sendTilDatabase, env}){
         <h4>Rediger kontakt info:</h4>
         <p>Rediger kontakt-informasjonen som vil være tilgjengelig på "kontakt-oss" siden. 
             Dersom du ønsker å endre telefonnummeret for tofaktor-autoriseringen for admin-brukeren, så ta kontakt</p>
-        <label>{number?"Nytt kontaktnummer: ": "Ny kontakt-epost: "}<input type={number?"number":"text"} value={tempState} onChange={(e)=>{
+        <label>{number?"Nytt kontaktnummer: ": "Ny kontakt-epost: "}<input type={number?"number":"email"} value={tempState} onChange={(e)=>{
             sTempState(e.target.value);
         }}></input></label>
         

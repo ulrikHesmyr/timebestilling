@@ -13,13 +13,13 @@ const FriTimene = require("../model/fri");
 
 const {NODE_ENV} = process.env;
 
-let intervall = 60 * 60 * 1000; // 1 time
+let intervall = 30 * 60 * 1000; // 30 min
 if(NODE_ENV === "development") intervall = 2* 60 * 1000; // 2 minutter
 
 const bestillingLimiter = rateLimiter({
     windowMs: intervall,
-    max: 5,
-    message: {m:"Du har bestilt for mange ganger, vent 1 time før du bestiller igjen"}
+    max: 3,
+    message: {m:"Du har bestilt for mange ganger, vent 30 min før du bestiller igjen! \n\nKontakt oss på telefon dersom du må bestille time med en gang."}
 });
 
 const hentBestillingerLimiter = rateLimiter({
@@ -27,6 +27,9 @@ const hentBestillingerLimiter = rateLimiter({
     max:60,
     message:"BAD REQUEST"
 })
+
+let antallMeldingerSendt = 400; //Hardcoded fra strex pr 08.03.2023
+let antallmeldinger = 1800; //Kjøpt pr 08.03.2023
   
 
 router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
@@ -93,6 +96,10 @@ router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
                     content:`Takk for din timebestilling hos ${process.env.BEDRIFT}!\n\nDette er en bekreftelse på din reservasjon for "${behandlinger.join(", ")}" hos vår medarbeider ${medarbeider}\n${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}, kl.:${tidspunkt}\n\nTimen er registrert på: ${kunde}\n\nTa kontakt på: ${env.kontakt_tlf} dersom det skulle oppstå noe uforutsett!💇 Avbestilling må skje senest 1 døgn før avtalt time. \n\n${env.adresse.gatenavn} ${env.adresse.husnummer}${env.adresse.bokstav?env.adresse.bokstav:""}, ${env.adresse.postnummer} ${env.adresse.poststed}, velkommen!`
                 }
                 await serviceClient.postOutMessage(outMessage);
+                antallMeldingerSendt++;
+                if(antallMeldingerSendt > (antallmeldinger - 100)){
+                    mailer.sendMail("KJØP SMSer fra strex", "KJØP SMSer fra strex");
+                }
 
             } else {
                 console.log("SENDTE IKKE MELDING");

@@ -33,12 +33,10 @@ function Login(){
         setTimeout(()=>{
             sVarslingSynlig(false);
         }, 3000);
-
     }
 
     function lagreVarsel(){
         sLagrerVarslingSynlig(true);
-
     }
 
     //Bruker som er innlogget
@@ -78,7 +76,7 @@ function Login(){
             }, 1000*60*5);
         } else {
             if(response.velgBrukertype){
-                let hihi = window.confirm("Logge inn på administrator-panelet?\n\n Hvis du velger \"Ok\" vil du logge inn på admin-panelet\n\n Hvis du velger \"Avbryt\" vil du logge inn på vakter-panelet");
+                let hihi = window.confirm("GODKJENT!\n\nLogge inn på administrator-panelet?\n\n Hvis du velger \"Ok\" vil du logge inn på admin-panelet\n\n Hvis du velger \"Avbryt\" vil du logge inn på vakter-panelet");
                 if(hihi){
                     
                     sBrukertypeValg("admin");

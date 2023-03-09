@@ -1,12 +1,16 @@
 import React, {useState, useEffect} from 'react'
+import { useNavigate } from 'react-router-dom';
 
-function DinReservasjon({env, hentMaaned, registrertReservasjon}){
+function DinReservasjon({env, hentMaaned, registrertReservasjon, setReservasjon}){
     
     const gjeldendeTjenester = env.tjenester.filter(element=>registrertReservasjon.behandlinger.includes(element.navn));
     const totalTid = gjeldendeTjenester.reduce((total, element)=> total + element.tid, 0);
     const totalPris = gjeldendeTjenester.reduce((total, element)=> total + element.pris, 0);
 
     const [frisorBilde, sFrisorBilde] = useState(null);
+
+    const navigate = useNavigate();
+
     useEffect(()=>{
         //Lager et array med base64 bilder
         async function hentBilder(){
@@ -39,7 +43,9 @@ function DinReservasjon({env, hentMaaned, registrertReservasjon}){
                 </div>):"")}
                 <button style={{padding:"1rem"}} onClick={(e)=>{
                     e.preventDefault();
-                    window.location.href="/";
+
+                    navigate("/");
+                    setReservasjon(undefined);
                 }}>GÅ TILBAKE</button>
             </div>:<p>Laster inn...</p>)
     )

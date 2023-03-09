@@ -182,6 +182,7 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle, lagreVarsel}) {
             }} key={f.navn}>{f.navn}</div>
         ))}
         </div></>:"")}
+        <p>{frisor !== null?`Du har valgt: ${frisor.navn}`:""}</p>
 
     {(dagsfraver === "dag"?
     <form style={{display:"flex", flexDirection:"column"}}>
