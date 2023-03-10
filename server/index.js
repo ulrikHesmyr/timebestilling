@@ -6,6 +6,7 @@ const path = require('path');
 const cors = require("cors");
 const schedule = require("node-schedule");
 const mailer = require("./configuration/mailer");
+const rateLimiter = require("express-rate-limit");
 const cookieParser = require("cookie-parser");
 const helmet = require("helmet");
 const { v4: uuidv4 } = require('uuid');
@@ -51,33 +52,49 @@ const requestCounterMiddleware = (req, res, next) => {
 
 }
 
+
 app.use(requestCounterMiddleware);
 
+const hovedLimiter = rateLimiter({
+  windowMs: 1 * 60 * 1000,
+  max: 50,
+  message: {m:"Du har brukt opp alle forsøkene dine på å logge inn. Vennligst vent 15 minutter før du prøver igjen"},
+});
 
+app.use(hovedLimiter);
+
+
+//Sender SMS om feedback fra alle kunder som har hatt behandling i dag. Merk at dette skjer kl 1930
+//FØR timebestillingen slettes fra databasen
+//Dette avhenger av om salongen har aktivert feedback SMS-er i admin panelet
 schedule.scheduleJob('30 19 * * *', async ()=>{
   try {
-    const idag = hentDatoIDag();
-    const tilbakemeldingBestillinger = await Bestiltetimer.find({dato: idag});
-    
-    //Sender SMS med google review link, 18 timer etter at timebestillingen ble gjort
-    tilbakemeldingBestillinger.forEach(async timebestilling => {
-      let SMS_ENABLED = true;
-      if(SMS_ENABLED){
-          let baseUrl = "https://shared.target365.io/";
-          let keyName = process.env.KEYNAME_SMS;
-          let privateKey = process.env.PRIVATE_KEY;
-          let serviceClient = new Client(privateKey, { baseUrl, keyName });
-          let outMessage = {
-              transactionId: uuidv4(),
-              sender:'Target365',
-              recipient:`+47${timebestilling.telefonnummer}`,
-              content:`Hei ${timebestilling.kunde}! Vi håper du er fornøyd med ditt besøk hos oss.\n\n Dersom det er ønskelig, så legg gjerne igjen en tilbakemelding på besøket. Du kan gi oss en tilbakemelding ved å trykke på linken under. \n\n ${process.env.GOOGLE_REVIEW_LINK} \n\n Med vennlig hilsen \n ${BEDRIFT}`
-          }
-          await serviceClient.postOutMessage(outMessage);
-      } else {
-          console.log("SENDTE IKKE MELDING");
-      }
-    });
+    const env = await Environment.findOne({bedrift: BEDRIFT});
+    if(env && env.aktivertFeedbackSMS){
+        
+      const idag = hentDatoIDag();
+      const tilbakemeldingBestillinger = await Bestiltetimer.find({dato: idag});
+      
+      //Sender SMS med google review link, 18 timer etter at timebestillingen ble gjort
+      tilbakemeldingBestillinger.forEach(async timebestilling => {
+        let SMS_ENABLED = true;
+        if(SMS_ENABLED){
+            let baseUrl = "https://shared.target365.io/";
+            let keyName = process.env.KEYNAME_SMS;
+            let privateKey = process.env.PRIVATE_KEY;
+            let serviceClient = new Client(privateKey, { baseUrl, keyName });
+            let outMessage = {
+                transactionId: uuidv4(),
+                sender:'Target365',
+                recipient:`+47${timebestilling.telefonnummer}`,
+                content:`Hei ${timebestilling.kunde}! Vi håper du er fornøyd med ditt besøk hos oss.\n\n Dersom det er ønskelig, så legg gjerne igjen en tilbakemelding på besøket. Du kan gi oss en tilbakemelding ved å trykke på linken under. \n\n ${process.env.GOOGLE_REVIEW_LINK} \n\n Med vennlig hilsen \n ${BEDRIFT}`
+            }
+            await serviceClient.postOutMessage(outMessage);
+        } else {
+            console.log("SENDTE IKKE MELDING");
+        }
+      });
+    }
   } catch (error) {
     console.log(error);
   }

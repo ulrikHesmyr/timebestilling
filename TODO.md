@@ -64,11 +64,12 @@ OM APPLIKASJONEN, PERSONVERN OG LOV:
 
 FÅ FRA KUNDE FØR PROD
 - Logo
-- Bilde til startside
+- Bilder til startside, kontakt oss, om oss osv.
 - Farger til siden
 - Google review link hvis ønsket
 - Telefonnummer daglig leder
 - Navn daglig leder
+- Timebekreftelsesformat? Liker de SMS sånn den er nå?
 
 MINE GARANTIER:
 - Umulig å bli dobbeltbooket eller at timer krasjer, først på nettsiden, så sjekker den med tidligere bestillinger, men også på serveren i det bestillingen sendes, så sjekker den momentnant om det krasjer med andre bestillinger.

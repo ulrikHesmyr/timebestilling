@@ -12,6 +12,13 @@ function OmOss({env}){
             <br></br>
             <div><Link to="/"> Åpningstider, hvor du finner oss, våre ansatte og info om behandlinger</Link></div>
             <div><Link to="/kontakt-oss">Kontakt oss!</Link></div>
+            <div className='bilder'>
+              <img  alt='Bilde fra studio' src="bilde1.jpg"></img>
+              <img  alt='Bilde fra studio' src="bilde2.jpg"></img>
+              <img  alt='Bilde fra studio' src="bilde3.jpg"></img>
+              <img  alt='Bilde fra studio' src="bilde4.jpg"></img>
+              <img  alt='Bilde fra studio' src="bilde1.jpg"></img>
+            </div>
             </div>
             
         </div>

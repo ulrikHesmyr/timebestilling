@@ -25,6 +25,7 @@ const authorization = async (req,res,next) => {
         } else {
             req.admin = true;
             req.brukernavn = "ulrik";
+            req.brukertype = "admin";
             return next();
 
         }

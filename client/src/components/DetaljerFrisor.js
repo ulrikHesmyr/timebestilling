@@ -147,16 +147,16 @@ function DetaljerFrisor({env, bruker, frisor, sendTilDatabase, varsle, lagreVars
     <div>
     <div>
           <h3 style={{margin:"0"}}>{frisor.navn}</h3>
-          {frisor.tittel}
+          {tittel}
       </div>
-      <p>{frisor.beskrivelse}</p>
+      <p>{beskrivelse}</p>
       <img className='frisorbilde' src={frisorBilde} style={{width:"200px"}} alt={`Bilde av ${frisor.navn}`}></img>
     </div>
 
       <div style={{fontSize:"small"}}>
       Behandlinger: 
       <ul>
-      {env.tjenester.filter((tjeneste)=>frisor.produkter.includes(tjeneste.navn)).map((element)=>(<li key={element.navn}>{element.navn}</li>))}
+      {env.tjenester.filter((tjeneste)=>frisorTjenester.includes(tjeneste.navn)).map((element)=>(<li key={element.navn}>{element.navn}</li>))}
       </ul>
       </div>
       

@@ -221,6 +221,23 @@ router.post("/oppdaterTelefonAnsatt", authorization, async (req,res)=>{
 }
 )
 
+router.post("/oppdaterOmOss", authorization, async (req,res)=>{
+    const {omOssArtikkel} = req.body;
+    try {
+        if(req.admin){
+            const env = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {omOssArtikkel:omOssArtikkel});
+            if(env){
+                return res.send({message:"Om oss oppdatert!"});
+            } else {
+                return res.status(404).send("Kunne ikke oppdatere om oss");
+            }
+        }
+    } catch (error) {
+        console.log(error, "error i oppdaterOmOss");
+    }
+}
+)
+
 router.post("/oppdaterGoogleReviewLink", authorization, async (req,res)=>{
     const {googleReviewLink} = req.body;
     try {

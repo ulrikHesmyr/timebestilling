@@ -14,14 +14,15 @@ const authorization = require("../middleware/authorization");
 const {BEDRIFT, ACCESS_TOKEN_KEY, NODE_ENV, TWOFA_SECRET, KEYNAME_SMS, PRIVATE_KEY} = process.env;
 
 
-  
+let loginIntervall = 15 * 60 * 1000;  
+if(NODE_ENV === "development") loginIntervall = 60 * 1000;
 
 const loginLimiter = rateLimiter({
-    windowMs: 15 * 60 * 1000,
+    windowMs: loginIntervall,
     max: 5,
     message: {m:"Du har brukt opp alle forsøkene dine på å logge inn. Vennligst vent 15 minutter før du prøver igjen"},
     requestPropertyName:"antForsok"
-  });
+});
   
 
 //ANSATTE ENDRE TELEFONNUMMER OG PASSORD
