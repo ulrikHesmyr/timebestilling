@@ -28,12 +28,10 @@ app.use(express.static('build'));
 
 //Limiting the total amount of requests per minute (From any IP address)
 let requestCounterLimit = 0;
-let maksRequestsPerMinutt;
+let maksRequestsPerMinutt = 200;
 if(NODE_ENV === "development"){
   maksRequestsPerMinutt = 20;
-} else {
-  maksRequestsPerMinutt = 200;
-}
+} 
 
 setInterval(() => {
   requestCounterLimit = 0;
@@ -56,9 +54,9 @@ const requestCounterMiddleware = (req, res, next) => {
 app.use(requestCounterMiddleware);
 
 const hovedLimiter = rateLimiter({
-  windowMs: 1 * 60 * 1000,
-  max: 50,
-  message: {m:"Du har brukt opp alle forsøkene dine på å logge inn. Vennligst vent 15 minutter før du prøver igjen"},
+  windowMs: 60 * 60 * 1000,
+  max: 800,
+  message: {m:"For mye trafikk. Vennligst prøv igjen om 1 time"},
 });
 
 app.use(hovedLimiter);
@@ -170,12 +168,13 @@ app.use('/timebestilling', require('./routes/timebestilling'));
 app.use('/login', require('./routes/login'));
 app.use('/env', require('./routes/env'));
 
-app.use((req, res, next) => {
-  res.status(404).send('<h1>Denne siden eksisterer ikke. Skrevet riktig?</h1>');
-});
+//app.use((req, res, next) => {
+//  res.status(404).send('<h1>Denne siden eksisterer ikke. Skrevet riktig?</h1>');
+//});
 
 app.get('*', (req, res)=>{
-  res.sendFile(path.join(__dirname, 'build/index.html'));       
+  res.sendFile(path.join(__dirname, 'build/index.html'));     
+  console.log("*");  
 })
 
 app.listen(process.env.SERVERPORT, () => {

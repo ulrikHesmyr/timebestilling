@@ -10,6 +10,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel}
     const [frisorTjenester, setFrisortjenester] = useState([]); //Skal være indekser, akkurat som i databasen
     const [bildeAvFrisor, sBildeAvFrisor] = useState(null);
     const [adminTilgang, sAdminTilgang] = useState(false);
+    const [preview, setPreview] = useState(null);
 
 
     async function lagre(){
@@ -28,7 +29,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel}
             method:"POST",
             body: formData
         }
-        const request2 = await fetch("http://localhost:1226/env/opprettFrisor", options2);
+        const request2 = await fetch("/env/opprettFrisor", options2);
         const response2 = await request2.json();
         if(response2){
 
@@ -45,7 +46,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel}
                 },
                 body: JSON.stringify(data)
             }
-            const request = await fetch("http://localhost:1226/login/opprettBruker", options);
+            const request = await fetch("/login/opprettBruker", options);
             const response = await request.json();
 
             if(response){
@@ -97,7 +98,8 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel}
         }} value={tlfNyFrisor} type="text" maxLength={8}></input></label>
         <label style={{display:"flex", alignItems:"center"}}>Last opp bilde av Frisøren: <input accept="image/*" onChange={(e)=>{
             sBildeAvFrisor(e.target.files[0]);
-        }} type="file" name="uploaded_file"></input> {bildeAvFrisor && <img className='frisorbilde' style={{height:"300px"}} alt='Forhåndsvisning av bildet' src={URL.createObjectURL(bildeAvFrisor)}></img>}</label>
+            setPreview(URL.createObjectURL(e.target.files[0]));
+        }} type="file" name="uploaded_file"></input> {preview && <img className='frisorbilde' style={{height:"300px"}} alt='Forhåndsvisning av bildet' src={preview}></img>}</label>
         
 
         <p style={{fontWeight:"bold"}} >Velg behandlinger for frisør:</p>

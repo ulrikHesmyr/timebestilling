@@ -115,13 +115,13 @@ router.post("/slettBruker", authorization, async (req,res)=>{
 
 
 router.get("/loggetinn", authorization, async (req,res)=>{
+    console.log("/loggetinn");
     try {
         const brukernavn = req.brukernavn;
         //Find the user in the database     //NB DENNE ER IKKE I BRUK
         
         const finnBruker = await Brukere.findOne({brukernavn: brukernavn});
-        const env = await Environment.findOne({bedrift:BEDRIFT});
-        const {kontakt_epost, kontakt_tlf, sosialeMedier, bedrift, kategorier, tjenester, frisorer, klokkeslett, adresse, omOssArtikkel, googleReviewLink} = env;
+        const env = await Environment.findOne({bedrift:BEDRIFT}).select("-_id -__v -antallBestillinger").exec();
         
         let bestilteTimer = await Bestiltetimer.find();
         bestilteTimer = bestilteTimer.sort((a,b)=>{
@@ -130,7 +130,7 @@ router.get("/loggetinn", authorization, async (req,res)=>{
             return datoA - datoB;
         })
             
-        return res.json({valid:true,bruker:{navn:finnBruker.brukernavn, telefonnummer:finnBruker.telefonnummer}, message:"Du er nå logget inn", brukertype: (req.brukertype==="admin"?"admin":"vakter"), env:{kontakt_epost:kontakt_epost, kontakt_tlf:kontakt_tlf, sosialeMedier:sosialeMedier, bedrift:bedrift, kategorier:kategorier, tjenester:tjenester, frisorer:frisorer, klokkeslett:klokkeslett, adresse: adresse, omOssArtikkel: omOssArtikkel, googleReviewLink: googleReviewLink}, bestilteTimer:bestilteTimer});
+        return res.json({valid:true,bruker:{navn:finnBruker.brukernavn, telefonnummer:finnBruker.telefonnummer}, message:"Du er nå logget inn", brukertype: (req.brukertype==="admin"?"admin":"vakter"), env:env, bestilteTimer:bestilteTimer});
         
     } catch (error) {
         console.log(error);
@@ -146,6 +146,7 @@ const twofaLimiter = rateLimiter({
 
 
 router.post("/TWOFA", twofaLimiter, async (req,res)=>{
+    console.log("/TWOFA");
     //Tar høyde for at brukeren allerede har fått SMS med PIN og har dermed også cookie med kryptert PIN
     const {pin, brukertype} = req.body;
     const two_FA = jwt.verify(req.cookies.two_FA, TWOFA_SECRET);
@@ -158,11 +159,11 @@ router.post("/TWOFA", twofaLimiter, async (req,res)=>{
             httpOnly: true,
             secure: process.env.HTTPS_ENABLED == "secure",
             expires: expirationDate
-        })
+        });
         
         const finnBruker = await Brukere.findOne({brukernavn: two_FA.brukernavn});
-        const env = await Environment.findOne({bedrift:BEDRIFT});
-        const {kontakt_epost, kontakt_tlf, sosialeMedier, bedrift, kategorier, tjenester, frisorer, klokkeslett, adresse, omOssArtikkel, googleReviewLink} = env;
+        const env = await Environment.findOne({bedrift:BEDRIFT}).select("-_id -__v -antallBestillinger").exec();
+        
         
         let bestilteTimer = await Bestiltetimer.find();
         bestilteTimer = bestilteTimer.sort((a,b)=>{
@@ -182,7 +183,7 @@ router.post("/TWOFA", twofaLimiter, async (req,res)=>{
         })
         res.clearCookie("two_FA");
             
-        return res.json({valid:true,bruker:{navn:finnBruker.brukernavn, telefonnummer:finnBruker.telefonnummer}, message:"Du er nå logget inn", brukertype: (brukertype==="admin"?"admin":"vakter"), env:{kontakt_epost:kontakt_epost, kontakt_tlf:kontakt_tlf, sosialeMedier:sosialeMedier, bedrift:bedrift, kategorier:kategorier, tjenester:tjenester, frisorer:frisorer, klokkeslett:klokkeslett, adresse: adresse, omOssArtikkel: omOssArtikkel, googleReviewLink: googleReviewLink}, bestilteTimer:bestilteTimer});
+        return res.json({valid:true,bruker:{navn:finnBruker.brukernavn, telefonnummer:finnBruker.telefonnummer}, message:"Du er nå logget inn", brukertype: (brukertype==="admin"?"admin":"vakter"), env:env, bestilteTimer:bestilteTimer});
         
 
     } else {
@@ -191,7 +192,7 @@ router.post("/TWOFA", twofaLimiter, async (req,res)=>{
 })
 
 router.post('/auth',loginLimiter, async (req,res)=>{
-
+    console.log("/auth");
     try {
         const {brukernavn, passord, valgtBrukertype, brukertype}= req.body;
         const finnBruker = await Brukere.findOne({brukernavn: brukernavn});
@@ -239,8 +240,8 @@ router.post('/auth',loginLimiter, async (req,res)=>{
                 }
             }
                 
-                const env = await Environment.findOne({bedrift:BEDRIFT});
-                const {kontakt_epost, kontakt_tlf, sosialeMedier, bedrift, kategorier, tjenester, frisorer, klokkeslett, adresse, omOssArtikkel, googleReviewLink} = env;
+                const env = await Environment.findOne({bedrift:BEDRIFT}).select("-_id -__v -antallBestillinger").exec();
+                
                 let bestilteTimer = await Bestiltetimer.find();
                 bestilteTimer = bestilteTimer.sort((a,b)=>{
                     let datoA = new Date(a.dato + " " + a.tidspunkt);
@@ -254,7 +255,7 @@ router.post('/auth',loginLimiter, async (req,res)=>{
                     httpOnly: true,
                     secure: process.env.HTTPS_ENABLED == "secure",
                 })
-                return res.json({valid:true,bruker:{navn:finnBruker.brukernavn, telefonnummer:finnBruker.telefonnummer}, message:"Du er nå logget inn", brukertype: (brukertype==="admin"?"admin":"vakter"), env:{kontakt_epost:kontakt_epost, kontakt_tlf:kontakt_tlf, sosialeMedier:sosialeMedier, bedrift:bedrift, kategorier:kategorier, tjenester:tjenester, frisorer:frisorer, klokkeslett:klokkeslett, adresse: adresse, omOssArtikkel: omOssArtikkel, googleReviewLink: googleReviewLink}, bestilteTimer:bestilteTimer});
+                return res.json({valid:true,bruker:{navn:finnBruker.brukernavn, telefonnummer:finnBruker.telefonnummer}, message:"Du er nå logget inn", brukertype: (brukertype==="admin"?"admin":"vakter"), env:env, bestilteTimer:bestilteTimer});
             
         } else {
 

@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import {BrowserRouter, Route, Routes, Link} from 'react-router-dom'
+import {Helmet} from 'react-helmet'
 import Timebestilling from './pages/Timebestilling'
 import Hjem from './pages/hjem'
 import DinReservasjon from './pages/DinReservasjon'
@@ -20,7 +21,7 @@ const App = ()=> {
 
     const fetchEnvironment = async ()=>{
       const data = await (
-        await fetch("http://localhost:1226/env/env")
+        await fetch("/env/env")
       ).json();
       if(data){
         sEnv(data);
@@ -33,7 +34,14 @@ const App = ()=> {
 
 
   return (
-      <BrowserRouter><div className='navHeader'>
+    <>  
+    <Helmet>
+        <meta
+          http-equiv="Content-Security-Policy"
+          content="img-src 'self' data: blob:;"
+        />
+      </Helmet>
+        <BrowserRouter><div className='navHeader'>
         
         <div id="burgerButton" className='burger' aria-label='Vis navigasjonsmeny' aria-expanded={synligMeny} aria-controls="navigation" onClick={()=>{
               setSynligmeny(!synligMeny);
@@ -72,7 +80,7 @@ const App = ()=> {
             </Routes>))}
             
         
-      </BrowserRouter>
+      </BrowserRouter></>
   );
 }
 

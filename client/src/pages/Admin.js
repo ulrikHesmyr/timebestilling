@@ -81,9 +81,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({omOssArtikkel:omOssTekst}),
-            //credentials:'include'
+            credentials:'include'
         }
-        const request = await fetch("http://localhost:1226/env/oppdaterOmOss", options);
+        const request = await fetch("/env/oppdaterOmOss", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -99,9 +99,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({googleReviewLink:googleReviewLink}),
-            //credentials:'include'
+            credentials:'include'
         }
-        const request = await fetch("http://localhost:1226/env/oppdaterGoogleReviewLink", options);
+        const request = await fetch("/env/oppdaterGoogleReviewLink", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -126,9 +126,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({adresse:adresse}),
-            //credentials:'include'
+            credentials:'include'
         }
-        const request = await fetch("http://localhost:1226/env/oppdaterAdresse", options);
+        const request = await fetch("/env/oppdaterAdresse", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -144,9 +144,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify(slettetTime),
-            //credentials:'include'
+            credentials:'include'
         }
-        const request = await fetch("http://localhost:1226/timebestilling/oppdaterTimebestillinger", options);
+        const request = await fetch("/timebestilling/oppdaterTimebestillinger", options);
         const response = await request.json();
         if(response.valid){
             varsle();
@@ -171,9 +171,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify(nyttEnv),
-            //credentials:'include'
+            credentials:'include'
         }
-        const request = await fetch("http://localhost:1226/env/oppdaterEnv", options);
+        const request = await fetch("/env/oppdaterEnv", options);
         const response = await request.json();
         if(response){
             sUpdateTrigger(!updateTrigger);
@@ -218,7 +218,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 
                 <Fri env={env} bestilteTimer={bestilteTimer} synligKomponent={synligKomponent} lagreVarsel={lagreVarsel} varsle={varsle} />
 
-                {synligKomponent === 5 && env !== null? <SMS env={env}/>:""}
+                {synligKomponent === 5 && env !== null? <SMS env={env} varsle={varsle} lagreVarsel={lagreVarsel}/>:""}
 
                 
                 {synligKomponent === 1 && bestilteTimer !== null?(<>

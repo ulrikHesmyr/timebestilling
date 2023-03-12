@@ -53,7 +53,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
     }
 
     async function fetchBestilteTimer(){
-        const request = await fetch('http://localhost:1226/timebestilling/hentBestiltetimer');
+        const request = await fetch('/timebestilling/hentBestiltetimer');
         const response = await request.json();
         
           if(response){
@@ -62,7 +62,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
     }
       
     async function hentFri(){
-        const request = await fetch("http://localhost:1226/env/fri");
+        const request = await fetch("/env/fri");
         const response = await request.json();
         if(response){
             sFriElementer(response);
@@ -136,7 +136,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
                 }
             }} style={{backgroundColor: navn !== "" && telefonnummer.toString().length === 8?"var(--farge3)":"white"}}><p>4</p>Din info</h2>
             <div role="region" aria-labelledby='visPersonInfoAria' id="per" aria-hidden={!(synligKomponent === 3 && klokkeslettet !== null)}>
-                {(synligKomponent === 3 && klokkeslettet !== null?<PersonInfo totalPris={totalPris} totalTid={totalTid} klokkeslettet={klokkeslettet} produkt={produkt} frisor={frisor} hentMaaned={hentMaaned} dato={dato} isMobile={isMobile} synligKomponent={synligKomponent} displayKomponent={displayKomponent} telefonnummer={telefonnummer} navn={navn} nullstillData={nullstillData} setReservasjon={setReservasjon} setUpdate={setUpdate} updateDataTrigger={updateDataTrigger} sNavn={sNavn} sTelefonnummer={sTelefonnummer} data={{
+                {(synligKomponent === 3 && klokkeslettet !== null?<PersonInfo env={env} totalPris={totalPris} totalTid={totalTid} klokkeslettet={klokkeslettet} produkt={produkt} frisor={frisor} hentMaaned={hentMaaned} dato={dato} isMobile={isMobile} synligKomponent={synligKomponent} displayKomponent={displayKomponent} telefonnummer={telefonnummer} navn={navn} nullstillData={nullstillData} setReservasjon={setReservasjon} setUpdate={setUpdate} updateDataTrigger={updateDataTrigger} sNavn={sNavn} sTelefonnummer={sTelefonnummer} data={{
                     dato:dato, 
                     tidspunkt:klokkeslettet,
                     //frisor: (frisor === false?env.frisorer.indexOf(forsteFrisor):env.frisorer.indexOf(frisor)),

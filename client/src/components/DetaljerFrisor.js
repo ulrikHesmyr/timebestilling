@@ -11,6 +11,7 @@ function DetaljerFrisor({env, bruker, frisor, sendTilDatabase, varsle, lagreVars
     const [oppsigelsesDato, sOppsigelsesDato] = useState(new Date());
     const [ikkeSiOpp, sIkkeSiOpp] = useState((frisor.oppsigelse === "Ikke oppsagt")?true:false);
     const [bildeAvFrisor, sBildeAvFrisor] = useState(null);
+    const [preview, sPreview] = useState(null);
     const [visRedigerTelefonAnsatt, sVisRedigerTelefonAnsatt] = useState(false);
     const [telefonAnsatt, sTelefonAnsatt] = useState();
     const [visRedigerTittelOgBeskrivelse, sVisRedigerTittelOgBeskrivelse] = useState(false);
@@ -35,7 +36,7 @@ function DetaljerFrisor({env, bruker, frisor, sendTilDatabase, varsle, lagreVars
         },
         body: JSON.stringify({navn:frisorRediger.navn, tittel:tittel, beskrivelse:beskrivelse})
       }
-      const request = await fetch('http://localhost:1226/env/oppdaterTittelOgBeskrivelse', options);
+      const request = await fetch('/env/oppdaterTittelOgBeskrivelse', options);
       const response = await request.json();
       if(response){
         varsle();
@@ -54,7 +55,7 @@ function DetaljerFrisor({env, bruker, frisor, sendTilDatabase, varsle, lagreVars
         },
         body: JSON.stringify({navn:frisorRediger.navn, telefon:parseInt(telefonAnsatt)})
       }
-      const request = await fetch('http://localhost:1226/env/oppdaterTelefonAnsatt', options);
+      const request = await fetch('/env/oppdaterTelefonAnsatt', options);
       const response = await request.json();
       if(response){
         varsle();
@@ -75,7 +76,7 @@ function DetaljerFrisor({env, bruker, frisor, sendTilDatabase, varsle, lagreVars
         body: formData
       }
 
-      const request = await fetch('http://localhost:1226/env/oppdaterBildeFrisor', options);
+      const request = await fetch('/env/oppdaterBildeFrisor', options);
       const response = await request.json();
       if(response.valid){
         varsle();
@@ -113,7 +114,7 @@ function DetaljerFrisor({env, bruker, frisor, sendTilDatabase, varsle, lagreVars
         },
         body: JSON.stringify({navn:navn.toLowerCase()})
       }
-      const request = await fetch('http://localhost:1226/login/resetPassord', options);
+      const request = await fetch('/login/resetPassord', options);
       const response = await request.json();
       if(response.valid){
         varsle();
@@ -222,7 +223,8 @@ function DetaljerFrisor({env, bruker, frisor, sendTilDatabase, varsle, lagreVars
             <h4>Last opp nytt bilde: </h4>
               <label style={{display:"flex", alignItems:"center"}}>Last opp bilde av Frisøren: <input accept="image/*" onChange={(e)=>{
               sBildeAvFrisor(e.target.files[0]);
-              }} type="file" name="uploaded_file"></input> {bildeAvFrisor && <img className='frisorbilde' style={{height:"300px"}} alt='Forhåndsvisning av bildet' src={URL.createObjectURL(bildeAvFrisor)}></img>}</label>
+              sPreview(URL.createObjectURL(e.target.files[0]));
+              }} type="file" name="uploaded_file"></input> {preview && <img className='frisorbilde' style={{height:"300px"}} alt='Forhåndsvisning av bildet' src={preview}></img>}</label>
       
       <div>
         <button onClick={(e)=>{

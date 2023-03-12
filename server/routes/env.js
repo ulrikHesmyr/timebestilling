@@ -321,20 +321,37 @@ router.post('/oppdaterEnv',authorization, async(req,res)=>{
     }
 })
 
-router.post("/oppdaterAdminPass", authorization, async (req,res)=>{
-    const {admin_pass} = req.body;
-    const brukernavn = req.brukernavn;
-    if(admin){ 
-        const AdminBrukeren = await Brukere.findOneAndUpdate({brukernavn: brukernavn}, {passord: admin_pass});
-        if(AdminBrukeren){
-            return res.send({message:"Passord oppdatert!"});
+router.post("/endreStatusSMSfeedback", authorization, async (req,res)=>{
+    const {nyStatus} = req.body;
+    try {
+        if(req.admin){
+            const env = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {aktivertFeedbackSMS:nyStatus});
+            if(env){
+                return res.send({message:"Status oppdatert!"});
+            } else {
+                return res.status(404).send("Kunne ikke oppdatere status");
+            }
         }
-        const accessToken = jwt.sign({brukernavn:brukernavn, passord:admin_pass},ACCESS_TOKEN_KEY,{expiresIn:'480m'});
-            res.cookie("access_token", accessToken, {
-                httpOnly: true,
-                secure: process.env.HTTPS_ENABLED == "secure",
-        })
+    } catch (error) {
+        console.log(error, "error i endreStatusSMSfeedback");
     }
 })
+
+router.post("/endreStatusSMSpin", authorization, async (req,res)=>{
+    const {nyStatus} = req.body;
+    try {
+        if(req.admin){
+            const env = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {aktivertSMSpin:nyStatus});
+            if(env){
+                return res.send({message:"Status oppdatert!"});
+            } else {
+                return res.status(404).send("Kunne ikke oppdatere status");
+            }
+        }
+    } catch (error) {
+        console.log(error, "error i endreStatusSMSpin");
+    }
+}
+)
 
 module.exports = router;

@@ -65,6 +65,7 @@ async function opprettEnvironment(){
             googleReviewLink: `${process.env.GOOGLE_REVIEW_LINK}`,
             omOssArtikkel: "Hei, kjære kunde!\n\nVi er Ulrik Fades og vi ønsker velkommen til vår salong i Gjøvik Sentrum!",
             aktivertFeedbackSMS: false,
+            aktivertSMSpin: false,
             adresse:{
                 
                     gatenavn:"Teknologivegen",

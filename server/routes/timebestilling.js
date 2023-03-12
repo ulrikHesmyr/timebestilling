@@ -3,6 +3,7 @@ const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const Client = require("target365-sdk");
 const rateLimiter = require("express-rate-limit");
+const jwt = require("jsonwebtoken");
 
 const mailer = require("../configuration/mailer");
 const authorization = require("../middleware/authorization");
@@ -11,7 +12,7 @@ const Bestilttime = require("../model/bestilling");
 const Env = require("../model/env");
 const FriTimene = require("../model/fri");
 
-const {NODE_ENV} = process.env;
+const {NODE_ENV, SMSPIN_SECRET, ACCESS_TOKEN_KEY, SMSPINVALID_SECRET} = process.env;
 
 let intervall = 30 * 60 * 1000; // 30 min
 if(NODE_ENV === "development") intervall = 2* 60 * 1000; // 2 minutter
@@ -69,6 +70,22 @@ router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
         }
         
         if(!t && finnesIkkeKollisjon){
+
+            let kundensTelefonnummer = telefonnummer;
+            const ansattBestilling = req.cookies.two_FA_valid;
+            let ansatt = false;
+            if(ansattBestilling){
+                ansatt = jwt.verify(req.cookies.two_FA_valid, ACCESS_TOKEN_KEY);
+            }
+            if(env.aktivertSMSpin && !ansatt){
+                const dataFromSMSCookie = jwt.verify(req.cookies.tlfvalid, SMSPINVALID_SECRET);
+                if(dataFromSMSCookie){
+                    kundensTelefonnummer = parseInt(dataFromSMSCookie.tlf);
+                } else {
+                    return res.status(401).json({m:"Du må validere telefonnummeret ditt før du bestiller time!"});
+                }
+            }
+
             const bestillNyTime = await Bestilttime.create({
                 dato: dato,
                 tidspunkt: tidspunkt,
@@ -76,7 +93,7 @@ router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
                 behandlinger: behandlinger,
                 medarbeider: medarbeider,
                 kunde: kunde,
-                telefonnummer: telefonnummer
+                telefonnummer: kundensTelefonnummer
             })
 
             //Sender SMS med bekreftelse
@@ -92,12 +109,12 @@ router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
                 let outMessage = {
                     transactionId: uuidv4(),
                     sender:'Target365',
-                    recipient:`+47${telefonnummer}`,
+                    recipient:`+47${kundensTelefonnummer}`,
                     content:`Takk for din timebestilling hos ${process.env.BEDRIFT}!\n\nDette er en bekreftelse på din reservasjon for "${behandlinger.join(", ")}" hos vår medarbeider ${medarbeider}\n${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}, kl.:${tidspunkt}\n\nTimen er registrert på: ${kunde}\n\nTa kontakt på: ${env.kontakt_tlf} dersom det skulle oppstå noe uforutsett!💇 Avbestilling må skje senest 1 døgn før avtalt time. \n\n${env.adresse.gatenavn} ${env.adresse.husnummer}${env.adresse.bokstav?env.adresse.bokstav:""}, ${env.adresse.postnummer} ${env.adresse.poststed}, velkommen!`
                 }
                 await serviceClient.postOutMessage(outMessage);
                 antallMeldingerSendt++;
-                if(antallMeldingerSendt > (antallmeldinger - 100)){
+                if(antallMeldingerSendt > (antallmeldinger - 200)){
                     mailer.sendMail("KJØP SMSer fra strex", "KJØP SMSer fra strex");
                 }
 
@@ -118,7 +135,90 @@ router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
         mailer.sendMail(`FEIL i bestilltime: ${process.env.BEDRIFT}`, "FÅR IKKE BESTILT TIME ELLER SMS SENDTE IKKE");
     }
 })
+const PINlimiter = rateLimiter({
+    windowMs: 60 * 60 * 1000, // 1 hour window
+    max: 5, // start blocking after 5 requests
+    message: "Du har prøvd for mange ganger, prøv igjen om en time"
+});
 
+
+router.post("/tlfpin", async (req,res)=>{
+    const {pin} = req.body;
+    try {
+        //Forutsetter at "req.cookies.tlfpin" finnes
+        const data = jwt.verify(req.cookies.tlfpin, SMSPIN_SECRET);
+        if(parseInt(data.pin) === parseInt(pin)){
+            const token = jwt.sign({tlf: data.tlf}, SMSPINVALID_SECRET);
+            const expirationDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000 * 52);
+            res.cookie("tlfvalid", token, {
+                httpOnly: true,
+                secure: process.env.HTTPS_ENABLED == "secure",
+                expires: expirationDate
+            });
+            res.clearCookie("tlfpin");
+            return res.send({valid:true});
+        } else {
+            return res.send({valid:false});
+        }
+    } catch (error) {
+        
+    }
+})
+
+router.post("/SMSpin", PINlimiter, async (req,res)=>{
+    const {tlf} = req.body;
+    console.log(req.body);
+    try {
+
+        //Sjekker om det er en ansatt som bestiller time for kunde som ringer inn
+        const isToken = req.cookies.two_FA_valid;
+        if(isToken){
+            const ansatt = jwt.verify(req.cookies.two_FA_valid, ACCESS_TOKEN_KEY); 
+            if(ansatt && ansatt.gyldig){
+                return res.send({valid:true});
+            } 
+        } else {
+            //Sjekker om det er en gyldig cookie fra tidligere
+            const isTlfValid = req.cookies.tlfvalid;
+            if(isTlfValid){
+                const tlfValid = jwt.verify(req.cookies.tlfvalid, SMSPINVALID_SECRET);
+                if(tlfValid){
+                    if(parseInt(tlfValid.tlf) === parseInt(tlf)){
+                        return res.send({valid:true});
+                    }
+                }
+            } else {
+                //Hvis ikke, generer ny pin og send den til brukeren
+                const pin = randomNumber(1200, 9999);
+                const data = {tlf, pin};
+                const token = jwt.sign(data, SMSPIN_SECRET, {expiresIn: "1h"});
+
+                res.cookie("tlfpin", token, {
+                    httpOnly: true,
+                    secure: process.env.HTTPS_ENABLED == "secure"
+                })
+                let baseUrl = "https://shared.target365.io/";
+                let keyName = process.env.KEYNAME_SMS;
+                let privateKey = process.env.PRIVATE_KEY;
+                let serviceClient = new Client(privateKey, { baseUrl, keyName });
+                let outMessage = {
+                    transactionId: uuidv4(),
+                    sender:'Target365',
+                    recipient:`+47${tlf}`,
+                    content:`Din PIN er: ${pin}`
+                }
+                await serviceClient.postOutMessage(outMessage);
+                return res.send({valid:false});
+            }
+        }
+    } catch(error){
+        console.log(error);
+    }
+})
+
+function randomNumber(min, max){
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
 //Sletter én enkelt timebestilling
 router.post('/oppdaterTimebestillinger', authorization, async (req,res)=>{
     try {

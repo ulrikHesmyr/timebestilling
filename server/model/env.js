@@ -11,6 +11,7 @@ const env = new mongoose.Schema({
     omOssArtikkel: {type:String},
     adresse:{gatenavn:String, husnummer:String, postnummer:String, poststed:String, bokstav:String, rep:{lat:String,lng:String}},
     aktivertFeedbackSMS: {type:Boolean, default:false},
+    aktivertSMSpin: {type:Boolean, default:false},
     tjenester: [
         {
             navn: String,

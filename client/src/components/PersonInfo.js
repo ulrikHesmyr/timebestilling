@@ -1,16 +1,62 @@
 import React, {useState} from 'react'
 
-function PersonInfo({totalTid, totalPris, dato, klokkeslettet, produkt, frisor, hentMaaned, isMobile, synligKomponent, displayKomponent, navn, telefonnummer, nullstillData, setReservasjon ,setUpdate ,updateDataTrigger, data, sNavn, sTelefonnummer}){
+function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, frisor, hentMaaned, isMobile, synligKomponent, displayKomponent, navn, telefonnummer, nullstillData, setReservasjon ,setUpdate ,updateDataTrigger, data, sNavn, sTelefonnummer}){
     
     const [harregistrert, sHarRegistrert] = useState(false); //For å passe på at en bruker ikke trykker to ganger før neste side rekker å laste inn
+    const [validertSMSpin, sValidertSMSpin] = useState(!env.aktivertSMSpin); 
+    const [visPINBoks, sVisPINBoks] = useState(false);
+    const [pin, sPIN] = useState('');
+    const [visIkkeGodkjent, sVisIkkeGodkjent] = useState(false);
+    const aktivertSMSpin = env.aktivertSMSpin;
+    
     let format = /[`!@#$%^&*()_+=[\]{};':"\\|,.<>/?~]/;
-    async function registrerData(){
-        const request = await fetch('http://localhost:1226/timebestilling/bestilltime', {
+
+    async function validerPIN(p){
+        const request = await fetch('/timebestilling/tlfpin', {
             method:"POST",
             headers:{
                 "Content-Type":"application/json",
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify({pin:p}),
+            credentials: 'include'
+        });
+        const response = await request.json();
+        if(response.m){
+            alert(response.m);
+        }
+        if(response.valid){
+            sValidertSMSpin(true);
+        } else {
+            sValidertSMSpin(false);
+            sVisIkkeGodkjent(true);
+        }
+    }
+    async function validerSMSpin(){
+        const request = await fetch('/timebestilling/SMSpin', {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json",
+            },
+            body: JSON.stringify({tlf:telefonnummer}),
+            credentials: 'include'
+        });
+        const response = await request.json();
+        if(response.m){
+            alert(response.m);
+        } else if(response.valid){
+            sValidertSMSpin(true);
+        } else if(!response.valid) {
+            sVisPINBoks(true);
+        }
+    }
+    async function registrerData(){
+        const request = await fetch('/timebestilling/bestilltime', {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json",
+            },
+            body: JSON.stringify(data),
+            credentials: 'include'
         });
         const response = await request.json();
         if(response.m){
@@ -23,8 +69,6 @@ function PersonInfo({totalTid, totalPris, dato, klokkeslettet, produkt, frisor, 
             setReservasjon(response.bestiltTime);
             nullstillData();
             displayKomponent(0);
-           
-
         } else {
             alert("Noe har skjedd galt, prøv på nytt om litt!");
         }
@@ -44,7 +88,32 @@ function PersonInfo({totalTid, totalPris, dato, klokkeslettet, produkt, frisor, 
                     if(/^\d*$/.test(newValue) && (e.target.value.length === 0 || e.target.value[0] === "4" || e.target.value[0] === "9")){
                         sTelefonnummer(newValue);
                     } 
-                }}></input> </label>
+                }}></input> 
+                {!visPINBoks && !validertSMSpin?<button onClick={(e)=>{
+                    e.preventDefault();
+                    if(telefonnummer.length === 8){
+                        validerSMSpin();
+                    } else {
+                        alert("Telefonnummeret må være 8 siffer langt");
+                    }
+                }}>OK</button>:""}</label>
+
+                {visPINBoks?(
+                    <div>
+                        <p>Vi har sendt deg en SMS med en PIN-kode, vennligst skriv inn PIN-koden i feltet under</p>
+                        <label htmlFor="pin" style={{display:"flex", flexDirection:"row", flexWrap:"wrap", alignItems:"center"}}
+                        >PIN: <input value={pin} required maxLength={4} inputMode="numeric" type="text" name="pin" onChange={(e)=>{
+                    const newValue = e.target.value;
+                    if(/^\d*$/.test(newValue)){
+                        sPIN(newValue);
+                    }
+                    if(newValue.length === 4){
+                        validerPIN(newValue);
+                    }
+                }}></input>{visIkkeGodkjent && <p>Feil pin... Ikke mottatt pin? Sjekk om telefonnummeret er skrevet riktig</p>} </label>
+                    </div>
+                ):""}
+                
 
             {isMobile?(<div className='infoboks'>
                 <div>
@@ -62,7 +131,7 @@ function PersonInfo({totalTid, totalPris, dato, klokkeslettet, produkt, frisor, 
 
                 <p>Bekreftelse på din reservasjon sendes på SMS</p>
                 <p>Jeg godkjenner <a rel='noreferrer' target="_blank" href='/personvaernserklaering-og-brukervilkaar'>personvernserkæringen og brukervilkår</a> ved å trykke "send inn reservasjon"</p>
-                {(harregistrert?"Laster...":(<button style={{padding:"1rem", color:"var(--color2)", backgroundColor:"var(--farge2)"}} onClick={(e)=>{
+                {(harregistrert?"Laster...":(<button disabled={!validertSMSpin} style={{padding:"1rem", color:"var(--color2)", backgroundColor:"var(--farge2)"}} onClick={(e)=>{
                     e.preventDefault();
                     if(telefonnummer.length === 8 && navn !== ""){
                         sHarRegistrert(true);

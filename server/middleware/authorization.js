@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const Brukere = require("../model/brukere");
 
-const {ACCESS_TOKEN_KEY, NODE_ENV, TWOFA_SECRET} = process.env;
+const {ACCESS_TOKEN_KEY, NODE_ENV} = process.env;
 
 const authorization = async (req,res,next) => {
     try {

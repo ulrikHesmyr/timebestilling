@@ -114,7 +114,7 @@ button:hover{
   cursor: pointer;
 }
 button:disabled{
-  background-color: grey;
+  background-color: grey !important;
   cursor:not-allowed;
 }
 button:active{
