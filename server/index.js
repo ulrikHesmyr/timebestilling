@@ -173,6 +173,10 @@ app.use('/env', require('./routes/env'));
 //});
 
 app.get('*', (req, res)=>{
+  res.setHeader(
+    'Content-Security-Policy',
+    "img-src 'self' data: blob:;"
+  );
   res.sendFile(path.join(__dirname, 'build/index.html'));     
   console.log("*");  
 })
