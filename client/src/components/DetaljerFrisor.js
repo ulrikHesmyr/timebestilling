@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import {hentDato} from '../App'
-function DetaljerFrisor({env, bruker, frisor, sendTilDatabase, varsle, lagreVarsel, sUpdateTrigger, updateTrigger}){
+function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVarsel, sUpdateTrigger, updateTrigger}){
 
     const [visDetaljer, sVisDetaljer] = useState(false);
 
@@ -90,21 +90,34 @@ function DetaljerFrisor({env, bruker, frisor, sendTilDatabase, varsle, lagreVars
     async function siOppFrisor(){
       let tempFrisorer = env.frisorer;
       if(ikkeSiOpp){
-        tempFrisorer.find((f)=>{return f.navn === frisorRediger.navn}).oppsigelse = "Ikke oppsagt";
+        tempFrisorer.map((f)=>{
+          if(f.navn === frisorRediger.navn){
+            f.oppsigelse = "Ikke oppsagt";
+          }
+          return f});
       } else {
-        tempFrisorer.find((f)=>{return f.navn === frisorRediger.navn}).oppsigelse = oppsigelsesDato;
+        tempFrisorer.map((f)=>{
+          if(f.navn === frisorRediger.navn){
+            f.oppsigelse = oppsigelsesDato;
+          }
+          return f});
       }
 
-      sendTilDatabase(tempFrisorer, env.kategorier, env.tjenester, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
+      oppdaterFrisorer(tempFrisorer);
       sVisRedigerFrisor(false);
       sVisSiOpp(false);
     }
     async function oppdaterBehandlinger(){
       //Oppdaterer behandlinger i databasen
       let tempFrisorer = env.frisorer;
-      tempFrisorer.find((f)=>{return f.navn === frisorRediger.navn}).produkter = frisorTjenester;
-      sendTilDatabase(tempFrisorer, env.kategorier, env.tjenester, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
+      tempFrisorer.find((f)=>{
+        if(f.navn === frisorRediger.navn){
+          f.produkter = frisorTjenester;
+        }
+        return f});
+      oppdaterFrisorer(tempFrisorer);
     }
+
     async function resetPassord(navn){
       lagreVarsel();
       const options = {
@@ -224,7 +237,7 @@ function DetaljerFrisor({env, bruker, frisor, sendTilDatabase, varsle, lagreVars
               <label style={{display:"flex", alignItems:"center"}}>Last opp bilde av Frisøren: <input accept="image/*" onChange={(e)=>{
               sBildeAvFrisor(e.target.files[0]);
               sPreview(URL.createObjectURL(e.target.files[0]));
-              }} type="file" name="uploaded_file"></input> {preview && <img className='frisorbilde' style={{height:"300px"}} alt='Forhåndsvisning av bildet' src={preview}></img>}</label>
+              }} type="file" name="uploaded_file"></input>Last opp bilde her: Maks 20mb {preview && <img className='frisorbilde' style={{height:"300px"}} alt='Forhåndsvisning av bildet' src={preview}></img>}</label>
       
       <div>
         <button onClick={(e)=>{

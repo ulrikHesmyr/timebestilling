@@ -118,6 +118,7 @@ const storage = multer.memoryStorage();
 const upload = multer({
     storage: storage,
     dest: 'uploads/',
+    limits: { fileSize: 20 * 1024 * 1024 },
     fileFilter: function (req, file, cb) {
         //console.log(file.originalname);
       if (!file.originalname.match(/\.(jpg|jpeg|HEIC|heic|heif|HEIF|png|gif|JPG|JPEG|PNG|GIF)$/)) {
@@ -131,6 +132,7 @@ const upload = multer({
 const oppdaterBildeFrisor = multer({
     storage: storage,
     dest: 'uploads/',
+    limits: { fileSize: 20 * 1024 * 1024 },
     fileFilter: function (req, file, cb) {
         //console.log(file.originalname);
       if (!file.originalname.match(/\.(jpg|jpeg|HEIC|heic|heif|HEIF|png|gif|JPG|JPEG|PNG|GIF)$/)) {
@@ -303,12 +305,28 @@ router.post("/slettFrisor", authorization, async (req,res)=>{
     }
 })
 
+router.post("/oppdaterFrisorer", authorization, async (req,res)=>{
+    const {frisorer} = req.body;
+    try {
+        if(req.admin){
+            const env = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {frisorer:frisorer});
+            if(env){
+                return res.send({message:"Frisører oppdatert!"});
+            } else {
+                return res.send({message:"Noe har skjedd gærent i /oppdaterFrisorer!"});
+            }
+        }
+    } catch (error) {
+        console.log(error, "error i oppdaterFrisorer");
+    }
+})
+
 router.post('/oppdaterEnv',authorization, async(req,res)=>{
-    const {frisorer, tjenester, kategorier, sosialeMedier, kontakt_tlf, kontakt_epost, klokkeslett} = req.body;
+    const {tjenester, kategorier, sosialeMedier, kontakt_tlf, kontakt_epost, klokkeslett} = req.body;
     try {
         if(req.admin){
             
-        const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {frisorer:frisorer, tjenester:tjenester, kategorier:kategorier, sosialeMedier:sosialeMedier, kontakt_tlf:kontakt_tlf, kontakt_epost:kontakt_epost, klokkeslett:klokkeslett});
+        const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {tjenester:tjenester, kategorier:kategorier, sosialeMedier:sosialeMedier, kontakt_tlf:kontakt_tlf, kontakt_epost:kontakt_epost, klokkeslett:klokkeslett});
         
             if(oppdatertEnv){
                 return res.send({message:"Environment ble oppdatert!"});

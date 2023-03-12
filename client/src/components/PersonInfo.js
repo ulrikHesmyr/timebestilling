@@ -26,6 +26,7 @@ function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, fri
         }
         if(response.valid){
             sValidertSMSpin(true);
+            visIkkeGodkjent(false);
         } else {
             sValidertSMSpin(false);
             sVisIkkeGodkjent(true);
@@ -102,7 +103,7 @@ function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, fri
                     <div>
                         <p>Vi har sendt deg en SMS med en PIN-kode, vennligst skriv inn PIN-koden i feltet under</p>
                         <label htmlFor="pin" style={{display:"flex", flexDirection:"row", flexWrap:"wrap", alignItems:"center"}}
-                        >PIN: <input value={pin} required maxLength={4} inputMode="numeric" type="text" name="pin" onChange={(e)=>{
+                        >PIN: <input value={pin} required maxLength={4} inputMode="numeric"  autoComplete="one-time-code" type="text" name="pin" onChange={(e)=>{
                     const newValue = e.target.value;
                     if(/^\d*$/.test(newValue)){
                         sPIN(newValue);

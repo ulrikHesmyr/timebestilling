@@ -44,9 +44,9 @@ function RedigerKontakt({number, setState, state, sendTilDatabase, env}){
                 sRedigeringsKnappSynlig(true);
                 //Sjekker om det er telefonnummeret som må oppdateres
                 if(number){
-                    sendTilDatabase(env.frisorer, env.kategorier, env.tjenester, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, tempState);
+                    sendTilDatabase(env.kategorier, env.tjenester, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, tempState);
                 } else {
-                    sendTilDatabase(env.frisorer, env.kategorier, env.tjenester, env.klokkeslett, env.sosialeMedier, tempState, env.kontakt_tlf);
+                    sendTilDatabase(env.kategorier, env.tjenester, env.klokkeslett, env.sosialeMedier, tempState, env.kontakt_tlf);
                 }
             }}>
                 Lagre

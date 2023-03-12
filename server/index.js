@@ -19,7 +19,7 @@ const FriElementer = require("./model/fri");
 const Brukere = require("./model/brukere");
 const {BEDRIFT, NODE_ENV} = process.env;
 
-app.use(express.json({limit:'1mb'}));
+app.use(express.json({limit:'20mb'}));
 app.use(express.urlencoded({extended:false}));
 app.use(cors());
 app.use(cookieParser());
@@ -51,13 +51,15 @@ const requestCounterMiddleware = (req, res, next) => {
 }
 
 
-app.use(requestCounterMiddleware);
-
 const hovedLimiter = rateLimiter({
   windowMs: 60 * 60 * 1000,
   max: 800,
   message: {m:"For mye trafikk. Vennligst prøv igjen om 1 time"},
 });
+
+
+
+app.use(requestCounterMiddleware);
 
 app.use(hovedLimiter);
 
@@ -141,7 +143,7 @@ schedule.scheduleJob('09 23 * * *', async ()=>{
 });
 
 //Sletter frisører som er sagt opp, både frisøren og brukeren til frisøren
-schedule.scheduleJob('05 23 * * *', async ()=>{
+schedule.scheduleJob('39 19 * * *', async ()=>{
   try {
     const e = await Environment.findOne({bedrift:BEDRIFT});
    if(e){
@@ -178,7 +180,7 @@ app.get('*', (req, res)=>{
     "img-src 'self' data: blob:;"
   );
   res.sendFile(path.join(__dirname, 'build/index.html'));     
-  console.log("*");  
+  
 })
 
 app.listen(process.env.SERVERPORT, () => {

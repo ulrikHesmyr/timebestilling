@@ -99,7 +99,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel}
         <label style={{display:"flex", alignItems:"center"}}>Last opp bilde av Frisøren: <input accept="image/*" onChange={(e)=>{
             sBildeAvFrisor(e.target.files[0]);
             setPreview(URL.createObjectURL(e.target.files[0]));
-        }} type="file" name="uploaded_file"></input> {preview && <img className='frisorbilde' style={{height:"300px"}} alt='Forhåndsvisning av bildet' src={preview}></img>}</label>
+        }} type="file" name="uploaded_file"></input>Last opp bilde her: Maks 20mb {preview && <img className='frisorbilde' style={{height:"300px"}} alt='Forhåndsvisning av bildet' src={preview}></img>}</label>
         
 
         <p style={{fontWeight:"bold"}} >Velg behandlinger for frisør:</p>

@@ -548,9 +548,9 @@ input, button, select, option{
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: center;
     text-align: center;
     align-items: center;
+    justify-content: space-evenly;
   }
   .sosialemedier *{
     margin: 0.3rem;

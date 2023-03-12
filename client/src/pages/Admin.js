@@ -73,6 +73,24 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
     //    sKontakt_tlf(env.kontakt_tlf);
     //}, [env])
 
+    async function oppdaterFrisorer(frisorArray){
+        lagreVarsel();
+        const options = {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body: JSON.stringify({frisorer:frisorArray}),
+            credentials:'include'
+        }
+        const request = await fetch("/env/oppdaterFrisorer", options);
+        const response = await request.json();
+        if(response){
+            varsle();
+            sUpdateTrigger(!updateTrigger);
+        }
+    }
+
     async function oppdaterOmOss(){
         lagreVarsel();
         const options = {
@@ -154,10 +172,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
         }
     }
 
-    async function sendTilDatabase(fris, kat, tje, klok, some, epost, tlf){
+    async function sendTilDatabase(kat, tje, klok, some, epost, tlf){
         lagreVarsel();
         const nyttEnv = {
-            frisorer:fris,
             kategorier:kat,
             tjenester:tje,
             klokkeslett:klok,
@@ -461,7 +478,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     <div className='frisorOversikt'>
                         {env.frisorer.map((frisor)=>(
                                 <div key={frisor.navn}>
-                                    <DetaljerFrisor frisor={frisor} bruker={bruker} env={env} sendTilDatabase={sendTilDatabase} lagreVarsel={lagreVarsel} varsle={varsle} updateTrigger={updateTrigger} sUpdateTrigger={sUpdateTrigger} />
+                                    <DetaljerFrisor frisor={frisor} bruker={bruker} env={env} oppdaterFrisorer={oppdaterFrisorer} lagreVarsel={lagreVarsel} varsle={varsle} updateTrigger={updateTrigger} sUpdateTrigger={sUpdateTrigger} />
                                 </div>
                         ))}
                     </div>
@@ -490,7 +507,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                                         
                                         let nyKategoriListe = env.kategorier;
                                         nyKategoriListe.push(nyKategori);
-                                        sendTilDatabase(env.frisorer, nyKategoriListe, env.tjenester, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
+                                        sendTilDatabase(nyKategoriListe, env.tjenester, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
                                         sNyKategori("");
                                     }
                                 }}>Opprett</button>
@@ -520,7 +537,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                                                 sVisSlettKategori(false);
                                                 let nyKategoriListe = env.kategorier;
                                                 nyKategoriListe.splice(index, 1);
-                                                sendTilDatabase(env.frisorer, nyKategoriListe, env.tjenester, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
+                                                sendTilDatabase(nyKategoriListe, env.tjenester, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
                                             }
                                         } else {
                                             alert("Det eksisterer tjenester i denne kategorien. Du må først slette eller endre disse tjenestene for å slette kategorien.")
@@ -573,7 +590,8 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                                         sVisSlettSosialtMedie(false);
                                         let nyttMedieListe = env.sosialeMedier;
                                         nyttMedieListe.splice(index, 1);
-                                        sendTilDatabase(env.frisorer, env.kategorier, env.tjenester, env.klokkeslett, nyttMedieListe, env.kontakt_epost, env.kontakt_tlf);
+                                        sendTilDatabase(env.kategorier, env.tjenester, env.klokkeslett, nyttMedieListe, env.kontakt_epost, env.kontakt_tlf);
+                                        sNyttMedie(muligeSosialeMedier.filter(m=>!nyttMedieListe.map(e=>e.platform).includes(m))[0]);
                                     }
                                 }}></img></p>
                             </div>
@@ -615,12 +633,12 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                             }}>Avbryt</button>
 
                             <button onClick={()=>{
-                                if(brukerNyttMedie === "" || linkNyttMedie === ""){
+                                if((brukerNyttMedie === "" || linkNyttMedie === "") || muligeSosialeMedier.length == env.sosialeMedier.length){
                                     alert("Du må fylle ut alle feltene!");
                                 } else {
                                     let nyListe = env.sosialeMedier;
                                     nyListe.push({platform:nyttMedie, bruker:brukerNyttMedie, link:linkNyttMedie});
-                                    sendTilDatabase(env.frisorer, env.kategorier, env.tjenester, env.klokkeslett, nyListe, env.kontakt_epost, env.kontakt_tlf);
+                                    sendTilDatabase(env.kategorier, env.tjenester, env.klokkeslett, nyListe, env.kontakt_epost, env.kontakt_tlf);
                                     sVisLeggTilSosialtMedie(false);
                                     sNyttMedie(muligeSosialeMedier.filter(m=>!nyListe.map(e=>e.platform).includes(m))[0]);
                                     sBrukerNyttMedie("");
@@ -715,7 +733,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                                     if(nyBehandlingNavn !== "" && nyBehandlingBeskrivelse !== "" && !isNaN(parseInt(nyBehandlingPris)) && nyBehandlingKategori !== "" && !isNaN(parseInt(nyBehandlingPris))){
                                         let tempBehandlinger = env.tjenester;
                                         tempBehandlinger.push({navn:nyBehandlingNavn, beskrivelse:nyBehandlingBeskrivelse, pris:parseInt(nyBehandlingPris), kategori:nyBehandlingKategori, tid:(parseInt(nyBehandlingTid))});
-                                        sendTilDatabase(env.frisorer, env.kategorier, tempBehandlinger, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
+                                        sendTilDatabase(env.kategorier, tempBehandlinger, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
                                         sVisOpprettBehandling(false);
                                         sNyBehandlingNavn("");
                                         sNyBehandlingBeskrivelse("");
@@ -761,7 +779,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                                 if(window.confirm("Ønsker du å slette " + behandlingForSletting + "?")){
                                     let tempBehandlinger = env.tjenester;
                                     tempBehandlinger = tempBehandlinger.filter((behandling)=>(behandling.navn !== behandlingForSletting));
-                                    sendTilDatabase(env.frisorer, env.kategorier, tempBehandlinger, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
+                                    sendTilDatabase(env.kategorier, tempBehandlinger, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
                                     sVisSlettBehandling(false);
                                 }
                             }}>Slett behandling</button>  
@@ -866,7 +884,7 @@ function DetaljerBehandling({behandling, env, sendTilDatabase, behandlingsEstima
             gjeldendeBehandling.pris = parseInt(behandlingPris);
             gjeldendeBehandling.tid = parseInt(behandlingTid);
             gjeldendeBehandling.kategori = behandlingKategori;
-            sendTilDatabase(env.frisorer, env.kategorier, tempBehandlinger, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
+            sendTilDatabase(env.kategorier, tempBehandlinger, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
             sVisRedigerBehandling(false);
             sVisRedigerKategori(false);
             sVisRedigerTid(false);

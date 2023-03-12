@@ -135,14 +135,15 @@ router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
         mailer.sendMail(`FEIL i bestilltime: ${process.env.BEDRIFT}`, "FÅR IKKE BESTILT TIME ELLER SMS SENDTE IKKE");
     }
 })
+
+
 const PINlimiter = rateLimiter({
     windowMs: 60 * 60 * 1000, // 1 hour window
     max: 5, // start blocking after 5 requests
     message: "Du har prøvd for mange ganger, prøv igjen om en time"
 });
 
-
-router.post("/tlfpin", async (req,res)=>{
+router.post("/tlfpin", PINlimiter, async (req,res)=>{
     const {pin} = req.body;
     try {
         //Forutsetter at "req.cookies.tlfpin" finnes
@@ -161,11 +162,11 @@ router.post("/tlfpin", async (req,res)=>{
             return res.send({valid:false});
         }
     } catch (error) {
-        
+        console.log(error);
     }
 })
 
-router.post("/SMSpin", PINlimiter, async (req,res)=>{
+router.post("/SMSpin", async (req,res)=>{
     const {tlf} = req.body;
     console.log(req.body);
     try {
