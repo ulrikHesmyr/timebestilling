@@ -8,7 +8,7 @@ import {klokkeslettFraMinutter, minutterFraKlokkeslett} from '../components/Klok
 
 const localizer = momentLocalizer(moment);
 
-function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel}){
+function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
   
   const farger = ["darkblue", "cadetblue", "chartreuse", "coral", "mediumorchid", "indigo","red","black","purple","peru", "burylwood"];
   const ukedag = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
@@ -26,6 +26,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel}){
   const [gjentaNyttPassord, sGjentaNyttPassord] = useState("");
   const [visNyttPassord, sVisNyttPassord] = useState(false);
   const [visGjentaPassord, sVisGjentaPassord] = useState(false);
+  const [friElementer, sFriElementer] = useState([]);
 
   const [isMobile, setisMobile] = useState(false);
   
@@ -34,53 +35,64 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel}){
       setisMobile(true);
     }
     
-    let a = env.frisorer.map(e=>e.navn);
-    
     //Henter fri
     async function hentFri(){
+      try {
+      
       const request = await fetch("/env/fri");
       const response = await request.json();
       if(response){
-          let frii = response.map((element)=>{
-            if(a.includes(element.medarbeider)){
-              if(element.lengreTid){
-                element.start = new Date(`${element.fraDato}T00:30:00`);
-                element.end = new Date(`${element.tilDato}T23:59:00`);
-                element.title = `${element.medarbeider}`;
-                element.color = "red";
-                element.tidspunkt = "LANGFRI";
-                return element;
-              } else {
-                element.start = new Date(`${element.friDag}T${element.fraKlokkeslett}:00`);
-                element.end = new Date(`${element.friDag}T${element.tilKlokkeslett}:00`);
-                element.title = `${element.medarbeider} - FRI`;
-                element.color = "red";
-                element.tidspunkt = element.fraKlokkeslett;
-                element.slutt = element.tilKlokkeslett;
-                return element;
-              }
-            } else {
-              return undefined;
-            }
-          }).filter(x=>x);
-          const v = bestilteTimer.map((time)=>{
-            if(a.includes(time.medarbeider)){
-              const gjeldendeTjenester = env.tjenester.filter(tjeneste => time.behandlinger.includes(tjeneste.navn)).reduce((total, element)=> total + element.tid, 0);
-              time.start = new Date(`${time.dato}T${time.tidspunkt}:00`);
-              time.end = new Date(`${time.dato}T${klokkeslettFraMinutter(gjeldendeTjenester+minutterFraKlokkeslett(time.tidspunkt))}:00`);
-              time.slutt = klokkeslettFraMinutter(minutterFraKlokkeslett(time.tidspunkt)+gjeldendeTjenester);
-              time.title = `${time.medarbeider.toUpperCase()}, ${time.behandlinger.join(", ")} Kunde: ${time.kunde}, tlf.: ${time.telefonnummer}`
-              return time;
-            }
-            return undefined;
-          }).filter(x=>x);
-          let allevakter = v.concat(frii);
-          sVakterTimebestillinger(allevakter);
+        sFriElementer(response);
         }
+    } catch (error) {
+      alert("Noe gikk galt. Sjekk internettforbindelsen din og prøv igjen.");
+      varsleFeil();
+    }
       }
-      setAnsatt(a);
     hentFri();
-  },[bestilteTimer, env.frisorer, env.tjenester]);
+    
+    let hihi = env.frisorer.map(e=>e.navn);
+    oppdaterSynligeElementer(hihi);
+  },[]);
+
+  function oppdaterSynligeElementer(a){
+    
+    let frii = friElementer.map((element)=>{
+      if(a.includes(element.medarbeider)){
+        if(element.lengreTid){
+          element.start = new Date(`${element.fraDato}T00:30:00`);
+          element.end = new Date(`${element.tilDato}T23:59:00`);
+          element.title = `${element.medarbeider}`;
+          element.color = "red";
+          element.tidspunkt = "LANGFRI";
+          return element;
+        } else {
+          element.start = new Date(`${element.friDag}T${element.fraKlokkeslett}:00`);
+          element.end = new Date(`${element.friDag}T${element.tilKlokkeslett}:00`);
+          element.title = `${element.medarbeider} - FRI`;
+          element.color = "red";
+          element.tidspunkt = element.fraKlokkeslett;
+          element.slutt = element.tilKlokkeslett;
+          return element;
+        }
+      } else {
+        return undefined;
+      }
+    }).filter(x=>x);
+    const v = bestilteTimer.map((time)=>{
+      if(a.includes(time.medarbeider)){
+        const gjeldendeTjenester = env.tjenester.filter(tjeneste => time.behandlinger.includes(tjeneste.navn)).reduce((total, element)=> total + element.tid, 0);
+        time.start = new Date(`${time.dato}T${time.tidspunkt}:00`);
+        time.end = new Date(`${time.dato}T${klokkeslettFraMinutter(gjeldendeTjenester+minutterFraKlokkeslett(time.tidspunkt))}:00`);
+        time.slutt = klokkeslettFraMinutter(minutterFraKlokkeslett(time.tidspunkt)+gjeldendeTjenester);
+        time.title = `${time.medarbeider.toUpperCase()}, ${time.behandlinger.join(", ")} Kunde: ${time.kunde}, tlf.: ${time.telefonnummer}`
+        return time;
+      }
+      return undefined;
+    }).filter(x=>x);
+    let allevakter = v.concat(frii);
+    sVakterTimebestillinger(allevakter);
+  }
 
     const MIN_DATE = new Date(2020, 0, 1, 7, 0, 0); // 08:00
     const MAX_DATE = new Date(2020, 0, 1, 20, 0, 0); // 17:30
@@ -90,7 +102,8 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel}){
     }
 
     async function oppdaterPassord(){
-      //Oppdaterer passordet til brukeren (gjelder kun frisører her og ikke admin) i databasen ved å sende request til serveren
+      try {
+        //Oppdaterer passordet til brukeren (gjelder kun frisører her og ikke admin) i databasen ved å sende request til serveren
       lagreVarsel();
       const options = {
         method:"POST",
@@ -105,13 +118,16 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel}){
       if(response){
         varsle();
         sVisRedigerPassord(false);
-      } else {  
-        alert("Noe gikk galt, prøv igjen");
+      }
+      } catch (error) {
+        alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen");
+        varsleFeil();
       }
     }
 
     async function oppdaterTelefonnummer(){
-      lagreVarsel();
+      try {
+        lagreVarsel();
       if(!isNaN(parseInt(nyttTlf)) && nyttTlf.length === 8){
         //Sender en request til serveren for å endre telefonnummeret til den ansatte
         const options = {
@@ -128,12 +144,14 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel}){
         if(response){
           varsle();
           sLagretTlf(nyttTlf);
-        } else {
-          alert("Noe gikk galt, prøv igjen");
-        }
+        } 
       } else {
         alert("Telefonnummeret er ikke riktig format");
         sNyttTlf(lagretTlf);
+      }
+      } catch (error) {
+        alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen");
+        varsleFeil();
       }
     }
 
@@ -215,11 +233,13 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel}){
         {env.frisorer.map((frisorElement)=>(
           <div key={frisorElement.navn} style={{border:(ansatt === frisorElement.navn? "2px solid black":"none"), backgroundColor:farger[env.frisorer.indexOf(frisorElement)], userSelect:"none"}} onClick={()=>{
             setAnsatt(frisorElement.navn);
+            oppdaterSynligeElementer(frisorElement.navn);
           }} >{frisorElement.navn}</div>
         ))}
         <div style={{color:"black", borderBottom:"thin solid black"}} onClick={()=>{
             let alleFrisorenesNavn = env.frisorer.map(frisor=>frisor.navn);
             setAnsatt(alleFrisorenesNavn);
+            oppdaterSynligeElementer(alleFrisorenesNavn);
           }} >ALLE</div>
         </div>
         <p>PS Trykk på timen dersom det som står, ikke er leselig</p>

@@ -118,7 +118,7 @@ const storage = multer.memoryStorage();
 const upload = multer({
     storage: storage,
     dest: 'uploads/',
-    limits: { fileSize: 20 * 1024 * 1024 },
+    limits: { fileSize: 2 * 1024 * 1024 },
     fileFilter: function (req, file, cb) {
         //console.log(file.originalname);
       if (!file.originalname.match(/\.(jpg|jpeg|HEIC|heic|heif|HEIF|png|gif|JPG|JPEG|PNG|GIF)$/)) {
@@ -126,13 +126,13 @@ const upload = multer({
       }
       cb(null, true);
     }
-});
+}).single("uploaded_file");
 
 //Multer instance for å oppdatere bilde av frisør
 const oppdaterBildeFrisor = multer({
     storage: storage,
     dest: 'uploads/',
-    limits: { fileSize: 20 * 1024 * 1024 },
+    limits: { fileSize: 2 * 1024 * 1024 },
     fileFilter: function (req, file, cb) {
         //console.log(file.originalname);
       if (!file.originalname.match(/\.(jpg|jpeg|HEIC|heic|heif|HEIF|png|gif|JPG|JPEG|PNG|GIF)$/)) {
@@ -140,9 +140,11 @@ const oppdaterBildeFrisor = multer({
       }
       cb(null, true);
     }
-});
+}).single("uploaded_file");
 
-router.post("/oppdaterBildeFrisor", authorization, oppdaterBildeFrisor.single("uploaded_file"), async (req,res)=>{
+router.post("/oppdaterBildeFrisor", authorization, oppdaterBildeFrisor, async (req,res)=>{
+
+    
     const {navn} = req.body;
     try {
         if(req.admin){
@@ -176,7 +178,8 @@ router.post("/oppdaterBildeFrisor", authorization, oppdaterBildeFrisor.single("u
 });
   
 
-router.post("/opprettFrisor", upload.single("uploaded_file"), authorization, async (req,res)=>{ 
+router.post("/opprettFrisor", authorization, upload, async (req,res)=>{ 
+
    
     const {nyFrisorNavn, nyFrisorTjenester, tittel, beskrivelse} = req.body;
     let nyFrisorTjenesterArray = nyFrisorTjenester.split(",");
@@ -307,6 +310,7 @@ router.post("/slettFrisor", authorization, async (req,res)=>{
 
 router.post("/oppdaterFrisorer", authorization, async (req,res)=>{
     const {frisorer} = req.body;
+    console.log(frisorer);
     try {
         if(req.admin){
             const env = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {frisorer:frisorer});

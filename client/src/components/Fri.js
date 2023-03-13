@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import { hentDato, hentMaaned } from '../App';
 import { minutterFraKlokkeslett } from './Klokkeslett';
 
-function Fri ({env, bestilteTimer, synligKomponent, varsle, lagreVarsel}) {
+function Fri ({env, bestilteTimer, synligKomponent, varsle, lagreVarsel, varsleFeil}) {
     const[leggTilFri, sLeggTilFri] = useState(false);
     const[dagsfraver, sDagsfraver] = useState(null); //"fler" eller "dag"
     const [friElementer, sFriElementer] = useState([]);
@@ -69,7 +69,8 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle, lagreVarsel}) {
     }
 
     async function opprettFri(){
-        lagreVarsel();
+        try {
+            lagreVarsel();
 
         const data = {
             lengreTid:(dagsfraver === "fler"),
@@ -93,14 +94,19 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle, lagreVarsel}) {
         const request = await fetch("/env/opprettFri", options);
         const response = await request.json();
         if(response){
-            sUpdateTrigger(!updateTrigger);
             varsle();
+            sUpdateTrigger(!updateTrigger);
+        }
+        } catch (error) {
+         alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen.");
+         varsleFeil();   
         }
     }
 
     
     async function slettFri(frielementet){
-        lagreVarsel();
+        try {
+            lagreVarsel();
         const data = {
             lengreTid:frielementet.lengreTid,
             fraDato:frielementet.fraDato,
@@ -123,8 +129,12 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle, lagreVarsel}) {
         const request = await fetch("/env/slettFri", options);
         const response = await request.json();
         if(response){
-            sUpdateTrigger(!updateTrigger);
             varsle();
+            sUpdateTrigger(!updateTrigger);
+        }
+        } catch (error) {
+          alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen.");
+        varsleFeil();   
         }
     }
 

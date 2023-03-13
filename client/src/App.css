@@ -748,6 +748,7 @@ input, button, select, option{
     align-items: center;
     justify-content: center;
     text-align: center;
+    overflow-x: hidden;
   }
 
   .fokus button, .fokus input{

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {BrowserRouter, Route, Routes, Link} from 'react-router-dom'
+import {BrowserRouter, Route, Routes, Link, Redirect} from 'react-router-dom'
 import {Helmet} from 'react-helmet'
 import Timebestilling from './pages/Timebestilling'
 import Hjem from './pages/hjem'
@@ -9,6 +9,7 @@ import './App.css'
 import Kontakt from './pages/Kontakt'
 import PB from './pages/Personvern_Brukervilkaar'
 import OmOss from './pages/OmOss'
+import NotFound from './components/NotFound'
 
 
 const App = ()=> {
@@ -77,6 +78,7 @@ const App = ()=> {
               <Route exact path="/kontakt-oss" element={(env !== null? <Kontakt env={env}/>:"Laster...")}/>
               <Route exact path="/personvaernserklaering-og-brukervilkaar" element={env !== null?<PB env={env}/>:"Laster..."}/>
               <Route exact path="/om-oss" element={env !== null?<OmOss env={env}/>:"Laster..."}/>
+              
             </Routes>))}
             
         

@@ -6,7 +6,7 @@ import Fri from '../components/Fri';
 import RedigerAapningstider from '../components/RedigerAapningstider';
 import SMS from '../components/SMS';
 
-function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsle, lagreVarsel}){
+function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsle, lagreVarsel, varsleFeil}){
     const behandlingsEstimater = [15,30,45,60,75,90,105,120,135,150,165,180,195,210,225,240];
     const [kontakt_epost, sKontakt_epost] = useState(env.kontakt_epost);
     const [kontakt_tlf, sKontakt_tlf] = useState(env.kontakt_tlf);
@@ -61,9 +61,6 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
         //Slett sosialt medie
     const [visSlettSosialtMedie, sVisSlettSosialtMedie] = useState(false);
 
-    //Google review link
-    const [visRedigerGoogleReviewLink, sVisRedigerGoogleReviewLink] = useState(false);
-    const [googleReviewLink, sGoogleReviewLink] = useState(env.googleReviewLink);
 
     //Om oss
     const [visRedigerOmOss, sVisRedigerOmOss] = useState(false);
@@ -74,7 +71,8 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
     //}, [env])
 
     async function oppdaterFrisorer(frisorArray){
-        lagreVarsel();
+        try {
+            lagreVarsel();
         const options = {
             method:"POST",
             headers:{
@@ -89,10 +87,15 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
             varsle();
             sUpdateTrigger(!updateTrigger);
         }
+        } catch (error) {
+            alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen.");
+            varsleFeil();
+        }
     }
 
     async function oppdaterOmOss(){
-        lagreVarsel();
+        try {
+            lagreVarsel();
         const options = {
             method:"POST",
             headers:{
@@ -107,36 +110,29 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
             varsle();
             sUpdateTrigger(!updateTrigger);
         }
+        } catch (error) {
+            alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen.");
+            varsleFeil();   
+        }
     }
 
-    async function oppdaterGoogleReviewLink(){
-        lagreVarsel();
-        const options = {
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body: JSON.stringify({googleReviewLink:googleReviewLink}),
-            credentials:'include'
-        }
-        const request = await fetch("/env/oppdaterGoogleReviewLink", options);
-        const response = await request.json();
-        if(response){
-            varsle();
-            sUpdateTrigger(!updateTrigger);
-        }
-    }
 
     async function velgAdresse(){
+       try {
         const res = await fetch(`https://ws.geonorge.no/adresser/v1/sok?fuzzy=false&adressenavn=${gatenavn}${(husnummer !== ""?`&nummer=${husnummer}`:"")}${(postnummer !== ""?`&postnummer=${postnummer}`:"")}&utkoordsys=4258&treffPerSide=30&side=0&asciiKompatibel=true`, {
             mode:'cors',
         })
         const data = await res.json()
 
         sMuligeAdresser(data.adresser);
+       } catch (error) {
+        alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen.");
+        varsleFeil();
+       }
     }
 
     async function oppdaterAdresse(){
+       try {
         lagreVarsel();
         const options = {
             method:"POST",
@@ -150,12 +146,18 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
         const response = await request.json();
         if(response){
             varsle();
+            sUpdateTrigger(!updateTrigger);
         }
+       } catch (error) {
+        alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen.");
+        varsleFeil();
+       }
     }
 
 
     async function oppdaterTimebestillinger(slettetTime){
-        lagreVarsel();
+        try {
+            lagreVarsel();
         const options = {
             method:"POST",
             headers:{
@@ -170,10 +172,15 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
             varsle();
             sUpdateTrigger(!updateTrigger);
         }
+        } catch (error) {
+            alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen.");
+            varsleFeil();   
+        }
     }
 
     async function sendTilDatabase(kat, tje, klok, some, epost, tlf){
-        lagreVarsel();
+        try {
+            lagreVarsel();
         const nyttEnv = {
             kategorier:kat,
             tjenester:tje,
@@ -193,8 +200,12 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
         const request = await fetch("/env/oppdaterEnv", options);
         const response = await request.json();
         if(response){
-            sUpdateTrigger(!updateTrigger);
             varsle();
+            sUpdateTrigger(!updateTrigger);
+        }
+        } catch (error) {
+            alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen.");
+            varsleFeil();   
         }
     }
 
@@ -233,9 +244,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     </div>:""}
 
                 
-                <Fri env={env} bestilteTimer={bestilteTimer} synligKomponent={synligKomponent} lagreVarsel={lagreVarsel} varsle={varsle} />
+                <Fri env={env} bestilteTimer={bestilteTimer} synligKomponent={synligKomponent} lagreVarsel={lagreVarsel} varsle={varsle} varsleFeil={varsleFeil} />
 
-                {synligKomponent === 5 && env !== null? <SMS env={env} varsle={varsle} lagreVarsel={lagreVarsel}/>:""}
+                {synligKomponent === 5 && env !== null? <SMS env={env} varsleFeil={varsleFeil} varsle={varsle} lagreVarsel={lagreVarsel} sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} />:""}
 
                 
                 {synligKomponent === 1 && bestilteTimer !== null?(<>
@@ -315,37 +326,6 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                         <p className='redigeringsElement'>{kontakt_epost}</p>
                     </div>
 
-                    <div className='redigeringsBoks'> 
-                        <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
-                            {visRedigerGoogleReviewLink?<div>
-                                <div className='fokus'>
-                                    <h4>Rediger google review link</h4>
-                                    <p>
-                                        Her kan du redigere linken til google reviews. Denne linken sendes pr SMS til kunder samme kveld som deres besøk.
-                                    </p>
-                                    <p>Nåværende link: {env.googleReviewLink}</p>
-                                    <label>Link: <input type="url" value={googleReviewLink} onChange={(e)=>{
-                                        sGoogleReviewLink(e.target.value);
-                                    }}></input></label>
-                                    <div>
-                                    <button onClick={()=>{
-                                        
-                                        sVisRedigerGoogleReviewLink(false); 
-                                        sGoogleReviewLink(env.googleReviewLink);
-                                    }}>Avbryt</button>
-                                    <button onClick={()=>{
-                                        sVisRedigerGoogleReviewLink(false); 
-                                        oppdaterGoogleReviewLink();
-                                    }}>Lagre</button>    
-                                    </div>
-                                </div>
-                            </div> :<button className='rediger' onClick={(e)=>{
-            sVisRedigerGoogleReviewLink(true);
-        }}><img className='ikonKnapper' src='rediger.png' alt="Rediger"></img></button>}
-                            <div>Rediger google review link: </div>
-                        </div>
-                        <p className='redigeringsElement'>{googleReviewLink}</p>
-                    </div>
 
                     <div className='redigeringsBoks'>
                         {visRedigerOmOss?<div className='fokus'>
@@ -478,11 +458,11 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     <div className='frisorOversikt'>
                         {env.frisorer.map((frisor)=>(
                                 <div key={frisor.navn}>
-                                    <DetaljerFrisor frisor={frisor} bruker={bruker} env={env} oppdaterFrisorer={oppdaterFrisorer} lagreVarsel={lagreVarsel} varsle={varsle} updateTrigger={updateTrigger} sUpdateTrigger={sUpdateTrigger} />
+                                    <DetaljerFrisor frisor={frisor} bruker={bruker} env={env} oppdaterFrisorer={oppdaterFrisorer} varsleFeil={varsleFeil} lagreVarsel={lagreVarsel} varsle={varsle} updateTrigger={updateTrigger} sUpdateTrigger={sUpdateTrigger} />
                                 </div>
                         ))}
                     </div>
-                    {env !== null?<LeggTilFrisor env={env} lagreVarsel={lagreVarsel} varsle={varsle} updateTrigger={updateTrigger} sUpdateTrigger={sUpdateTrigger} />:""}
+                    {env !== null?<LeggTilFrisor env={env} lagreVarsel={lagreVarsel} varsle={varsle} updateTrigger={updateTrigger} varsleFeil={varsleFeil} sUpdateTrigger={sUpdateTrigger} />:""}
                     
                 </div>
 

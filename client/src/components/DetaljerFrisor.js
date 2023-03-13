@@ -1,13 +1,12 @@
 import React, {useState, useEffect} from 'react'
 import {hentDato} from '../App'
-function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVarsel, sUpdateTrigger, updateTrigger}){
+function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVarsel, varsleFeil, sUpdateTrigger, updateTrigger}){
 
     const [visDetaljer, sVisDetaljer] = useState(false);
 
     
     //Frisører
-    const [visRedigerFrisor, sVisRedigerFrisor] = useState(false);        
-    const [frisorRediger, sFrisorRediger] = useState(null);
+    const [visRedigerFrisor, sVisRedigerFrisor] = useState(false);  
     const [oppsigelsesDato, sOppsigelsesDato] = useState(new Date());
     const [ikkeSiOpp, sIkkeSiOpp] = useState((frisor.oppsigelse === "Ikke oppsagt")?true:false);
     const [bildeAvFrisor, sBildeAvFrisor] = useState(null);
@@ -28,61 +27,83 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
 
     //Oppdaterer tittel og beskrivelse for ansatt
     async function oppdaterTittelOgBeskrivelse(){
+      try {
+        
       lagreVarsel();
       const options = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({navn:frisorRediger.navn, tittel:tittel, beskrivelse:beskrivelse})
+        body: JSON.stringify({navn:frisor.navn, tittel:tittel, beskrivelse:beskrivelse})
       }
       const request = await fetch('/env/oppdaterTittelOgBeskrivelse', options);
       const response = await request.json();
       if(response){
         varsle();
+        sUpdateTrigger(!updateTrigger);
       } else {
         alert("Noe gikk galt, prøv på nytt");
+      }
+      } catch (error) {
+        alert("Noe gikk galt. Sjekk internettforbindelsen og prøv på nytt");
+        varsleFeil();
       }
     }
     //Oppdaterer en ansatt sitt telefonnummer
     async function oppdaterTelefonAnsatt(){
-      console.log({navn:frisorRediger.navn, telefon:parseInt(telefonAnsatt)})
+      try {
+        
       lagreVarsel();
       const options = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({navn:frisorRediger.navn, telefon:parseInt(telefonAnsatt)})
+        body: JSON.stringify({navn:frisor.navn, telefon:parseInt(telefonAnsatt)})
       }
       const request = await fetch('/env/oppdaterTelefonAnsatt', options);
       const response = await request.json();
       if(response){
         varsle();
+        //sUpdateTrigger(!updateTrigger); Trenger ikke pga ikke noe med env å gjøre
       } else {
         alert("Noe gikk galt, prøv på nytt");
+      }
+      } catch (error) {
+        alert("Noe gikk galt. Sjekk internetttilkoblingen din og prøv på nytt");
+        varsleFeil();
       }
     }
 
     async function oppdaterBilde(navn){
-      lagreVarsel();
-      //Oppdaterer bilde i databasen ved å sende bildet og navn som new FormData()
-      let formData = new FormData();
-      formData.append("uploaded_file", bildeAvFrisor);
-      formData.append("navn", navn);
+      try {
+        
+        lagreVarsel();
+        //Oppdaterer bilde i databasen ved å sende bildet og navn som new FormData()
+        let formData = new FormData();
+        formData.append("uploaded_file", bildeAvFrisor);
+        formData.append("navn", navn);
 
-      const options = {
-        method: 'POST',
-        body: formData
-      }
+        const options = {
+          method: 'POST',
+          body: formData
+        }
 
-      const request = await fetch('/env/oppdaterBildeFrisor', options);
-      const response = await request.json();
-      if(response.valid){
-        varsle();
-        sUpdateTrigger(!updateTrigger);
-      } else {
-        alert("Noe gikk galt, prøv på nytt");
+        const request = await fetch('/env/oppdaterBildeFrisor', options);
+        const response = await request.json();
+        if(response.m){
+          alert(response.m);
+        } else if(response.valid){
+          varsle();
+          sUpdateTrigger(!updateTrigger);
+        } else {
+          alert("Noe gikk galt, prøv på nytt");
+        }
+      } catch (error) {
+        alert("Bilde er for stort eller på feil format. Prøv et bilde på png eller jpg format og mindre enn 2MB");
+        varsleFeil();
+
       }
       
     }
@@ -91,13 +112,13 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
       let tempFrisorer = env.frisorer;
       if(ikkeSiOpp){
         tempFrisorer.map((f)=>{
-          if(f.navn === frisorRediger.navn){
+          if(f.navn === frisor.navn){
             f.oppsigelse = "Ikke oppsagt";
           }
           return f});
       } else {
         tempFrisorer.map((f)=>{
-          if(f.navn === frisorRediger.navn){
+          if(f.navn === frisor.navn){
             f.oppsigelse = oppsigelsesDato;
           }
           return f});
@@ -110,8 +131,8 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
     async function oppdaterBehandlinger(){
       //Oppdaterer behandlinger i databasen
       let tempFrisorer = env.frisorer;
-      tempFrisorer.find((f)=>{
-        if(f.navn === frisorRediger.navn){
+      tempFrisorer.map((f)=>{
+        if(f.navn === frisor.navn){
           f.produkter = frisorTjenester;
         }
         return f});
@@ -119,6 +140,8 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
     }
 
     async function resetPassord(navn){
+      try {
+        
       lagreVarsel();
       const options = {
         method: 'POST',
@@ -131,6 +154,11 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
       const response = await request.json();
       if(response.valid){
         varsle();
+        sUpdateTrigger(!updateTrigger);
+      }
+      } catch (error) {
+        alert("Noe gikk galt, sjekk internetttilkoblingen din og prøv på nytt");
+        varsleFeil();
       }
     }
     
@@ -182,7 +210,7 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
           
           <div style={{display:"flex", justifyContent:"space-between", width:"100%"}}>
             
-          <div style={{margin:"0.5rem"}}>Velg hva du vil redigere for ansatt: <p style={{fontWeight:"bolder", fontSize:"larger"}}>{frisorRediger.navn}</p></div>
+          <div style={{margin:"0.5rem"}}>Velg hva du vil redigere for ansatt: <p style={{fontWeight:"bolder", fontSize:"larger"}}>{frisor.navn}</p></div>
             <img alt='Lukk' onClick={(e)=>{
                 e.preventDefault();
                 sVisRedigerFrisor(false);
@@ -212,23 +240,23 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
                 sVisRedigerTelefonAnsatt(true);
               }}>Endre telefonnummer</button>
 
-              {bruker.navn.toLowerCase() !== frisorRediger.navn.toLowerCase()? <button style={{backgroundColor:"red", color:"white"}} onClick={()=>{
+              {bruker.navn.toLowerCase() !== frisor.navn.toLowerCase()? <button style={{backgroundColor:"red", color:"white"}} onClick={()=>{
                 //Resetter passord til ansatt
-                if(window.confirm("Er du sikker på at du vil resette passordet til " + frisorRediger.navn + "? Passordet blir satt til samme som brukernavnet")){
+                if(window.confirm("Er du sikker på at du vil resette passordet til " + frisor.navn + "? Passordet blir satt til samme som brukernavnet")){
                   sVisRedigerFrisor(false);
-                  resetPassord(frisorRediger.navn);
+                  resetPassord(frisor.navn);
                 }
-              }} >Resett innloggings-passord for {frisorRediger.navn}</button>:<p>Rediger passordet ditt i "vakter"-panelet</p>}
+              }} >Resett innloggings-passord for {frisor.navn}</button>:<p>Rediger passordet ditt i "vakter"-panelet</p>}
 
                
-              <button style={{color:"white", background:"red"}} onClick={(e)=>{
+              <button onClick={(e)=>{
                           e.preventDefault();
                           //slettFrisor(frisor.navn);
                           sVisSiOpp(true);
-                          if(frisorRediger.oppsigelse !== "Ikke oppsagt"){
-                              sOppsigelsesDato(frisorRediger.oppsigelse);
+                          if(frisor.oppsigelse !== "Ikke oppsagt"){
+                              sOppsigelsesDato(frisor.oppsigelse);
                           }
-              }}>{frisorRediger.oppsigelse === "Ikke oppsagt"?"Si opp (legg inn oppsigelsesdato)":"Rediger oppsigelse"}</button>
+              }}>{frisor.oppsigelse === "Ikke oppsagt"?"Legg inn dato for oppsigelse":"Rediger oppsigelse"}</button>
 
             </div>   
 
@@ -237,7 +265,7 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
               <label style={{display:"flex", alignItems:"center"}}>Last opp bilde av Frisøren: <input accept="image/*" onChange={(e)=>{
               sBildeAvFrisor(e.target.files[0]);
               sPreview(URL.createObjectURL(e.target.files[0]));
-              }} type="file" name="uploaded_file"></input>Last opp bilde her: Maks 20mb {preview && <img className='frisorbilde' style={{height:"300px"}} alt='Forhåndsvisning av bildet' src={preview}></img>}</label>
+              }} type="file" name="uploaded_file"></input>Last opp bilde her: Maks 2mb {preview && <img className='frisorbilde' style={{height:"300px"}} alt='Forhåndsvisning av bildet' src={preview}></img>}</label>
       
       <div>
         <button onClick={(e)=>{
@@ -248,7 +276,7 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
         <button onClick={(e)=>{
           e.preventDefault();
           if(bildeAvFrisor){  
-            oppdaterBilde(frisorRediger.navn);
+            oppdaterBilde(frisor.navn);
             sBildeAvFrisor(null);
             sVisRedigerBilde(false);
           }
@@ -257,7 +285,7 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
             </div>:<></>}
 
             {visRedigerTittelOgBeskrivelse?<div className='fokus'>
-              <h4>Rediger tittel og/eller beskrivelse for {frisorRediger.navn}</h4>
+              <h4>Rediger tittel og/eller beskrivelse for {frisor.navn}</h4>
               <label>Tittel: <input type="text" value={tittel} onChange={(e)=>{
                 e.preventDefault();
                 sTittel(e.target.value);
@@ -283,7 +311,7 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
 
 
             {visRedigerTelefonAnsatt?<div className='fokus'>
-            <h4>Endre telefonnummer for {frisorRediger.navn}</h4>
+            <h4>Endre telefonnummer for {frisor.navn}</h4>
             <p>NB! Endre telefonnummeret til ansatt dersom den ansatte har fått nytt telefonnummer og 
               ikke får loggett inn selv for å endre telefonnummer (ansatt kan bli sperret ute på grunn av tofaktor)</p>
             <input inputMode="numeric" type="numeric" value={telefonAnsatt} onChange={(e)=>{
@@ -312,7 +340,7 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
 
               {visSiOpp?<div className='fokus'>
               
-                  <h4>Legg inn oppsigelsesdato for {frisorRediger.navn}</h4>
+                  <h4>Legg inn oppsigelsesdato for {frisor.navn}</h4>
                   <p>Legg inn datoen som frisøren ikke lenger jobber. Frisøren vil kunne få reservasjoner før denne datoen men 
                       ikke på denne datoen eller etter. Dette er for å unngå at frisøren får reservasjoner som ikke kan gjennomføres.
                   </p>
@@ -340,7 +368,7 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
                 
                 {visRedigerBehandlinger?
                 <div className='fokus'>
-                  <h4>Rediger behandlinger for {frisorRediger.navn}</h4>
+                  <h4>Rediger behandlinger for {frisor.navn}</h4>
                   <p>Velg behandlinger for den ansatte</p>
                   <br></br>
 
@@ -376,7 +404,6 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
             </div>:
       <button onClick={(e)=>{
         e.preventDefault();
-        sFrisorRediger(frisor);
         sVisRedigerFrisor(true);
       }} ><img alt='Rediger frisør' src='rediger.png' style={{height:"1.4rem"}}></img></button>}
     </div>:""}

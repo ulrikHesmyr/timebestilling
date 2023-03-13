@@ -19,7 +19,7 @@ const FriElementer = require("./model/fri");
 const Brukere = require("./model/brukere");
 const {BEDRIFT, NODE_ENV} = process.env;
 
-app.use(express.json({limit:'20mb'}));
+app.use(express.json({limit:'2mb'}));
 app.use(express.urlencoded({extended:false}));
 app.use(cors());
 app.use(cookieParser());
@@ -143,7 +143,7 @@ schedule.scheduleJob('09 23 * * *', async ()=>{
 });
 
 //Sletter frisører som er sagt opp, både frisøren og brukeren til frisøren
-schedule.scheduleJob('39 19 * * *', async ()=>{
+schedule.scheduleJob('39 23 * * *', async ()=>{
   try {
     const e = await Environment.findOne({bedrift:BEDRIFT});
    if(e){

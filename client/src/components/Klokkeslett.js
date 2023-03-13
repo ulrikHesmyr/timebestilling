@@ -106,7 +106,7 @@ function Klokkeslett({env, sForsteFrisor, friElementer, tilgjengeligeFrisorer, d
 
             //Finner til slutt de gjenværende ledige tidspunktene for den enkelte frisøren
             const ledige = aapningstider.map((element)=>{
-                if(hentDato() === dato && minutterFraKlokkeslett(element) < klokkeslettminutterNaa){
+                if((hentDato() === dato && minutterFraKlokkeslett(element) < klokkeslettminutterNaa) || new Date(hentDato()) > new Date(dato)){
                     return undefined;
                 } else if(!reserverte.includes(element) && !utilgjengelige.includes(element)){
                     if(ledigeTotaltTidspunkter.includes(element)){

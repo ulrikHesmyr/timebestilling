@@ -51,7 +51,7 @@ function Hjem({env}){
 
         </div>
         <div className="startContainer">
-        <div className="hjemsideSeksjon" style={{padding:"2rem"}}>
+        <div style={{padding:"2rem"}}>
                 <h1>Velkommen!</h1>
                 <p style={{fontSize:"larger"}}>{env.omOssArtikkel}</p>
             </div>

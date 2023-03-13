@@ -17,6 +17,7 @@ function Login(){
     
     //Varsling
     const[varslingSynlig, sVarslingSynlig] = useState(false);
+    const[visFeil, sVisFeil] = useState(false);
     const[lagrerVarslingSynlig, sLagrerVarslingSynlig] = useState(false);
 
     //Fjerne logg inn knapp med en gang de har trykt
@@ -32,6 +33,14 @@ function Login(){
         sVarslingSynlig(true);
         setTimeout(()=>{
             sVarslingSynlig(false);
+        }, 3000);
+    }
+
+    function varsleFeil(){
+        sLagrerVarslingSynlig(false);
+        sVisFeil(true);
+        setTimeout(()=>{
+            sVisFeil(false);
         }, 3000);
     }
 
@@ -201,6 +210,7 @@ function Login(){
 
         <div className={lagrerVarslingSynlig?"varsling varsel":"skjul varsel"}><div>Lagrer...</div></div>
         <div className={varslingSynlig?"varsling varsel":"skjul varsel"}><div>Endringene er lagret!</div></div>
+        <div className={visFeil?"varsling varsel":"skjul varsel"} style={{background:"red !important", color:"white !important"}}><div>Feilet</div></div>
         {vis2FA && <div className='fokus'>
             <div><h4>Tofaktor</h4>Se SMS for PIN. Dersom du ikke har mottatt PIN innen et par minutter, vennligst kontakt din daglig leder for å se om det er oppført riktig telefonnummer.</div><input type="text" inputMode="numeric" autoComplete="one-time-code" onChange={(e)=>{
             sTwoFApin(e.target.value);
@@ -224,7 +234,7 @@ function Login(){
         }
         {(loggetInn && env !== null?<div>
         
-     <div style={{marginTop:"6rem", padding:"0.5rem",color:"blue", cursor:"pointer", userSelect:"none"}} onClick={loggut}>LOGG UT</div> {(brukertype === "admin"?<Admin env={env} bruker={bruker} sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} lagreVarsel={lagreVarsel} varsle={varsle} bestilteTimer={bestilteTimer}/>:(brukertype === "vakter"?<Vakter env={env} loggut={loggut} bruker={bruker} varsle={varsle} lagreVarsel={lagreVarsel} bestilteTimer={bestilteTimer} />:""))}</div>:(<div className='login'>
+     <div style={{marginTop:"6rem", padding:"0.5rem",color:"blue", cursor:"pointer", userSelect:"none"}} onClick={loggut}>LOGG UT</div> {(brukertype === "admin"?<Admin env={env} bruker={bruker} sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} lagreVarsel={lagreVarsel} varsle={varsle} varsleFeil={varsleFeil} bestilteTimer={bestilteTimer}/>:(brukertype === "vakter"?<Vakter env={env} loggut={loggut} bruker={bruker} varsle={varsle} varsleFeil={varsleFeil} lagreVarsel={lagreVarsel} bestilteTimer={bestilteTimer} />:""))}</div>:(<div className='login'>
         <form className='loginForm'>
             <label>Brukernavn: <input disabled={disableInputFields} name='brukernavn' value={brukernavn} maxLength={20} type="text" placeholder='brukernavn' onChange={(e)=>{
                 if(!format.test(e.target.value)){

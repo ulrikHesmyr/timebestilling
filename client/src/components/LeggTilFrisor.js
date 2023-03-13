@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 
-function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel}){
+function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel, varsleFeil}){
 
     const [leggtil, sLeggTil] = useState(false);
     const [nyFrisorNavn, sNyFrisorNavn] = useState("");
@@ -14,6 +14,8 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel}
 
 
     async function lagre(){
+        try {
+            
         lagreVarsel();
         sLeggTil(false);
         
@@ -48,16 +50,19 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel}
             }
             const request = await fetch("/login/opprettBruker", options);
             const response = await request.json();
-
-            if(response){
-                sUpdateTrigger(!updateTrigger);
-                setFrisortjenester([]);
-                sTlfNyFrisor("");
-                sNyFrisorNavn("");
-                sNyFrisorBeskrivelse("");
-                sNyFrisorTittel("");
-                sBildeAvFrisor(null);
+            if(response && response.m){
+                alert(response.m);
+            } else if(response){
                 varsle();
+                sUpdateTrigger(!updateTrigger);
+                //setFrisortjenester([]);
+                //sTlfNyFrisor("");
+                //sNyFrisorNavn("");
+                //sNyFrisorBeskrivelse("");
+                //sNyFrisorTittel("");
+                //sBildeAvFrisor(null);
+            } else {
+                alert("Noe gikk galt. Prøv igjen.");
             }
 
         } else {
@@ -67,6 +72,10 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel}
         
 
 
+        } catch (error) {
+            alert("Bildet er for stort eller på feil format. Bilde må ha formatet .jpg, .jpeg, eller .png og være mindre enn 2mb.");
+            varsleFeil();
+        }
     }
 
 
@@ -99,7 +108,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel}
         <label style={{display:"flex", alignItems:"center"}}>Last opp bilde av Frisøren: <input accept="image/*" onChange={(e)=>{
             sBildeAvFrisor(e.target.files[0]);
             setPreview(URL.createObjectURL(e.target.files[0]));
-        }} type="file" name="uploaded_file"></input>Last opp bilde her: Maks 20mb {preview && <img className='frisorbilde' style={{height:"300px"}} alt='Forhåndsvisning av bildet' src={preview}></img>}</label>
+        }} type="file" name="uploaded_file"></input>Last opp bilde her: Maks 2mb {preview && <img className='frisorbilde' style={{height:"300px"}} alt='Forhåndsvisning av bildet' src={preview}></img>}</label>
         
 
         <p style={{fontWeight:"bold"}} >Velg behandlinger for frisør:</p>

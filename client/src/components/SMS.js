@@ -1,12 +1,40 @@
 import React, {useState} from 'react'
 
 
-function SMS({env, varsle, lagreVarsel}){
+function SMS({env, varsle, lagreVarsel, varsleFeil, sUpdateTrigger, updateTrigger}){
 
     const [aktivertFeedbackSMS, setAktivertFeedbackSMS] = useState(env.aktivertFeedbackSMS);
     const [aktivertSMSpin, setAktivertSMSpin] = useState(env.aktivertSMSpin);
+
+    //Google review link
+    const [visRedigerGoogleReviewLink, sVisRedigerGoogleReviewLink] = useState(false);
+    const [googleReviewLink, sGoogleReviewLink] = useState(env.googleReviewLink);
+    
+    async function oppdaterGoogleReviewLink(){
+        try {
+            lagreVarsel();
+        const options = {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body: JSON.stringify({googleReviewLink:googleReviewLink}),
+            credentials:'include'
+        }
+        const request = await fetch("/env/oppdaterGoogleReviewLink", options);
+        const response = await request.json();
+        if(response){
+            varsle();
+            sUpdateTrigger(!updateTrigger);
+        }
+        } catch (error) {
+            alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen.");
+            varsleFeil();      
+        }
+    }
     async function endreStatusSMSfeedback(nyStatus){
-        lagreVarsel();
+        try {
+            lagreVarsel();
         const res = await fetch("/env/endreStatusSMSfeedback", {
             method: "POST",
             headers: {
@@ -17,13 +45,19 @@ function SMS({env, varsle, lagreVarsel}){
         });
         const data = await res.json();
         if(data){
-            varsle();
             setAktivertFeedbackSMS(nyStatus);
+            varsle();
+            sUpdateTrigger(!updateTrigger);
+        }
+        } catch (error) {
+            alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen.");
+            varsleFeil();   
         }
     }
 
     async function endreStatusSMSpin(nyStatus){
-        lagreVarsel();
+        try {
+            lagreVarsel();
         const res = await fetch("/env/endreStatusSMSpin", {
             method: "POST",
             headers: {
@@ -34,8 +68,13 @@ function SMS({env, varsle, lagreVarsel}){
         });
         const data = await res.json();
         if(data){
-            varsle();
             setAktivertSMSpin(nyStatus);
+            varsle();
+            sUpdateTrigger(!updateTrigger);
+        }
+        } catch (error) {
+            alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen.");
+            varsleFeil();   
         }
     }
 
@@ -48,6 +87,38 @@ function SMS({env, varsle, lagreVarsel}){
                 SMS med google review link: <StatusMelding funksjon={endreStatusSMSfeedback} status={aktivertFeedbackSMS}/>
             </div>
         </div>
+        
+        <div className='redigeringsBoks'> 
+                        <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
+                            {visRedigerGoogleReviewLink?<div>
+                                <div className='fokus'>
+                                    <h4>Rediger google review link</h4>
+                                    <p>
+                                        Her kan du redigere linken til google reviews. Denne linken sendes pr SMS til kunder samme kveld som deres besøk.
+                                    </p>
+                                    <p>Nåværende link: {env.googleReviewLink}</p>
+                                    <label>Link: <input type="url" value={googleReviewLink} onChange={(e)=>{
+                                        sGoogleReviewLink(e.target.value);
+                                    }}></input></label>
+                                    <div>
+                                    <button onClick={()=>{
+                                        
+                                        sVisRedigerGoogleReviewLink(false); 
+                                        sGoogleReviewLink(env.googleReviewLink);
+                                    }}>Avbryt</button>
+                                    <button onClick={()=>{
+                                        sVisRedigerGoogleReviewLink(false); 
+                                        oppdaterGoogleReviewLink();
+                                    }}>Lagre</button>    
+                                    </div>
+                                </div>
+                            </div> :<button className='rediger' onClick={(e)=>{
+                                sVisRedigerGoogleReviewLink(true);
+                                }}><img className='ikonKnapper' src='rediger.png' alt="Rediger"></img></button>}
+                            <div>Rediger google review link: </div>
+                        </div>
+                        <p className='redigeringsElement'>{googleReviewLink}</p>
+                    </div>
 
         <div>
             <h4>SMS-PIN for timebestilling</h4>

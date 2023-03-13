@@ -17,7 +17,7 @@ function Kontakt({env}){
                     {env.sosialeMedier.map((medie)=>(
                         <a key={medie.platform}  style={{display:"flex", flexDirection:"row", alignItems:"center"}}
                          rel='noreferrer' target="_blank" href={medie.link}>
-                            <img src={`${medie.platform}.png`} style={{height:"5rem", objectFit:"contain"}} alt={`${medie.platform}`}></img>
+                            <img loading='eager' src={`${medie.platform}.png`} style={{height:"5rem", objectFit:"contain"}} alt={`${medie.platform}`}></img>
                             {medie.bruker}
                         </a>
                     ))}
