@@ -22,7 +22,7 @@ const App = ()=> {
 
     const fetchEnvironment = async ()=>{
       const data = await (
-        await fetch("/env/env")
+        await fetch("http://localhost:1226/env/env")
       ).json();
       if(data){
         sEnv(data);
@@ -105,13 +105,23 @@ function hentMaaned(maanedInt){
   }
 }
 
+function nesteDag(d = new Date()){
+  let currentTime = d.getTime();
 
-function hentDato(){ //Hvilket format true=yyyy-mm-dd, false=["dd","mm","yyyy"]
+  // add 1 day worth of milliseconds (1000ms * 60s * 60m * 24h)
+  let oneDay = 1000 * 60 * 60 * 24;
+  let newTime = currentTime + oneDay;
+
+  // create a new Date object using the new date in milliseconds
+  let newDate = new Date(newTime);
+  return hentDato(newDate);
+}
+
+function hentDato(d = new Date()){ //Hvilket format true=yyyy-mm-dd, false=["dd","mm","yyyy"]
     
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, '0');
-  const day = String(today.getDate()).padStart(2, '0');
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
   return (`${year}-${month}-${day}`);
   
 }
@@ -119,5 +129,6 @@ function hentDato(){ //Hvilket format true=yyyy-mm-dd, false=["dd","mm","yyyy"]
 export default App;
 export{
   hentDato,
-  hentMaaned
+  hentMaaned,
+  nesteDag
 }

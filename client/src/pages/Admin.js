@@ -79,9 +79,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({frisorer:frisorArray}),
-            credentials:'include'
+            //credentials:'include'
         }
-        const request = await fetch("/env/oppdaterFrisorer", options);
+        const request = await fetch("http://localhost:1226/env/oppdaterFrisorer", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -102,9 +102,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({omOssArtikkel:omOssTekst}),
-            credentials:'include'
+            //credentials:'include'
         }
-        const request = await fetch("/env/oppdaterOmOss", options);
+        const request = await fetch("http://localhost:1226/env/oppdaterOmOss", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -140,9 +140,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({adresse:adresse}),
-            credentials:'include'
+            //credentials:'include'
         }
-        const request = await fetch("/env/oppdaterAdresse", options);
+        const request = await fetch("http://localhost:1226/env/oppdaterAdresse", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -164,9 +164,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify(slettetTime),
-            credentials:'include'
+            //credentials:'include'
         }
-        const request = await fetch("/timebestilling/oppdaterTimebestillinger", options);
+        const request = await fetch("http://localhost:1226/timebestilling/oppdaterTimebestillinger", options);
         const response = await request.json();
         if(response.valid){
             varsle();
@@ -195,9 +195,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify(nyttEnv),
-            credentials:'include'
+            //credentials:'include'
         }
-        const request = await fetch("/env/oppdaterEnv", options);
+        const request = await fetch("http://localhost:1226/env/oppdaterEnv", options);
         const response = await request.json();
         if(response){
             varsle();

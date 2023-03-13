@@ -325,15 +325,16 @@ input, button, select, option{
     height: 3rem;
   }
 
-  
+  .k{
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+  }
   .klokkeslettene{
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
     box-sizing: border-box;
     max-width: 100%;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
   }
 .klokkeslett{
   display: flex;
@@ -371,6 +372,9 @@ input, button, select, option{
     color:var(--color3);
     font-size: x-large;
     background: var(--color1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   .valgtFrisorTekst{
     transition: 0.1s ease;

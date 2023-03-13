@@ -18,7 +18,7 @@ function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, fri
                 "Content-Type":"application/json",
             },
             body: JSON.stringify({pin:p}),
-            credentials: 'include'
+            //credentials: 'include'
         });
         const response = await request.json();
         if(response.m){
@@ -39,7 +39,7 @@ function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, fri
                 "Content-Type":"application/json",
             },
             body: JSON.stringify({tlf:telefonnummer}),
-            credentials: 'include'
+            //credentials: 'include'
         });
         const response = await request.json();
         if(response.m){
@@ -57,7 +57,7 @@ function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, fri
                 "Content-Type":"application/json",
             },
             body: JSON.stringify(data),
-            credentials: 'include'
+            //credentials: 'include'
         });
         const response = await request.json();
         if(response.m){

@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react'
 import Fortsett from './Fortsett';
-import { hentDato } from '../App';
+import { hentDato, nesteDag } from '../App';
 
-function Klokkeslett({env, sForsteFrisor, friElementer, tilgjengeligeFrisorer, displayKomponent, klokkeslettet, produkt, bestilteTimer, sKlokkeslett, dato, hentMaaned, frisor}){
+function Klokkeslett({env, sDato, sForsteFrisor, friElementer, tilgjengeligeFrisorer, displayKomponent, klokkeslettet, produkt, bestilteTimer, sKlokkeslett, dato, hentMaaned, frisor}){
     
     const [ledigeTimer, setLedigeTimer] = useState([]);
-
+    const ukedag = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
 
     useEffect(()=>{
         
@@ -133,12 +133,17 @@ function Klokkeslett({env, sForsteFrisor, friElementer, tilgjengeligeFrisorer, d
                 return 0;
             }
         })
+        if(ledigeTotalt.length === 0 && frisor.oppsigelse == "Ikke oppsagt"){
+            sDato(nesteDag(new Date(dato)));
+        }
         setLedigeTimer(ledigeTotalt);
 
     }, [dato, friElementer, produkt, env.klokkeslett, env.tjenester, frisor, env.frisorer, bestilteTimer, tilgjengeligeFrisorer])
 
     return(
         <div className="animer-inn">
+           <div className='k'>
+           <h3>Valgt dato: {ukedag[new Date(dato).getDay()]} {parseInt(dato.substring(8,10))}. {hentMaaned(parseInt(dato.substring(5,7)) -1)}</h3>
             <div className='klokkeslettene'>
                 {(ledigeTimer.length > 0? ledigeTimer.map((tid)=>(<div style={{backgroundColor: klokkeslettet===tid.tid ?"var(--farge5)": "white"}} className='klokkeslett' key={tid.tid} onClick={()=>{
                     //Velg frisør, sett random ut ifra klokkeslettet, altså tid bruk random som velger random indeks fra tid.frisorer
@@ -147,6 +152,7 @@ function Klokkeslett({env, sForsteFrisor, friElementer, tilgjengeligeFrisorer, d
                     sKlokkeslett(tid.tid);
                 }}> {tid.tid} </div>)):(frisor !== false && frisor.oppsigelse !== "Ikke oppsagt" && new Date(frisor.oppsigelse) <= new Date(dato) ?"Kan ikke reservere time hos ansatt etter oppsigelsesdatoen":`Ingen ledige timer for ${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}`))}
             </div>
+           </div>
             
             <Fortsett displayKomponent={displayKomponent} previous={2} number={3} disabled={(klokkeslettet !== null? false:true)} />
         </div>
