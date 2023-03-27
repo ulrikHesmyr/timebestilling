@@ -15,8 +15,6 @@ SERVER OG CLIENT:
 
 
 MULIGE BUGS SOM KAN KOMME I PROD:
-- Innloggingsforsøk. Test innloggingsfunksjonaliteten mtp antall innloggingsforsøk.
-- 2FA, sjekk om alt stemmer med 2FA
 
 TODO:
 - Sjekke ut hva Jest er
@@ -28,15 +26,11 @@ TODO:
 
 
 TESTE:
-- Legge inn oppsigelse på frisøren idag og prøve å bestille time fra han samtidig
 
 Ideer:
 Gavekort, betaling med stripe
 
 Scenarioer:
-- Kunde har bestilt time, men ønsker å endre tidspunkt
-- Kunde har bestilt time, men ønsker å endre tidspunkt OG behandlinger. Hun vil ha både herreklipp og dameklipp, men hun hadde kun
-    reservert for dameklipp
 
 Før produksjon
     FILER
@@ -62,17 +56,6 @@ endre på domenenavn i /etc/nginx/sites-available
 OM APPLIKASJONEN, PERSONVERN OG LOV:
 - Data som lagres om de ansatte går under firmaets egne kontrakter om personvern osv.
 
-FÅ FRA KUNDE FØR PROD
-- Logo
-- Bilder til startside, kontakt oss, om oss osv.
-- Farger til siden
-- Google review link hvis ønsket
-- Telefonnummer daglig leder
-- Navn daglig leder
-- Timebekreftelsesformat? Liker de SMS sånn den er nå?
-
-MINE GARANTIER:
-- Umulig å bli dobbeltbooket eller at timer krasjer, først på nettsiden, så sjekker den med tidligere bestillinger, men også på serveren i det bestillingen sendes, så sjekker den momentnant om det krasjer med andre bestillinger.
 
 new FormData() for bilder, ikke json
 body: formData

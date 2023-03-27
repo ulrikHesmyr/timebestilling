@@ -69,6 +69,118 @@ router.post('/oppdaterAdresse', authorization, async(req,res)=>{
     }
 });
 
+router.post('/opprettNyBehandling', authorization, async(req,res)=>{
+    const {behandling} = req.body;
+    if(req.admin){
+        try {
+            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {$push:{tjenester:behandling}});
+            if(oppdatertEnv){
+                return res.send({message:"Behandling opprettet", valid:true});
+            } else {
+                return res.status(404);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+}
+)
+
+router.post('/slettBehandling', authorization, async(req,res)=>{
+    const {behandling} = req.body;
+    if(req.admin){
+        try {
+            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {$pull:{tjenester:{navn:behandling}}});
+            if(oppdatertEnv){
+                return res.send({message:"Behandling slettet", valid:true});
+            } else {
+                return res.status(404);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+})
+
+router.post('/slettSosialtMedie', authorization, async(req,res)=>{
+    const {medie} = req.body;
+    if(req.admin){
+        try {
+            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {$pull:{sosialeMedier:medie}});
+            if(oppdatertEnv){
+                return res.send({message:"Sosialt medie slettet", valid:true});
+            } else {
+                return res.status(404);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+})
+
+router.post('/slettKategori', authorization, async(req,res)=>{
+    const {kategori} = req.body;
+    if(req.admin){
+        try {
+            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {$pull:{kategorier:kategori}});
+            if(oppdatertEnv){
+                return res.send({message:"Kategori slettet", valid:true});
+            } else {
+                return res.status(404);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+})
+
+router.post('/nyKategori', authorization, async(req,res)=>{
+    const {kategori} = req.body;
+    if(req.admin){
+        try {
+            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {$push:{kategorier:kategori}});
+            if(oppdatertEnv){
+                return res.send({message:"Kategori opprettet", valid:true});
+            } else {
+                return res.status(404);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+})
+
+router.post('/oppdaterTelefonnummer', authorization, async(req,res)=>{
+    const {telefonnummer} = req.body;
+    if(req.admin){
+        try {
+            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {kontakt_tlf:telefonnummer});
+            if(oppdatertEnv){
+                return res.send({message:"Telefonnummer oppdatert", valid:true});
+            } else {
+                return res.status(404);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+});
+
+router.post('/oppdaterEpost', authorization, async(req,res)=>{
+    const {epost} = req.body;
+    if(req.admin){
+        try {
+            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {kontakt_epost:epost});
+            if(oppdatertEnv){
+                return res.send({message:"Epost oppdatert", valid:true});
+            } else {
+                return res.status(404);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+});
 
 router.post('/opprettFri', authorization,async(req,res)=>{
     const {lengreTid, fraDato, tilDato, fraKlokkeslett, tilKlokkeslett, friDag, frisor, medarbeider} = req.body;

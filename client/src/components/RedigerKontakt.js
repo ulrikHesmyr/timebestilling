@@ -1,12 +1,53 @@
 import React, { useState } from 'react'
 
-function RedigerKontakt({number, setState, state, sendTilDatabase, env}){
+function RedigerKontakt({number, setState, state, sUpdateTrigger, updateTrigger, varsle, lagreVarsel, varsleFeil}){
 
 
     const [redigeringsKnappSynlig, sRedigeringsKnappSynlig] = useState(true);
     const [inputSynlig, sInputSynlig] = useState(false);
     const [avbrytOgLagreSynlig, sAvbrytOgLagreSynlig] = useState(false);
     const [tempState, sTempState] = useState(state);
+
+
+    async function oppdaterEpost(){
+        lagreVarsel();
+        try {
+            const response = await fetch('http://localhost:1226/env/oppdaterEpost', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({epost: tempState})
+            });
+            const data = await response.json();
+            if(data){
+                varsle();
+                sUpdateTrigger(!updateTrigger);
+            }
+        } catch (error) {
+            varsleFeil();
+        }
+    }
+
+    async function oppdaterTelefonnummer(){
+        lagreVarsel();
+        try {
+            const response = await fetch('http://localhost:1226/env/oppdaterTelefonnummer', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({telefonnummer: tempState})
+            });
+            const data = await response.json();
+            if(data){
+                varsle();
+                sUpdateTrigger(!updateTrigger);
+            }
+        } catch (error) {
+            varsleFeil();
+        }
+    }
 
     return(
     <div>
@@ -44,9 +85,13 @@ function RedigerKontakt({number, setState, state, sendTilDatabase, env}){
                 sRedigeringsKnappSynlig(true);
                 //Sjekker om det er telefonnummeret som må oppdateres
                 if(number){
-                    sendTilDatabase(env.kategorier, env.tjenester, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, tempState);
+                    
+                    //Oppdaterer telefonnummeret for salongen
+                    oppdaterTelefonnummer(tempState);
                 } else {
-                    sendTilDatabase(env.kategorier, env.tjenester, env.klokkeslett, env.sosialeMedier, tempState, env.kontakt_tlf);
+                    
+                    //Oppdaterer eposten for salongen
+                    oppdaterEpost(tempState);
                 }
             }}>
                 Lagre

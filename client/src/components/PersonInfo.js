@@ -26,7 +26,7 @@ function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, fri
         }
         if(response.valid){
             sValidertSMSpin(true);
-            visIkkeGodkjent(false);
+            sVisIkkeGodkjent(false);
         } else {
             sValidertSMSpin(false);
             sVisIkkeGodkjent(true);

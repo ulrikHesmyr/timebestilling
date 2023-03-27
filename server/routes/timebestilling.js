@@ -72,10 +72,10 @@ router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
         if(!t && finnesIkkeKollisjon){
 
             let kundensTelefonnummer = telefonnummer;
-            const ansattBestilling = req.cookies.two_FA_valid;
+            const ansattBestilling = req.cookies.access_token; 
             let ansatt = false;
             if(ansattBestilling){
-                ansatt = jwt.verify(req.cookies.two_FA_valid, ACCESS_TOKEN_KEY);
+                ansatt = jwt.verify(ansattBestilling, ACCESS_TOKEN_KEY);
             }
             if(env.aktivertSMSpin && !ansatt){
                 const dataFromSMSCookie = jwt.verify(req.cookies.tlfvalid, SMSPINVALID_SECRET);

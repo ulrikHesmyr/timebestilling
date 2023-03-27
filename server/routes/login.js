@@ -205,57 +205,57 @@ router.post('/auth',loginLimiter, async (req,res)=>{
                 if(!valgtBrukertype){
                     return res.json({velgBrukertype:true});
                 }
-                
-                const allerede2FA = req.cookies.two_FA_valid;
-                if(allerede2FA || NODE_ENV === "development"){
-                    if(NODE_ENV === "production"){
-                        const two_FA_valid = jwt.verify(allerede2FA, ACCESS_TOKEN_KEY);
-                        if(!two_FA_valid.gyldig){
-                            res.clearCookie("two_FA_valid");
-                            return res.status(401).json({message:"Du har ikke gyldig 2FA token"});
-                        }
-                    }
-                } else {
-                    
-                    //Dersom brukeren ikke har autorisert med 2FA i denne nettleseren enda
-                    const randomGeneratedPIN = randomNumber(2000, 9999);
-                    const newToken = jwt.sign({brukernavn: finnBruker.brukernavn, pin: randomGeneratedPIN},TWOFA_SECRET,{expiresIn:'20m'});
-                    res.cookie("two_FA", newToken, {
-                        httpOnly: true,
-                        secure: process.env.HTTPS_ENABLED == "secure",
-                    })
-                    //Send SMS med pin
-                    let baseUrl = "https://shared.target365.io/";
-                    let keyName = KEYNAME_SMS;
-                    let privateKey = PRIVATE_KEY;
-                    let serviceClient = new Client(privateKey, { baseUrl, keyName });
-                    let outMessage = {
-                        transactionId: uuidv4(),
-                        sender:'Target365',
-                        recipient:`+47${finnBruker.telefonnummer}`,
-                        content:`Din PIN er ${randomGeneratedPIN}`
-                    }
-                    await serviceClient.postOutMessage(outMessage);
-                    return res.send({message:"Du må logge inn med 2FA", valid:false, two_FA:true});
-                }
             }
-                
-                const env = await Environment.findOne({bedrift:BEDRIFT}).select("-_id -__v -antallBestillinger").exec();
-                
-                let bestilteTimer = await Bestiltetimer.find();
-                bestilteTimer = bestilteTimer.sort((a,b)=>{
-                    let datoA = new Date(a.dato + " " + a.tidspunkt);
-                    let datoB = new Date(b.dato + " " + b.tidspunkt);
-                    return datoA - datoB;
-                })
 
-                //Setter access token i cookies
-                const accessToken = jwt.sign({brukernavn:brukernavn, passord:passord, brukertype: brukertype},ACCESS_TOKEN_KEY,{expiresIn:'480m'});
-                res.cookie("access_token", accessToken, {
+            const allerede2FA = req.cookies.two_FA_valid;
+            if(allerede2FA || NODE_ENV === "development"){
+                if(NODE_ENV === "production"){
+                    const two_FA_valid = jwt.verify(allerede2FA, ACCESS_TOKEN_KEY);
+                    if(!two_FA_valid.gyldig){
+                        res.clearCookie("two_FA_valid");
+                        return res.status(401).json({message:"Du har ikke gyldig 2FA token"});
+                    }
+                }
+            } else {
+                
+                //Dersom brukeren ikke har autorisert med 2FA i denne nettleseren enda
+                const randomGeneratedPIN = randomNumber(2000, 9999);
+                const newToken = jwt.sign({brukernavn: finnBruker.brukernavn, pin: randomGeneratedPIN},TWOFA_SECRET,{expiresIn:'20m'});
+                res.cookie("two_FA", newToken, {
                     httpOnly: true,
                     secure: process.env.HTTPS_ENABLED == "secure",
                 })
-                return res.json({valid:true,bruker:{navn:finnBruker.brukernavn, telefonnummer:finnBruker.telefonnummer}, message:"Du er nå logget inn", brukertype: (brukertype==="admin"?"admin":"vakter"), env:env, bestilteTimer:bestilteTimer});
+                //Send SMS med pin
+                let baseUrl = "https://shared.target365.io/";
+                let keyName = KEYNAME_SMS;
+                let privateKey = PRIVATE_KEY;
+                let serviceClient = new Client(privateKey, { baseUrl, keyName });
+                let outMessage = {
+                    transactionId: uuidv4(),
+                    sender:'Target365',
+                    recipient:`+47${finnBruker.telefonnummer}`,
+                    content:`Din PIN er ${randomGeneratedPIN}`
+                }
+                await serviceClient.postOutMessage(outMessage);
+                return res.send({message:"Du må logge inn med 2FA", valid:false, two_FA:true});
+            }
+        
+            
+            const env = await Environment.findOne({bedrift:BEDRIFT}).select("-_id -__v -antallBestillinger").exec();
+            
+            let bestilteTimer = await Bestiltetimer.find();
+            bestilteTimer = bestilteTimer.sort((a,b)=>{
+                let datoA = new Date(a.dato + " " + a.tidspunkt);
+                let datoB = new Date(b.dato + " " + b.tidspunkt);
+                return datoA - datoB;
+            })
+            //Setter access token i cookies
+            const accessToken = jwt.sign({brukernavn:brukernavn, passord:passord, brukertype: brukertype},ACCESS_TOKEN_KEY,{expiresIn:'480m'});
+            res.cookie("access_token", accessToken, {
+                httpOnly: true,
+                secure: process.env.HTTPS_ENABLED == "secure",
+            })
+            return res.json({valid:true,bruker:{navn:finnBruker.brukernavn, telefonnummer:finnBruker.telefonnummer}, message:"Du er nå logget inn", brukertype: (brukertype==="admin"?"admin":"vakter"), env:env, bestilteTimer:bestilteTimer});
             
         } else {
 

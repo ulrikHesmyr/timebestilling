@@ -3,6 +3,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css'
 import {Calendar, momentLocalizer} from 'react-big-calendar'
 import moment from 'moment'
 import { hentMaaned } from '../App'
+import {Link} from 'react-router-dom'
 
 import {klokkeslettFraMinutter, minutterFraKlokkeslett} from '../components/Klokkeslett'
 
@@ -40,16 +41,17 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
     async function hentFri(){
       try {
       
-      const request = await fetch("http://localhost:1226/env/fri");
-      const response = await request.json();
-      if(response){
-        sFriElementer(response);
+        const request = await fetch("http://localhost:1226/env/fri");
+        const response = await request.json();
+        if(response){
+          sFriElementer(response);
         }
-    } catch (error) {
-      alert("Noe gikk galt. Sjekk internettforbindelsen din og prøv igjen.");
-      varsleFeil();
-    }
+      } catch (error) {
+        alert("Noe gikk galt. Sjekk internettforbindelsen din og prøv igjen.");
+        varsleFeil();
       }
+    }
+    
     hentFri();
     
     let hihi = env.frisorer.map(e=>e.navn);
@@ -229,6 +231,8 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
           
 
            </>:""}
+           <h5>Bestille time:</h5>
+           <p>Bestill time her: <Link to="/timebestilling">bestill time</Link> </p>
           <h3>Velg vakter for:</h3>
         <div className='velgFrisorVakter'>
         {env.frisorer.map((frisorElement)=>(

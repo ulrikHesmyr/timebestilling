@@ -117,10 +117,6 @@ button:disabled{
   background-color: grey !important;
   cursor:not-allowed;
 }
-button:active{
-  background: var(--background2);
-  color:var(--color2);
-}
 
 .navBar, .overskrift, .frisor, .kategorier, .klokkeslettene{
   user-select: none;
@@ -166,9 +162,6 @@ button:active{
 }
 .rotert{
   transform: rotate(-90deg);
-}
-.navBar a:active, .overskrift:active, .frisor:active, .tjeneste:active {
-  background-color: rgba(0, 0, 0, 0.25);
 }
 
 form{
@@ -280,9 +273,6 @@ input, button, select, option{
     font-size: large;
   }
   
-  .navBar a:active{
-    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
-  }
   
   
   .hjem{
@@ -496,7 +486,7 @@ input, button, select, option{
     cursor: pointer;
     margin: 0.3rem;
   }
-  .velgFrisorVakter div:hover, .velgFrisorVakter div:active{
+  .velgFrisorVakter div:hover{
     box-shadow: 1px 1px 1px black;
   }
   .fortsett{
@@ -729,7 +719,7 @@ input, button, select, option{
     color: var(--color1);
   }
 
-  
+  /*må alltid være height og ikke min-height*/
   .fokus{
     position: fixed;
     top: 5%;
@@ -753,6 +743,7 @@ input, button, select, option{
     justify-content: center;
     text-align: center;
     overflow-x: hidden;
+    padding-top: 4rem;
   }
 
   .fokus button, .fokus input{
@@ -772,13 +763,11 @@ input, button, select, option{
     aspect-ratio: 1/1;
   }
 
-  .fokus .lukk:active{
-    background-color: white !important;
-  }
   .ikonKnapper{
     height: 1rem;
     cursor: pointer;
   }
+  
   .frisorbilde{
     object-fit: cover;
     aspect-ratio: 1/1;
@@ -868,7 +857,7 @@ header * {
     flex-direction: column;
   }
   .fokus .lukk{
-    height:2.2rem;
+    height:1.5rem;
   }
   .rbc-toolbar{
     flex-direction: column !important;

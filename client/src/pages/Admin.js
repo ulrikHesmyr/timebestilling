@@ -5,6 +5,7 @@ import DetaljerFrisor from '../components/DetaljerFrisor';
 import Fri from '../components/Fri';
 import RedigerAapningstider from '../components/RedigerAapningstider';
 import SMS from '../components/SMS';
+import {Link} from 'react-router-dom';
 
 function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsle, lagreVarsel, varsleFeil}){
     const behandlingsEstimater = [15,30,45,60,75,90,105,120,135,150,165,180,195,210,225,240];
@@ -69,6 +70,130 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
     //    sKontakt_epost(env.kontakt_epost);
     //    sKontakt_tlf(env.kontakt_tlf);
     //}, [env])
+
+    //Sletter sosialt medie
+    async function slettSosialtMedie(medie){
+        try {
+            lagreVarsel();
+            const options = {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body: JSON.stringify({medie:medie}),
+                //credentials:'include'
+            
+            }
+            const request = await fetch("http://localhost:1226/env/slettSosialtMedie", options);
+            const response = await request.json();
+            if(response){
+                varsle();
+                sUpdateTrigger(!updateTrigger);
+            }
+        } catch (error) {
+            alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen.");
+            varsleFeil();
+        }
+    }
+
+    //Sletter kategori
+    async function slettKategori(kategori){
+        try {
+            lagreVarsel();
+            const options = {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body: JSON.stringify({kategori:kategori}),
+                //credentials:'include'
+            
+            }
+            const request = await fetch("http://localhost:1226/env/slettKategori", options);
+            const response = await request.json();
+            if(response){
+                varsle();
+                sUpdateTrigger(!updateTrigger);
+            }
+        } catch (error) {
+            alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen.");
+            varsleFeil();
+        }
+    }
+
+    //Oppretter ny kategori
+    async function opprettNyKategori(){
+        try {
+            lagreVarsel();
+            const options = {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body: JSON.stringify({kategori:nyKategori}),
+                //credentials:'include'
+            
+            }
+            const request = await fetch("http://localhost:1226/env/nyKategori", options);
+            const response = await request.json();
+            if(response){
+                varsle();
+                sUpdateTrigger(!updateTrigger);
+            }
+        } catch (error) {
+            alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen.");
+            varsleFeil();
+        }
+    }
+
+    //Sletter en behandling
+    async function slettBehandling(b){
+        try {
+            lagreVarsel();
+        const options = {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body: JSON.stringify({behandling:b}),
+            //credentials:'include'
+
+        }
+        const request = await fetch("http://localhost:1226/env/slettBehandling", options);
+        const response = await request.json();
+        if(response){
+            varsle();
+            sUpdateTrigger(!updateTrigger);
+        }
+        } catch (error) {
+            alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen.");
+            varsleFeil();
+        }
+    }
+
+    //Opprett ny behandling
+    async function opprettNyBehandling(b){
+        try {
+            lagreVarsel();
+        const options = {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body: JSON.stringify({behandling:b}),
+            //credentials:'include'
+        }
+        const request = await fetch("http://localhost:1226/env/opprettNyBehandling", options);
+        const response = await request.json();
+        if(response){
+            varsle();
+            sUpdateTrigger(!updateTrigger);
+        }
+        } catch (error) {
+            alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen.");
+            varsleFeil();
+        }
+    }
 
     async function oppdaterFrisorer(frisorArray){
         try {
@@ -251,6 +376,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 
                 {synligKomponent === 1 && bestilteTimer !== null?(<>
                 <h3>Timebestillinger</h3>
+                <p>Bestill time her: <Link to="/timebestilling">bestill time</Link> </p>
 
                 {visRedigerTimebestillinger?
                 <div className='fokus'>
@@ -314,14 +440,14 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 <h4>Kontakt-info:</h4>
                     <div className='redigeringsBoks'> 
                         <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
-                            <RedigerKontakt number={true} state={kontakt_tlf} setState={sKontakt_tlf} env={env} sendTilDatabase={sendTilDatabase} /><p>Kontakt telefon: </p> 
+                            <RedigerKontakt sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} varsle={varsle} lagreVarsel={lagreVarsel} varsleFeil={varsleFeil} number={true} state={kontakt_tlf} setState={sKontakt_tlf} /><p>Kontakt telefon: </p> 
                         </div>
                         <p className='redigeringsElement'>{kontakt_tlf}</p>
                     </div>
 
                     <div className='redigeringsBoks'> 
                         <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
-                            <RedigerKontakt number={false} state={kontakt_epost} setState={sKontakt_epost} env={env} sendTilDatabase={sendTilDatabase} /> <p>Kontakt e-post:</p>
+                            <RedigerKontakt sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} varsle={varsle} lagreVarsel={lagreVarsel} varsleFeil={varsleFeil} number={false} state={kontakt_epost} setState={sKontakt_epost} /> <p>Kontakt e-post:</p>
                         </div>
                         <p className='redigeringsElement'>{kontakt_epost}</p>
                     </div>
@@ -484,10 +610,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                                 <button onClick={()=>{
                                     if(nyKategori !== ""){
                                         sVisNyKategori(false);
-                                        
-                                        let nyKategoriListe = env.kategorier;
-                                        nyKategoriListe.push(nyKategori);
-                                        sendTilDatabase(nyKategoriListe, env.tjenester, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
+                                        opprettNyKategori();
                                         sNyKategori("");
                                     }
                                 }}>Opprett</button>
@@ -509,15 +632,13 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                                 <h4><br></br>Kategorier:</h4>
                                 <p>Kun kategorier som ikke er oppført for en behandling, kan slettes. Dette sjekkes dersom du prøver 
                                     å slette en kategori som fortsatt er i bruk, slik at det ikke oppstår feil.</p>
-                                {env.kategorier.map((kategori, index)=>(
+                                {env.kategorier.map((kategori)=>(
                                 <div key={kategori}>
                                     <p style={{display:"flex", alignItems:"center", fontSize:"larger"}}>{kategori} <img className='ikonKnapper' alt="Slett kategori" src="delete.png" onClick={()=>{
                                        if(!env.tjenester.find(t=>t.kategori === kategori)){
                                             if(window.confirm("Er du sikker på at du vil slette denne kategorien?")){
                                                 sVisSlettKategori(false);
-                                                let nyKategoriListe = env.kategorier;
-                                                nyKategoriListe.splice(index, 1);
-                                                sendTilDatabase(nyKategoriListe, env.tjenester, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
+                                                slettKategori(kategori);
                                             }
                                         } else {
                                             alert("Det eksisterer tjenester i denne kategorien. Du må først slette eller endre disse tjenestene for å slette kategorien.")
@@ -562,15 +683,14 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                             }}></div>
                             <h4><br></br>Sosiale medier:</h4>
                             <p>Her kan du slette sosiale medier som ikke lenger er i bruk, eller om de skal redigeres, så slettes de og opprettes på nytt.</p>
-                            {env.sosialeMedier.map((medie, index)=>(
+                            {env.sosialeMedier.map((medie)=>(
                             <div key={medie.platform}>
                                 <p style={{display:"flex", alignItems:"center", fontSize:"larger"}}>{medie.platform} <img className='ikonKnapper' alt="Slett sosialt medium" src="delete.png" onClick={()=>{
 
                                     if(window.confirm("Er du sikker på at du vil slette dette sosiale mediet?")){
                                         sVisSlettSosialtMedie(false);
-                                        let nyttMedieListe = env.sosialeMedier;
-                                        nyttMedieListe.splice(index, 1);
-                                        sendTilDatabase(env.kategorier, env.tjenester, env.klokkeslett, nyttMedieListe, env.kontakt_epost, env.kontakt_tlf);
+                                        let nyttMedieListe = env.sosialeMedier.filter(m=>m.platform !== medie.platform);
+                                        slettSosialtMedie(medie);
                                         sNyttMedie(muligeSosialeMedier.filter(m=>!nyttMedieListe.map(e=>e.platform).includes(m))[0]);
                                     }
                                 }}></img></p>
@@ -613,7 +733,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                             }}>Avbryt</button>
 
                             <button onClick={()=>{
-                                if((brukerNyttMedie === "" || linkNyttMedie === "") || muligeSosialeMedier.length == env.sosialeMedier.length){
+                                if((brukerNyttMedie === "" || linkNyttMedie === "") || muligeSosialeMedier.length === env.sosialeMedier.length){
                                     alert("Du må fylle ut alle feltene!");
                                 } else {
                                     let nyListe = env.sosialeMedier;
@@ -711,9 +831,8 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                                 }}>Avbryt</button>
                                 <button onClick={()=>{
                                     if(nyBehandlingNavn !== "" && nyBehandlingBeskrivelse !== "" && !isNaN(parseInt(nyBehandlingPris)) && nyBehandlingKategori !== "" && !isNaN(parseInt(nyBehandlingPris))){
-                                        let tempBehandlinger = env.tjenester;
-                                        tempBehandlinger.push({navn:nyBehandlingNavn, beskrivelse:nyBehandlingBeskrivelse, pris:parseInt(nyBehandlingPris), kategori:nyBehandlingKategori, tid:(parseInt(nyBehandlingTid))});
-                                        sendTilDatabase(env.kategorier, tempBehandlinger, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
+                                        
+                                        opprettNyBehandling({navn:nyBehandlingNavn, beskrivelse:nyBehandlingBeskrivelse, pris:parseInt(nyBehandlingPris), kategori:nyBehandlingKategori, tid:(parseInt(nyBehandlingTid))})
                                         sVisOpprettBehandling(false);
                                         sNyBehandlingNavn("");
                                         sNyBehandlingBeskrivelse("");
@@ -757,9 +876,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                             }}>Avbryt</button>
                             <button onClick={()=>{
                                 if(window.confirm("Ønsker du å slette " + behandlingForSletting + "?")){
-                                    let tempBehandlinger = env.tjenester;
-                                    tempBehandlinger = tempBehandlinger.filter((behandling)=>(behandling.navn !== behandlingForSletting));
-                                    sendTilDatabase(env.kategorier, tempBehandlinger, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
+                                    slettBehandling(behandlingForSletting);
                                     sVisSlettBehandling(false);
                                 }
                             }}>Slett behandling</button>  

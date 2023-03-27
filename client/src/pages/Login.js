@@ -13,7 +13,7 @@ function Login(){
     const [updateTrigger, sUpdateTrigger] = useState(false);
 
     //Bruker må velge hvilken brukertype de er
-    const [brukertypeValg, sBrukertypeValg] = useState("");
+    const [brukertypeValg, sBrukertypeValg] = useState("vakter");
     
     //Varsling
     const[varslingSynlig, sVarslingSynlig] = useState(false);
