@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {BrowserRouter, Route, Routes, Link, Redirect} from 'react-router-dom'
+import {BrowserRouter, Route, Routes, Link} from 'react-router-dom'
 import {Helmet} from 'react-helmet'
 import Timebestilling from './pages/Timebestilling'
 import Hjem from './pages/hjem'
@@ -9,7 +9,6 @@ import './App.css'
 import Kontakt from './pages/Kontakt'
 import PB from './pages/Personvern_Brukervilkaar'
 import OmOss from './pages/OmOss'
-import NotFound from './components/NotFound'
 
 
 const App = ()=> {
@@ -72,12 +71,12 @@ const App = ()=> {
 
             </nav >):(
             <Routes>
-              <Route exact path="/timebestilling" element={(registrertReservasjon?<DinReservasjon env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} registrertReservasjon={registrertReservasjon} />:(env !== null?<Timebestilling env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} />:"Laster..."))} />
-              <Route exact path="/" element={(env !== null?<Hjem env={env}/>:"Laster...")} />
+              <Route exact path="/timebestilling" element={(registrertReservasjon?<DinReservasjon env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} registrertReservasjon={registrertReservasjon} />:(env !== null?<Timebestilling env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} />:<div id="laster"></div>))} />
+              <Route exact path="/" element={(env !== null?<Hjem env={env}/>:<div id="laster"></div>)} />
               <Route exact path="/logginn" element={<Login/>} />
-              <Route exact path="/kontakt-oss" element={(env !== null? <Kontakt env={env}/>:"Laster...")}/>
-              <Route exact path="/personvaernserklaering-og-brukervilkaar" element={env !== null?<PB env={env}/>:"Laster..."}/>
-              <Route exact path="/om-oss" element={env !== null?<OmOss env={env}/>:"Laster..."}/>
+              <Route exact path="/kontakt-oss" element={(env !== null? <Kontakt env={env}/>:<div id="laster"></div>)}/>
+              <Route exact path="/personvaernserklaering-og-brukervilkaar" element={env !== null?<PB env={env}/>:<div id="laster"></div>}/>
+              <Route exact path="/om-oss" element={env !== null?<OmOss env={env}/>:<div id="laster"></div>}/>
               
             </Routes>))}
             

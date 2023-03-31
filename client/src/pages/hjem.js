@@ -45,8 +45,10 @@ function Hjem({env}){
         <div className="hjem">
             <header>
                 <div className="bedriftNavnHeader"> <div className="viEr" >Vi er </div>{env.bedrift}</div>
-                
-            <Link to="/timebestilling" className='navBarBestillTime'><div>Bestill time</div></Link>
+                <div>
+                    <p className="bestilleTimeplz">Ønsker du å bestille time hos oss?</p>
+                    <Link to="/timebestilling" className='navBarBestillTime'><div>Bestill time</div></Link>
+                </div>
             </header>
 
         </div>

@@ -52,9 +52,9 @@ const requestCounterMiddleware = (req, res, next) => {
 
 
 const hovedLimiter = rateLimiter({
-  windowMs: 60 * 60 * 1000,
+  windowMs: 30 * 60 * 1000,
   max: 800,
-  message: {m:"For mye trafikk. Vennligst prøv igjen om 1 time"},
+  message: {m:"For mye trafikk. Vennligst prøv igjen om 30 min"},
 });
 
 
@@ -87,7 +87,7 @@ schedule.scheduleJob('30 19 * * *', async ()=>{
                 transactionId: uuidv4(),
                 sender:'Target365',
                 recipient:`+47${timebestilling.telefonnummer}`,
-                content:`Hei ${timebestilling.kunde}! Vi håper du er fornøyd med ditt besøk hos oss.\n\n Dersom det er ønskelig, så legg gjerne igjen en tilbakemelding på besøket. Du kan gi oss en tilbakemelding ved å trykke på linken under. \n\n ${process.env.GOOGLE_REVIEW_LINK} \n\n Med vennlig hilsen \n ${BEDRIFT}`
+                content:`Hei ${timebestilling.kunde}! Vi håper du er fornøyd med ditt besøk hos oss.\n\nDersom det er ønskelig, så legg gjerne igjen en tilbakemelding på besøket. Du kan gi oss en tilbakemelding ved å trykke på linken under. \n\n${process.env.GOOGLE_REVIEW_LINK} \n\nMed vennlig hilsen \n${BEDRIFT}`
             }
             await serviceClient.postOutMessage(outMessage);
         } else {
@@ -99,6 +99,38 @@ schedule.scheduleJob('30 19 * * *', async ()=>{
     console.log(error);
   }
 })
+
+//Sender ut påminnelse 1 dag i forveien om at kunden har timebestilling
+schedule.scheduleJob('30 13 * * *', async ()=>{
+  try {
+    const imorgen = nesteDag();
+    const env = await Environment.findOne({bedrift: BEDRIFT});
+    const timebestillinger = await Bestiltetimer.find({dato: imorgen});
+    if(env && timebestillinger){
+      timebestillinger.forEach(async timebestilling => {
+        let SMS_ENABLED = true;
+        if(SMS_ENABLED){
+            let baseUrl = "https://shared.target365.io/";
+            let keyName = process.env.KEYNAME_SMS;
+            let privateKey = process.env.PRIVATE_KEY;
+            let serviceClient = new Client(privateKey, { baseUrl, keyName });
+            let outMessage = {
+                transactionId: uuidv4(),
+                sender:'Target365',
+                recipient:`+47${timebestilling.telefonnummer}`,
+                content:`Hei ${timebestilling.kunde}! \n\nMinner om bestilt time hos oss imorgen kl.: ${timebestilling.tidspunkt}, vi sees! \n\nDersom det har oppstått noe uforutsett, vennligst ta kontakt med oss via telefon på ${env.kontakt_tlf}! \n\nMed vennlig hilsen \n${BEDRIFT}`
+            }
+            await serviceClient.postOutMessage(outMessage);
+        } else {
+            console.log("SENDTE IKKE MELDING");
+        }
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+})
+
 //Sletter gamle timebestillinger
 schedule.scheduleJob('32 23 * * *', async ()=>{
   try {
@@ -193,6 +225,28 @@ function hentDatoIDag(){
   const month = ("0" + (date.getMonth() + 1)).slice(-2);
   const day = ("0" + date.getDate()).slice(-2);
   return `${year}-${month}-${day}`;
+}
+
+
+function nesteDag(d = new Date()){
+  let currentTime = d.getTime();
+
+  // add 1 day worth of milliseconds (1000ms * 60s * 60m * 24h)
+  let oneDay = 1000 * 60 * 60 * 24;
+  let newTime = currentTime + oneDay;
+
+  // create a new Date object using the new date in milliseconds
+  let newDate = new Date(newTime);
+  return hentDato(newDate);
+}
+
+function hentDato(d = new Date()){ //Hvilket format true=yyyy-mm-dd, false=["dd","mm","yyyy"]
+    
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return (`${year}-${month}-${day}`);
+  
 }
 //FOR prod
 

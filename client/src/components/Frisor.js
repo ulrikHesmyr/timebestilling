@@ -1,8 +1,11 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useRef} from "react";
+import { hentDato } from "../App";
 import Fortsett from "./Fortsett";
 
-function Frisor({tilgjengeligeFrisorer, frisorBildeArray, sFrisorBildeArray, displayKomponent, klokkeslettet, sKlokkeslett ,frisor, sFrisor}){
+function Frisor({tilgjengeligeFrisorer, sDato, frisorBildeArray, sFrisorBildeArray, displayKomponent, klokkeslettet, sKlokkeslett ,frisor, sFrisor}){
 
+    const valgtFrisorBoks = useRef(null);
+    const referanceElement = useRef(null);
     function genererBilder(){
         
         //Lager et array med base64 bilder
@@ -26,6 +29,8 @@ function Frisor({tilgjengeligeFrisorer, frisorBildeArray, sFrisorBildeArray, dis
             {tilgjengeligeFrisorer.length > 0?<>
             <div onClick={()=>{
                 sFrisor(false);
+                sDato(hentDato());
+                valgtFrisorBoks.current.scrollIntoView({behavior:"smooth", block:"center"});
                 if(klokkeslettet != null){
                     sKlokkeslett(null);
                 }
@@ -40,6 +45,8 @@ function Frisor({tilgjengeligeFrisorer, frisorBildeArray, sFrisorBildeArray, dis
                 {frisorBildeArray !== null? tilgjengeligeFrisorer.map((element, index)=>(<div className="frisor" 
                 key={element.navn} onClick={()=>{
                     sFrisor(element);
+                    sDato(hentDato());
+                    valgtFrisorBoks.current.scrollIntoView({behavior:"smooth", block:"center"});
                     if(klokkeslettet != null){
                         sKlokkeslett(null);
                     }
@@ -52,15 +59,17 @@ function Frisor({tilgjengeligeFrisorer, frisorBildeArray, sFrisorBildeArray, dis
             </div>
             <div className="valgtFrisorTekst">
             {frisor === false && "Du har valgt: Første ledige frisør"}
-            {frisor !== null && frisor !== false && <>Du har valgt:<div
+            <div ref={valgtFrisorBoks} ></div>
+            {frisor !== null && frisor !== false && <div >Du har valgt:<div
                 key={frisor.navn} style={{display:"flex", flexDirection:"column", alignItems:"center"}}>
                      {frisor.navn}
                     <img className="frisorbilde" src={frisorBildeArray[tilgjengeligeFrisorer.indexOf(frisor)]} alt={`Bilde av frisør ${frisor.navn}`} style={{height:"4rem"}}></img>
                     
-                </div></>}
+                </div></div>}
+                
             </div>
             </>:"Ingen tilgjengelige frisører for disse behandlingene"}
-            <Fortsett disabled={(frisor !== null?false:true)} previous={1} number={2} displayKomponent={displayKomponent} />
+            <Fortsett disabled={(frisor !== null?false:true)} previous={1} number={2} displayKomponent={displayKomponent} referanceElement={referanceElement} />
         </div>
     )
 }

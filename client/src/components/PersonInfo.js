@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useRef} from 'react'
 
 function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, frisor, hentMaaned, isMobile, synligKomponent, displayKomponent, navn, telefonnummer, nullstillData, setReservasjon ,setUpdate ,updateDataTrigger, data, sNavn, sTelefonnummer}){
     
@@ -6,13 +6,16 @@ function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, fri
     const [validertSMSpin, sValidertSMSpin] = useState(!env.aktivertSMSpin); 
     const [visPINBoks, sVisPINBoks] = useState(false);
     const [pin, sPIN] = useState('');
+    const [tryktOK, sTryktOK] = useState(false);
+
     const [visIkkeGodkjent, sVisIkkeGodkjent] = useState(false);
-    const aktivertSMSpin = env.aktivertSMSpin;
+    const sendReservasjonBoks = useRef(null);
+    const scrollPINBoks = useRef(null);
     
     let format = /[`!@#$%^&*()_+=[\]{};':"\\|,.<>/?~]/;
 
     async function validerPIN(p){
-        const request = await fetch('/timebestilling/tlfpin', {
+        const request = await fetch('http://localhost:1226/timebestilling/tlfpin', {
             method:"POST",
             headers:{
                 "Content-Type":"application/json",
@@ -27,13 +30,15 @@ function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, fri
         if(response.valid){
             sValidertSMSpin(true);
             sVisIkkeGodkjent(false);
+            sendReservasjonBoks.current.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
         } else {
             sValidertSMSpin(false);
             sVisIkkeGodkjent(true);
         }
     }
     async function validerSMSpin(){
-        const request = await fetch('/timebestilling/SMSpin', {
+        sTryktOK(true);
+        const request = await fetch('http://localhost:1226/timebestilling/SMSpin', {
             method:"POST",
             headers:{
                 "Content-Type":"application/json",
@@ -46,12 +51,15 @@ function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, fri
             alert(response.m);
         } else if(response.valid){
             sValidertSMSpin(true);
+            sendReservasjonBoks.current.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
         } else if(!response.valid) {
             sVisPINBoks(true);
+            scrollPINBoks.current.scrollIntoView({behavior: "smooth"});
+
         }
     }
     async function registrerData(){
-        const request = await fetch('/timebestilling/bestilltime', {
+        const request = await fetch('http://localhost:1226/timebestilling/bestilltime', {
             method:"POST",
             headers:{
                 "Content-Type":"application/json",
@@ -88,14 +96,25 @@ function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, fri
                     const newValue = e.target.value;
                     if(/^\d*$/.test(newValue) && (e.target.value.length === 0 || e.target.value[0] === "4" || e.target.value[0] === "9")){
                         sTelefonnummer(newValue);
+                        if(tryktOK){
+                            sTryktOK(false);
+                        }
+                        if(validertSMSpin){
+                            sValidertSMSpin(false);
+                        }
+                        if(visPINBoks){
+                            sVisPINBoks(false);
+                            sPIN('');
+                        }
                     } 
                 }}></input> 
-                {!visPINBoks && !validertSMSpin?<button onClick={(e)=>{
+                {!visPINBoks && !validertSMSpin && !tryktOK?<button onClick={(e)=>{
                     e.preventDefault();
                     if(telefonnummer.length === 8){
                         validerSMSpin();
                     } else {
                         alert("Telefonnummeret må være 8 siffer langt");
+
                     }
                 }}>OK</button>:""}</label>
 
@@ -114,13 +133,14 @@ function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, fri
                 }}></input>{visIkkeGodkjent && <p>Feil pin... Ikke mottatt pin? Sjekk om telefonnummeret er skrevet riktig</p>} </label>
                     </div>
                 ):""}
+                <div ref={scrollPINBoks}></div>
                 
 
             {isMobile?(<div className='infoboks'>
                 <div>
                 <h3>Din timebestilling</h3>
                 <div>Dato {(dato != null?(<p>{parseInt(dato.substring(8,10))}. {hentMaaned(parseInt(dato.substring(5,7)) -1)}</p>):"")}</div>
-                <div>Frisør {(frisor != null?(<p>{frisor.navn}</p>):"")}</div>
+                <div>Frisør {(frisor === false?(<p>Første ledige frisør</p>):(frisor != null?(<p>{frisor.navn}</p>):""))}</div>
                 <div>Time for {(produkt.length > 0?(<p>{produkt.map(produkt=>produkt.navn).join(", ")}</p>):"")}</div>
                 <div>Tid {(klokkeslettet != null && produkt.length > 0?(<p>{klokkeslettet}</p>):"")}</div>
                 <div>Estimert pris {totalPris} kr</div>
@@ -141,6 +161,7 @@ function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, fri
                         alert("Telefonnumeret eller navn er ikke gyldig");
                     }
                 }}>SEND INN RESERVASJON</button>))}
+                <div  ref={sendReservasjonBoks}></div>
             </form>
         </div>
     )

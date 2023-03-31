@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import Fortsett from './Fortsett';
 import { hentDato, nesteDag } from '../App';
 
-function Klokkeslett({env, sDato, sForsteFrisor, friElementer, tilgjengeligeFrisorer, displayKomponent, klokkeslettet, produkt, bestilteTimer, sKlokkeslett, dato, hentMaaned, frisor}){
+function Klokkeslett({datoForsteLedige, sDatoForsteLedige, env, sDato, sForsteFrisor, friElementer, tilgjengeligeFrisorer, displayKomponent, klokkeslettet, produkt, bestilteTimer, sKlokkeslett, dato, hentMaaned, frisor}){
     
     const [ledigeTimer, setLedigeTimer] = useState([]);
     const ukedag = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
@@ -26,7 +26,6 @@ function Klokkeslett({env, sDato, sForsteFrisor, friElementer, tilgjengeligeFris
         let total = env.tjenester.filter(element=>produkt.includes(element)).reduce((total, element)=> total + element.tid, 0);
         
         
-
         if(frisor === false){
             frisorerVelgImellom = tilgjengeligeFrisorer;
         } else {
@@ -133,8 +132,27 @@ function Klokkeslett({env, sDato, sForsteFrisor, friElementer, tilgjengeligeFris
                 return 0;
             }
         })
-        if(ledigeTotalt.length === 0 && frisor.oppsigelse == "Ikke oppsagt"){
-            sDato(nesteDag(new Date(dato)));
+        if(ledigeTotalt.length === 0){
+            if(frisor){
+                if(frisor.oppsigelse == "Ikke oppsagt" || new Date(frisor.oppsigelse) > new Date(dato)){
+                    sDato(nesteDag(new Date(dato)));
+                }
+            } else {
+                let gaaNesteDato = false;
+                
+                for(let f of frisorerVelgImellom){
+                    if(f.oppsigelse == "Ikke oppsagt" || new Date(f.oppsigelse) > new Date(dato)){
+                        gaaNesteDato = true;
+                    }
+                }
+                if(gaaNesteDato){
+                    sDato(nesteDag(new Date(dato)));
+                }
+            }
+        } else {
+            if(datoForsteLedige == null){
+                sDatoForsteLedige(dato);
+            }
         }
         setLedigeTimer(ledigeTotalt);
 
@@ -143,7 +161,18 @@ function Klokkeslett({env, sDato, sForsteFrisor, friElementer, tilgjengeligeFris
     return(
         <div className="animer-inn">
            <div className='k'>
-           <h3>Valgt dato: {ukedag[new Date(dato).getDay()]} {parseInt(dato.substring(8,10))}. {hentMaaned(parseInt(dato.substring(5,7)) -1)}</h3>
+            <div>
+            <h4>Velg tidspunkt for timen her:</h4>
+                <div>Valgt klokkeslett: <strong>{klokkeslettet !== null? klokkeslettet:"--:--"}</strong></div>
+
+                <div>
+                    {dato !== datoForsteLedige?<button disabled={dato === datoForsteLedige && klokkeslettet === ledigeTimer[0].tid} onClick={()=>{
+                        sDato(datoForsteLedige);
+                        sKlokkeslett(null);
+                    }}>Finn første ledige time</button>:""}
+                </div>
+            </div>
+           
             <div className='klokkeslettene'>
                 {(ledigeTimer.length > 0? ledigeTimer.map((tid)=>(<div style={{backgroundColor: klokkeslettet===tid.tid ?"var(--farge5)": "white"}} className='klokkeslett' key={tid.tid} onClick={()=>{
                     //Velg frisør, sett random ut ifra klokkeslettet, altså tid bruk random som velger random indeks fra tid.frisorer
@@ -155,6 +184,7 @@ function Klokkeslett({env, sDato, sForsteFrisor, friElementer, tilgjengeligeFris
            </div>
             
             <Fortsett displayKomponent={displayKomponent} previous={2} number={3} disabled={(klokkeslettet !== null? false:true)} />
+           
         </div>
     )
 }

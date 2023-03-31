@@ -8,11 +8,16 @@ function Kontakt({env}){
             
             <div className='kontaktsiden'>
                 <h3>Kontakt oss!</h3>
+                
                 <div style={{cursor:"pointer"}} onClick={()=>{
                     navigator.clipboard.writeText(env.kontakt_epost);
                     alert("Kopiert epost til utklippstavle!");
                 }}>{env.kontakt_epost}</div>
                 <div>{env.kontakt_tlf}</div>
+                <div style={{display:"flex", flexDirection:"column"}}>
+                    <h4>Ønsker du å bestille time?</h4>
+                    <p>Bestill time her: <Link to="/timebestilling">bestill time</Link> </p>
+                </div>
                 <div className='sosialemedier'>
                     {env.sosialeMedier.map((medie)=>(
                         <a key={medie.platform}  style={{display:"flex", flexDirection:"row", alignItems:"center"}}
@@ -23,10 +28,7 @@ function Kontakt({env}){
                     ))}
                     
                 </div>
-                <div style={{display:"flex", flexDirection:"column"}}>
-                    <h4>Ønsker du å bestille time?</h4>
-                    <p>Bestill time her: <Link to="/timebestilling">bestill time</Link> </p>
-                </div>
+                
             </div>
             <Footer/>
         </div>

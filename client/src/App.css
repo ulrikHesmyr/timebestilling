@@ -6,6 +6,7 @@
   --farge4:rgba(0, 18, 184, 0.758);
   --farge5:rgba(211,157,39,1);
   --farge6:rgba(253,187,45,1);
+  --farge7:rgba(85, 85, 85, 0.51);
   --color1:white;
   --color2:white;
   --color3:black;
@@ -18,7 +19,10 @@
   --font2:'Gloock', serif;
   --font3:'Sorts Mill Goudy', serif;
   --font4:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-
+  background: white;
+}
+html{
+  background: white;
 }
 
 /* width */
@@ -43,10 +47,63 @@
 
 body{
   box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
 }
 .startContainer{
   padding-bottom:300px;
 }
+
+#laster{
+  border:4px solid var(--color3);
+  border-radius:50%;
+  border-top:4px solid white;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  height:50px;
+  width:50px;
+  z-index: 1000;
+}
+
+#laster{
+  -webkit-transition-property: -webkit-transform;
+  transition-duration: 1.2s;
+  -webkit-transition-duration: 1.2s;
+  -webkit-animation-name: rotate;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+  
+  -moz-transition-property: -moz-transform;
+  -moz-animation-name: rotate; 
+  -moz-animation-duration: 1.2s; 
+  -moz-animation-iteration-count: infinite;
+  -moz-animation-timing-function: linear;
+  
+  transition-property: transform;
+  animation-name: rotate; 
+  animation-duration: 1.2s; 
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  display: flex;
+}
+
+@-webkit-keyframes rotate {
+    from {-webkit-transform: rotate(0deg);}
+    to {-webkit-transform: rotate(360deg);}
+}
+
+@-moz-keyframes rotate {
+    from {-moz-transform: rotate(0deg);}
+    to {-moz-transform: rotate(360deg);}
+}
+
+@keyframes rotate {
+    from {transform: rotate(0deg);}
+    to {transform: rotate(360deg);}
+}
+
+
+
 header{
   width: -webkit-fill-available;
   background-image: url("../public/startside.jpg");
@@ -104,6 +161,10 @@ a{
   text-decoration: none;
   text-decoration-color: var(--color1);
   color:var(--farge4);
+  text-shadow: 0px 0px 1px white;
+  font-weight: 400;
+  text-transform: capitalize;
+  font-family: var(--font1);
 }
 
 h4{
@@ -159,6 +220,16 @@ button:disabled{
 }
 .tjenestene{
   transition: 0.5s ease all;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.bestilleTimeplz{
+  color:var(--color1);
+  font-size: x-large;
+  font-family: var(--font3);
+  text-shadow: 0px 0px 3px black;
+  margin: 0;
 }
 .rotert{
   transform: rotate(-90deg);
@@ -185,6 +256,7 @@ input, button, select, option{
   margin-top: 6rem;
   background: url("../public/bakgrunnsgifh.gif");
   background-repeat: no-repeat;
+  position: relative;
 }
 .timebestilling * {
   margin:0.15rem;
@@ -315,6 +387,9 @@ input, button, select, option{
     height: 3rem;
   }
 
+  .velgDatoBoks{
+    backdrop-filter: blur(5px);
+  }
   .k{
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
@@ -399,21 +474,24 @@ input, button, select, option{
     
   }
   .overskrift{
-    display: flex;
-    border:thin solid black;
-    border-radius: 0px 0px 1rem 0px;
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+    border: thin solid black;
+    border-radius: 1rem;
     cursor: pointer;
-    padding: 0.2rem;
+    padding: 0.4rem;
     align-items: center;
     width: 95%;
     z-index: 2;
+    color: var(--color1);
   }
   .overskrift p{
     display: flex;
     border-radius: 50%;
     height:2rem;
     aspect-ratio: 1/1;
-    border:1px solid black;
+    border-top:1px solid var(--color1);
+    border-right:1px solid var(--color1);
     align-items: center;
     justify-content: center;
     background-color: black;
@@ -576,6 +654,7 @@ input, button, select, option{
   .container{
     display: flex;
     flex-direction: column;
+    padding-bottom: 12rem;
   }
   .redigeringsElement{
     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
@@ -644,12 +723,15 @@ input, button, select, option{
   }
   .navBarBestillTime div{
     padding: 0.9rem;
-    width: inherit;
+    display: flex;
+    width: 100%;
     height: inherit;
+    background: var(--background2);
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
-    color:white;
-    border:thin solid black;
+    color: white;
+    border: thin solid black;
+    justify-content: center;
   }
   .varsel{
     transition: 0.2s ease;
@@ -928,11 +1010,11 @@ header * {
     flex-direction: column;
     align-items: center;
     
+    
   }
   
 .timebestilling .container{
   width: 95%;
-  margin-bottom: 20rem; 
 }
 .infoboks{
   display: flex;

@@ -102,6 +102,47 @@ router.post('/slettBehandling', authorization, async(req,res)=>{
     }
 })
 
+router.post("/oppdaterAapningstider", authorization, async(req,res)=>{
+    const {dag, aapningstid, stengetid, stengt} = req.body;
+    if(req.admin){
+        try {
+            const env = await Environment.findOne({bedrift:BEDRIFT});
+            let nyeAapningstider = env.klokkeslett.map((a)=>{
+                if(a.dag === dag.dag){
+                  a.open = aapningstid; 
+                  a.closed = stengetid;
+                  a.stengt = stengt;
+                } 
+                return a;
+              })
+            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {klokkeslett:nyeAapningstider});
+            if(oppdatertEnv){
+                return res.send({message:"Åpningstider oppdatert", valid:true});
+            } else {
+                return res.status(404);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+})
+
+router.post("/leggTilSosialtMedie", authorization, async(req,res)=>{
+    const {medie} = req.body;
+    if(req.admin){
+        try {
+            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {$push:{sosialeMedier:medie}});
+            if(oppdatertEnv){
+                return res.send({message:"Sosialt medie opprettet", valid:true});
+            } else {
+                return res.status(404);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+})
+
 router.post('/slettSosialtMedie', authorization, async(req,res)=>{
     const {medie} = req.body;
     if(req.admin){

@@ -8,6 +8,8 @@
 # testing
 /coverage
 
+# production on server instead of local
+/build
 
 # misc
 .DS_Store

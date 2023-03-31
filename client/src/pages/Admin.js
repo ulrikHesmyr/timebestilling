@@ -71,6 +71,31 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
     //    sKontakt_tlf(env.kontakt_tlf);
     //}, [env])
 
+    //Legger til nytt sosialt medie
+    async function leggTilSosialtMedie(medie){
+        try {
+            lagreVarsel();
+            const options = {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body: JSON.stringify({medie:medie}),
+                //credentials:'include'
+
+            }
+            const request = await fetch("http://localhost:1226/env/leggTilSosialtMedie", options);
+            const response = await request.json();
+            if(response){
+                varsle();
+                sUpdateTrigger(!updateTrigger);
+            }
+        } catch (error) {
+            alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen.");
+            varsleFeil();
+        }
+    }
+
     //Sletter sosialt medie
     async function slettSosialtMedie(medie){
         try {
@@ -738,7 +763,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                                 } else {
                                     let nyListe = env.sosialeMedier;
                                     nyListe.push({platform:nyttMedie, bruker:brukerNyttMedie, link:linkNyttMedie});
-                                    sendTilDatabase(env.kategorier, env.tjenester, env.klokkeslett, nyListe, env.kontakt_epost, env.kontakt_tlf);
+                                    leggTilSosialtMedie({platform:nyttMedie, bruker:brukerNyttMedie, link:linkNyttMedie})
                                     sVisLeggTilSosialtMedie(false);
                                     sNyttMedie(muligeSosialeMedier.filter(m=>!nyListe.map(e=>e.platform).includes(m))[0]);
                                     sBrukerNyttMedie("");
@@ -763,7 +788,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 <div>
                 <h4>Åpningstider:</h4>
                     {visRedigerAapningstider?<>
-                        <RedigerAapningstider env={env} sendTilDatabase={sendTilDatabase} dag={dagForRedigering} sVisRedigerAapningstider={sVisRedigerAapningstider}/>
+                        <RedigerAapningstider env={env} varsleFeil={varsleFeil} lagreVarsel={lagreVarsel} varsle={varsle} updateTrigger={updateTrigger} sUpdateTrigger={sUpdateTrigger} dag={dagForRedigering} sVisRedigerAapningstider={sVisRedigerAapningstider}/>
                     </> :env.klokkeslett.map((klokkeslett, index)=>(
                         <div key={index} style={{display:"flex", flexDirection:"row", alignItems:"center", margin:"0.3rem"}}>
                          {klokkeslett.dag}: {klokkeslett.stengt?"Stengt" :klokkeslett.open} {klokkeslett.stengt?"": "-"} {klokkeslett.stengt?"": klokkeslett.closed}
@@ -929,7 +954,7 @@ function DetaljerBehandling({behandling, env, sendTilDatabase, behandlingsEstima
                 sBehandlingBeskrivelse(e.target.value);
             }}></input></label>
             
-            <label>Kategori: {behandling.kategori} <button onClick={()=>{
+            <label>Kategori: {behandlingKategori} <button onClick={()=>{
                 sVisRedigerKategori(!visRedigerKategori);
             }} >{visRedigerKategori?"Ferdig":"Rediger"}</button></label>
 
@@ -945,7 +970,7 @@ function DetaljerBehandling({behandling, env, sendTilDatabase, behandlingsEstima
 
             </>:""}
 
-            <label>Estimert tid: {behandling.tid} <button onClick={()=>{
+            <label>Estimert tid: {behandlingTid} <button onClick={()=>{
                 sVisRedigerTid(!visRedigerTid);
             }}>{visRedigerTid?"Ferdig":"Rediger"}</button> </label>
             

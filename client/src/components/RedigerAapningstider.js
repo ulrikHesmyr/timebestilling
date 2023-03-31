@@ -1,11 +1,34 @@
 import React, {useState} from 'react'
 import {minutterFraKlokkeslett} from './Klokkeslett'
 
-function RedigerAapningstider({env, sendTilDatabase, dag, sVisRedigerAapningstider}){
+function RedigerAapningstider({env, varsleFeil, lagreVarsel, varsle, updateTrigger, sUpdateTrigger, dag, sVisRedigerAapningstider}){
 
   const [aapningstid, sAapningstid] = useState(dag.open);
   const [stengetid, sStengetid] = useState(dag.closed);
   const [stengt, sStengt] = useState(dag.stengt);
+
+  //Oppdaterer åpningstidene i databasen
+  async function oppdaterAapningsTider(d){
+    lagreVarsel();
+    try {
+      const request = await fetch("http://localhost:1226/env/oppdaterAapningstider", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+        },
+        body: JSON.stringify({dag:d,  aapningstid:aapningstid, stengetid:stengetid, stengt:stengt})
+      });
+      const response = await request.json();
+      if(response){
+        varsle();
+        sUpdateTrigger(!updateTrigger);
+      }
+    } catch (error) {
+      varsleFeil();
+      alert("Noe skjedde gærent. Sjekk internettforbindelsen og prøv igjen.");
+    }
+
+  }
   return (
     <div className='fokus'>
     <h3>Endre åpningstider for {dag.dag}</h3>
@@ -29,16 +52,7 @@ function RedigerAapningstider({env, sendTilDatabase, dag, sVisRedigerAapningstid
         e.preventDefault();
         if(stengetid.length === 5 && aapningstid.length === 5  && parseInt(aapningstid.substring(3,5))%15 === 0 && parseInt(stengetid.substring(3,5))%15 === 0 && !isNaN(parseInt(aapningstid.substring(0,2)))&& !isNaN(parseInt(stengetid.substring(0,2))) && aapningstid.substring(2,3) === ":" && stengetid.substring(2,3) === ":" && minutterFraKlokkeslett(aapningstid) < minutterFraKlokkeslett(stengetid)){
           sVisRedigerAapningstider(false);
-          let nyeAapningstider = env.klokkeslett.map((a)=>{
-            if(a.dag === dag.dag){
-              a.open = aapningstid; 
-              a.closed = stengetid;
-              a.stengt = stengt;
-            } 
-            return a;
-          })
-          sendTilDatabase(env.kategorier, env.tjenester, nyeAapningstider, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
-        
+          oppdaterAapningsTider(dag);
         } else {
           alert("Ikke riktig format");
         }
