@@ -1,6 +1,7 @@
 require("dotenv").config();
 require("./configuration/database").connect();
 const express = require('express');
+const sitemap = require('sitemap');
 const app = express();
 const path = require('path');
 const cors = require("cors");
@@ -50,6 +51,24 @@ const requestCounterMiddleware = (req, res, next) => {
 
 }
 
+const urls = [
+  { url: '/', changefreq: 'monthly', priority: 1.0 },
+  { url: '/timebestilling', changefreq: 'monthly', priority: 0.8 },
+  { url: '/kontakt-oss', changefreq: 'yearly', priority: 0.8 },
+  { url: '/om-oss', changefreq: 'yearly', priority: 0.8 },
+];
+
+// Create the sitemap
+const sitemapInstance = sitemap.createSitemap({
+  hostname: 'https://www.ulrikfades.no',
+  urls: urls
+});
+
+// Serve the sitemap
+router.get('/sitemap.xml', (req, res) => {
+  res.header('Content-Type', 'application/xml');
+  res.send(sitemapInstance.toString());
+});
 
 const hovedLimiter = rateLimiter({
   windowMs: 30 * 60 * 1000,
