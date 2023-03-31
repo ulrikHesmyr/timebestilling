@@ -186,6 +186,9 @@ router.post("/SMSpin", async (req,res)=>{
                 if(tlfValid){
                     if(parseInt(tlfValid.tlf) === parseInt(tlf)){
                         return res.send({valid:true});
+                    } else {
+                        res.clearCookie("tlfvalid");
+                        return res.send({valid:false});
                     }
                 }
             } else {
