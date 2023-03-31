@@ -12,7 +12,7 @@ function RedigerKontakt({number, setState, state, sUpdateTrigger, updateTrigger,
     async function oppdaterEpost(){
         lagreVarsel();
         try {
-            const response = await fetch('http://localhost:1226/env/oppdaterEpost', {
+            const response = await fetch('/env/oppdaterEpost', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -32,7 +32,7 @@ function RedigerKontakt({number, setState, state, sUpdateTrigger, updateTrigger,
     async function oppdaterTelefonnummer(){
         lagreVarsel();
         try {
-            const response = await fetch('http://localhost:1226/env/oppdaterTelefonnummer', {
+            const response = await fetch('/env/oppdaterTelefonnummer', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

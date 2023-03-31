@@ -70,6 +70,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
     //    sKontakt_epost(env.kontakt_epost);
     //    sKontakt_tlf(env.kontakt_tlf);
     //}, [env])
+    //Oppdaterer en vilkårlig tjeneste i databasen
 
     //Legger til nytt sosialt medie
     async function leggTilSosialtMedie(medie){
@@ -81,10 +82,10 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({medie:medie}),
-                //credentials:'include'
+                credentials:'include'
 
             }
-            const request = await fetch("http://localhost:1226/env/leggTilSosialtMedie", options);
+            const request = await fetch("/env/leggTilSosialtMedie", options);
             const response = await request.json();
             if(response){
                 varsle();
@@ -106,10 +107,10 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({medie:medie}),
-                //credentials:'include'
+                credentials:'include'
             
             }
-            const request = await fetch("http://localhost:1226/env/slettSosialtMedie", options);
+            const request = await fetch("/env/slettSosialtMedie", options);
             const response = await request.json();
             if(response){
                 varsle();
@@ -131,10 +132,10 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({kategori:kategori}),
-                //credentials:'include'
+                credentials:'include'
             
             }
-            const request = await fetch("http://localhost:1226/env/slettKategori", options);
+            const request = await fetch("/env/slettKategori", options);
             const response = await request.json();
             if(response){
                 varsle();
@@ -156,10 +157,10 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({kategori:nyKategori}),
-                //credentials:'include'
+                credentials:'include'
             
             }
-            const request = await fetch("http://localhost:1226/env/nyKategori", options);
+            const request = await fetch("/env/nyKategori", options);
             const response = await request.json();
             if(response){
                 varsle();
@@ -181,10 +182,10 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({behandling:b}),
-            //credentials:'include'
+            credentials:'include'
 
         }
-        const request = await fetch("http://localhost:1226/env/slettBehandling", options);
+        const request = await fetch("/env/slettBehandling", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -206,9 +207,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({behandling:b}),
-            //credentials:'include'
+            credentials:'include'
         }
-        const request = await fetch("http://localhost:1226/env/opprettNyBehandling", options);
+        const request = await fetch("/env/opprettNyBehandling", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -229,9 +230,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({frisorer:frisorArray}),
-            //credentials:'include'
+            credentials:'include'
         }
-        const request = await fetch("http://localhost:1226/env/oppdaterFrisorer", options);
+        const request = await fetch("/env/oppdaterFrisorer", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -252,9 +253,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({omOssArtikkel:omOssTekst}),
-            //credentials:'include'
+            credentials:'include'
         }
-        const request = await fetch("http://localhost:1226/env/oppdaterOmOss", options);
+        const request = await fetch("/env/oppdaterOmOss", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -290,9 +291,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({adresse:adresse}),
-            //credentials:'include'
+            credentials:'include'
         }
-        const request = await fetch("http://localhost:1226/env/oppdaterAdresse", options);
+        const request = await fetch("/env/oppdaterAdresse", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -314,42 +315,11 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify(slettetTime),
-            //credentials:'include'
+            credentials:'include'
         }
-        const request = await fetch("http://localhost:1226/timebestilling/oppdaterTimebestillinger", options);
+        const request = await fetch("/timebestilling/oppdaterTimebestillinger", options);
         const response = await request.json();
         if(response.valid){
-            varsle();
-            sUpdateTrigger(!updateTrigger);
-        }
-        } catch (error) {
-            alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen.");
-            varsleFeil();   
-        }
-    }
-
-    async function sendTilDatabase(kat, tje, klok, some, epost, tlf){
-        try {
-            lagreVarsel();
-        const nyttEnv = {
-            kategorier:kat,
-            tjenester:tje,
-            klokkeslett:klok,
-            sosialeMedier:some,
-            kontakt_epost:epost,
-            kontakt_tlf:tlf
-        }
-        const options = {
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body: JSON.stringify(nyttEnv),
-            //credentials:'include'
-        }
-        const request = await fetch("http://localhost:1226/env/oppdaterEnv", options);
-        const response = await request.json();
-        if(response){
             varsle();
             sUpdateTrigger(!updateTrigger);
         }
@@ -914,7 +884,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     <div style={{display:"flex", flexDirection:"row", flexWrap:"wrap", gap:"1rem"}}>
                     {env.tjenester.slice(0).reverse().map((behandling)=>(
                         <div key={behandling.navn} style={{display:"flex", flexDirection:"row", alignItems:"center", margin:"0.3rem"}}>
-                            <DetaljerBehandling behandlingsEstimater={behandlingsEstimater} behandling={behandling} env={env} sendTilDatabase={sendTilDatabase} />
+                            <DetaljerBehandling lagreVarsel={lagreVarsel} varsle={varsle} varsleFeil={varsleFeil} sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} behandlingsEstimater={behandlingsEstimater} behandling={behandling} env={env} />
                         </div>
                     ))}
                     </div>
@@ -927,7 +897,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
     )
 }
 /************************************************************************************************************************ */
-function DetaljerBehandling({behandling, env, sendTilDatabase, behandlingsEstimater}){
+function DetaljerBehandling({behandling, env, lagreVarsel, varsle, varsleFeil, sUpdateTrigger, updateTrigger, behandlingsEstimater}){
 
     const [visRedigerBehandling, sVisRedigerBehandling] = useState(false);
     const [behandlingBeskrivelse, sBehandlingBeskrivelse] = useState(behandling.beskrivelse);
@@ -939,6 +909,31 @@ function DetaljerBehandling({behandling, env, sendTilDatabase, behandlingsEstima
     const [visRedigerTid, sVisRedigerTid] = useState(false);
     const [visRedigerKategori, sVisRedigerKategori] = useState(false);
 
+    
+    async function oppdaterBehandling(t){
+        try {
+            lagreVarsel();
+            const options = {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body: JSON.stringify({tjeneste: t}),
+                credentials:'include'
+
+            }
+            const request = await fetch("/env/oppdaterBehandling", options);
+            const response = await request.json();
+            if(response){
+                varsle();
+                sUpdateTrigger(!updateTrigger);
+            }
+        } catch (error) {
+            alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen.");
+            varsleFeil();
+        }
+    }
+    
 
     return(<>
     
@@ -999,14 +994,7 @@ function DetaljerBehandling({behandling, env, sendTilDatabase, behandlingsEstima
         }}>Avbryt</button>
 
         <button onClick={()=>{
-            let tempBehandlinger = env.tjenester;
-            let gjeldendeBehandling = tempBehandlinger.find((b)=>behandling.navn === b.navn);
-            //if(alle krav er oppfylt for å lagre behandling)
-            gjeldendeBehandling.beskrivelse = behandlingBeskrivelse;
-            gjeldendeBehandling.pris = parseInt(behandlingPris);
-            gjeldendeBehandling.tid = parseInt(behandlingTid);
-            gjeldendeBehandling.kategori = behandlingKategori;
-            sendTilDatabase(env.kategorier, tempBehandlinger, env.klokkeslett, env.sosialeMedier, env.kontakt_epost, env.kontakt_tlf);
+            oppdaterBehandling({navn: behandling.navn, pris:parseInt(behandlingPris), tid:parseInt(behandlingTid), beskrivelse:behandlingBeskrivelse, kategori:behandlingKategori});
             sVisRedigerBehandling(false);
             sVisRedigerKategori(false);
             sVisRedigerTid(false);

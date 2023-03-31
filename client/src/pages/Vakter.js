@@ -41,7 +41,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
     async function hentFri(){
       try {
       
-        const request = await fetch("http://localhost:1226/env/fri");
+        const request = await fetch("/env/fri");
         const response = await request.json();
         if(response){
           sFriElementer(response);
@@ -114,9 +114,9 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
           "Content-Type":"application/json"
         },
         body: JSON.stringify({passord: gjentaNyttPassord}),
-        //credentials:'include'
+        credentials:'include'
       };
-      const request = await fetch("http://localhost:1226/login/oppdaterPassord", options);
+      const request = await fetch("/login/oppdaterPassord", options);
       const response = await request.json();
       if(response){
         varsle();
@@ -139,10 +139,10 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
             "Content-Type":"application/json"
           },
           body: JSON.stringify({telefonnummer: parseInt(nyttTlf)}),
-          //credentials:'include'
+          credentials:'include'
         };
 
-        const request = await fetch("http://localhost:1226/login/oppdaterTelefonnummer", options);
+        const request = await fetch("/login/oppdaterTelefonnummer", options);
         const response = await request.json();
         if(response){
           varsle();

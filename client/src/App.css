@@ -641,9 +641,6 @@ input, button, select, option{
     flex-direction: column;
     margin: 0.2rem;
   }
-  .adminpanel *{
-    color:black;
-  }
 
   .redigeringsBoks{
     display: flex;

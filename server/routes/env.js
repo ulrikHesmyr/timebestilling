@@ -127,6 +127,28 @@ router.post("/oppdaterAapningstider", authorization, async(req,res)=>{
     }
 })
 
+router.post("/oppdaterBehandling", authorization, async(req,res)=>{
+    const {tjeneste} = req.body;
+    if(req.admin){
+        try {
+            const env = await Environment.findOne({bedrift:BEDRIFT});
+            let nyeBehandlinger = env.tjenester.map((a)=>{
+                if(a.navn === tjeneste.navn){
+                  a = tjeneste;
+                } 
+                return a;
+            })
+            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {tjenester:nyeBehandlinger});
+            if(oppdatertEnv){
+                return res.send({message:"Behandling oppdatert", valid:true});
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+})
+
 router.post("/leggTilSosialtMedie", authorization, async(req,res)=>{
     const {medie} = req.body;
     if(req.admin){
