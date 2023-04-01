@@ -206,6 +206,11 @@ app.use('/env', require('./routes/env'));
 //  res.status(404).send('<h1>Denne siden eksisterer ikke. Skrevet riktig?</h1>');
 //});
 
+app.get('/sitemap.xml', (req, res) => {
+  res.set('Content-Type', 'application/xml');
+  res.sendFile('./sitemap.xml', { root: __dirname });
+});
+
 app.get('*', (req, res)=>{
   res.setHeader(
     'Content-Security-Policy',
@@ -215,10 +220,6 @@ app.get('*', (req, res)=>{
   
 })
 
-app.get('/sitemap.xml', (req, res) => {
-  res.set('Content-Type', 'application/xml');
-  res.sendFile('./sitemap.xml', { root: __dirname });
-});
 
 app.listen(process.env.SERVERPORT, () => {
   console.log(`Server listening on port ${process.env.SERVERPORT}`);
