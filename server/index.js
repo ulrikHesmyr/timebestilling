@@ -252,3 +252,4 @@ function hentDato(d = new Date()){ //Hvilket format true=yyyy-mm-dd, false=["dd"
 
 //const createEnvironment = require("./configuration/createEnvironment");
 //createEnvironment.opprettEnvironment();
+
