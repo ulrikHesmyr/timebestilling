@@ -215,6 +215,10 @@ app.get('*', (req, res)=>{
   
 })
 
+app.get('/sitemap.xml', (req, res) => {
+  res.sendFile(path.join(__dirname, './sitemap.xml'));
+});
+
 app.listen(process.env.SERVERPORT, () => {
   console.log(`Server listening on port ${process.env.SERVERPORT}`);
 });
