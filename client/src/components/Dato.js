@@ -1,25 +1,44 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import { hentDato } from '../App'
 
-function Dato({datoForsteLedige, dato, sDato, sKlokkeslett, klokkeslettet, hentMaaned}){
+function Dato({datoForsteLedige, sMidlertidigDato, midlertidigDato, dato, sDato, sKlokkeslett, klokkeslettet, hentMaaned}){
 
     const ukedag = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
+    const [okKnappSynlig, sOkKnappSynlig] = useState(false);
     const velgKlokkeslettBoks = useRef(null);
+    
     return(
         <div className='animer-inn velgDatoBoks'>
-            <label>
+            <section style={{padding:"0.3rem"}}>
                 <h4>Velg dato her:</h4> 
-            <input value={dato} type="date" min={hentDato()} onChange={(e)=>{
+            <input value={midlertidigDato} type="date" min={hentDato()} onChange={(e)=>{
+                
                 if(klokkeslettet != null){
                     sKlokkeslett(null);
                 }
-                sDato(e.target.value);
+                sMidlertidigDato(e.target.value);
+                sOkKnappSynlig(true);
+            }} 
+            ></input>
+            {okKnappSynlig?<button aria-label='Bekreft dato' onClick={(e)=>{
+                e.preventDefault();
+                sOkKnappSynlig(false);
+                
+                if(klokkeslettet != null){
+                    sKlokkeslett(null);
+                }
+                if(new Date(midlertidigDato) > new Date()){
+                    sDato(midlertidigDato);
+                } else {
+                    sDato(hentDato());
+                }
                 velgKlokkeslettBoks.current.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
-            }}></input>
+                    
+            }}>OK</button>:""}
                 {datoForsteLedige !== null?(<div>Første ledige time: {ukedag[new Date(datoForsteLedige).getDay()]} {parseInt(datoForsteLedige.substring(8,10))}. {hentMaaned(parseInt(datoForsteLedige.substring(5,7)) -1)}</div>) :""}
                 <div ref={velgKlokkeslettBoks}></div>
                 <div>Valgt dato: <strong>{ukedag[new Date(dato).getDay()]} {parseInt(dato.substring(8,10))}. {hentMaaned(parseInt(dato.substring(5,7)) -1)}</strong></div>
-            </label>
+            </section>
         </div>
     )
 }

@@ -47,7 +47,7 @@ function Hjem({env}){
                 <div className="bedriftNavnHeader"> <div className="viEr" >Vi er </div>{env.bedrift}</div>
                 <div>
                     <p className="bestilleTimeplz">Ønsker du å bestille time hos oss?</p>
-                    <Link to="/timebestilling" className='navBarBestillTime'><div>Bestill time</div></Link>
+                    <Link to="/timebestilling" className='navBarBestillTime' tabIndex={0}><div>Bestill time</div></Link>
                 </div>
             </header>
 
@@ -121,8 +121,8 @@ function Hjem({env}){
                 <h2 >Våre behandlinger</h2>
                 <div className="behandlingerHjemsiden">
                 {env.kategorier.map((kategori, index)=>(
-                    <div key={kategori} style={{cursor:"pointer", transition:"0.2s ease all", padding:"0.3rem", borderRadius:(kategoriSynlig[index]?"0 0 1rem 1rem":"0 0 0 0")}}>
-                        <h3 role="button" aria-label={`Vis behandlingene for kategorien ${kategori}`} aria-expanded={kategoriSynlig[index]} aria-controls={`${kategori}tjeneste`} id={kategori} style={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"space-between", borderBottom:"thin solid rgba(0,0,0,0.3)"}} onClick={()=>{
+                    <div  key={kategori} style={{cursor:"pointer", transition:"0.2s ease all", padding:"0.3rem", borderRadius:(kategoriSynlig[index]?"0 0 1rem 1rem":"0 0 0 0")}}>
+                        <h3 tabIndex={0} role="button" aria-label={`Vis behandlingene for kategorien ${kategori}`} aria-expanded={kategoriSynlig[index]} aria-controls={`${kategori}tjeneste`} id={kategori} style={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"space-between", borderBottom:"thin solid rgba(0,0,0,0.3)"}} onClick={()=>{
                             let temp = kategoriSynlig;
                             let n = env.kategorier.indexOf(kategori);
                             if(kategoriSynlig[n]){
@@ -132,20 +132,34 @@ function Hjem({env}){
                             }
                             setKategoriSynlig(temp);
                             sK(!K);
-                        }}>{kategori} <img className={(kategoriSynlig[env.kategorier.indexOf(kategori)] === true?"rotert":"")} alt={(kategoriSynlig[env.kategorier.indexOf(kategori)] === true?`Innhold for kategorien ${kategori} vises`:`innhold for kategorien ${kategori} vises ikke`)} style={{height:"1.9rem", transition:"0.5s ease all"}} src="lukket.png"></img> </h3>
-                        <div aria-hidden={!(kategoriSynlig[index])} role="region" id={`${kategori}tjeneste`} aria-labelledby={kategori} className="tjenestene" style={kategoriSynlig[env.kategorier.indexOf(kategori)] === true?{ height:"auto", overflow:"visible", opacity:"1", transition:"0.3s ease 0.05s all"}:{height:"2rem", overflow:"hidden", opacity:"0", transition:"0.3s ease 0.05s all", transform:"translateY(-20px)"}}>
+                        }}
+                        onKeyDown={(e)=>{
+                            if(e.code === "Enter"){
+                                
+                                let temp = kategoriSynlig;
+                                let n = env.kategorier.indexOf(kategori);
+                                if(kategoriSynlig[n]){
+                                    temp[n] = false;
+                                } else {
+                                    temp[n] = true;
+                                }
+                                setKategoriSynlig(temp);
+                                sK(!K);
+                            }
+                        }}>{kategori} <img className={(kategoriSynlig[env.kategorier.indexOf(kategori)] === true?"rotert":"")} aria-label={(kategoriSynlig[env.kategorier.indexOf(kategori)] === true?`Innhold for kategorien ${kategori} vises`:`innhold for kategorien ${kategori} vises ikke`)} style={{height:"1.9rem", transition:"0.5s ease all"}} src="lukket.png"></img> </h3>
+                        <ul aria-hidden={!(kategoriSynlig[index])} role="region" id={`${kategori}tjeneste`} aria-labelledby={kategori} className="tjenestene" style={kategoriSynlig[env.kategorier.indexOf(kategori)] === true?{ height:"auto", overflow:"visible", opacity:"1", transition:"0.3s ease 0.05s all"}:{height:"2rem", overflow:"hidden", opacity:"0", transition:"0.3s ease 0.05s all", transform:"translateY(-20px)"}}>
                             {env.tjenester.filter(element=>element.kategori === kategori).map((tjeneste)=>(
-                                <div key={tjeneste.navn}>
+                                <li key={tjeneste.navn}>
                                     <div>
-                                        <li style={{fontWeight:"500"}}>{tjeneste.navn}</li>
+                                        <p style={{fontWeight:"500"}}>{tjeneste.navn}</p>
                                         <p style={{fontWeight:"200"}}>{tjeneste.beskrivelse}</p>
                                         <p>Pris: {tjeneste.pris} kr</p>
                                         <p>Tid: {tjeneste.tid} minutter</p>
                                     </div>
-                                </div>
+                                </li>
                                 )
                             )}
-                        </div>
+                        </ul>
                         
                     </div>
                     

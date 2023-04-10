@@ -2,7 +2,7 @@ import React, {useEffect, useRef} from "react";
 import { hentDato } from "../App";
 import Fortsett from "./Fortsett";
 
-function Frisor({tilgjengeligeFrisorer, sDato, frisorBildeArray, sFrisorBildeArray, displayKomponent, klokkeslettet, sKlokkeslett ,frisor, sFrisor}){
+function Frisor({tilgjengeligeFrisorer, sDato, sMidlertidigDato, frisorBildeArray, sFrisorBildeArray, displayKomponent, klokkeslettet, sKlokkeslett ,frisor, sFrisor}){
 
     const valgtFrisorBoks = useRef(null);
     const referanceElement = useRef(null);
@@ -27,31 +27,60 @@ function Frisor({tilgjengeligeFrisorer, sDato, frisorBildeArray, sFrisorBildeArr
     return(
         <div>
             {tilgjengeligeFrisorer.length > 0?<>
-            <div onClick={()=>{
+            <div tabIndex={0} aria-label="Velg første ledige frisør" onClick={()=>{
                 sFrisor(false);
                 sDato(hentDato());
+                sMidlertidigDato(hentDato());
                 valgtFrisorBoks.current.scrollIntoView({behavior:"smooth", block:"center"});
                 if(klokkeslettet != null){
                     sKlokkeslett(null);
                 }
 
-                }} style={{ textDecoration:frisor === false?"underline":"none", cursor:"pointer", padding:"0.8rem", width:"fit-content", color:"var(--color3)", borderRadius:"0.4rem", border:"thin solid black", backgroundColor:"white"}}>
+                }} 
+                onKeyDown={(e)=>{
+                    if(e.code === "Enter" || e.code === "Space"){
+                        sFrisor(false);
+                        sDato(hentDato());
+                        sMidlertidigDato(hentDato());
+                        valgtFrisorBoks.current.scrollIntoView({behavior:"smooth", block:"center"});
+                        if(klokkeslettet != null){
+                            sKlokkeslett(null);
+                        }
+                    }
+    
+                    }}
+                style={{ textDecoration:frisor === false?"underline":"none", cursor:"pointer", padding:"0.8rem", width:"fit-content", color:"var(--color3)", borderRadius:"0.4rem", border:"thin solid black", backgroundColor:"white"}}>
                     
                     Første ledige frisør
                 </div>
                 
             <div className="frisorene">
             
-                {frisorBildeArray !== null? tilgjengeligeFrisorer.map((element, index)=>(<div className="frisor" 
-                key={element.navn} onClick={()=>{
+                {frisorBildeArray !== null? tilgjengeligeFrisorer.map((element, index)=>(<div tabIndex={0} role="button" className="frisor" 
+                key={element.navn} aria-label={`Velg frisøren ${element.navn}`} onClick={()=>{
                     sFrisor(element);
                     sDato(hentDato());
+                    sMidlertidigDato(hentDato());
                     valgtFrisorBoks.current.scrollIntoView({behavior:"smooth", block:"center"});
                     if(klokkeslettet != null){
                         sKlokkeslett(null);
                     }
 
-                }} style={{ textDecoration:frisor === element?"underline":"none"}}>
+                }} 
+                onKeyDown={(e)=>{
+                    if(e.code === "Enter" || e.code === "Space"){
+                        
+                        sFrisor(element);
+                        sDato(hentDato());
+                        sMidlertidigDato(hentDato());
+                        valgtFrisorBoks.current.scrollIntoView({behavior:"smooth", block:"center"});
+                        if(klokkeslettet != null){
+                            sKlokkeslett(null);
+                        }
+                    }
+
+                }}
+                style={{ textDecoration:frisor === element?"underline":"none"}}>
                     <img className="frisorbilde" src={frisorBildeArray[index]} alt={`Bilde av frisør ${element.navn}`} style={{height:"4rem"}}></img>
                     {element.navn}
                     

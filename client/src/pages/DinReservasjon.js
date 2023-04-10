@@ -41,7 +41,7 @@ function DinReservasjon({env, hentMaaned, registrertReservasjon, setReservasjon}
                     <p>Bekreftelse er sendt på SMS</p>
                     <div>Vi gleder oss til å se deg!</div>
                 </div>):"")}
-                <button style={{padding:"1rem"}} onClick={(e)=>{
+                <button aria-label="Din reservasjon er mottatt. Du vil få bekreftelse på SMS. Gå tilbake." style={{padding:"1rem"}} onClick={(e)=>{
                     e.preventDefault();
 
                     navigate("/");

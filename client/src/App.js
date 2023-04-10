@@ -43,13 +43,13 @@ const App = ()=> {
       </Helmet>
         <BrowserRouter><div className='navHeader'>
         
-        <div id="burgerButton" className='burger' aria-label='Vis navigasjonsmeny' aria-expanded={synligMeny} aria-controls="navigation" onClick={()=>{
+        <button role='button' tabIndex={0} id="burgerButton" className='burger' aria-label='Vis navigasjonsmeny' aria-expanded={synligMeny} aria-controls="navigation" onClick={()=>{
               setSynligmeny(!synligMeny);
-            }}>
+            }} style={{background:"transparent", border: "none"}}>
               <div></div>
               <div></div>
               <div></div>
-            </div>
+            </button>
       </div>
             {(synligMeny?(
             <nav id="navigation" className='navBar' role="region" aria-labelledby='burgerButton' aria-hidden={!synligMeny}>
@@ -71,12 +71,12 @@ const App = ()=> {
 
             </nav >):(
             <Routes>
-              <Route exact path="/timebestilling" element={(registrertReservasjon?<DinReservasjon env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} registrertReservasjon={registrertReservasjon} />:(env !== null?<Timebestilling env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} />:<div id="laster"></div>))} />
-              <Route exact path="/" element={(env !== null?<Hjem env={env}/>:<div id="laster"></div>)} />
+              <Route exact path="/timebestilling" element={(registrertReservasjon?<DinReservasjon env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} registrertReservasjon={registrertReservasjon} />:(env !== null?<Timebestilling env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} />:<div className="laster"></div>))} />
+              <Route exact path="/" element={(env !== null?<Hjem env={env}/>:<div className="laster"></div>)} />
               <Route exact path="/logginn" element={<Login/>} />
-              <Route exact path="/kontakt-oss" element={(env !== null? <Kontakt env={env}/>:<div id="laster"></div>)}/>
-              <Route exact path="/personvaernserklaering-og-brukervilkaar" element={env !== null?<PB env={env}/>:<div id="laster"></div>}/>
-              <Route exact path="/om-oss" element={env !== null?<OmOss env={env}/>:<div id="laster"></div>}/>
+              <Route exact path="/kontakt-oss" element={(env !== null? <Kontakt env={env}/>:<div className="laster"></div>)}/>
+              <Route exact path="/personvaernserklaering-og-brukervilkaar" element={env !== null?<PB env={env}/>:<div className="laster"></div>}/>
+              <Route exact path="/om-oss" element={env !== null?<OmOss env={env}/>:<div className="laster"></div>}/>
               
             </Routes>))}
             

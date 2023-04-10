@@ -35,9 +35,10 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
         headers: {
           'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({navn:frisor.navn, tittel:tittel, beskrivelse:beskrivelse})
       }
-      const request = await fetch('/env/oppdaterTittelOgBeskrivelse', options);
+      const request = await fetch('http://localhost:1226/env/oppdaterTittelOgBeskrivelse', options);
       const response = await request.json();
       if(response){
         varsle();
@@ -60,9 +61,10 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
         headers: {
           'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({navn:frisor.navn, telefon:parseInt(telefonAnsatt)})
       }
-      const request = await fetch('/env/oppdaterTelefonAnsatt', options);
+      const request = await fetch('http://localhost:1226/env/oppdaterTelefonAnsatt', options);
       const response = await request.json();
       if(response){
         varsle();
@@ -87,10 +89,11 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
 
         const options = {
           method: 'POST',
+          credentials: 'include',
           body: formData
         }
 
-        const request = await fetch('/env/oppdaterBildeFrisor', options);
+        const request = await fetch('http://localhost:1226/env/oppdaterBildeFrisor', options);
         const response = await request.json();
         if(response.m){
           alert(response.m);
@@ -148,9 +151,10 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
         headers: {
           'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({navn:navn.toLowerCase()})
       }
-      const request = await fetch('/login/resetPassord', options);
+      const request = await fetch('http://localhost:1226/login/resetPassord', options);
       const response = await request.json();
       if(response.valid){
         varsle();

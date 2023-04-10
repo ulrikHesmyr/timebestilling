@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import Fortsett from './Fortsett';
 import { hentDato, nesteDag } from '../App';
 
-function Klokkeslett({datoForsteLedige, sDatoForsteLedige, env, sDato, sForsteFrisor, friElementer, tilgjengeligeFrisorer, displayKomponent, klokkeslettet, produkt, bestilteTimer, sKlokkeslett, dato, hentMaaned, frisor}){
+function Klokkeslett({sMidlertidigDato, datoForsteLedige, sDatoForsteLedige, env, sDato, sForsteFrisor, friElementer, tilgjengeligeFrisorer, displayKomponent, klokkeslettet, produkt, bestilteTimer, sKlokkeslett, dato, hentMaaned, frisor}){
     
     const [ledigeTimer, setLedigeTimer] = useState([]);
     const ukedag = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
@@ -136,6 +136,7 @@ function Klokkeslett({datoForsteLedige, sDatoForsteLedige, env, sDato, sForsteFr
             if(frisor){
                 if(frisor.oppsigelse == "Ikke oppsagt" || new Date(frisor.oppsigelse) > new Date(dato)){
                     sDato(nesteDag(new Date(dato)));
+                    sMidlertidigDato(nesteDag(new Date(dato)));
                 }
             } else {
                 let gaaNesteDato = false;
@@ -147,6 +148,7 @@ function Klokkeslett({datoForsteLedige, sDatoForsteLedige, env, sDato, sForsteFr
                 }
                 if(gaaNesteDato){
                     sDato(nesteDag(new Date(dato)));
+                    sMidlertidigDato(nesteDag(new Date(dato)));
                 }
             }
         } else {
@@ -168,19 +170,34 @@ function Klokkeslett({datoForsteLedige, sDatoForsteLedige, env, sDato, sForsteFr
                 <div>
                     {dato !== datoForsteLedige?<button disabled={dato === datoForsteLedige && klokkeslettet === ledigeTimer[0].tid} onClick={()=>{
                         sDato(datoForsteLedige);
+                        sMidlertidigDato(datoForsteLedige);
                         sKlokkeslett(null);
                     }}>Finn første ledige time</button>:""}
                 </div>
             </div>
            
             <div className='klokkeslettene'>
-                {(ledigeTimer.length > 0? ledigeTimer.map((tid)=>(<div style={{backgroundColor: klokkeslettet===tid.tid ?"var(--farge5)": "white"}} className='klokkeslett' key={tid.tid} onClick={()=>{
+                {(ledigeTimer.length > 0? ledigeTimer.map((tid)=>(<div tabIndex={(klokkeslettet == null?0:-1)} role='button' aria-label={`Klokken ${tid.tid} `} style={{backgroundColor: klokkeslettet===tid.tid ?"var(--farge5)": "white"}} className='klokkeslett' key={tid.tid} onClick={()=>{
                     //Velg frisør, sett random ut ifra klokkeslettet, altså tid bruk random som velger random indeks fra tid.frisorer
                     let randomFrisor = tid.frisorer[randomNumber(tid.frisorer.length)];
                     sForsteFrisor(randomFrisor);
                     sKlokkeslett(tid.tid);
-                }}> {tid.tid} </div>)):(frisor !== false && frisor.oppsigelse !== "Ikke oppsagt" && new Date(frisor.oppsigelse) <= new Date(dato) ?"Kan ikke reservere time hos ansatt etter oppsigelsesdatoen":`Ingen ledige timer for ${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}`))}
+                }}
+                onKeyDown={(e)=>{
+                    if(e.code === "Enter" || e.code === "Space"){
+                        //Velg frisør, sett random ut ifra klokkeslettet, altså tid bruk random som velger random indeks fra tid.frisorer
+                        let randomFrisor = tid.frisorer[randomNumber(tid.frisorer.length)];
+                        sForsteFrisor(randomFrisor);
+                        sKlokkeslett(tid.tid);
+                    }
+                }}
+                > {tid.tid} </div>)):(frisor !== false && frisor.oppsigelse !== "Ikke oppsagt" && new Date(frisor.oppsigelse) <= new Date(dato) ?"Kan ikke reservere time hos ansatt etter oppsigelsesdatoen":`Ingen ledige timer for ${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}`))}
             </div>
+            <button onClick={()=>{
+                if(klokkeslettet !== null){
+                    sKlokkeslett(null);
+                }
+            }} style={{opacity:"0", margin:"1rem"}} aria-label={(klokkeslettet !== null?`DU har valgt tidspunktet ${klokkeslettet}, ${ukedag[new Date(dato).getDay()]} ${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}, trykk for å endre på dette tidspunktet?`:"Velg klokkeslett og dato ovenfor")}></button>
            </div>
             
             <Fortsett displayKomponent={displayKomponent} previous={2} number={3} disabled={(klokkeslettet !== null? false:true)} />

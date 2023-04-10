@@ -7,6 +7,7 @@ function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, fri
     const [visPINBoks, sVisPINBoks] = useState(false);
     const [pin, sPIN] = useState('');
     const [tryktOK, sTryktOK] = useState(false);
+    const [visLaster, sVisLaster] = useState(false);
 
     const [visIkkeGodkjent, sVisIkkeGodkjent] = useState(false);
     const sendReservasjonBoks = useRef(null);
@@ -15,7 +16,7 @@ function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, fri
     let format = /[`!@#$%^&*()_+=[\]{};':"\\|,.<>/?~]/;
 
     async function validerPIN(p){
-        const request = await fetch('/timebestilling/tlfpin', {
+        const request = await fetch('http://localhost:1226/timebestilling/tlfpin', {
             method:"POST",
             headers:{
                 "Content-Type":"application/json",
@@ -28,6 +29,7 @@ function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, fri
             alert(response.m);
         }
         if(response.valid){
+            sVisLaster(false);
             sValidertSMSpin(true);
             sVisIkkeGodkjent(false);
             sendReservasjonBoks.current.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
@@ -38,7 +40,7 @@ function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, fri
     }
     async function validerSMSpin(){
         sTryktOK(true);
-        const request = await fetch('/timebestilling/SMSpin', {
+        const request = await fetch('http://localhost:1226/timebestilling/SMSpin', {
             method:"POST",
             headers:{
                 "Content-Type":"application/json",
@@ -59,7 +61,7 @@ function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, fri
         }
     }
     async function registrerData(){
-        const request = await fetch('/timebestilling/bestilltime', {
+        const request = await fetch('http://localhost:1226/timebestilling/bestilltime', {
             method:"POST",
             headers:{
                 "Content-Type":"application/json",
@@ -86,13 +88,13 @@ function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, fri
     return (
         <div className={synligKomponent === 4? 'animer-inn':''}>
             <form>
-                <label htmlFor="navn">Navn: * <input required maxLength={20} value={navn} type="text" placeholder='Navn Navnesen' name='navn' onChange={(e)=>{
+                <label htmlFor="navn">Navn: * <input required maxLength={20} value={navn} type="text" placeholder='Navn Navnesen' name='navn' id='navn' onChange={(e)=>{
                     if(!format.test(e.target.value)){ //Legg inn regex
                         sNavn(e.target.value);
                     }
                 }}></input> </label>
 
-                <label htmlFor="telefonnummer">Telefon: * <input required maxLength={8} inputMode="numeric" value={telefonnummer} type="text" name="telefonnummer" onChange={(e)=>{
+                <label htmlFor="telefonnummer">Telefon: * <input required maxLength={8} inputMode="numeric" value={telefonnummer} type="text" name="telefonnummer" id="telefonnummer" onChange={(e)=>{
                     const newValue = e.target.value;
                     if(/^\d*$/.test(newValue) && (e.target.value.length === 0 || e.target.value[0] === "4" || e.target.value[0] === "9")){
                         sTelefonnummer(newValue);
@@ -108,7 +110,7 @@ function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, fri
                         }
                     } 
                 }}></input> 
-                {!visPINBoks && !validertSMSpin && !tryktOK?<button onClick={(e)=>{
+                {!visPINBoks && !validertSMSpin && !tryktOK?<button aria-label="Valider telefonnummer. Du vil motta en SMS" onClick={(e)=>{
                     e.preventDefault();
                     if(telefonnummer.length === 8){
                         validerSMSpin();
@@ -122,15 +124,19 @@ function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, fri
                     <div>
                         <p>Vi har sendt deg en SMS med en PIN-kode, vennligst skriv inn PIN-koden i feltet under</p>
                         <label htmlFor="pin" style={{display:"flex", flexDirection:"row", flexWrap:"wrap", alignItems:"center"}}
-                        >PIN: <input value={pin} required maxLength={4} inputMode="numeric"  autoComplete="one-time-code" type="text" name="pin" onChange={(e)=>{
+                        >PIN: <input id="pin" value={pin} required maxLength={4} inputMode="numeric"  autoComplete="one-time-code" type="text" name="pin" onChange={(e)=>{
                     const newValue = e.target.value;
                     if(/^\d*$/.test(newValue)){
                         sPIN(newValue);
                     }
                     if(newValue.length === 4){
+                        sVisLaster(true);
                         validerPIN(newValue);
                     }
-                }}></input>{visIkkeGodkjent && <p>Feil pin... Ikke mottatt pin? Sjekk om telefonnummeret er skrevet riktig</p>} </label>
+                }}></input>
+                {visIkkeGodkjent && <p>Feil pin... Ikke mottatt pin? Sjekk om telefonnummeret er skrevet riktig</p>} 
+                {visLaster && <div className='laster'></div>} 
+                </label>
                     </div>
                 ):""}
                 <div ref={scrollPINBoks}></div>

@@ -73,10 +73,14 @@ router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
 
             let kundensTelefonnummer = telefonnummer;
             const ansattBestilling = req.cookies.access_token; 
+            const ansattBestilling2 = req.cookies.two_FA_valid; 
             let ansatt = false;
             if(ansattBestilling){
                 ansatt = jwt.verify(ansattBestilling, ACCESS_TOKEN_KEY);
+            } else if (ansattBestilling2){
+                ansatt = jwt.verify(ansattBestilling2, ACCESS_TOKEN_KEY);
             }
+
             if(env.aktivertSMSpin && !ansatt){
                 const dataFromSMSCookie = jwt.verify(req.cookies.tlfvalid, SMSPINVALID_SECRET);
                 if(dataFromSMSCookie){
@@ -168,16 +172,25 @@ router.post("/tlfpin", PINlimiter, async (req,res)=>{
 
 router.post("/SMSpin", async (req,res)=>{
     const {tlf} = req.body;
-    console.log(req.body);
+    
     try {
 
         //Sjekker om det er en ansatt som bestiller time for kunde som ringer inn
         const isToken = req.cookies.two_FA_valid;
+        const isAnsatt = req.cookies.access_token;
         if(isToken){
             const ansatt = jwt.verify(req.cookies.two_FA_valid, ACCESS_TOKEN_KEY); 
-            if(ansatt && ansatt.gyldig){
+            if(ansatt){
                 return res.send({valid:true});
             } 
+        } else if(isAnsatt){
+            const ansattBestilling = req.cookies.access_token;
+            if(ansattBestilling){
+                const ansatt = jwt.verify(ansattBestilling, ACCESS_TOKEN_KEY);
+                if(ansatt){
+                    return res.send({valid:true});
+                }
+            }
         } else {
             //Sjekker om det er en gyldig cookie fra tidligere
             const isTlfValid = req.cookies.tlfvalid;

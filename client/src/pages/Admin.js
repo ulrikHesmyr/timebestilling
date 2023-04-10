@@ -85,7 +85,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 credentials:'include'
 
             }
-            const request = await fetch("/env/leggTilSosialtMedie", options);
+            const request = await fetch("http://localhost:1226/env/leggTilSosialtMedie", options);
             const response = await request.json();
             if(response){
                 varsle();
@@ -110,7 +110,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 credentials:'include'
             
             }
-            const request = await fetch("/env/slettSosialtMedie", options);
+            const request = await fetch("http://localhost:1226/env/slettSosialtMedie", options);
             const response = await request.json();
             if(response){
                 varsle();
@@ -135,7 +135,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 credentials:'include'
             
             }
-            const request = await fetch("/env/slettKategori", options);
+            const request = await fetch("http://localhost:1226/env/slettKategori", options);
             const response = await request.json();
             if(response){
                 varsle();
@@ -160,7 +160,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 credentials:'include'
             
             }
-            const request = await fetch("/env/nyKategori", options);
+            const request = await fetch("http://localhost:1226/env/nyKategori", options);
             const response = await request.json();
             if(response){
                 varsle();
@@ -185,7 +185,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
             credentials:'include'
 
         }
-        const request = await fetch("/env/slettBehandling", options);
+        const request = await fetch("http://localhost:1226/env/slettBehandling", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -209,7 +209,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
             body: JSON.stringify({behandling:b}),
             credentials:'include'
         }
-        const request = await fetch("/env/opprettNyBehandling", options);
+        const request = await fetch("http://localhost:1226/env/opprettNyBehandling", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -232,7 +232,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
             body: JSON.stringify({frisorer:frisorArray}),
             credentials:'include'
         }
-        const request = await fetch("/env/oppdaterFrisorer", options);
+        const request = await fetch("http://localhost:1226/env/oppdaterFrisorer", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -255,7 +255,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
             body: JSON.stringify({omOssArtikkel:omOssTekst}),
             credentials:'include'
         }
-        const request = await fetch("/env/oppdaterOmOss", options);
+        const request = await fetch("http://localhost:1226/env/oppdaterOmOss", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -293,7 +293,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
             body: JSON.stringify({adresse:adresse}),
             credentials:'include'
         }
-        const request = await fetch("/env/oppdaterAdresse", options);
+        const request = await fetch("http://localhost:1226/env/oppdaterAdresse", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -317,7 +317,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
             body: JSON.stringify(slettetTime),
             credentials:'include'
         }
-        const request = await fetch("/timebestilling/oppdaterTimebestillinger", options);
+        const request = await fetch("http://localhost:1226/timebestilling/oppdaterTimebestillinger", options);
         const response = await request.json();
         if(response.valid){
             varsle();
@@ -922,7 +922,7 @@ function DetaljerBehandling({behandling, env, lagreVarsel, varsle, varsleFeil, s
                 credentials:'include'
 
             }
-            const request = await fetch("/env/oppdaterBehandling", options);
+            const request = await fetch("http://localhost:1226/env/oppdaterBehandling", options);
             const response = await request.json();
             if(response){
                 varsle();
