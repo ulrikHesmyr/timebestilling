@@ -39,9 +39,7 @@ setInterval(() => {
 
 const requestCounterMiddleware = (req, res, next) => {
   requestCounterLimit++;
-  console.log("Request counter middleware", requestCounterLimit);
   if(requestCounterLimit > maksRequestsPerMinutt){
-    console.log("SENDER FEILSTATUS");
     res.status(429).json({m: "Administrator er på saken. Serveren har for mye trafikk pr minutt. Vennligst prøv igjen om 1 minutt!"});
     mailer.sendMail(`For mye trafikk for ${BEDRIFT}`, "100 requests per minutt. Evaluer om det er nødvendig å øke antall requests per minutt eller vurder om det er ddos angrep");
   } else {
@@ -90,9 +88,7 @@ schedule.scheduleJob('30 19 * * *', async ()=>{
                 content:`Hei ${timebestilling.kunde}! Vi håper du er fornøyd med ditt besøk hos oss.\n\nDersom det er ønskelig, så legg gjerne igjen en tilbakemelding på besøket. Du kan gi oss en tilbakemelding ved å trykke på linken under. \n\n${process.env.GOOGLE_REVIEW_LINK} \n\nMed vennlig hilsen \n${BEDRIFT}`
             }
             await serviceClient.postOutMessage(outMessage);
-        } else {
-            console.log("SENDTE IKKE MELDING");
-        }
+        } 
       });
     }
   } catch (error) {

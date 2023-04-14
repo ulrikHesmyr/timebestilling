@@ -115,7 +115,6 @@ router.post("/slettBruker", authorization, async (req,res)=>{
 
 
 router.get("/loggetinn", authorization, async (req,res)=>{
-    console.log("/loggetinn");
     try {
         const brukernavn = req.brukernavn;
         //Find the user in the database     //NB DENNE ER IKKE I BRUK
@@ -146,7 +145,6 @@ const twofaLimiter = rateLimiter({
 
 
 router.post("/TWOFA", twofaLimiter, async (req,res)=>{
-    console.log("/TWOFA");
     //Tar høyde for at brukeren allerede har fått SMS med PIN og har dermed også cookie med kryptert PIN
     const {pin, brukertype} = req.body;
     const two_FA = jwt.verify(req.cookies.two_FA, TWOFA_SECRET);
@@ -192,7 +190,6 @@ router.post("/TWOFA", twofaLimiter, async (req,res)=>{
 })
 
 router.post('/auth',loginLimiter, async (req,res)=>{
-    console.log("/auth");
     try {
         const {brukernavn, passord, valgtBrukertype, brukertype}= req.body;
         const finnBruker = await Brukere.findOne({brukernavn: brukernavn});

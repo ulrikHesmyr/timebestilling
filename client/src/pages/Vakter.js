@@ -114,7 +114,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
           "Content-Type":"application/json"
         },
         body: JSON.stringify({passord: gjentaNyttPassord}),
-        credentials:'include'
+        //credentials:'include'
       };
       const request = await fetch("/login/oppdaterPassord", options);
       const response = await request.json();
@@ -139,7 +139,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
             "Content-Type":"application/json"
           },
           body: JSON.stringify({telefonnummer: parseInt(nyttTlf)}),
-          credentials:'include'
+          //credentials:'include'
         };
 
         const request = await fetch("/login/oppdaterTelefonnummer", options);

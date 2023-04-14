@@ -36,7 +36,7 @@ let antallmeldinger = 1800; //Kjøpt pr 08.03.2023
 router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
     try {
         const env = await Env.findOne();
-        const {dato, behandlinger, kunde, medarbeider, telefonnummer, tidspunkt} = req.body; //frisor
+        const {dato, behandlinger, kunde, medarbeider, telefonnummer, tidspunkt, SMS_ENABLED} = req.body; //frisor
         const t = await Bestilttime.findOne({dato: dato, medarbeider: medarbeider, tidspunkt:tidspunkt});
         
         let finnesIkkeKollisjon = true; 
@@ -101,7 +101,6 @@ router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
             })
 
             //Sender SMS med bekreftelse
-            let SMS_ENABLED = true;
             if(SMS_ENABLED){
                 
                 let baseUrl = "https://shared.target365.io/";
@@ -129,7 +128,7 @@ router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
             if(bestillNyTime){
                 return res.send({message: "Time er bestilt", bestiltTime: bestillNyTime})
             } else {
-                return res.send({message: "Noe har skjedd galt, prøv igjen"})
+                return res.send({message: "Noe har skjedd galt, prøv igjen", valid:false})
             }
         } else {
             return res.send({bestillingAlreadyExcist: true});

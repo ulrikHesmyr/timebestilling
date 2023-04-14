@@ -31,10 +31,17 @@ const env = new mongoose.Schema({
             produkter:[String],
             oppsigelse:{type: String, default: "Ikke oppsagt"},
             tittel:{type:String},
-            beskrivelse:{type:String}
+            beskrivelse:{type:String},
+            paaJobb:[{
+                dag: {type:String},
+                open:{type:String},
+                closed:{type:String},
+                stengt:{type:Boolean, default:false},
+                }]
         }
         
     ],
+    hoytidsdager:[{dag:String, dato:String}],
     klokkeslett: [
         {
         dag: {type:String},

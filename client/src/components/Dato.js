@@ -1,7 +1,7 @@
 import React, {useRef, useState} from 'react';
 import { hentDato } from '../App'
 
-function Dato({datoForsteLedige, sMidlertidigDato, midlertidigDato, dato, sDato, sKlokkeslett, klokkeslettet, hentMaaned}){
+function Dato({datoForsteLedige, sMidlertidigDato, sHarEndretDatoen, midlertidigDato, dato, sDato, sKlokkeslett, klokkeslettet, hentMaaned}){
 
     const ukedag = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
     const [okKnappSynlig, sOkKnappSynlig] = useState(false);
@@ -18,21 +18,24 @@ function Dato({datoForsteLedige, sMidlertidigDato, midlertidigDato, dato, sDato,
                 }
                 sMidlertidigDato(e.target.value);
                 sOkKnappSynlig(true);
+                sHarEndretDatoen(true);
             }} 
             ></input>
             {okKnappSynlig?<button aria-label='Bekreft dato' onClick={(e)=>{
                 e.preventDefault();
                 sOkKnappSynlig(false);
+                sHarEndretDatoen(false);
                 
                 if(klokkeslettet != null){
                     sKlokkeslett(null);
                 }
-                if(new Date(midlertidigDato) > new Date()){
+                if(new Date(midlertidigDato) >= new Date()){
                     sDato(midlertidigDato);
                 } else {
                     sDato(hentDato());
                 }
                 velgKlokkeslettBoks.current.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
+
                     
             }}>OK</button>:""}
                 {datoForsteLedige !== null?(<div>Første ledige time: {ukedag[new Date(datoForsteLedige).getDay()]} {parseInt(datoForsteLedige.substring(8,10))}. {hentMaaned(parseInt(datoForsteLedige.substring(5,7)) -1)}</div>) :""}

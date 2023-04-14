@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import {hentDato} from '../App'
+import { minutterFraKlokkeslett } from './Klokkeslett';
 function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVarsel, varsleFeil, sUpdateTrigger, updateTrigger}){
 
     const [visDetaljer, sVisDetaljer] = useState(false);
@@ -16,11 +17,15 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
     const [visRedigerTittelOgBeskrivelse, sVisRedigerTittelOgBeskrivelse] = useState(false);
     const [tittel, sTittel] = useState(frisor.tittel);
     const [beskrivelse, sBeskrivelse] = useState(frisor.beskrivelse);
+    const [paaJobb, sPaaJobb] = useState(frisor.paaJobb.map(obj => ({ ...obj })));
     
     //Viser redigeringssider
     const [visRedigerBehandlinger, sVisRedigerBehandlinger] = useState(false);     
     const [visSiOpp, sVisSiOpp] = useState(false);     
     const [visRedigerBilde, sVisRedigerBilde] = useState(false);
+    const [visRedigerPaaJobb, sVisRedigerPaaJobb] = useState(false);
+
+    
 
     //Nye behandlinger
     const [frisorTjenester, setFrisortjenester] = useState(frisor.produkter); //Skal være indekser, akkurat som i databasen
@@ -35,7 +40,7 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
         headers: {
           'Content-Type': 'application/json'
         },
-        credentials: 'include',
+        //credentials: 'include',
         body: JSON.stringify({navn:frisor.navn, tittel:tittel, beskrivelse:beskrivelse})
       }
       const request = await fetch('http://localhost:1226/env/oppdaterTittelOgBeskrivelse', options);
@@ -61,7 +66,7 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
         headers: {
           'Content-Type': 'application/json'
         },
-        credentials: 'include',
+        //credentials: 'include',
         body: JSON.stringify({navn:frisor.navn, telefon:parseInt(telefonAnsatt)})
       }
       const request = await fetch('http://localhost:1226/env/oppdaterTelefonAnsatt', options);
@@ -69,6 +74,32 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
       if(response){
         varsle();
         //sUpdateTrigger(!updateTrigger); Trenger ikke pga ikke noe med env å gjøre
+      } else {
+        alert("Noe gikk galt, prøv på nytt");
+      }
+      } catch (error) {
+        alert("Noe gikk galt. Sjekk internetttilkoblingen din og prøv på nytt");
+        varsleFeil();
+      }
+    }
+
+    async function oppdaterPaaJobb(){
+      try {
+        
+      lagreVarsel();
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        //credentials: 'include',
+        body: JSON.stringify({navn:frisor.navn, paaJobb:paaJobb})
+      }
+      const request = await fetch('http://localhost:1226/env/oppdaterPaaJobb', options);
+      const response = await request.json();
+      if(response){
+        varsle();
+        sUpdateTrigger(!updateTrigger);
       } else {
         alert("Noe gikk galt, prøv på nytt");
       }
@@ -89,7 +120,7 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
 
         const options = {
           method: 'POST',
-          credentials: 'include',
+          //credentials: 'include',
           body: formData
         }
 
@@ -131,6 +162,7 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
       sVisRedigerFrisor(false);
       sVisSiOpp(false);
     }
+    
     async function oppdaterBehandlinger(){
       //Oppdaterer behandlinger i databasen
       let tempFrisorer = env.frisorer;
@@ -151,7 +183,7 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
         headers: {
           'Content-Type': 'application/json'
         },
-        credentials: 'include',
+        //credentials: 'include',
         body: JSON.stringify({navn:navn.toLowerCase()})
       }
       const request = await fetch('http://localhost:1226/login/resetPassord', options);
@@ -234,6 +266,10 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
                 sVisRedigerBilde(true);
               }}>Oppdater bilde</button>
 
+              <button onClick={()=>{
+                sVisRedigerPaaJobb(true);
+              }}>Rediger "på jobb"-tider</button>
+
               
               <button onClick={()=>{
                 sVisRedigerTittelOgBeskrivelse(true);
@@ -311,6 +347,79 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
                   sVisRedigerTittelOgBeskrivelse(false);
                 }}>Lagre</button>
               </div>
+            </div>:<></>}
+
+            {visRedigerPaaJobb?<div className='fokus'>
+
+            <div style={{display:"flex", flexDirection:"row", flexWrap:"wrap"}}>
+            <div>
+                <h4>Rediger "på jobb"-tider for {frisor.navn}</h4>
+                <p>Endre på tidene hvor ansatt er på jobb. Dette gjør at kunder kun kan reservere time når ansatt er på jobb. Se åpningstidene til butikken for referanse</p>
+                {env.klokkeslett.map((dag, index)=>{
+                    return (
+                        <div key={dag.dag}>{dag.dag} {dag.open} - {dag.closed}</div>
+                    )
+                })}
+              </div>
+              <div>
+              {paaJobb.map((dag, index)=>{
+            return (
+                <div style={{display: "flex", alignItems: "center"}} key={dag.dag}>{dag.dag}
+                    <input type="checkbox" onChange={(e)=>{
+                        const nyPaaJobb = [...paaJobb];
+                        nyPaaJobb[index].stengt = e.target.checked;
+                        sPaaJobb(nyPaaJobb);
+                    }} checked={dag.stengt} disabled={env.klokkeslett[index].stengt}></input>
+                    
+                    <input disabled={env.klokkeslett[index].stengt || paaJobb[index].stengt} onChange={(e)=>{
+                        let detteKlokkeslettet = e.target.value;
+                        let klMinutter = minutterFraKlokkeslett(detteKlokkeslettet);
+                        
+                        if(klMinutter < minutterFraKlokkeslett(dag.closed)  && klMinutter >= minutterFraKlokkeslett(env.klokkeslett[index].open) && klMinutter <= minutterFraKlokkeslett(env.klokkeslett[index].closed)  && klMinutter % 15 === 0){
+                            const nyPaaJobb = [...paaJobb];
+                            nyPaaJobb[index].open = detteKlokkeslettet;
+                            sPaaJobb(nyPaaJobb);
+                        } else {
+                            alert("Klokkeslettet må være før ansatt er ferdig på jobb");
+                        }
+                    }} type='time' step="1800" min={env.klokkeslett[index].open} max={dag.closed} value={env.klokkeslett[index].stengt?undefined:dag.open}></input> 
+                    
+                    - 
+                    
+                    <input disabled={env.klokkeslett[index].stengt || paaJobb[index].stengt} onChange={(e)=>{
+                        let detteKlokkeslettet = e.target.value;
+                        let klMinutter = minutterFraKlokkeslett(detteKlokkeslettet);
+
+                        if(klMinutter > minutterFraKlokkeslett(dag.open) && klMinutter >= minutterFraKlokkeslett(env.klokkeslett[index].open) && klMinutter <= minutterFraKlokkeslett(env.klokkeslett[index].closed) && klMinutter % 15 === 0){
+                            const nyPaaJobb = [...paaJobb];
+                            nyPaaJobb[index].closed = detteKlokkeslettet;
+                            sPaaJobb(nyPaaJobb);
+                        } else {
+                            alert("Klokkeslettet må være på riktig format eks.: 08:00, 08:30, 09:00 osv.");
+                        }
+                    }} type='time' step="1800" min={dag.open} max={env.klokkeslett[index].closed} value={env.klokkeslett[index].stengt?undefined:dag.closed}></input>
+                </div>
+            )
+            })}
+              </div>
+              
+            </div>
+
+            <div>
+                <button onClick={(e)=>{
+
+                    e.preventDefault();
+                    sVisRedigerPaaJobb(false);
+                    sPaaJobb(frisor.paaJobb);
+                }}>Avbryt</button>
+                <button onClick={(e)=>{
+
+                    e.preventDefault();
+                    sVisRedigerPaaJobb(false);
+                    oppdaterPaaJobb();
+                }}>Lagre</button>
+            </div>
+
             </div>:<></>}
 
 

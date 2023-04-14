@@ -47,7 +47,7 @@ function Hjem({env}){
                 <div className="bedriftNavnHeader"> <div className="viEr" >Vi er </div>{env.bedrift}</div>
                 <div>
                     <p className="bestilleTimeplz">Ønsker du å bestille time hos oss?</p>
-                    <Link to="/timebestilling" className='navBarBestillTime' tabIndex={0}><div>Bestill time</div></Link>
+                    <Link to="/timebestilling" className='navBarBestillTime' tabIndex={0}><div style={{textShadow:"1px 1px 3px black"}}>Bestill time</div></Link>
                 </div>
             </header>
 
@@ -76,18 +76,28 @@ function Hjem({env}){
                     <div key={frisor.navn}style={{margin:"1rem"}}>
                         <h4>{frisor.navn}</h4>
                         <img className="frisorbilde" src={frisorBildeArray[index]} alt={`Bilde av ansatt ${frisor.navn}`} style={{height:"4rem"}}></img>
-                        <div className="infoFrisorKnapp" onClick={()=>{
+                        <button id={frisor.navn} aria-expanded={visDetaljerFrisor && detaljerFrisor !== null} aria-label={`Vis detaljer om ansatt: ${frisor.navn}`} className="infoFrisorKnapp" onClick={()=>{
                             sDetaljerFrisor(frisor);
                             sVisDetaljerFrisor(true);
-                        }}></div>
+                        }} onKeyDown={(e)=>{
+                            if(e.code === "Enter" || e.code === "Space"){
+                                sDetaljerFrisor(frisor);
+                                sVisDetaljerFrisor(true);
+                            }
+                        }}></button>
                         </div>
                     )):"hhh"}
                     {visDetaljerFrisor && detaljerFrisor !== null?
                     <>
-                        <div className="fokus detaljerFrisor">
-                            <div className="lukk" onClick={()=>{
+                        <div role="region" aria-hidden={!visDetaljerFrisor && detaljerFrisor == null} className="fokus detaljerFrisor">
+                            <div tabIndex={0} aria-label="Lukk detaljer om ansatt" className="lukk" onClick={()=>{
                                 sVisDetaljerFrisor(false);
                                 sDetaljerFrisor(null);
+                            }} onKeyDown={(e)=>{
+                                if(e.code === "Enter" || e.code === "Space"){
+                                    sVisDetaljerFrisor(false);
+                                    sDetaljerFrisor(null);
+                                }
                             }}>
                             </div>
                             <img className="frisorbilde" src={frisorBildeArray[env.frisorer.indexOf(detaljerFrisor)]} alt={`Bilde av ansatt ${detaljerFrisor.navn}`} style={{height:"20rem", width:"20rem"}}></img>
@@ -110,8 +120,12 @@ function Hjem({env}){
 
                 <div>
                     
-                    <div onClick={()=>{
+                    <div tabIndex={0} aria-label={`Adressen er: ${env.adresse.gatenavn} ${env.adresse.husnummer}${env.adresse.bokstav}, ${env.adresse.postnummer} ${env.adresse.poststed}.Trykk her for å vise lokasjonen til salongen i kart`} onClick={()=>{
                         window.open(`https://www.google.com/maps/place/${env.adresse.gatenavn.replace(/ /g, "+")}+${env.adresse.husnummer}${env.adresse.bokstav},+${env.adresse.postnummer}+${env.adresse.poststed}/@${env.adresse.rep.lat},${env.adresse.rep.lng}`);
+                    }} onKeyDown={(e)=>{
+                        if(e.code === "Enter" || e.code === "Space"){
+                            window.open(`https://www.google.com/maps/place/${env.adresse.gatenavn.replace(/ /g, "+")}+${env.adresse.husnummer}${env.adresse.bokstav},+${env.adresse.postnummer}+${env.adresse.poststed}/@${env.adresse.rep.lat},${env.adresse.rep.lng}`);
+                        }
                     }} className="adresseLink"><div className="adresseBlur"><p>{env.adresse.gatenavn} {env.adresse.husnummer}{env.adresse.bokstav}, {env.adresse.postnummer} {env.adresse.poststed}</p><div>GÅ TIL KART</div></div></div>
                 
                 </div>

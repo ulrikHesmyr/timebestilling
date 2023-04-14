@@ -1,16 +1,20 @@
 import React, {useState} from 'react'
+import {minutterFraKlokkeslett} from './Klokkeslett.js'
 
 function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel, varsleFeil}){
 
-    const [leggtil, sLeggTil] = useState(false);
     const [nyFrisorNavn, sNyFrisorNavn] = useState("");
     const [nyFrisorTittel, sNyFrisorTittel] = useState("");
     const [nyFrisorBeskrivelse, sNyFrisorBeskrivelse] = useState("");
     const [tlfNyFrisor, sTlfNyFrisor] = useState("");
     const [frisorTjenester, setFrisortjenester] = useState([]); //Skal være indekser, akkurat som i databasen
     const [bildeAvFrisor, sBildeAvFrisor] = useState(null);
+    const [paaJobb, sPaaJobb] = useState(env.klokkeslett.map(obj => ({ ...obj })));
+    
     const [adminTilgang, sAdminTilgang] = useState(false);
+
     const [preview, setPreview] = useState(null);
+    const [leggtil, sLeggTil] = useState(false);
 
 
     async function lagre(){
@@ -19,7 +23,6 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
         lagreVarsel();
         sLeggTil(false);
         
-        
         let formData = new FormData();
         formData.append("uploaded_file", bildeAvFrisor);
         formData.append("nyFrisorNavn", nyFrisorNavn);
@@ -27,13 +30,16 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
         formData.append("nyFrisorTjenester", frisorTjenester);
         formData.append("tittel", nyFrisorTittel);
         formData.append("beskrivelse", nyFrisorBeskrivelse);
+        formData.append("paaJobb", JSON.stringify(paaJobb));
         const options2 = {
             method:"POST",
-            credentials: 'include',
+            //credentials: 'include',
             body: formData
         }
         const request2 = await fetch("http://localhost:1226/env/opprettFrisor", options2);
         const response2 = await request2.json();
+
+        //Oppretter bruker for frisøren
         if(response2){
 
             
@@ -47,7 +53,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
                 headers:{
                     "Content-Type":"application/json"
                 },
-                credentials: 'include',
+                //credentials: 'include',
                 body: JSON.stringify(data)
             }
             const request = await fetch("http://localhost:1226/login/opprettBruker", options);
@@ -57,12 +63,14 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
             } else if(response){
                 varsle();
                 sUpdateTrigger(!updateTrigger);
-                //setFrisortjenester([]);
-                //sTlfNyFrisor("");
-                //sNyFrisorNavn("");
-                //sNyFrisorBeskrivelse("");
-                //sNyFrisorTittel("");
-                //sBildeAvFrisor(null);
+                setFrisortjenester([]);
+                sTlfNyFrisor("");
+                sNyFrisorNavn("");
+                sNyFrisorBeskrivelse("");
+                sNyFrisorTittel("");
+                sBildeAvFrisor(null);
+                sAdminTilgang(false);
+                sPaaJobb(env.klokkeslett.map(obj => ({ ...obj })));
             } else {
                 alert("Noe gikk galt. Prøv igjen.");
             }
@@ -127,6 +135,52 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
             {tjeneste.navn}
         </div>)
         )}
+
+        <p style={{fontWeight:"bold"}}>Velg hvilke dager og klokkeslett frisøren skal jobbe:</p>
+        <p className='litentekst'>Kryss av i ruten dersom vedkommende ikke er på jobb denne dagen</p>
+        {paaJobb.map((dag, index)=>{
+            return (
+                <div style={{display: "flex", flexDirection:"column", justifyContent: "center", borderTop:"1px solid black"}} key={dag.dag}>
+                    {dag.dag}
+                    <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
+                        
+                        <input type="checkbox" onChange={(e)=>{
+                        const nyPaaJobb = [...paaJobb];
+                        nyPaaJobb[index].stengt = e.target.checked;
+                        sPaaJobb(nyPaaJobb);
+                    }} checked={dag.stengt} disabled={env.klokkeslett[index].stengt}></input>
+                    
+                    <input disabled={env.klokkeslett[index].stengt || paaJobb[index].stengt} onChange={(e)=>{
+                        let detteKlokkeslettet = e.target.value;
+                        let klMinutter = minutterFraKlokkeslett(detteKlokkeslettet);
+                        
+                        if(klMinutter < minutterFraKlokkeslett(dag.closed) && klMinutter >= minutterFraKlokkeslett(env.klokkeslett[index].open) && klMinutter <= minutterFraKlokkeslett(env.klokkeslett[index].closed) && klMinutter % 15 === 0){
+                            const nyPaaJobb = [...paaJobb];
+                            nyPaaJobb[index].open = detteKlokkeslettet;
+                            sPaaJobb(nyPaaJobb);
+                        } else {
+                            alert("Klokkeslettet må være før ansatt er ferdig på jobb");
+                        }
+                    }} type='time' step="1800" min={env.klokkeslett[index].open} max={dag.closed} value={env.klokkeslett[index].stengt?undefined:dag.open}></input> 
+                    
+                    - 
+                    
+                    <input disabled={env.klokkeslett[index].stengt || paaJobb[index].stengt} onChange={(e)=>{
+                        let detteKlokkeslettet = e.target.value;
+                        let klMinutter = minutterFraKlokkeslett(detteKlokkeslettet);
+
+                        if(klMinutter > minutterFraKlokkeslett(dag.open) && klMinutter >= minutterFraKlokkeslett(env.klokkeslett[index].open) && klMinutter <= minutterFraKlokkeslett(env.klokkeslett[index].closed) && klMinutter % 15 === 0){
+                            const nyPaaJobb = [...paaJobb];
+                            nyPaaJobb[index].closed = detteKlokkeslettet;
+                            sPaaJobb(nyPaaJobb);
+                        } else {
+                            alert("Klokkeslettet må være på riktig format eks.: 08:00, 08:30, 09:00 osv.");
+                        }
+                    }} type='time' step="1800" min={dag.open} max={env.klokkeslett[index].closed} value={env.klokkeslett[index].stengt?undefined:dag.closed}></input></div>
+                </div>
+            )
+        })}
+
         <p>Nedenfor krysser du av boksen (slik at den ikke er tom) dersom denne frisøren skal ha administrator-rettigheter og få tilgang til dette panelet.</p>
         <label>Admin tilgang: <input type="checkbox" onChange={(e)=>{
             sAdminTilgang(e.target.checked);
@@ -143,6 +197,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
                     e.preventDefault();
                     if(frisorTjenester.length > 0 && tlfNyFrisor.length===8 && nyFrisorNavn !== "" && !isNaN(parseInt(tlfNyFrisor)) && bildeAvFrisor !== null){
                         lagre();
+                        
                     } else {
                         alert("Ikke riktig format");
                     }
@@ -161,6 +216,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
     </>
   )
 }
+
 
 
 export default React.memo(LeggTilFrisor)

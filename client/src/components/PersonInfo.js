@@ -1,6 +1,6 @@
 import React, {useState, useRef} from 'react'
 
-function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, frisor, hentMaaned, isMobile, synligKomponent, displayKomponent, navn, telefonnummer, nullstillData, setReservasjon ,setUpdate ,updateDataTrigger, data, sNavn, sTelefonnummer}){
+function PersonInfo({env, smsBekreftelse, sSmsBekreftelse, totalTid, totalPris, dato, klokkeslettet, produkt, frisor, hentMaaned, isMobile, synligKomponent, displayKomponent, navn, telefonnummer, nullstillData, setReservasjon ,setUpdate ,updateDataTrigger, data, sNavn, sTelefonnummer}){
     
     const [harregistrert, sHarRegistrert] = useState(false); //For å passe på at en bruker ikke trykker to ganger før neste side rekker å laste inn
     const [validertSMSpin, sValidertSMSpin] = useState(!env.aktivertSMSpin); 
@@ -22,7 +22,7 @@ function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, fri
                 "Content-Type":"application/json",
             },
             body: JSON.stringify({pin:p}),
-            credentials: 'include'
+            //credentials: 'include'
         });
         const response = await request.json();
         if(response.m){
@@ -46,7 +46,7 @@ function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, fri
                 "Content-Type":"application/json",
             },
             body: JSON.stringify({tlf:telefonnummer}),
-            credentials: 'include'
+            //credentials: 'include'
         });
         const response = await request.json();
         if(response.m){
@@ -67,7 +67,7 @@ function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, fri
                 "Content-Type":"application/json",
             },
             body: JSON.stringify(data),
-            credentials: 'include'
+            //credentials: 'include'
         });
         const response = await request.json();
         if(response.m){
@@ -75,26 +75,28 @@ function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, fri
         } else if(response.bestillingAlreadyExcist){
             alert("Denne timen er opptatt, noen har bestilt time samtidig som deg, men sendte inn registrering først, prøv på nytt!");
             sHarRegistrert(false);
+        } else if(!response.valid){
+            alert("Noe har skjedd galt, sjekk internettforbindelsen din og prøv på nytt!");
         } else if(response){
             setUpdate(!updateDataTrigger);
             setReservasjon(response.bestiltTime);
             nullstillData();
             displayKomponent(0);
         } else {
-            alert("Noe har skjedd galt, prøv på nytt om litt!");
+            alert("Noe har skjedd galt, sjekk internettforbindelsen din og prøv på nytt!");
         }
     }
 
     return (
         <div className={synligKomponent === 4? 'animer-inn':''}>
             <form>
-                <label htmlFor="navn">Navn: * <input required maxLength={20} value={navn} type="text" placeholder='Navn Navnesen' name='navn' id='navn' onChange={(e)=>{
+                <label htmlFor="navn">Navn: * <input aria-label='Navn' required aria-required maxLength={20} value={navn} type="text" placeholder='Navn Navnesen' name='navn' id='navn' onChange={(e)=>{
                     if(!format.test(e.target.value)){ //Legg inn regex
                         sNavn(e.target.value);
                     }
                 }}></input> </label>
 
-                <label htmlFor="telefonnummer">Telefon: * <input required maxLength={8} inputMode="numeric" value={telefonnummer} type="text" name="telefonnummer" id="telefonnummer" onChange={(e)=>{
+                <label htmlFor="telefonnummer">Telefon: * <input aria-label='Telefonnummer, 8-siffer' required aria-required maxLength={8} inputMode="numeric" value={telefonnummer} type="text" name="telefonnummer" id="telefonnummer" onChange={(e)=>{
                     const newValue = e.target.value;
                     if(/^\d*$/.test(newValue) && (e.target.value.length === 0 || e.target.value[0] === "4" || e.target.value[0] === "9")){
                         sTelefonnummer(newValue);
@@ -109,7 +111,10 @@ function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, fri
                             sPIN('');
                         }
                     } 
-                }}></input> 
+                }}></input> NB 8 siffer
+
+                
+
                 {!visPINBoks && !validertSMSpin && !tryktOK?<button aria-label="Valider telefonnummer. Du vil motta en SMS" onClick={(e)=>{
                     e.preventDefault();
                     if(telefonnummer.length === 8){
@@ -119,6 +124,9 @@ function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, fri
 
                     }
                 }}>OK</button>:""}</label>
+
+                
+                
 
                 {visPINBoks?(
                     <div>
@@ -157,7 +165,18 @@ function PersonInfo({env, totalTid, totalPris, dato, klokkeslettet, produkt, fri
             }
 
                 <p>Bekreftelse på din reservasjon sendes på SMS</p>
-                <p>Jeg godkjenner <a rel='noreferrer' target="_blank" href='/personvaernserklaering-og-brukervilkaar'>personvernserkæringen og brukervilkår</a> ved å trykke "send inn reservasjon"</p>
+                <p>Jeg godkjenner <a aria-label="Gå til personvernserklæringen og brukervilkår" rel='noreferrer' target="_blank" href='/personvaernserklaering-og-brukervilkaar'>personvernserkæringen og brukervilkår</a> ved å trykke "send inn reservasjon"</p>
+                <label style={{display:"flex", justifyContent:"center", flexDirection:"column"}} htmlFor='sms_bekreftelse'>
+                    <div style={{display:"flex", alignItems:"center", flexDirection:"row"}}>Få bekreftelse på SMS?<input style={{height:"1.4rem", width:"1.4rem"}} required aria-required id="sms_bekreftelse" type='checkbox' value={smsBekreftelse} onChange={(e)=>{
+                        sSmsBekreftelse(e.target.checked);
+                    }} onKeyDown={(e)=>{
+                        if(e.code === "Enter" || e.code === "Space"){
+                            sSmsBekreftelse(e.target.checked);
+                        }
+                    }}></input><div className='litentekst'>Gratis</div> 
+                    </div>
+                    {new Date(dato) > new Date()? <div className='litentekst'>Påminnelse på SMS kommer dagen før timen, og kommer i tillegg (uansett).</div>:""} 
+                </label>
                 {(harregistrert?"Laster...":(<button disabled={!validertSMSpin} style={{padding:"1rem", color:"var(--color2)", backgroundColor:"var(--farge2)"}} onClick={(e)=>{
                     e.preventDefault();
                     if(telefonnummer.length === 8 && navn !== ""){

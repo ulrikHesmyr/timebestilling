@@ -1,12 +1,12 @@
 const Environment = require("../model/env");
 const Brukere = require("../model/brukere");
-const {BEDRIFT, ADMIN_TLF, ADMIN_BRUKER, ADMIN_PASS} = process.env;
+const {BEDRIFT, ADMIN_TLF, ADMIN_BRUKER, ADMIN_PASS, KONTAKT_TLF} = process.env;
 
 async function opprettEnvironment(){
     try {
         const nyttenv = await Environment.create({
             kontakt_epost:"eksempel@gmail.com",
-            kontakt_tlf:41394262,
+            kontakt_tlf: KONTAKT_TLF,
             sosialeMedier:[{
                 platform:"Instagram",
                 bruker:"UlrikFrisor",
@@ -62,6 +62,7 @@ async function opprettEnvironment(){
                 }
             ],
             frisorer:[],
+            hoytidsdager:[],
             googleReviewLink: `${process.env.GOOGLE_REVIEW_LINK}`,
             omOssArtikkel: "Hei, kjære kunde!\n\nVi er Ulrik Fades og vi ønsker velkommen til vår salong i Gjøvik Sentrum!",
             aktivertFeedbackSMS: false,

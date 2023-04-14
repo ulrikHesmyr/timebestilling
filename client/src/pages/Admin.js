@@ -6,9 +6,12 @@ import Fri from '../components/Fri';
 import RedigerAapningstider from '../components/RedigerAapningstider';
 import SMS from '../components/SMS';
 import {Link} from 'react-router-dom';
+import { hentMaaned } from '../App';
 
 function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsle, lagreVarsel, varsleFeil}){
+
     const behandlingsEstimater = [15,30,45,60,75,90,105,120,135,150,165,180,195,210,225,240];
+
     const [kontakt_epost, sKontakt_epost] = useState(env.kontakt_epost);
     const [kontakt_tlf, sKontakt_tlf] = useState(env.kontakt_tlf);
 
@@ -18,6 +21,12 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
     const [sok, sSok] = useState("");
     //Vis timebestillinger
     const [visRedigerTimebestillinger, sVisRedigerTimebestillinger] = useState(false);
+
+    //hoytidsdager
+    const [visRedigerHoytidsdager, sVisRedigerHoytidsdager] = useState(false);
+    const [hoytidsdag, sHoytidsdag] = useState("");
+    const [hoytidsdato, sHoytidsdato] = useState("");
+    const [leggtilhoytid, sLeggtilhoytid] = useState(false);
 
     //Adresse
     const [visRedigerAdresse, sVisRedigerAdresse] = useState(false);
@@ -72,6 +81,56 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
     //}, [env])
     //Oppdaterer en vilkårlig tjeneste i databasen
 
+
+    //Sletter en høytidsdag
+    async function slettHoytidsdag(d){
+        lagreVarsel();
+        try {
+            const options = {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body: JSON.stringify({dag:d}),
+                //credentials:'include'
+
+            }
+            const request = await fetch("http://localhost:1226/env/slettHoytidsdag", options);
+            const response = await request.json();
+            if(response){
+                varsle();
+                sUpdateTrigger(!updateTrigger);
+            }
+        } catch (error) {
+            varsleFeil();
+            alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen.");
+        }
+    }
+    
+    //Legg til høytidsdag
+    async function leggTilHoytidsDag(){
+        try {
+            lagreVarsel();
+            const options = {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body: JSON.stringify({dag:hoytidsdag, dato:hoytidsdato}),
+                //credentials:'include'
+
+            }
+            const request = await fetch("http://localhost:1226/env/leggTilHoytidsdag", options);
+            const response = await request.json();
+            if(response){
+                varsle();
+                sUpdateTrigger(!updateTrigger);
+            }
+        } catch (error) {
+            alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen.");
+            varsleFeil();
+        }
+    }
     //Legger til nytt sosialt medie
     async function leggTilSosialtMedie(medie){
         try {
@@ -82,7 +141,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({medie:medie}),
-                credentials:'include'
+                //credentials:'include'
 
             }
             const request = await fetch("http://localhost:1226/env/leggTilSosialtMedie", options);
@@ -107,7 +166,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({medie:medie}),
-                credentials:'include'
+                //credentials:'include'
             
             }
             const request = await fetch("http://localhost:1226/env/slettSosialtMedie", options);
@@ -132,7 +191,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({kategori:kategori}),
-                credentials:'include'
+                //credentials:'include'
             
             }
             const request = await fetch("http://localhost:1226/env/slettKategori", options);
@@ -157,7 +216,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({kategori:nyKategori}),
-                credentials:'include'
+                //credentials:'include'
             
             }
             const request = await fetch("http://localhost:1226/env/nyKategori", options);
@@ -182,7 +241,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({behandling:b}),
-            credentials:'include'
+            //credentials:'include'
 
         }
         const request = await fetch("http://localhost:1226/env/slettBehandling", options);
@@ -207,7 +266,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({behandling:b}),
-            credentials:'include'
+            //credentials:'include'
         }
         const request = await fetch("http://localhost:1226/env/opprettNyBehandling", options);
         const response = await request.json();
@@ -230,7 +289,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({frisorer:frisorArray}),
-            credentials:'include'
+            //credentials:'include'
         }
         const request = await fetch("http://localhost:1226/env/oppdaterFrisorer", options);
         const response = await request.json();
@@ -253,7 +312,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({omOssArtikkel:omOssTekst}),
-            credentials:'include'
+            //credentials:'include'
         }
         const request = await fetch("http://localhost:1226/env/oppdaterOmOss", options);
         const response = await request.json();
@@ -291,7 +350,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({adresse:adresse}),
-            credentials:'include'
+            //credentials:'include'
         }
         const request = await fetch("http://localhost:1226/env/oppdaterAdresse", options);
         const response = await request.json();
@@ -315,7 +374,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify(slettetTime),
-            credentials:'include'
+            //credentials:'include'
         }
         const request = await fetch("http://localhost:1226/timebestilling/oppdaterTimebestillinger", options);
         const response = await request.json();
@@ -432,7 +491,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 
             <div className='adminMain'>
                 <div>
-                <h4>Kontakt-info:</h4>
+                    <h4>Kontakt-info:</h4>
                     <div className='redigeringsBoks'> 
                         <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
                             <RedigerKontakt sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} varsle={varsle} lagreVarsel={lagreVarsel} varsleFeil={varsleFeil} number={true} state={kontakt_tlf} setState={sKontakt_tlf} /><p>Kontakt telefon: </p> 
@@ -473,12 +532,72 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                                 </button>
                             </div>
                         </div>:<div style={{display:"flex", flexDirection:"row", alignItems:"center"}} >
-                        <button className='rediger' onClick={(e)=>{
+                        <button className='redigerKnapp' onClick={()=>{
                             sVisRedigerOmOss(true);
-                        }}><img className='ikonKnapper' src='rediger.png' alt="Rediger"></img></button>Rediger "Om oss"-artikkel
+                        }}></button>Rediger "Om oss"-artikkel
                         
                         </div>}
                         <p className='redigeringsElement'>{omOssTekst.substring(0, 25)}...</p>
+                    </div>
+
+                    <div className='redigeringsBoks'>
+                        {visRedigerHoytidsdager?<div className='fokus'>
+                            <div onClick={()=>{
+                                sVisRedigerHoytidsdager(false);
+                            }} className='lukk'></div>
+                            <h4>Rediger høytidsdager</h4>
+                            <p>
+                                Her kan du legge til eller fjerner de dagene i året hvor salongen er stengt. (Høytidsdager)
+                            </p>
+
+                            {leggtilhoytid?<>
+                            <label>Dag: <input onChange={(e)=>{
+                                sHoytidsdag(e.target.value);
+                            }} value={hoytidsdag} type='text' placeholder='Eks.: Julaften'></input></label>
+                            <label>Dato: <input type="date" value={hoytidsdato} onChange={(e)=>{
+                                sHoytidsdato(e.target.value);
+                            }}></input></label>
+                            <div>
+                                <button onClick={()=>{
+                                    sLeggtilhoytid(false);
+                                    sHoytidsdag("");
+                                    sHoytidsdato("");
+                                }}>
+                                    Avbryt
+                                </button>
+                                <button onClick={()=>{
+                                    sVisRedigerHoytidsdager(false);
+                                    sLeggtilhoytid(false);
+                                    leggTilHoytidsDag();
+                                }}>
+                                    Lagre
+                                </button>
+                            </div></>:<button style={{display:"flex", alignItems:"center", flexDirection:"row"}} onClick={()=>{
+                                sLeggtilhoytid(true);
+                            }}> <img alt='Vis legg til høytid modul' className='ikonKnapper' src='leggtil.png'></img>
+                                Legg til høytidsdag
+                                </button>}
+                            <div>
+                                {env.hoytidsdager.map((dag, index)=>{
+                                    return(
+                                        <div key={index}>
+                                            <p>{dag.dag} {parseInt(dag.dato.substring(8,10))}. {hentMaaned(parseInt(dag.dato.substring(5,7)) -1)} <img onClick={()=>{
+                                                if(window.confirm("Er du sikker på at du vil slette denne høytidsdagen?")){
+                                                    slettHoytidsdag(dag.dag);
+                                                }
+                                            }} alt='Slett høytid' className='ikonKnapper' src="delete.png"></img> </p>
+                                        </div>
+                                    )
+                                })}    
+                            </div>
+
+
+                        </div>: <div> 
+                            <button className='redigerKnapp' onClick={()=>{
+                                sVisRedigerHoytidsdager(true);
+                            }}></button>Høytidsdager
+                        </div>}
+                       
                     </div>
                     
                     <div className='redigeringsBoks'>
@@ -567,9 +686,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                                 }}>Lagre</button>
                                 </div>
                             </div>
-                        </div>:<> <div> <button onClick={()=>{
+                        </div>:<> <div> <button className='redigerKnapp' onClick={()=>{
                             sVisRedigerAdresse(true);
-                        }}><img alt="rediger adresse" src="rediger.png" className='ikonKnapper'></img></button> Adresse:</div><p className='redigeringsElement'>{adresseTekst}</p></>}
+                        }}></button> Adresse:</div><p className='redigeringsElement'>{adresseTekst}</p></>}
                     </div>
                     
                     
@@ -646,7 +765,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                         </div>:
                             <button style={{display:"flex", alignItems:"center"}} onClick={()=>{
                                 sVisSlettKategori(true);
-                            }}><img className='ikonKnapper'  alt='Rediger kategorier' src="rediger.png"></img>Rediger kategorier</button>
+                            }}><div className='redigerKnapp'></div>Rediger kategorier</button>
                         }
                         </div>
 
@@ -666,9 +785,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                         <button onClick={()=>{
                             sVisLeggTilSosialtMedie(true);
                         }} style={{display:"flex", flexDirection:"row", alignItems:"center"}}><img alt='Legg til platform' className='ikonKnapper' src="leggtil.png"></img>Legg til sosialt medie</button>
-                        <button onClick={()=>{
+                        <button className='redigerKnapp' onClick={()=>{
                             sVisSlettSosialtMedie(true);
-                        }}><img alt='Rediger sosiale medier' className='ikonKnapper' src="rediger.png"></img></button>
+                        }}></button>
                     </div>
 
                     {visSlettSosialtMedie?<div className='fokus'>
@@ -762,10 +881,10 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     </> :env.klokkeslett.map((klokkeslett, index)=>(
                         <div key={index} style={{display:"flex", flexDirection:"row", alignItems:"center", margin:"0.3rem"}}>
                          {klokkeslett.dag}: {klokkeslett.stengt?"Stengt" :klokkeslett.open} {klokkeslett.stengt?"": "-"} {klokkeslett.stengt?"": klokkeslett.closed}
-                         <button onClick={()=>{
+                         <button className='redigerKnapp' onClick={()=>{
                             sDagForRedigering(klokkeslett);
                             sVisRedigerAapningstider(true);
-                         }}><img className='ikonKnapper' alt='rediger' src="rediger.png"></img></button>
+                         }}></button>
                         </div>
                     ))}
                 </div>
@@ -919,7 +1038,7 @@ function DetaljerBehandling({behandling, env, lagreVarsel, varsle, varsleFeil, s
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({tjeneste: t}),
-                credentials:'include'
+                //credentials:'include'
 
             }
             const request = await fetch("http://localhost:1226/env/oppdaterBehandling", options);

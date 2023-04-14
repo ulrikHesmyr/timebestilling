@@ -19,7 +19,7 @@ function SMS({env, varsle, lagreVarsel, varsleFeil, sUpdateTrigger, updateTrigge
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({googleReviewLink:googleReviewLink}),
-            credentials:'include'
+            //credentials:'include'
         }
         const request = await fetch("http://localhost:1226/env/oppdaterGoogleReviewLink", options);
         const response = await request.json();
@@ -41,7 +41,7 @@ function SMS({env, varsle, lagreVarsel, varsleFeil, sUpdateTrigger, updateTrigge
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({nyStatus}),
-            credentials: 'include'
+            //credentials: 'include'
         });
         const data = await res.json();
         if(data){
@@ -63,7 +63,7 @@ function SMS({env, varsle, lagreVarsel, varsleFeil, sUpdateTrigger, updateTrigge
             headers: {
                 "Content-Type": "application/json",
             },
-            credentials: 'include',
+            //credentials: 'include',
             body: JSON.stringify({nyStatus})
         });
         const data = await res.json();

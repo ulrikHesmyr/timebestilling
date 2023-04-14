@@ -70,7 +70,7 @@ function Login(){
                 "Content-Type":"application/json",
             },
             body: JSON.stringify(data),
-            credentials:'include'
+            //credentials:'include'
         });
         
         const response = await request.json();
@@ -105,7 +105,7 @@ function Login(){
                         "Content-Type":"application/json",
                     },
                     body: JSON.stringify(d),
-                    credentials:'include'
+                    //credentials:'include'
                 });
                 const res = await r.json();
                 if(!res.valid && res.two_FA){
@@ -161,7 +161,7 @@ function Login(){
                 "Content-Type":"application/json",
             },
             body: JSON.stringify({pin:twoFApin, brukertype:brukertypeValg}),
-            credentials:'include'
+            //credentials:'include'
         });
         const response = await request.json();
         
@@ -178,7 +178,7 @@ function Login(){
 
     async function alleredeLoggetInn(){
         const request = await fetch("http://localhost:1226/login/loggetinn",{method:"GET",
-         credentials:'include'
+         //credentials:'include'
         });
         const response = await request.json();
         if(response.valid){
@@ -194,7 +194,7 @@ function Login(){
 
     async function loggut(){
         const request = await fetch("http://localhost:1226/login/logout", {method:"GET",
-         credentials:'include'
+         //credentials:'include'
         });
         const response = await request.json();
         if(response){

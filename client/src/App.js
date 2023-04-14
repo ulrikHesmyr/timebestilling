@@ -21,7 +21,7 @@ const App = ()=> {
 
     const fetchEnvironment = async ()=>{
       const data = await (
-        await fetch("/env/env")
+        await fetch("http://localhost:1226/env/env")
       ).json();
       if(data){
         sEnv(data);
@@ -43,7 +43,7 @@ const App = ()=> {
       </Helmet>
         <BrowserRouter><div className='navHeader'>
         
-        <button role='button' tabIndex={0} id="burgerButton" className='burger' aria-label='Vis navigasjonsmeny' aria-expanded={synligMeny} aria-controls="navigation" onClick={()=>{
+        <button tabIndex={0} id="burgerButton" className='burger' aria-label='Vis navigasjonsmeny' aria-expanded={synligMeny} aria-controls="navigation" onClick={()=>{
               setSynligmeny(!synligMeny);
             }} style={{background:"transparent", border: "none"}}>
               <div></div>

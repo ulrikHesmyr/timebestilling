@@ -2,7 +2,7 @@ import React, {useEffect, useRef} from "react";
 import { hentDato } from "../App";
 import Fortsett from "./Fortsett";
 
-function Frisor({tilgjengeligeFrisorer, sDato, sMidlertidigDato, frisorBildeArray, sFrisorBildeArray, displayKomponent, klokkeslettet, sKlokkeslett ,frisor, sFrisor}){
+function Frisor({tilgjengeligeFrisorer, sDatoForsteLedige, sDato, sMidlertidigDato, frisorBildeArray, sFrisorBildeArray, displayKomponent, klokkeslettet, sKlokkeslett ,frisor, sFrisor}){
 
     const valgtFrisorBoks = useRef(null);
     const referanceElement = useRef(null);
@@ -29,6 +29,7 @@ function Frisor({tilgjengeligeFrisorer, sDato, sMidlertidigDato, frisorBildeArra
             {tilgjengeligeFrisorer.length > 0?<>
             <div tabIndex={0} aria-label="Velg første ledige frisør" onClick={()=>{
                 sFrisor(false);
+                sDatoForsteLedige(null);
                 sDato(hentDato());
                 sMidlertidigDato(hentDato());
                 valgtFrisorBoks.current.scrollIntoView({behavior:"smooth", block:"center"});
@@ -40,6 +41,7 @@ function Frisor({tilgjengeligeFrisorer, sDato, sMidlertidigDato, frisorBildeArra
                 onKeyDown={(e)=>{
                     if(e.code === "Enter" || e.code === "Space"){
                         sFrisor(false);
+                        sDatoForsteLedige(null);
                         sDato(hentDato());
                         sMidlertidigDato(hentDato());
                         valgtFrisorBoks.current.scrollIntoView({behavior:"smooth", block:"center"});
@@ -59,6 +61,7 @@ function Frisor({tilgjengeligeFrisorer, sDato, sMidlertidigDato, frisorBildeArra
                 {frisorBildeArray !== null? tilgjengeligeFrisorer.map((element, index)=>(<div tabIndex={0} role="button" className="frisor" 
                 key={element.navn} aria-label={`Velg frisøren ${element.navn}`} onClick={()=>{
                     sFrisor(element);
+                    sDatoForsteLedige(null);
                     sDato(hentDato());
                     sMidlertidigDato(hentDato());
                     valgtFrisorBoks.current.scrollIntoView({behavior:"smooth", block:"center"});
@@ -71,6 +74,7 @@ function Frisor({tilgjengeligeFrisorer, sDato, sMidlertidigDato, frisorBildeArra
                     if(e.code === "Enter" || e.code === "Space"){
                         
                         sFrisor(element);
+                        sDatoForsteLedige(null);
                         sDato(hentDato());
                         sMidlertidigDato(hentDato());
                         valgtFrisorBoks.current.scrollIntoView({behavior:"smooth", block:"center"});

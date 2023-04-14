@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import Fortsett from './Fortsett';
 import { hentDato, nesteDag } from '../App';
 
-function Klokkeslett({sMidlertidigDato, datoForsteLedige, sDatoForsteLedige, env, sDato, sForsteFrisor, friElementer, tilgjengeligeFrisorer, displayKomponent, klokkeslettet, produkt, bestilteTimer, sKlokkeslett, dato, hentMaaned, frisor}){
+function Klokkeslett({sMidlertidigDato, harEndretDatoen, datoForsteLedige, sDatoForsteLedige, env, sDato, sForsteFrisor, friElementer, tilgjengeligeFrisorer, displayKomponent, klokkeslettet, produkt, bestilteTimer, sKlokkeslett, dato, hentMaaned, frisor}){
     
     const [ledigeTimer, setLedigeTimer] = useState([]);
     const ukedag = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
@@ -14,25 +14,28 @@ function Klokkeslett({sMidlertidigDato, datoForsteLedige, sDatoForsteLedige, env
         
         let frisorerVelgImellom;
         let ledigeTotalt = [];
-        //Sjekker åpningstider for den gjeldende dagen i uka
-        let gjeldendeDag = env.klokkeslett[new Date(dato).getDay()];
-        if(gjeldendeDag.stengt === false){ 
-            for(let i = minutterFraKlokkeslett(gjeldendeDag.open); i <= minutterFraKlokkeslett(gjeldendeDag.closed);i+=15){
-                aapningstider.push(klokkeslettFraMinutter(i))
-            }
-        }
 
         //Finner ut hvor lang tid kundes behandling tar
         let total = env.tjenester.filter(element=>produkt.includes(element)).reduce((total, element)=> total + element.tid, 0);
         
-        
+        //Valgt frisør eller alle frisører
         if(frisor === false){
             frisorerVelgImellom = tilgjengeligeFrisorer;
         } else {
             frisorerVelgImellom = [frisor];
         }
-
+        
         for(let n = 0; n < frisorerVelgImellom.length; n++){
+
+            //Sjekker tider den ansatte er på jobb for den gjeldende dagen i uka
+            let gjeldendeDag = frisorerVelgImellom[n].paaJobb[new Date(dato).getDay()];
+            if(gjeldendeDag.stengt === false){ 
+                for(let i = minutterFraKlokkeslett(gjeldendeDag.open); i <= minutterFraKlokkeslett(gjeldendeDag.closed);i+=15){
+                    aapningstider.push(klokkeslettFraMinutter(i))
+                }
+            }
+
+
             let ekstra = [];
             let utilgjengelige = [];
             //Finner tidspunkter som er reservert fra før og hvilke som er utilgjengelige pga behandlingstid
@@ -123,6 +126,7 @@ function Klokkeslett({sMidlertidigDato, datoForsteLedige, sDatoForsteLedige, env
 
         }
 
+        //Sorterer klokkeslettene slik at de blir i riktig rekkefølge
         ledigeTotalt = ledigeTotalt.sort((a,b)=>{
             if(minutterFraKlokkeslett(a.tid) > minutterFraKlokkeslett(b.tid)){
                 return 1;
@@ -132,9 +136,16 @@ function Klokkeslett({sMidlertidigDato, datoForsteLedige, sDatoForsteLedige, env
                 return 0;
             }
         })
-        if(ledigeTotalt.length === 0){
+        //Sjekker om det er høytidsdag
+        let erHoytid = false;
+        for(let hoytid of env.hoytidsdager){
+            if(hoytid.dato.substring(5,10) === dato.substring(5,10)){
+                erHoytid = true;
+            }
+        }
+        if(ledigeTotalt.length === 0 || erHoytid){
             if(frisor){
-                if(frisor.oppsigelse == "Ikke oppsagt" || new Date(frisor.oppsigelse) > new Date(dato)){
+                if(frisor.oppsigelse === "Ikke oppsagt" || new Date(frisor.oppsigelse) > new Date(dato)){
                     sDato(nesteDag(new Date(dato)));
                     sMidlertidigDato(nesteDag(new Date(dato)));
                 }
@@ -142,7 +153,7 @@ function Klokkeslett({sMidlertidigDato, datoForsteLedige, sDatoForsteLedige, env
                 let gaaNesteDato = false;
                 
                 for(let f of frisorerVelgImellom){
-                    if(f.oppsigelse == "Ikke oppsagt" || new Date(f.oppsigelse) > new Date(dato)){
+                    if(f.oppsigelse === "Ikke oppsagt" || new Date(f.oppsigelse) > new Date(dato)){
                         gaaNesteDato = true;
                     }
                 }
@@ -167,17 +178,10 @@ function Klokkeslett({sMidlertidigDato, datoForsteLedige, sDatoForsteLedige, env
             <h4>Velg tidspunkt for timen her:</h4>
                 <div>Valgt klokkeslett: <strong>{klokkeslettet !== null? klokkeslettet:"--:--"}</strong></div>
 
-                <div>
-                    {dato !== datoForsteLedige?<button disabled={dato === datoForsteLedige && klokkeslettet === ledigeTimer[0].tid} onClick={()=>{
-                        sDato(datoForsteLedige);
-                        sMidlertidigDato(datoForsteLedige);
-                        sKlokkeslett(null);
-                    }}>Finn første ledige time</button>:""}
-                </div>
             </div>
            
             <div className='klokkeslettene'>
-                {(ledigeTimer.length > 0? ledigeTimer.map((tid)=>(<div tabIndex={(klokkeslettet == null?0:-1)} role='button' aria-label={`Klokken ${tid.tid} `} style={{backgroundColor: klokkeslettet===tid.tid ?"var(--farge5)": "white"}} className='klokkeslett' key={tid.tid} onClick={()=>{
+                {(ledigeTimer.length > 0 && !harEndretDatoen? ledigeTimer.map((tid)=>(<div tabIndex={(klokkeslettet == null?0:-1)} role='button' aria-label={`Klokken ${tid.tid} `} style={{backgroundColor: klokkeslettet===tid.tid ?"var(--farge5)": "white"}} className='klokkeslett' key={tid.tid} onClick={()=>{
                     //Velg frisør, sett random ut ifra klokkeslettet, altså tid bruk random som velger random indeks fra tid.frisorer
                     let randomFrisor = tid.frisorer[randomNumber(tid.frisorer.length)];
                     sForsteFrisor(randomFrisor);
@@ -191,7 +195,7 @@ function Klokkeslett({sMidlertidigDato, datoForsteLedige, sDatoForsteLedige, env
                         sKlokkeslett(tid.tid);
                     }
                 }}
-                > {tid.tid} </div>)):(frisor !== false && frisor.oppsigelse !== "Ikke oppsagt" && new Date(frisor.oppsigelse) <= new Date(dato) ?"Kan ikke reservere time hos ansatt etter oppsigelsesdatoen":`Ingen ledige timer for ${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}`))}
+                > {tid.tid} </div>)):(!harEndretDatoen?(frisor !== false && frisor.oppsigelse !== "Ikke oppsagt" && new Date(frisor.oppsigelse) <= new Date(dato) ?"Kan ikke reservere time hos ansatt etter oppsigelsesdatoen":`Ingen ledige timer for ${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}`):"Trykk OK ovenfor for å se ledige timer"))}
             </div>
             <button onClick={()=>{
                 if(klokkeslettet !== null){

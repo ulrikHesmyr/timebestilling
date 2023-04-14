@@ -88,7 +88,7 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle, lagreVarsel, varsleF
             headers:{
                 "Content-Type":"application/json"
             },
-            credentials: 'include',
+            //credentials: 'include',
             body:JSON.stringify(data)
         }
 
@@ -124,7 +124,7 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle, lagreVarsel, varsleF
             headers:{
                 "Content-Type":"application/json"
             },
-            credentials: 'include',
+            //credentials: 'include',
             body:JSON.stringify(data)
         }
 
@@ -185,6 +185,7 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle, lagreVarsel, varsleF
         sDagsfraver("fler");
     }} style={{cursor:"pointer", border:(dagsfraver === "fler"?"2px solid black":"thin solid black"), padding:"0.4rem", margin:"0.3rem", height:"2rem"}}>Fri over flere dager</div>
     </div>
+    
     {(dagsfraver === "dag" || dagsfraver === "fler"?<>
     <h4>Velg frisør som skal ha fri:</h4>
         <div style={{display:"flex",flexWrap:"wrap"}}>

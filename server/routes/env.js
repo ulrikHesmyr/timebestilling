@@ -19,7 +19,6 @@ const hentEnvLimiter = rateLimiter({
 
 router.get('/fri', async(req,res)=>{
     try {
-        console.log("/fri");
         const alleFriElementer = await FriElementer.find();
         if(alleFriElementer){
             return res.json(alleFriElementer);
@@ -274,7 +273,6 @@ router.post('/opprettFri', authorization,async(req,res)=>{
 router.get('/env', hentEnvLimiter, async(req,res)=>{
 
     try {
-        console.log("/env");
         await Environment.findOne({bedrift: BEDRIFT}).select('-antallBestillinger -_id -__v').exec((err, doc)=>{
             if(err){
                 console.log(err);
@@ -295,7 +293,6 @@ const upload = multer({
     dest: 'uploads/',
     limits: { fileSize: 2 * 1024 * 1024 },
     fileFilter: function (req, file, cb) {
-        //console.log(file.originalname);
       if (!file.originalname.match(/\.(jpg|jpeg|HEIC|heic|heif|HEIF|png|gif|JPG|JPEG|PNG|GIF)$/)) {
         return cb(new Error('Only image files are allowed!'), false);
       }
@@ -309,7 +306,6 @@ const oppdaterBildeFrisor = multer({
     dest: 'uploads/',
     limits: { fileSize: 2 * 1024 * 1024 },
     fileFilter: function (req, file, cb) {
-        //console.log(file.originalname);
       if (!file.originalname.match(/\.(jpg|jpeg|HEIC|heic|heif|HEIF|png|gif|JPG|JPEG|PNG|GIF)$/)) {
         return cb(new Error('Only image files are allowed!'), false);
       }
@@ -351,12 +347,64 @@ router.post("/oppdaterBildeFrisor", authorization, oppdaterBildeFrisor, async (r
         console.log(error, "error i oppdaterBildeFrisor");
     }
 });
-  
+
+router.post("/leggTilHoytidsdag", authorization, async (req, res)=>{
+    const {dag, dato} = req.body;
+    try {
+        if(req.admin){
+            const env = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {$push:{hoytidsdager:{dag:dag, dato:dato}}});
+            if(env){
+                return res.send({valid:true});
+            }
+        }
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+router.post("/slettHoytidsdag", authorization, async (req, res)=>{
+    const {dag} = req.body;
+    try {
+        if(req.admin){
+            const env = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {$pull:{hoytidsdager:{dag:dag}}});
+            if(env){
+                return res.send({valid:true});
+            }
+        }
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+router.post("/oppdaterPaaJobb", authorization, async (req,res)=>{
+    const {paaJobb, navn} = req.body;
+    try {
+        if(req.admin){
+            const env = await Environment.findOne({bedrift:BEDRIFT});
+            if(env){
+                let nyFrisorer = env.frisorer.map(frisor => {
+                    if(frisor.navn === navn){
+                        frisor.paaJobb = paaJobb;
+                    }
+                    return frisor;
+                })
+                const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {frisorer:nyFrisorer});
+                if(oppdatertEnv){
+                    return res.send({valid:true});
+                } else {
+                    return res.send({valid:false});
+                }
+            }
+        }
+    } catch (error) {
+        
+    }
+});
 
 router.post("/opprettFrisor", authorization, upload, async (req,res)=>{ 
 
    
-    const {nyFrisorNavn, nyFrisorTjenester, tittel, beskrivelse} = req.body;
+    const {nyFrisorNavn, nyFrisorTjenester, tittel, beskrivelse, paaJobb} = req.body;
     let nyFrisorTjenesterArray = nyFrisorTjenester.split(",");
     try {
         if(req.admin){
@@ -366,17 +414,13 @@ router.post("/opprettFrisor", authorization, upload, async (req,res)=>{
                 contentType: req.file.mimetype
             };
             
-            const env = await Environment.findOne({bedrift:BEDRIFT});
-            if(env){
-                let tempFrisorer = env.frisorer;
-                tempFrisorer.push({navn:nyFrisorNavn, produkter:nyFrisorTjenesterArray, img:img, tittel:tittel, beskrivelse:beskrivelse});
-                const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {frisorer:tempFrisorer});
-                if(oppdatertEnv){
-                    return res.send({message:"Frisør opprettet!"});
-                } else {
-                    return res.send({message:"Noe har skjedd gærent i /opprettFrisor!"});
-                }
+            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {$push:{frisorer:{navn:nyFrisorNavn, produkter:nyFrisorTjenesterArray, img:img, tittel:tittel, beskrivelse:beskrivelse, paaJobb:JSON.parse(paaJobb)}}});
+            if(oppdatertEnv){
+                return res.send({message:"Frisør opprettet!"});
+            } else {
+                return res.send({message:"Noe har skjedd gærent i /opprettFrisor!"});
             }
+            
         })
         }
     } catch (error) {
@@ -485,7 +529,6 @@ router.post("/slettFrisor", authorization, async (req,res)=>{
 
 router.post("/oppdaterFrisorer", authorization, async (req,res)=>{
     const {frisorer} = req.body;
-    console.log(frisorer);
     try {
         if(req.admin){
             const env = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {frisorer:frisorer});

@@ -17,7 +17,7 @@ function RedigerKontakt({number, setState, state, sUpdateTrigger, updateTrigger,
             headers: {
                 'Content-Type': 'application/json'
             },
-            credentials: 'include',
+            //credentials: 'include',
             body: JSON.stringify({epost: tempState})
             });
             const data = await response.json();
@@ -38,7 +38,7 @@ function RedigerKontakt({number, setState, state, sUpdateTrigger, updateTrigger,
             headers: {
                 'Content-Type': 'application/json'
             },
-            credentials: 'include',
+            //credentials: 'include',
             body: JSON.stringify({telefonnummer: tempState})
             });
             const data = await response.json();
@@ -54,12 +54,12 @@ function RedigerKontakt({number, setState, state, sUpdateTrigger, updateTrigger,
     return(
     <div>
             {redigeringsKnappSynlig?(
-        <button className='rediger' onClick={(e)=>{
+        <button className='redigerKnapp' onClick={(e)=>{
             e.preventDefault();
             sInputSynlig(!inputSynlig);
             sRedigeringsKnappSynlig(false);
             sAvbrytOgLagreSynlig(true)
-        }}><img className='ikonKnapper' src='rediger.png' alt="Rediger"></img></button>):""}
+        }}></button>):""}
         
         {inputSynlig && avbrytOgLagreSynlig?(<div className='fokus'>
         <h4>Rediger kontakt info:</h4>
