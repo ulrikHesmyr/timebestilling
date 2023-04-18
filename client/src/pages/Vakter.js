@@ -32,7 +32,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
   const [isMobile, setisMobile] = useState(false);
   
   useEffect(()=>{
-    console.log("vakter");
+    
     if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
       setisMobile(true);
     }
@@ -116,7 +116,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
         body: JSON.stringify({passord: gjentaNyttPassord}),
         //credentials:'include'
       };
-      const request = await fetch("/login/oppdaterPassord", options);
+      const request = await fetch("http://localhost:1226/login/oppdaterPassord", options);
       const response = await request.json();
       if(response){
         varsle();
@@ -196,10 +196,10 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
             </button>(brukes kun for tofaktorautentisering)</>  }
           </p>
           
-          <p>
+          <div>
           Rediger passord
           {visRedigerPassord?<>
-          <p>
+          <div>
           <label>Nytt passord: <input type={visNyttPassord?"text":"password"} onChange={(e)=>{
             sNyttPassord(e.target.value);
           }} value={nyttPassord}></input><input type="checkbox" onChange={()=>{
@@ -222,12 +222,12 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
               alert("Passordene er ikke like");
             }
           }} >Lagre</button>
-          </p>
+          </div>
           </>:
           <button onClick={()=>{
             sVisRedigerPassord(true);
           }} ><img src="rediger.png" alt='rediger passord' style={{height:"1.4rem"}}></img></button>
-          }</p>
+          }</div>
           
 
            </>:""}

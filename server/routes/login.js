@@ -11,7 +11,7 @@ const Bestiltetimer = require("../model/bestilling");
 const Environment = require("../model/env");
 const Brukere = require("../model/brukere");
 const authorization = require("../middleware/authorization");
-const {BEDRIFT, ACCESS_TOKEN_KEY, NODE_ENV, TWOFA_SECRET, KEYNAME_SMS, PRIVATE_KEY} = process.env;
+const {BEDRIFT, ACCESS_TOKEN_KEY, NODE_ENV, TWOFA_SECRET, KEYNAME_SMS, PRIVATE_KEY, CUSTOMER_KEY, PASSORD_KEY} = process.env;
 
 
 let loginIntervall = 15 * 60 * 1000;  
@@ -35,9 +35,9 @@ router.post("/oppdaterPassord", authorization, async(req,res)=>{
     if(NODE_ENV === "production"){
         bruker = req.brukernavn;
     } else {
-        bruker = "ludvik";
+        bruker = "admin";
     }
-    const oppdatertPassord = await Brukere.findOneAndUpdate({brukernavn:bruker}, {passord:passord});
+    const oppdatertPassord = await Brukere.findOneAndUpdate({brukernavn:bruker}, {passord:jwt.sign({passord: passord}, PASSORD_KEY)});
     if(oppdatertPassord){
         return res.send({message:"Oppdatert passord"});
     } else {
@@ -50,7 +50,7 @@ router.post("/resetPassord", authorization, async(req,res)=>{
     //Resetter passordet til en ansatt
     const {navn} = req.body;
     if(req.admin){
-        const bruker = await Brukere.findOneAndUpdate({brukernavn:navn}, {passord:navn});
+        const bruker = await Brukere.findOneAndUpdate({brukernavn:navn}, {passord:jwt.sign({passord: navn}, PASSORD_KEY),});
 
         if(bruker){
             return res.json({message:"Reset passord", valid:true});
@@ -84,7 +84,7 @@ router.post("/opprettBruker", authorization, async (req,res)=>{
     if(req.admin){
         const nyBruker = await Brukere.create({
             brukernavn: nyBrukernavn,
-            passord:nyBrukernavn,
+            passord: jwt.sign({passord: nyBrukernavn}, PASSORD_KEY),
             telefonnummer: nyTelefonnummer,
             admin: adminTilgang
         });
@@ -127,7 +127,11 @@ router.get("/loggetinn", authorization, async (req,res)=>{
             let datoA = new Date(a.dato + " " + a.tidspunkt);
             let datoB = new Date(b.dato + " " + b.tidspunkt);
             return datoA - datoB;
-        })
+        }).map((bestilling)=>{
+            bestilling.kunde = jwt.verify(bestilling.kunde, CUSTOMER_KEY).kunde;
+            bestilling.telefonnummer = jwt.verify(bestilling.telefonnummer, CUSTOMER_KEY).telefonnummer;
+            return bestilling;
+    })
             
         return res.json({valid:true,bruker:{navn:finnBruker.brukernavn, telefonnummer:finnBruker.telefonnummer}, message:"Du er nå logget inn", brukertype: (req.brukertype==="admin"?"admin":"vakter"), env:env, bestilteTimer:bestilteTimer});
         
@@ -161,15 +165,19 @@ router.post("/TWOFA", twofaLimiter, async (req,res)=>{
         
         const finnBruker = await Brukere.findOne({brukernavn: two_FA.brukernavn});
         const env = await Environment.findOne({bedrift:BEDRIFT}).select("-_id -__v -antallBestillinger").exec();
-        
+        let passordet = jwt.verify(finnBruker.passord, PASSORD_KEY).passord;
         
         let bestilteTimer = await Bestiltetimer.find();
         bestilteTimer = bestilteTimer.sort((a,b)=>{
             let datoA = new Date(a.dato + " " + a.tidspunkt);
             let datoB = new Date(b.dato + " " + b.tidspunkt);
             return datoA - datoB;
+        }).map((bestilling)=>{
+                bestilling.kunde = jwt.verify(bestilling.kunde, CUSTOMER_KEY).kunde;
+                bestilling.telefonnummer = jwt.verify(bestilling.telefonnummer, CUSTOMER_KEY).telefonnummer;
+                return bestilling;
         })
-        const accessToken = jwt.sign({brukernavn:two_FA.brukernavn, passord:finnBruker.passord, brukertype:brukertype}, ACCESS_TOKEN_KEY, {expiresIn:'480m'});
+        const accessToken = jwt.sign({brukernavn:two_FA.brukernavn, passord:passordet, brukertype:brukertype}, ACCESS_TOKEN_KEY, {expiresIn:'480m'});
 
         //Setter cookie for å holde brukeren logget inn
         
@@ -193,9 +201,10 @@ router.post('/auth',loginLimiter, async (req,res)=>{
     try {
         const {brukernavn, passord, valgtBrukertype, brukertype}= req.body;
         const finnBruker = await Brukere.findOne({brukernavn: brukernavn});
+        let passordet = jwt.verify(finnBruker.passord, PASSORD_KEY).passord;
         
 
-        if(finnBruker && finnBruker.passord === passord){
+        if(finnBruker && passordet === passord){
 
             if(finnBruker.admin){
 
@@ -245,9 +254,13 @@ router.post('/auth',loginLimiter, async (req,res)=>{
                 let datoA = new Date(a.dato + " " + a.tidspunkt);
                 let datoB = new Date(b.dato + " " + b.tidspunkt);
                 return datoA - datoB;
+            }).map((bestilling)=>{
+                bestilling.kunde = jwt.verify(bestilling.kunde, CUSTOMER_KEY).kunde;
+                bestilling.telefonnummer = jwt.verify(bestilling.telefonnummer, CUSTOMER_KEY).telefonnummer;
+                return bestilling;
             })
             //Setter access token i cookies
-            const accessToken = jwt.sign({brukernavn:brukernavn, passord:passord, brukertype: brukertype},ACCESS_TOKEN_KEY,{expiresIn:'480m'});
+            const accessToken = jwt.sign({brukernavn:brukernavn, passord:passordet, brukertype: brukertype},ACCESS_TOKEN_KEY,{expiresIn:'480m'});
             res.cookie("access_token", accessToken, {
                 httpOnly: true,
                 secure: process.env.HTTPS_ENABLED == "secure",

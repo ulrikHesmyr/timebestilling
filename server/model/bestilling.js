@@ -7,7 +7,7 @@ const bestilling = new mongoose.Schema({
     behandlinger: {type:Array},
     medarbeider: {type:String},
     kunde: {type:String},
-    telefonnummer: {type:Number}
+    telefonnummer: {type:String}
 })
 
 module.exports = mongoose.model("bestilling", bestilling);

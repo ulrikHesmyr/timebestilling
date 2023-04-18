@@ -376,6 +376,21 @@ router.post("/slettHoytidsdag", authorization, async (req, res)=>{
     }
 })
 
+router.post("/giAdmin", authorization, async (req, res)=>{
+    const {navn} = req.body;
+    try {
+        if(req.admin){
+            const bruker = await Brukere.findOneAndUpdate({brukernavn:navn}, {admin:true});
+            if(bruker){
+                return res.send({valid:true});
+            }
+        }
+    } catch (error) {
+        console.log(error);
+
+    }
+})
+
 router.post("/oppdaterPaaJobb", authorization, async (req,res)=>{
     const {paaJobb, navn} = req.body;
     try {

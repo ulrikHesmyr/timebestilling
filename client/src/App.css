@@ -545,6 +545,7 @@ input, button, select, option{
     width:4rem;
     aspect-ratio: 1/1;
     cursor: pointer;
+    margin: 0 !important;
   }
   .burger div{
     background: var(--background4);

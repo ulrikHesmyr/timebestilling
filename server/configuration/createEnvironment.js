@@ -1,6 +1,7 @@
+const jwt = require("jsonwebtoken");
 const Environment = require("../model/env");
 const Brukere = require("../model/brukere");
-const {BEDRIFT, ADMIN_TLF, ADMIN_BRUKER, ADMIN_PASS, KONTAKT_TLF} = process.env;
+const {BEDRIFT, ADMIN_TLF, ADMIN_BRUKER, ADMIN_PASS, KONTAKT_TLF, PASSORD_KEY} = process.env;
 
 async function opprettEnvironment(){
     try {
@@ -121,7 +122,7 @@ async function opprettEnvironment(){
             
             const bruker = await Brukere.create({
                 brukernavn:ADMIN_BRUKER,
-                passord:ADMIN_PASS,
+                passord: jwt.sign({passord: ADMIN_PASS}, PASSORD_KEY),
                 telefonnummer: parseInt(ADMIN_TLF),
                 admin:true
             })

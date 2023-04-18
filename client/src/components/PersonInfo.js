@@ -4,9 +4,10 @@ function PersonInfo({env, smsBekreftelse, sSmsBekreftelse, totalTid, totalPris, 
     
     const [harregistrert, sHarRegistrert] = useState(false); //For å passe på at en bruker ikke trykker to ganger før neste side rekker å laste inn
     const [validertSMSpin, sValidertSMSpin] = useState(!env.aktivertSMSpin); 
+    
     const [visPINBoks, sVisPINBoks] = useState(false);
     const [pin, sPIN] = useState('');
-    const [tryktOK, sTryktOK] = useState(false);
+    const [tryktOK, sTryktOK] = useState(!env.aktivertSMSpin);
     const [visLaster, sVisLaster] = useState(false);
 
     const [visIkkeGodkjent, sVisIkkeGodkjent] = useState(false);
@@ -165,7 +166,7 @@ function PersonInfo({env, smsBekreftelse, sSmsBekreftelse, totalTid, totalPris, 
             }
 
                 <p>Bekreftelse på din reservasjon sendes på SMS</p>
-                <p>Jeg godkjenner <a aria-label="Gå til personvernserklæringen og brukervilkår" rel='noreferrer' target="_blank" href='/personvaernserklaering-og-brukervilkaar'>personvernserkæringen og brukervilkår</a> ved å trykke "send inn reservasjon"</p>
+                <p>Jeg godkjenner <a aria-label="Åpne personvernserklæringen og brukervilkår i ny fane" rel='noreferrer' target="_blank" href='/personvaernserklaering-og-brukervilkaar'>personvernserkæringen og brukervilkår</a> ved å trykke "send inn reservasjon"</p>
                 <label style={{display:"flex", justifyContent:"center", flexDirection:"column"}} htmlFor='sms_bekreftelse'>
                     <div style={{display:"flex", alignItems:"center", flexDirection:"row"}}>Få bekreftelse på SMS?<input style={{height:"1.4rem", width:"1.4rem"}} required aria-required id="sms_bekreftelse" type='checkbox' value={smsBekreftelse} onChange={(e)=>{
                         sSmsBekreftelse(e.target.checked);

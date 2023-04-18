@@ -12,7 +12,7 @@ const Bestilttime = require("../model/bestilling");
 const Env = require("../model/env");
 const FriTimene = require("../model/fri");
 
-const {NODE_ENV, SMSPIN_SECRET, ACCESS_TOKEN_KEY, SMSPINVALID_SECRET} = process.env;
+const {NODE_ENV, SMSPIN_SECRET, ACCESS_TOKEN_KEY, SMSPINVALID_SECRET, CUSTOMER_KEY} = process.env;
 
 let intervall = 30 * 60 * 1000; // 30 min
 if(NODE_ENV === "development") intervall = 2* 60 * 1000; // 2 minutter
@@ -72,32 +72,35 @@ router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
         if(!t && finnesIkkeKollisjon){
 
             let kundensTelefonnummer = telefonnummer;
-            const ansattBestilling = req.cookies.access_token; 
-            const ansattBestilling2 = req.cookies.two_FA_valid; 
-            let ansatt = false;
-            if(ansattBestilling){
-                ansatt = jwt.verify(ansattBestilling, ACCESS_TOKEN_KEY);
-            } else if (ansattBestilling2){
-                ansatt = jwt.verify(ansattBestilling2, ACCESS_TOKEN_KEY);
-            }
+            if(NODE_ENV === "production"){
+                
+                const ansattBestilling = req.cookies.access_token; 
+                const ansattBestilling2 = req.cookies.two_FA_valid; 
+                let ansatt = false;
+                if(ansattBestilling){
+                    ansatt = jwt.verify(ansattBestilling, ACCESS_TOKEN_KEY);
+                } else if (ansattBestilling2){
+                    ansatt = jwt.verify(ansattBestilling2, ACCESS_TOKEN_KEY);
+                }
 
-            if(env.aktivertSMSpin && !ansatt){
-                const dataFromSMSCookie = jwt.verify(req.cookies.tlfvalid, SMSPINVALID_SECRET);
-                if(dataFromSMSCookie){
-                    kundensTelefonnummer = parseInt(dataFromSMSCookie.tlf);
-                } else {
-                    return res.status(401).json({m:"Du må validere telefonnummeret ditt før du bestiller time!"});
+                if(env.aktivertSMSpin && !ansatt){
+                    const dataFromSMSCookie = jwt.verify(req.cookies.tlfvalid, SMSPINVALID_SECRET);
+                    if(dataFromSMSCookie){
+                        kundensTelefonnummer = parseInt(dataFromSMSCookie.tlf);
+                    } else {
+                        return res.status(401).json({m:"Du må validere telefonnummeret ditt før du bestiller time!"});
+                    }
                 }
             }
 
-            const bestillNyTime = await Bestilttime.create({
+            let bestillNyTime = await Bestilttime.create({
                 dato: dato,
                 tidspunkt: tidspunkt,
                 //frisor: frisor,
                 behandlinger: behandlinger,
                 medarbeider: medarbeider,
-                kunde: kunde,
-                telefonnummer: kundensTelefonnummer
+                kunde: jwt.sign({kunde}, CUSTOMER_KEY),
+                telefonnummer: jwt.sign({telefonnummer: kundensTelefonnummer}, CUSTOMER_KEY)
             })
 
             //Sender SMS med bekreftelse
@@ -126,7 +129,9 @@ router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
             }
             
             if(bestillNyTime){
-                return res.send({message: "Time er bestilt", bestiltTime: bestillNyTime})
+                bestillNyTime.kunde = jwt.verify(bestillNyTime.kunde, CUSTOMER_KEY).kunde;
+                bestillNyTime.telefonnummer = jwt.verify(bestillNyTime.telefonnummer, CUSTOMER_KEY).telefonnummer;
+                return res.send({message: "Time er bestilt", bestiltTime: bestillNyTime, valid:true})
             } else {
                 return res.send({message: "Noe har skjedd galt, prøv igjen", valid:false})
             }
@@ -148,6 +153,10 @@ const PINlimiter = rateLimiter({
 
 router.post("/tlfpin", PINlimiter, async (req,res)=>{
     const {pin} = req.body;
+    if(NODE_ENV === "development"){
+        return res.send({valid:true});
+    }
+
     try {
         //Forutsetter at "req.cookies.tlfpin" finnes
         const data = jwt.verify(req.cookies.tlfpin, SMSPIN_SECRET);
@@ -171,6 +180,10 @@ router.post("/tlfpin", PINlimiter, async (req,res)=>{
 
 router.post("/SMSpin", async (req,res)=>{
     const {tlf} = req.body;
+    if(NODE_ENV === "development"){
+        return res.send({valid:true});
+    }
+
     
     try {
 

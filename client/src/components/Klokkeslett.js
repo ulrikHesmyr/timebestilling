@@ -172,41 +172,42 @@ function Klokkeslett({sMidlertidigDato, harEndretDatoen, datoForsteLedige, sDato
     }, [dato, friElementer, produkt, env.klokkeslett, env.tjenester, frisor, env.frisorer, bestilteTimer, tilgjengeligeFrisorer])
 
     return(
-        <div className="animer-inn">
-           <div className='k'>
-            <div>
-            <h4>Velg tidspunkt for timen her:</h4>
-                <div>Valgt klokkeslett: <strong>{klokkeslettet !== null? klokkeslettet:"--:--"}</strong></div>
-
-            </div>
-           
-            <div className='klokkeslettene'>
-                {(ledigeTimer.length > 0 && !harEndretDatoen? ledigeTimer.map((tid)=>(<div tabIndex={(klokkeslettet == null?0:-1)} role='button' aria-label={`Klokken ${tid.tid} `} style={{backgroundColor: klokkeslettet===tid.tid ?"var(--farge5)": "white"}} className='klokkeslett' key={tid.tid} onClick={()=>{
-                    //Velg frisør, sett random ut ifra klokkeslettet, altså tid bruk random som velger random indeks fra tid.frisorer
-                    let randomFrisor = tid.frisorer[randomNumber(tid.frisorer.length)];
-                    sForsteFrisor(randomFrisor);
-                    sKlokkeslett(tid.tid);
-                }}
-                onKeyDown={(e)=>{
-                    if(e.code === "Enter" || e.code === "Space"){
+        <>{ !harEndretDatoen?
+            <div className="animer-inn">
+               <div className='k'>
+                <div>
+                <h4>Velg tidspunkt for timen her:</h4>
+                    <div>Valgt klokkeslett: <strong>{klokkeslettet !== null? klokkeslettet:"--:--"}</strong></div>
+    
+                </div>
+               
+                <div className='klokkeslettene'>
+                    {(ledigeTimer.length > 0? ledigeTimer.map((tid)=>(<div tabIndex={(klokkeslettet == null?0:-1)} role='button' aria-label={`Klokken ${tid.tid} `} style={{backgroundColor: klokkeslettet===tid.tid ?"var(--farge5)": "white"}} className='klokkeslett' key={tid.tid} onClick={()=>{
                         //Velg frisør, sett random ut ifra klokkeslettet, altså tid bruk random som velger random indeks fra tid.frisorer
                         let randomFrisor = tid.frisorer[randomNumber(tid.frisorer.length)];
                         sForsteFrisor(randomFrisor);
                         sKlokkeslett(tid.tid);
+                    }}
+                    onKeyDown={(e)=>{
+                        if(e.code === "Enter" || e.code === "Space"){
+                            //Velg frisør, sett random ut ifra klokkeslettet, altså tid bruk random som velger random indeks fra tid.frisorer
+                            let randomFrisor = tid.frisorer[randomNumber(tid.frisorer.length)];
+                            sForsteFrisor(randomFrisor);
+                            sKlokkeslett(tid.tid);
+                        }
+                    }}
+                    > {tid.tid} </div>)):(!harEndretDatoen?(frisor !== false && frisor.oppsigelse !== "Ikke oppsagt" && new Date(frisor.oppsigelse) <= new Date(dato) ?"Kan ikke reservere time hos ansatt etter oppsigelsesdatoen":`Ingen ledige timer for ${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}`):"Trykk OK ovenfor for å se ledige timer"))}
+                </div>
+                <button onClick={()=>{
+                    if(klokkeslettet !== null){
+                        sKlokkeslett(null);
                     }
-                }}
-                > {tid.tid} </div>)):(!harEndretDatoen?(frisor !== false && frisor.oppsigelse !== "Ikke oppsagt" && new Date(frisor.oppsigelse) <= new Date(dato) ?"Kan ikke reservere time hos ansatt etter oppsigelsesdatoen":`Ingen ledige timer for ${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}`):"Trykk OK ovenfor for å se ledige timer"))}
-            </div>
-            <button onClick={()=>{
-                if(klokkeslettet !== null){
-                    sKlokkeslett(null);
-                }
-            }} style={{opacity:"0", margin:"1rem"}} aria-label={(klokkeslettet !== null?`DU har valgt tidspunktet ${klokkeslettet}, ${ukedag[new Date(dato).getDay()]} ${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}, trykk for å endre på dette tidspunktet?`:"Velg klokkeslett og dato ovenfor")}></button>
-           </div>
-            
-            <Fortsett displayKomponent={displayKomponent} previous={2} number={3} disabled={(klokkeslettet !== null? false:true)} />
-           
-        </div>
+                }} style={{opacity:"0", margin:"1rem"}} aria-label={(klokkeslettet !== null?`DU har valgt tidspunktet ${klokkeslettet}, ${ukedag[new Date(dato).getDay()]} ${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}, trykk for å endre på dette tidspunktet?`:"Velg klokkeslett og dato ovenfor")}></button>
+               </div>
+                
+                <Fortsett displayKomponent={displayKomponent} previous={2} number={3} disabled={(klokkeslettet !== null? false:true)} />
+               
+            </div>:""}</>
     )
 }
 

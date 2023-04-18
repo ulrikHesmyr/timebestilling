@@ -24,6 +24,7 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
     const [visSiOpp, sVisSiOpp] = useState(false);     
     const [visRedigerBilde, sVisRedigerBilde] = useState(false);
     const [visRedigerPaaJobb, sVisRedigerPaaJobb] = useState(false);
+    const [visGiAdmin, sVisGiAdmin] = useState(false);
 
     
 
@@ -56,6 +57,33 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
         varsleFeil();
       }
     }
+    //Gir admin-tilgang til vedkommende
+    async function giAdmin(n){
+      lagreVarsel();
+      try {
+        const options = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          //credentials: 'include',
+          body: JSON.stringify({navn:n})
+
+        }
+        const request = await fetch('http://localhost:1226/env/giAdmin', options);
+        const response = await request.json();
+        if(response){
+          varsle();
+          sUpdateTrigger(!updateTrigger);
+        } else {
+          alert("Noe gikk galt, sjekk internettforbindelsen og prøv på nytt");
+        }
+      } catch (error) {
+        varsleFeil();
+        alert("Noe gikk galt, sjekk internettforbindelsen og prøv på nytt");
+      }
+    }
+
     //Oppdaterer en ansatt sitt telefonnummer
     async function oppdaterTelefonAnsatt(){
       try {
@@ -267,6 +295,10 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
               }}>Oppdater bilde</button>
 
               <button onClick={()=>{
+                sVisGiAdmin(true);
+              }}>Gi admin-tilgang</button>
+
+              <button onClick={()=>{
                 sVisRedigerPaaJobb(true);
               }}>Rediger "på jobb"-tider</button>
 
@@ -299,6 +331,21 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
               }}>{frisor.oppsigelse === "Ikke oppsagt"?"Legg inn dato for oppsigelse":"Rediger oppsigelse"}</button>
 
             </div>   
+
+            {visGiAdmin?<div className='fokus'>
+              <div className='lukk'></div>
+              <h4>Gi admin-tilgang: </h4>
+              <p>NB! Denne handlingen er ikke reverserbar. (Man kan ikke fjerne admin tilgang etter man har gitt den til vedkommende, 
+                dersom det fremdeles er ønsket å fjerne admin-tilgang av forskjellige grunner, så kontakt databehandler (Ulrik))
+                
+              </p>
+              <button onClick={()=>{
+                if(window.confirm("Er du sikker på at du vil gi " + frisor.navn + " admin-tilgang?")){
+                  giAdmin(frisor.navn);
+                  sVisGiAdmin(false);
+                }
+              }}>Gi admin-tilgang</button>
+            </div>:""}
 
             {visRedigerBilde?<div className='fokus'>
             <h4>Last opp nytt bilde: </h4>
