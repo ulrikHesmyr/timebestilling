@@ -11,7 +11,7 @@ const authorization = require("../middleware/authorization");
 const {BEDRIFT} = process.env;
 
 const hentEnvLimiter = rateLimiter({
-    max:45,
+    max:100,
     windowMs:30*60*1000,
     message:"MAX 45 requests"
 })

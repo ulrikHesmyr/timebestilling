@@ -362,7 +362,9 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
             </div>   
 
             {visGiAdmin?<div className='fokus'>
-              <div className='lukk'></div>
+              <div onClick={()=>{
+                sVisGiAdmin(false);
+              }} className='lukk'></div>
               <h4>Gi admin-tilgang: </h4>
               <p>NB! Denne handlingen er ikke reverserbar. (Man kan ikke fjerne admin tilgang etter man har gitt den til vedkommende, 
                 dersom det fremdeles er ønsket å fjerne admin-tilgang av forskjellige grunner, så kontakt databehandler (Ulrik))

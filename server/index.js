@@ -28,7 +28,7 @@ app.use(express.static('build'));
 
 //Limiting the total amount of requests per minute (From any IP address)
 let requestCounterLimit = 0;
-let maksRequestsPerMinutt = 200;
+let maksRequestsPerMinutt = 1000;
 if(NODE_ENV === "development"){
   maksRequestsPerMinutt = 20;
 } 
@@ -41,7 +41,7 @@ const requestCounterMiddleware = (req, res, next) => {
   requestCounterLimit++;
   if(requestCounterLimit > maksRequestsPerMinutt){
     res.status(429).json({m: "Administrator er på saken. Serveren har for mye trafikk pr minutt. Vennligst prøv igjen om 1 minutt!"});
-    mailer.sendMail(`For mye trafikk for ${BEDRIFT}`, "100 requests per minutt. Evaluer om det er nødvendig å øke antall requests per minutt eller vurder om det er ddos angrep");
+    mailer.sendMail(`For mye trafikk for ${BEDRIFT}`, `${maksRequestsPerMinutt} requests per minutt. Evaluer om det er nødvendig å øke antall requests per minutt eller vurder om det er ddos angrep`);
   } else {
     next(); 
   }

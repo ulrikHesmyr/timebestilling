@@ -658,9 +658,9 @@ input, button, select, option{
   }
   .redigeringsBoks{
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
   }
   .container{
     display: flex;

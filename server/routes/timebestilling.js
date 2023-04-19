@@ -102,6 +102,7 @@ router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
                 kunde: jwt.sign({kunde}, CUSTOMER_KEY),
                 telefonnummer: jwt.sign({telefonnummer: kundensTelefonnummer}, CUSTOMER_KEY)
             })
+            
 
             //Sender SMS med bekreftelse
             if(SMS_ENABLED){
@@ -160,8 +161,15 @@ router.post("/tlfpin", PINlimiter, async (req,res)=>{
         const data = jwt.verify(req.cookies.tlfpin, SMSPIN_SECRET);
         if(parseInt(data.pin) === parseInt(pin)){
             const token = jwt.sign({tlf: data.tlf}, SMSPINVALID_SECRET);
-            const expirationDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000 * 52);
+            const expirationDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000 * 26); // 26 uker aka 6 måneder
             res.cookie("tlfvalid", token, {
+                httpOnly: true,
+                secure: process.env.HTTPS_ENABLED == "secure",
+                expires: expirationDate
+            });
+            const samtykke = JSON.stringify({samtykke: true, expirationDate: expirationDate.toLocaleDateString()});
+            
+            res.cookie("samtykke_cookies", samtykke, {
                 httpOnly: true,
                 secure: process.env.HTTPS_ENABLED == "secure",
                 expires: expirationDate
@@ -211,9 +219,29 @@ router.post("/SMSpin", async (req,res)=>{
                         return res.send({valid:true});
                     } else {
                         res.clearCookie("tlfvalid");
+                        //Hvis ikke, generer ny pin og send den til brukeren
+                        const pin = randomNumber(1200, 9999);
+                        const data = {tlf, pin};
+                        const token = jwt.sign(data, SMSPIN_SECRET, {expiresIn: "1h"});
+
+                        res.cookie("tlfpin", token, {
+                            httpOnly: true,
+                            secure: process.env.HTTPS_ENABLED == "secure"
+                        })
+                        let baseUrl = "https://shared.target365.io/";
+                        let keyName = process.env.KEYNAME_SMS;
+                        let privateKey = process.env.PRIVATE_KEY;
+                        let serviceClient = new Client(privateKey, { baseUrl, keyName });
+                        let outMessage = {
+                            transactionId: uuidv4(),
+                            sender:'Target365',
+                            recipient:`+47${tlf}`,
+                            content:`Din PIN er: ${pin}`
+                        }
+                        await serviceClient.postOutMessage(outMessage);
                         return res.send({valid:false});
                     }
-                }
+                } 
             } else {
                 //Hvis ikke, generer ny pin og send den til brukeren
                 const pin = randomNumber(1200, 9999);

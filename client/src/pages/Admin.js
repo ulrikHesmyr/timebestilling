@@ -434,7 +434,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
 
                 {visRedigerTimebestillinger?
                 <div className='fokus'>
-                    <div alt='Lukk' className='lukk' onClick={()=>{
+                    <div className='lukk' onClick={()=>{
                         sVisRedigerTimebestillinger(false);
                         sSok("");
                     }}></div><br></br>
@@ -604,7 +604,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                         
                         {visRedigerAdresse?<div>
                             <div className='fokus'>
-                                <div alt='Lukk' className='lukk' onClick={()=>{
+                                <div className='lukk' onClick={()=>{
                                     sVisRedigerAdresse(false);
                                 }}></div><br></br>
                                 <h4>Rediger adresse</h4>
@@ -740,7 +740,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
 
                         {visSlettKategori?<div className='fokus'>
                             <div>
-                                <div alt='Lukk' className='lukk' onClick={()=>{
+                                <div className='lukk' onClick={()=>{
                                     sVisSlettKategori(false);
                                 }}></div>
                                 <h4><br></br>Kategorier:</h4>
@@ -792,7 +792,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
 
                     {visSlettSosialtMedie?<div className='fokus'>
                         <div>
-                            <div alt='Lukk' className='lukk' onClick={()=>{
+                            <div className='lukk' onClick={()=>{
                                 sVisSlettSosialtMedie(false);
                             }}></div>
                             <h4><br></br>Sosiale medier:</h4>

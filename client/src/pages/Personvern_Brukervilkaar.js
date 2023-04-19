@@ -3,61 +3,85 @@ import React from 'react'
 function PB({env}){
     return(
         <div style={{margin:"1rem", marginTop:"6rem", paddingLeft:"10%", paddingRight:"10%"}}> 
-<p>Sist oppdatert 15.04.2023</p>
-<h1>Personvernerklæring for {env.bedrift}</h1>
+<p>Sist oppdatert 19.04.2023</p>
+<h1>Personvernerklæring for {window.location.hostname}</h1>
 <p>
-Ditt personvern er viktig for oss, og vi legger derfor stor vekt på at opplysningene håndteres på en ansvarlig måte og å sørge for at vår bruk av personopplysninger er i samsvar med gjeldende personvernregler.
+Ditt personvern er viktig for oss, og vi legger derfor stor vekt på at opplysningene håndteres på en ansvarlig 
+måte og å sørge for at vår bruk av personopplysninger er i samsvar med gjeldende personvernregler.
 </p>
 <p>
-Nedenfor kan du lese hvordan Hair & There Gjøvik CC Mart n og Ledigtime.no behandler personopplysninger om deg. Du kan også lese om hvilke rettigheter du har i forbindelse med behandlingen vår.
+Nedenfor kan du lese hvordan {env.bedrift} - som heretter refereres til som "oss" og "vi" - behandler personopplysninger om deg. 
+Du kan også lese om hvilke rettigheter du har i forbindelse med behandlingen vår.
 </p>
 <h2>
 Databehandler
 </h2>
 <p>
-Ulrik Hesmyr drifter {env.bedrift} sitt nettsted og fungerer i den sammenheng som databehandler som behandler personopplysninger om deg på vegne av oss som behandlingsansvarlig.
+Hesmyr Web Technologies - heretter "databehandler" - drifter nettstedet vårt og fungerer i den sammenheng som databehandler 
+som behandler personopplysninger om deg på vegne av oss som behandlingsansvarlig. 
 </p>
 <p>
-Vi inngår en databehandleravtale med Ulrik Hesmyr som fastsetter vilkår og instrukser for behandling av personopplysninger. Avtalene inngås i henhold til personvernforordningen artikkel 28 nr. 3.
+Vi inngår en databehandleravtale med Hesmyr Web Technologies som fastsetter vilkår og instrukser 
+for behandling av personopplysninger. Avtalene inngås i henhold til personvernforordningen artikkel 28 nr. 3.
 </p>
 
 <h2>
 Rammene for behandling av personopplysninger</h2>
 <p>
-Vi behandler personopplysninger innenfor rammene av gjeldende lovverk og denne personvernerklæringen. Personopplysninger hentes inn når det er nødvendig for at vi skal kunne utføre de oppgaver og tjenester vi er pålagt å utføre i henhold til lov og/eller avtale, eller når du på annen måte gir personopplysninger til oss.
+Vi behandler personopplysninger innenfor rammene av gjeldende lovverk og denne personvernerklæringen.
+ Personopplysninger hentes inn når det er nødvendig for at vi skal kunne utføre de oppgaver og tjenester 
+ vi er pålagt å utføre i henhold til lov og/eller avtale, eller når du på annen måte gir personopplysninger til oss.
 </p>
 <p>
 Personopplysninger er opplysninger som direkte eller indirekte kan knyttes til deg som enkeltperson.
 
-Vi behandler personopplysninger som navn, adresse, telefonnummer, e-postadresse, timehistorikk, dine kjøp og betalingsopplysninger og øvrige opplysninger som du gir til oss. I noen tilfeller lagres også f.eks. fargekoder eller annen produktinfo knyttet til ditt kundeforhold. Vi samler inn og behandler generelle (ikke-sensitive) data.
+Vi behandler personopplysninger som navn og telefonnummer og øvrige opplysninger som du gir til oss som innebærer sted og tid for
+ timereservasjon. 
 
-Vårt grunnlag for behandlingen er avtalen med deg (personvernforordningen artikkel 6 nr. 1 bokstav b) eller våre rettmessige interesser (personvernforordningen artikkel 6 nr. 1 bokstav f).
+Vårt grunnlag for behandlingen er avtalen med deg (personvernforordningen artikkel 6 nr. 1 bokstav b) eller
+ våre rettmessige interesser (personvernforordningen artikkel 6 nr. 1 bokstav f).
 </p>
 <h2>
 Formål med lagring og behandling av personopplysninger.
 </h2>
 
 <p>
-Formålet med at personopplysningene lagres og behandles er på grunnlag av applikasjonens hensikt med å kunne effektivisere timereservasjoner.
+Formålet med at personopplysningene lagres og behandles er på grunnlag av applikasjonens hensikt 
+med å kunne effektivisere timereservasjoner.
 Dette er for å kunne danne et pålitelig forhold mellom deg som kunde og oss som leverandør av tjenester.
 </p>
 
 <h2>
-Lagringsperiode, personvern og sikkerhet</h2>
+Lagringsperiode, personvern, risiko og sikkerhet</h2>
 <p>
-Personopplysningene lagres ikke lenger enn det som er nødvendig for å oppfylle formålene de ble samlet inn for. Når opplysningene ikke lenger er nødvendige, vil vi sikre at de slettes på en sikkerhetsmessig forsvarlig måte.
+Personopplysningene som inngår i timereservasjonen lagres ikke lenger enn det som er nødvendig for å oppfylle formålene 
+de ble samlet inn for. Dette vil si samme kveld som timereservasjon har vært utført. Unntak her er lagring av 
+telefonnummeret i cookies, som står mer om lenger ned på siden. Når opplysningene ikke lenger 
+er nødvendige, vil vi sikre at de slettes på en sikkerhetsmessig forsvarlig måte.
+</p>
+
+<p>
+Det er vår politikk å beskytte personopplysninger ved å treffe tilstrekkelige tekniske og organisatoriske sikkerhetstiltak.
+ Ved lagring av personopplysningene tar vi hensyn til sikkerhet og risiko. Vi har etablert rutiner for å sikre at
+    personopplysningene lagres på en sikker måte og at de ikke kommer på avveie. Vi har også etablert rutiner for risikovurdering 
+    med bruk av offentlige rammeverk for vurdering av alvorlighetsgrad av sårbarhet og risiko for systemet brukt i nettapplikasjonen.
+    På denne måten kan vi selv evaluere om det er forsvarlig med de nåværende sikkerhetstiltakene, eller om det må gjøres endringer.
+    Dette er for å sikre at personopplysningene ikke kommer på avveie.
 
 </p>
-<p>Det er vår politikk å beskytte personopplysninger ved å treffe tilstrekkelige tekniske og organisatoriske sikkerhetstiltak.</p>
+
 <h2>
 Deling av dine opplysninger med andre</h2>
 <p>
   
-Vi gir personopplysningene dine videre til databehandler(e) i forbindelse med den vanlige driften og administrasjon av ledigtime.no. Vår(e) databehandler(e) behandler bare personopplysningene til våre formål og instrukser i henhold til inngått databehandleravtale.
+Vi gir personopplysningene dine videre til databehandleren i forbindelse med den vanlige driften og administrasjon 
+av {window.location.hostname}. Vår databehandler behandler bare personopplysningene til våre formål og 
+instrukser i henhold til inngått databehandleravtale.
 
 </p>
 <p>
-Grunnlaget for behandlingen er våre legitime interesser (personvernforordningen artikkel 6, nr. 1, bokstav f) og/eller avtalen med deg (personvernforordningen artikkel 6 nr. 1 bokstav b).
+Grunnlaget for behandlingen er våre legitime interesser (personvernforordningen artikkel 6, nr. 1, bokstav f) og/eller 
+avtalen med deg (personvernforordningen artikkel 6 nr. 1 bokstav b).
 </p>
 
 <h2>
@@ -65,7 +89,13 @@ Overføring av personopplysninger til land utenfor EU/EØS
 </h2>
 
 <p>
-Vi kan i forbindelse med behandlingen av personopplysningene overføre opplysningene til land utenfor EU/EØS. Personvernlovgivningen i disse landene kan være mindre streng enn den er i Norge og EU/EØS for øvrig. I visse land har EU-kommisjonen imidlertid fastsatt at personvernnivået er på høyde med det vernenivået som er i EU/EØS. Hvis vi overfører personopplysninger til land der dette ikke er tilfelle, vil overføringen av personopplysningene til disse landene utenfor EU/EØS skje på bakgrunn av standardkontraktene utarbeidet av EU-kommisjonen, eller annet lignende overføringsgrunnlag som er spesielt utarbeidet for å sikre et tilstrekkelig vernenivå.
+Vi kan i forbindelse med behandlingen av personopplysningene overføre opplysningene til 
+land utenfor EU/EØS. Personvernlovgivningen i disse landene kan være mindre streng enn den er i 
+Norge og EU/EØS for øvrig. I visse land har EU-kommisjonen imidlertid fastsatt at personvernnivået er 
+på høyde med det vernenivået som er i EU/EØS. Hvis vi overfører personopplysninger til land der dette ikke er 
+tilfelle, vil overføringen av personopplysningene til disse landene utenfor EU/EØS skje på bakgrunn av standardkontraktene 
+utarbeidet av EU-kommisjonen, eller annet lignende overføringsgrunnlag som er spesielt utarbeidet for å sikre et 
+tilstrekkelig vernenivå.
 </p>
 
 <p>
@@ -80,11 +110,12 @@ Som registrert har du en rekke rettigheter i henhold til personvernforordningen.
 </p>
 
 <p>
-Hvis du vil benytte deg av rettighetene, må du kontakte oss. 
+Hvis du vil benytte deg av rettighetene, må du kontakte oss på e-post: {env.kontakt_epost} eller tlf.: {env.kontakt_tlf}. 
 </p>
 
 <p>
-Du kan dessuten - ubetinget og til enhver tid - gjøre innsigelser mot vår behandling når den skjer på bakgrunn av vår rettmessige interesse.
+Du kan dessuten - ubetinget og til enhver tid - gjøre innsigelser mot vår behandling når den skjer på bakgrunn 
+av vår rettmessige interesse.
 </p>
 
 <h3>Dine rettigheter omfatter også følgende:</h3>
@@ -99,7 +130,8 @@ Du kan dessuten - ubetinget og til enhver tid - gjøre innsigelser mot vår beha
 </ul>
 
 <p>
-Du har rett til innsyn i dine personopplysninger. Ta kontakt med oss. Vår kontaktinformasjon finner du på ledigtime.no.
+Du har rett til innsyn i dine personopplysninger. Ta kontakt med oss. Vår kontaktinformasjon finner du ovenfor 
+eller på {window.location.hostname}.
 </p>
 
 <h2>
@@ -107,62 +139,71 @@ Klage
 </h2>
 
 <p>
-Hvis du er uenig eller misfornøyd med måten vi behandler dine personopplysninger på, kan du klage til oss. Vår kontaktinformasjon finner du på ledigtime.no.
+Hvis du er uenig eller misfornøyd med måten vi behandler dine personopplysninger på, 
+kan du klage til oss. Vår kontaktinformasjon finner du overnfor eller på {window.location.hostname}.
 </p>
 
 <p>
-Du har rett til å sende inn en klage til Datatilsynet dersom du er misfornøyd med måten vi behandler dine personopplysninger på. Du finner Datatilsynets kontaktinformasjon på www.datatilsynet.no.
+Du har rett til å sende inn en klage til Datatilsynet dersom du er misfornøyd
+ med måten vi behandler dine personopplysninger på. Du finner Datatilsynets
+  kontaktinformasjon på www.datatilsynet.no.
 </p>
 
 <h2>
 Oppdateringer
 </h2>
 <p>
-Vi evaluerer og oppdaterer løpende denne personvernerklæringen. Det er derfor en god idé å holde deg regelmessig oppdatert. Øverst kan du se når den sist ble oppdatert. Den siste versjonen vil alltid være tilgjengelig på våre hjemmesider.
+Vi evaluerer og oppdaterer løpende denne personvernerklæringen. Det er derfor en god idé å holde deg 
+regelmessig oppdatert. Øverst kan du se når den sist ble oppdatert. Den siste versjonen vil alltid være
+ tilgjengelig på våre hjemmesider.
 </p>
 <h2>
-Bruk av cookies på Ledigtime.no
-</h2>
-<p>
-For å få nettstedet Ledigtime.no til å fungere, bruker vi cookies (informasjonskapsler). Når du besøker Ledigtime.no for første gang, vil du bli bedt om å gi samtykke til bruk av cookies på nettstedet eller avslå bruk av alle eller noen cookies.
-</p>
-
-<h2>
-Hva er en cookie?
+Bruk av cookies på {window.location.hostname}
 </h2>
 
 <p>
-En cookie er en liten tekstfil som lagres i nettleseren på PC'en, smarttelefonen, nettbrettet eller en annen enhet du surfer på nettet med når du besøker hjemmesider. Cookies gjør det mulig å gjenkjenne enheten din mv. og å samle inn informasjon om din adferd på nettet, inkludert hvilke sider og funksjoner som besøkes med din nettleser, samt sikrer at den fungerer rent teknisk. I noen tilfeller er cookies den eneste måten å få et nettsted til å fungere etter hensikten på.
+Vi ønsker at ditt besøk på {window.location.hostname} skal være en god opplevelse. Derfor bruker vi 
+informasjonskapsler (cookies) til funksjonelle mål. En informasjonskapsel, også kalt cookie, er 
+små filer som nettleseren din mottar fra nettsider du besøker. Filene lagres på datamaskinen eller mobilenheten din, men de 
+er krypterte og vil ikke kunne identifisere deg for uvedkommende. Ved å benytte deg av {window.location.hostname} 
+samtykker du i at vi kan sette informasjonskapsler (cookies) i din nettleser, og de fleste nettlesere er innstilt slik at de automatisk 
+aksepterer informasjonskapsler. Dersom du ikke samtykker til bruk av informasjonskapsler, må du selv trekke tilbake samtykket 
+ved å endre innstillingene i nettleseren din. Les mer om hvordan du gjør dette lenger ned på siden.
 </p>
 
 <p>
-Data fra cookies kan også brukes til å samle inn personlig identifiserbare opplysninger til statistiske formål og til forbedring av brukeropplevelsen på nettsiden.
+For å bestille time på {window.location.hostname}/timebestilling, så må vi ta cookies (informasjonskapsler) i bruk. Når du 
+har fylt ut din bestilling, så vil vi lagre telefonnummeret ditt i en cookie slik at du ikke trenger å verifisere telefonnummeret ditt
+ til neste gang. Samtidig bruker vi midlertidige funksjonelle cookies for pin og verifisering, som slettes når verifiseringen er 
+ gjennomført, eller når du lukker nettleseren.
+Når du trykker på knappen som sier "send inn reservasjon", så blir du informert om at du samtykker til at vi lagrer informasjonen 
+din i en cookie. Informasjonen vil være lagret i 6 måneder før den slettes fra cookies.
+ Samtykket er frivillig, men også nødvendig for å kunne fullføre bestillingen.  
+
 </p>
 
 <p>
-Målet er å gi deg en god brukeropplevelse og fordeler neste gang du besøker nettsiden ved at innholdet blir tilpasset dine preferanser, og at du sparer tid fordi du slipper å legge inn samme informasjon på nytt.
+Målet er å gi deg en god brukeropplevelse og fordeler neste gang du besøker nettsiden 
+ved at du slipper å forholde deg til å verifisere telefonnummeret ditt på nytt.
 </p>
 
-<h2>
-EasyUpdate bruker cookies til drift av Ledigtime.no
-</h2>
-<p>
-EasyUpdate AS drifter Ledigtime.no og i forbindelse med din bruk av nettstedets funksjoner, inkludert online booking, brukes det funksjonelle og statistiske cookies. Disse cookies brukes av Easyupdate AS og du kan få mer informasjon om dette på Easyupdates personvernerklæring på www.easyupdate.no.
-</p>
 <h2>
 Fjerning og lagring av cookies
 </h2>
 
 <p>
-Du kan til enhver tid trekke samtykket ditt tilbake ved enten å slette, avvise eller fravelge bruken av cookies på din enhet. Dette gjør du ved å endre innstillingene i din nettleser. Hvor du finner innstillingene kan avhenge av hvilken nettleser du bruker.
+Du kan til enhver tid trekke samtykket ditt tilbake ved enten å slette, 
+avvise eller fravelge bruken av cookies på din enhet. Dette gjør du ved å endre 
+innstillingene i din nettleser. Hvor du finner innstillingene kan avhenge av hvilken nettleser du bruker.
 </p>
 
 <p>
-Vær oppmerksom på at hvis du trekker samtykket ditt, kan det være funksjoner og tjenester på hjemmesiden som ikke fungerer fordi de krever at nettstedet husker valgene du har gjort.
+Vær oppmerksom på at hvis du trekker samtykket ditt, kan det være funksjoner og 
+tjenester på hjemmesiden som ikke fungerer fordi de krever at nettstedet husker valgene du har gjort.
 </p>
 
 <p>
-Vedvarende cookies sletter seg selv etter forskjellige intervaller, men oppdateres automatisk når du besøker et hjemmesiden igjen.
+Vedvarende cookies sletter seg selv etter forskjellige intervaller, men oppdateres automatisk når du besøker nettstedet igjen.
 </p>
 <p>
 Du kan slette cookies som du tidligere har akseptert. Hvordan du sletter cookies avhenger av hvilken nettleser du bruker. Hvis du bruker en enhet med en nyere nettleser, kan du slette cookies ved hjelp av hurtigtastene: CTRL + SHIFT + Delete.

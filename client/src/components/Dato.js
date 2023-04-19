@@ -39,8 +39,8 @@ function Dato({datoForsteLedige, sMidlertidigDato, harEndretDatoen, sHarEndretDa
                     
             }}>OK</button>:""}
                 {datoForsteLedige !== null && !harEndretDatoen?<><div>Første ledige time: {ukedag[new Date(datoForsteLedige).getDay()]} {parseInt(datoForsteLedige.substring(8,10))}. {hentMaaned(parseInt(datoForsteLedige.substring(5,7)) -1)}</div> 
-                <div ref={velgKlokkeslettBoks}></div>
                 <div>Valgt dato: <strong>{ukedag[new Date(dato).getDay()]} {parseInt(dato.substring(8,10))}. {hentMaaned(parseInt(dato.substring(5,7)) -1)}</strong></div></>:<div><strong>{ukedag[new Date(midlertidigDato).getDay()]} {parseInt(midlertidigDato.substring(8,10))}. {hentMaaned(parseInt(midlertidigDato.substring(5,7)) -1)}</strong></div>}
+                <div ref={velgKlokkeslettBoks}></div>
             </section>
         </div>
     )
