@@ -4,12 +4,27 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
 
 
 <url>
-  <loc>https://ulrikfades.no/</loc>
+  <loc>https://www.ulrikfades.no/</loc>
+  <priority>1.0</priority>
   <lastmod>2023-03-31T23:14:43+00:00</lastmod>
+</url>
+<url>
+  <loc>https://www.ulrikfades.no/timebestilling</loc>
+  <priority>0.8</priority>
+  <changefreq>monthly</changefreq>
+</url>
+<url>
+  <loc>https://www.ulrikfades.no/om-oss</loc>
+  <priority>0.8</priority>
+  <changefreq>monthly</changefreq>
+</url>
+<url>
+  <loc>https://www.ulrikfades.no/kontakt-oss</loc>
+  <priority>0.8</priority>
+  <changefreq>monthly</changefreq>
 </url>
 
 
