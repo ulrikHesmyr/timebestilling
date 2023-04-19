@@ -2,7 +2,7 @@ import React from 'react'
 
 function PB({env}){
     return(
-        <div style={{margin:"1rem", marginTop:"6rem", paddingLeft:"10rem", paddingRight:"10rem"}}> 
+        <div style={{margin:"1rem", marginTop:"6rem", paddingLeft:"10%", paddingRight:"10%"}}> 
 <p>Sist oppdatert 15.04.2023</p>
 <h1>Personvernerklæring for {env.bedrift}</h1>
 <p>

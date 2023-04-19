@@ -29,24 +29,33 @@ function DinReservasjon({env, hentMaaned, registrertReservasjon, setReservasjon}
             <div className='reservasjon'>
                 <h1>Vi har mottatt din reservasjon!</h1>
                 {(registrertReservasjon?(<div> 
-                    <p>Din time er {parseInt(registrertReservasjon.dato.substring(8,10))}. {hentMaaned(parseInt(registrertReservasjon.dato.substring(5,7)) -1)} klokken {registrertReservasjon.tidspunkt}</p>
+                    <div className='tekstkomponent'><img img src="klokke.png" alt="Bilde av klokkeikon"></img>Din time er {parseInt(registrertReservasjon.dato.substring(8,10))}. {hentMaaned(parseInt(registrertReservasjon.dato.substring(5,7)) -1)} klokken {registrertReservasjon.tidspunkt}</div>
                     
-                    <p>Time for: {registrertReservasjon.behandlinger.join(", ")}</p>
-                    <p>Din time er registrert på {registrertReservasjon.kunde}, tlf.: {registrertReservasjon.telefonnummer}</p>
-                    <p style={{display:"flex", flexDirection:"row", alignItems:"center"}}>Din medarbeider for timen: {registrertReservasjon.medarbeider}<img alt="Bilde av frisør" src={frisorBilde} style={{height:"5rem", margin:"1rem"}}></img></p>
+                    <div>Time for: {registrertReservasjon.behandlinger.join(", ")}</div>
+                    <div>Din time er registrert på {registrertReservasjon.kunde}, tlf.: {registrertReservasjon.telefonnummer}</div>
+                    <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>Din medarbeider for timen: {registrertReservasjon.medarbeider}<img alt="Bilde av frisør" src={frisorBilde} style={{height:"5rem", margin:"1rem"}}></img></div>
                     <div>Estimert pris {totalPris} kr</div>
                     <div>Estimert tid {totalTid} minutter</div>
-                    <p></p>
-                    <li>{env.adresse.gatenavn} {env.adresse.husnummer}{env.adresse.bokstav}, {env.adresse.postnummer} {env.adresse.poststed}</li>
-                    <p>Bekreftelse er sendt på SMS</p>
-                    <div>Vi gleder oss til å se deg!</div>
+                    <br></br>
+                    <div className='tekstkomponent'> <img src="sted.png" alt='Bilde av lokasjonsikon'></img> {env.adresse.gatenavn} {env.adresse.husnummer}{env.adresse.bokstav}, {env.adresse.postnummer} {env.adresse.poststed}</div>
+                    <br></br>
+                    <div className='tekstkomponent' ><img src="smil.png" alt="Bilde av smilefjesikon"></img>Vi sees!</div>
                 </div>):"")}
-                <button aria-label="Din reservasjon er mottatt. Du vil få bekreftelse på SMS. Gå tilbake." style={{padding:"1rem"}} onClick={(e)=>{
+                <div className='tekstkomponent'>
+                    <button aria-label="Din reservasjon er mottatt. Du vil få bekreftelse på SMS dersom du krysset av for det. Trykk her for å gå til hjemsiden. Vi sees!" style={{padding:"1rem"}} onClick={(e)=>{
                     e.preventDefault();
 
                     navigate("/");
                     setReservasjon(undefined);
-                }}>GÅ TILBAKE</button>
+                    }}>GÅ TILBAKE</button><img tabIndex={0} style={{cursor:"pointer"}} src="skrivut.png" alt="Skriv ut bekreftelsen" aria-label='Skriv ut bekreftelsen' onClick={(e)=>{
+                        e.preventDefault();
+                        window.print();
+                    }} onKeyDown={(e)=>{
+                        if(e.code === "Enter" || e.code === "Space"){
+                            window.print();
+                        }
+                    }}></img>
+                </div>
             </div>:<p>Laster inn...</p>)
     )
 }

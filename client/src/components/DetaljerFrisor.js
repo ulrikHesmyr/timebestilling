@@ -25,12 +25,17 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
     const [visRedigerBilde, sVisRedigerBilde] = useState(false);
     const [visRedigerPaaJobb, sVisRedigerPaaJobb] = useState(false);
     const [visGiAdmin, sVisGiAdmin] = useState(false);
+    const [visGiAdminKnapp, sVisGiAdminKnapp] = useState(false);
 
     
 
     //Nye behandlinger
     const [frisorTjenester, setFrisortjenester] = useState(frisor.produkter); //Skal være indekser, akkurat som i databasen
 
+    
+    useEffect(() => {
+      hentAdminInfo(frisor.navn);
+    }, [frisor.navn, updateTrigger])
     //Oppdaterer tittel og beskrivelse for ansatt
     async function oppdaterTittelOgBeskrivelse(){
       try {
@@ -57,6 +62,30 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
         varsleFeil();
       }
     }
+
+    
+      //Henter info om ansatt er admin
+      async function hentAdminInfo(n){
+        try {
+            const options = {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body: JSON.stringify({brukernavn:n}),
+                //credentials:'include'
+
+            }
+            const request = await fetch("http://localhost:1226/env/hentAdminInfo", options);
+            const response = await request.json();
+            if(response){
+              sVisGiAdminKnapp(!response.admin);
+            }
+        } catch (error) {
+            varsleFeil();
+            alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen.");
+        }
+    } 
     //Gir admin-tilgang til vedkommende
     async function giAdmin(n){
       lagreVarsel();
@@ -294,9 +323,9 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
                 sVisRedigerBilde(true);
               }}>Oppdater bilde</button>
 
-              <button onClick={()=>{
+              {visGiAdminKnapp? <button onClick={()=>{
                 sVisGiAdmin(true);
-              }}>Gi admin-tilgang</button>
+              }}>Gi admin-tilgang</button>:""}
 
               <button onClick={()=>{
                 sVisRedigerPaaJobb(true);
@@ -341,7 +370,7 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
               </p>
               <button onClick={()=>{
                 if(window.confirm("Er du sikker på at du vil gi " + frisor.navn + " admin-tilgang?")){
-                  giAdmin(frisor.navn);
+                  giAdmin(frisor.navn.toLowerCase());
                   sVisGiAdmin(false);
                 }
               }}>Gi admin-tilgang</button>

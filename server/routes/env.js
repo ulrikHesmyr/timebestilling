@@ -391,6 +391,21 @@ router.post("/giAdmin", authorization, async (req, res)=>{
     }
 })
 
+router.post("/hentAdminInfo", authorization, async(req,res)=>{
+    try {
+        if(req.admin){
+            const navn = req.body.brukernavn.toLowerCase();
+            const bruker = await Brukere.findOne({brukernavn: navn});
+            if(bruker){
+                return res.send({valid:true, admin:bruker.admin});
+            }
+        }
+    } catch (error) {
+        console.log(error);
+    }
+})
+                    
+
 router.post("/oppdaterPaaJobb", authorization, async (req,res)=>{
     const {paaJobb, navn} = req.body;
     try {

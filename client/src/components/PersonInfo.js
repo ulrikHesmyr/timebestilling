@@ -104,7 +104,7 @@ function PersonInfo({env, smsBekreftelse, sSmsBekreftelse, totalTid, totalPris, 
                         if(tryktOK){
                             sTryktOK(false);
                         }
-                        if(validertSMSpin){
+                        if(validertSMSpin && env.aktivertSMSpin){
                             sValidertSMSpin(false);
                         }
                         if(visPINBoks){
@@ -168,29 +168,63 @@ function PersonInfo({env, smsBekreftelse, sSmsBekreftelse, totalTid, totalPris, 
                 <p>Bekreftelse på din reservasjon sendes på SMS</p>
                 <p>Jeg godkjenner <a aria-label="Åpne personvernserklæringen og brukervilkår i ny fane" rel='noreferrer' target="_blank" href='/personvaernserklaering-og-brukervilkaar'>personvernserkæringen og brukervilkår</a> ved å trykke "send inn reservasjon"</p>
                 <label style={{display:"flex", justifyContent:"center", flexDirection:"column"}} htmlFor='sms_bekreftelse'>
-                    <div style={{display:"flex", alignItems:"center", flexDirection:"row"}}>Få bekreftelse på SMS?<input style={{height:"1.4rem", width:"1.4rem"}} required aria-required id="sms_bekreftelse" type='checkbox' value={smsBekreftelse} onChange={(e)=>{
-                        sSmsBekreftelse(e.target.checked);
+                    <div style={{display:"flex", alignItems:"center", flexDirection:"row"}}>Få bekreftelse på SMS? <input style={{height:"1.4rem", width:"1.4rem"}} required aria-required id="sms_bekreftelse" type='checkbox' checked={smsBekreftelse} onChange={(e)=>{
+                        
+                        sSmsBekreftelse(!e.target.checked);
                     }} onKeyDown={(e)=>{
                         if(e.code === "Enter" || e.code === "Space"){
-                            sSmsBekreftelse(e.target.checked);
+                            e.preventDefault();
+                            sSmsBekreftelse(!e.target.checked);
                         }
-                    }}></input><div className='litentekst'>Gratis</div> 
+                    }}></input><div className='litentekst'> Gratis</div> 
                     </div>
-                    {new Date(dato) > new Date()? <div className='litentekst'>Påminnelse på SMS kommer dagen før timen, og kommer i tillegg (uansett).</div>:""} 
+                    {new Date(dato) > new Date(nesteDag())? <div className='litentekst'>Påminnelse på SMS kommer dagen før timen, og kommer i tillegg (uansett).</div>:""} 
                 </label>
-                {(harregistrert?"Laster...":(<button disabled={!validertSMSpin} style={{padding:"1rem", color:"var(--color2)", backgroundColor:"var(--farge2)"}} onClick={(e)=>{
-                    e.preventDefault();
+                {(harregistrert?"Laster...":(<button disabled={!validertSMSpin} style={{padding:"1rem", color:"var(--color2)", backgroundColor:"var(--farge2)"}} onClick={()=>{
+                    
                     if(telefonnummer.length === 8 && navn !== ""){
                         sHarRegistrert(true);
                         registrerData();
                     } else {
                         alert("Telefonnumeret eller navn er ikke gyldig");
                     }
+                }} onKeyDown={(e)=>{
+                    if(e.code === "Enter" || e.code === "Space"){
+                        
+                        if(telefonnummer.length === 8 && navn !== ""){
+                            sHarRegistrert(true);
+                            registrerData();
+                        } else {
+                            alert("Telefonnumeret eller navn er ikke gyldig");
+                        }
+                    }
                 }}>SEND INN RESERVASJON</button>))}
                 <div  ref={sendReservasjonBoks}></div>
             </form>
         </div>
     )
+}
+
+
+function nesteDag(d = new Date()){
+    let currentTime = d.getTime();
+  
+    // add 1 day worth of milliseconds (1000ms * 60s * 60m * 24h)
+    let oneDay = 1000 * 60 * 60 * 24;
+    let newTime = currentTime + oneDay;
+  
+    // create a new Date object using the new date in milliseconds
+    let newDate = new Date(newTime);
+    return hentDato(newDate);
+}
+  
+function hentDato(d = new Date()){ //Hvilket format true=yyyy-mm-dd, false=["dd","mm","yyyy"]
+    
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return (`${year}-${month}-${day}`);
+  
 }
 
 export default React.memo(PersonInfo);

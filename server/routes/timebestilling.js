@@ -124,8 +124,6 @@ router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
                     mailer.sendMail("KJØP SMSer fra strex", "KJØP SMSer fra strex");
                 }
 
-            } else {
-                console.log("SENDTE IKKE MELDING");
             }
             
             if(bestillNyTime){
