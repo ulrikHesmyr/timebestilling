@@ -61,7 +61,7 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle, lagreVarsel, varsleF
     }
 
     async function hentFriElementer(){
-        const request = await fetch("http://localhost:1226/env/fri");
+        const request = await fetch("/env/fri");
         const response = await request.json();
         if(response){
             sFriElementer(response);
@@ -88,11 +88,11 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle, lagreVarsel, varsleF
             headers:{
                 "Content-Type":"application/json"
             },
-            //credentials: 'include',
+            credentials: 'include',
             body:JSON.stringify(data)
         }
 
-        const request = await fetch("http://localhost:1226/env/opprettFri", options);
+        const request = await fetch("/env/opprettFri", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -124,11 +124,11 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle, lagreVarsel, varsleF
             headers:{
                 "Content-Type":"application/json"
             },
-            //credentials: 'include',
+            credentials: 'include',
             body:JSON.stringify(data)
         }
 
-        const request = await fetch("http://localhost:1226/env/slettFri", options);
+        const request = await fetch("/env/slettFri", options);
         const response = await request.json();
         if(response){
             varsle();

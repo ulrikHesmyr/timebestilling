@@ -14,13 +14,13 @@ const authorization = require("../middleware/authorization");
 const {BEDRIFT, ACCESS_TOKEN_KEY, NODE_ENV, TWOFA_SECRET, KEYNAME_SMS, PRIVATE_KEY, CUSTOMER_KEY, PASSORD_KEY} = process.env;
 
 
-let loginIntervall = 15 * 60 * 1000;  
-if(NODE_ENV === "development") loginIntervall = 60 * 1000;
+let loginIntervall = 5;  
+if(NODE_ENV === "development") loginIntervall = 2;
 
 const loginLimiter = rateLimiter({
-    windowMs: loginIntervall,
+    windowMs: loginIntervall * 60 * 1000,
     max: 5,
-    message: {m:"Du har brukt opp alle forsøkene dine på å logge inn. Vennligst vent 15 minutter før du prøver igjen"},
+    message: {m:`Du har brukt opp alle forsøkene dine på å logge inn. Vennligst vent ${loginIntervall} minutter før du prøver igjen`},
     requestPropertyName:"antForsok"
 });
   
@@ -139,11 +139,11 @@ router.get("/loggetinn", authorization, async (req,res)=>{
         console.log(error);
     }
 })
-
+let intervall = 15;
 const twofaLimiter = rateLimiter({
-    windowMs: 15 * 60 * 1000,
+    windowMs: intervall * 60 * 1000,
     max: 5,
-    message: {m:"Du har brukt opp alle forsøkene dine på å logge inn. Vennligst vent 15 minutter før du prøver igjen"},
+    message: {m:`Du har brukt opp alle forsøkene dine på å logge inn. Vennligst vent ${intervall} minutter før du prøver igjen`},
     requestPropertyName:"antForsok"
 });
 
@@ -165,7 +165,6 @@ router.post("/TWOFA", twofaLimiter, async (req,res)=>{
         
         const finnBruker = await Brukere.findOne({brukernavn: two_FA.brukernavn});
         const env = await Environment.findOne({bedrift:BEDRIFT}).select("-_id -__v -antallBestillinger").exec();
-        let passordet = jwt.verify(finnBruker.passord, PASSORD_KEY).passord;
         
         let bestilteTimer = await Bestiltetimer.find();
         bestilteTimer = bestilteTimer.sort((a,b)=>{
@@ -177,7 +176,7 @@ router.post("/TWOFA", twofaLimiter, async (req,res)=>{
                 bestilling.telefonnummer = jwt.verify(bestilling.telefonnummer, CUSTOMER_KEY).telefonnummer;
                 return bestilling;
         })
-        const accessToken = jwt.sign({brukernavn:two_FA.brukernavn, passord:passordet, brukertype:brukertype}, ACCESS_TOKEN_KEY, {expiresIn:'480m'});
+        const accessToken = jwt.sign({brukernavn:two_FA.brukernavn, passord: finnBruker.passord, brukertype:brukertype}, ACCESS_TOKEN_KEY, {expiresIn:'480m'});
 
         //Setter cookie for å holde brukeren logget inn
         
@@ -201,10 +200,10 @@ router.post('/auth',loginLimiter, async (req,res)=>{
     try {
         const {brukernavn, passord, valgtBrukertype, brukertype}= req.body;
         const finnBruker = await Brukere.findOne({brukernavn: brukernavn});
-        let passordet = jwt.verify(finnBruker.passord, PASSORD_KEY).passord;
+        let passordet = jwt.verify(finnBruker.passord, PASSORD_KEY);
         
 
-        if(finnBruker && passordet === passord){
+        if(finnBruker && passordet.passord === passord){
 
             if(finnBruker.admin){
 
@@ -217,7 +216,7 @@ router.post('/auth',loginLimiter, async (req,res)=>{
             if(allerede2FA || NODE_ENV === "development"){
                 if(NODE_ENV === "production"){
                     const two_FA_valid = jwt.verify(allerede2FA, ACCESS_TOKEN_KEY);
-                    if(!two_FA_valid.gyldig){
+                    if(!two_FA_valid.gyldig || two_FA_valid.brukernavn !== brukernavn){
                         res.clearCookie("two_FA_valid");
                         return res.status(401).json({message:"Du har ikke gyldig 2FA token"});
                     }
@@ -260,7 +259,7 @@ router.post('/auth',loginLimiter, async (req,res)=>{
                 return bestilling;
             })
             //Setter access token i cookies
-            const accessToken = jwt.sign({brukernavn:brukernavn, passord:passordet, brukertype: brukertype},ACCESS_TOKEN_KEY,{expiresIn:'480m'});
+            const accessToken = jwt.sign({brukernavn:brukernavn, passord: finnBruker.passord, brukertype: brukertype}, ACCESS_TOKEN_KEY,{expiresIn:'480m'});
             res.cookie("access_token", accessToken, {
                 httpOnly: true,
                 secure: process.env.HTTPS_ENABLED == "secure",

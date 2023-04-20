@@ -215,12 +215,12 @@ Hvis hurtigtastene ikke virker, og/eller hvis du bruker en Apple-enhet, må du f
 
 <section style={{display:"flex", flexDirection:"column"}}>
   
-<a href='https://support.mozilla.org/en-US/kb/clear-cookies-and-site-data-firefox?redirectslug=delete-cookies-remove-info-websites-stored&redirectlocale=en-US'>
+<a rel='noreferrer' target='_blank' href='https://support.mozilla.org/en-US/kb/clear-cookies-and-site-data-firefox?redirectslug=delete-cookies-remove-info-websites-stored&redirectlocale=en-US'>
 Guidance - Firefox</a>
-<a href='https://support.google.com/accounts/answer/32050?co=GENIE.Platform%3DDesktop&hl=en'>
+<a rel='noreferrer' target='_blank' href='https://support.google.com/accounts/answer/32050?co=GENIE.Platform%3DDesktop&hl=en'>
 Guidance - Google Chrome</a>
-<a href="https://support.apple.com/no-no/guide/safari/sfri11471/mac">Guidance - Safari</a>
-<a href="https://support.microsoft.com/en-us/windows/delete-and-manage-cookies-168dab11-0753-043d-7c16-ede5947fc64d" >Guidance - Explorer</a>
+<a rel='noreferrer' target='_blank' href="https://support.apple.com/no-no/guide/safari/sfri11471/mac">Guidance - Safari</a>
+<a rel='noreferrer' target='_blank' href="https://support.microsoft.com/en-us/windows/delete-and-manage-cookies-168dab11-0753-043d-7c16-ede5947fc64d" >Guidance - Explorer</a>
 
 </section>
 <p>Merk at hvis du bruker flere nettlesere, må du slette cookies i alle nettleserne dine.</p>

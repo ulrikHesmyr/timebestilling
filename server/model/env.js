@@ -37,6 +37,10 @@ const env = new mongoose.Schema({
                 open:{type:String},
                 closed:{type:String},
                 stengt:{type:Boolean, default:false},
+                lunsj:{
+                    start:{type:String}, 
+                    slutt:{type:String}},
+                    ikkeLunsj:{type:Boolean, default:false}
                 }]
         }
         

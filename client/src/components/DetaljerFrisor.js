@@ -46,10 +46,10 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
         headers: {
           'Content-Type': 'application/json'
         },
-        //credentials: 'include',
+        credentials: 'include',
         body: JSON.stringify({navn:frisor.navn, tittel:tittel, beskrivelse:beskrivelse})
       }
-      const request = await fetch('http://localhost:1226/env/oppdaterTittelOgBeskrivelse', options);
+      const request = await fetch('/env/oppdaterTittelOgBeskrivelse', options);
       const response = await request.json();
       if(response){
         varsle();
@@ -73,10 +73,10 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({brukernavn:n}),
-                //credentials:'include'
+                credentials:'include'
 
             }
-            const request = await fetch("http://localhost:1226/env/hentAdminInfo", options);
+            const request = await fetch("/env/hentAdminInfo", options);
             const response = await request.json();
             if(response){
               sVisGiAdminKnapp(!response.admin);
@@ -95,11 +95,11 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
           headers: {
             'Content-Type': 'application/json'
           },
-          //credentials: 'include',
+          credentials: 'include',
           body: JSON.stringify({navn:n})
 
         }
-        const request = await fetch('http://localhost:1226/env/giAdmin', options);
+        const request = await fetch('/env/giAdmin', options);
         const response = await request.json();
         if(response){
           varsle();
@@ -123,10 +123,10 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
         headers: {
           'Content-Type': 'application/json'
         },
-        //credentials: 'include',
+        credentials: 'include',
         body: JSON.stringify({navn:frisor.navn, telefon:parseInt(telefonAnsatt)})
       }
-      const request = await fetch('http://localhost:1226/env/oppdaterTelefonAnsatt', options);
+      const request = await fetch('/env/oppdaterTelefonAnsatt', options);
       const response = await request.json();
       if(response){
         varsle();
@@ -149,10 +149,10 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
         headers: {
           'Content-Type': 'application/json'
         },
-        //credentials: 'include',
+        credentials: 'include',
         body: JSON.stringify({navn:frisor.navn, paaJobb:paaJobb})
       }
-      const request = await fetch('http://localhost:1226/env/oppdaterPaaJobb', options);
+      const request = await fetch('/env/oppdaterPaaJobb', options);
       const response = await request.json();
       if(response){
         varsle();
@@ -177,11 +177,11 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
 
         const options = {
           method: 'POST',
-          //credentials: 'include',
+          credentials: 'include',
           body: formData
         }
 
-        const request = await fetch('http://localhost:1226/env/oppdaterBildeFrisor', options);
+        const request = await fetch('/env/oppdaterBildeFrisor', options);
         const response = await request.json();
         if(response.m){
           alert(response.m);
@@ -240,10 +240,10 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
         headers: {
           'Content-Type': 'application/json'
         },
-        //credentials: 'include',
+        credentials: 'include',
         body: JSON.stringify({navn:navn.toLowerCase()})
       }
-      const request = await fetch('http://localhost:1226/login/resetPassord', options);
+      const request = await fetch('/login/resetPassord', options);
       const response = await request.json();
       if(response.valid){
         varsle();

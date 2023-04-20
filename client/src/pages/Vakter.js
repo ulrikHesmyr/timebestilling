@@ -27,7 +27,6 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
   const [gjentaNyttPassord, sGjentaNyttPassord] = useState("");
   const [visNyttPassord, sVisNyttPassord] = useState(false);
   const [visGjentaPassord, sVisGjentaPassord] = useState(false);
-  const [friElementer, sFriElementer] = useState([]);
 
   const [isMobile, setisMobile] = useState(false);
   
@@ -39,17 +38,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
     
     //Henter fri
     async function hentFri(){
-      try {
       
-        const request = await fetch("/env/fri");
-        const response = await request.json();
-        if(response){
-          sFriElementer(response);
-        }
-      } catch (error) {
-        alert("Noe gikk galt. Sjekk internettforbindelsen din og prøv igjen.");
-        varsleFeil();
-      }
     }
     
     hentFri();
@@ -58,9 +47,13 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
     oppdaterSynligeElementer(hihi);
   },[]);
 
-  function oppdaterSynligeElementer(a){
-    
-    let frii = friElementer.map((element)=>{
+  async function oppdaterSynligeElementer(a){
+    try {
+      
+      const request = await fetch("/env/fri");
+      const friElementer = await request.json();
+      
+      let frii = friElementer.map((element)=>{
       if(a.includes(element.medarbeider)){
         if(element.lengreTid){
           element.start = new Date(`${element.fraDato}T00:30:00`);
@@ -81,8 +74,8 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
       } else {
         return undefined;
       }
-    }).filter(x=>x);
-    const v = bestilteTimer.map((time)=>{
+      }).filter(x=>x);
+      const v = bestilteTimer.map((time)=>{
       if(a.includes(time.medarbeider)){
         const gjeldendeTjenester = env.tjenester.filter(tjeneste => time.behandlinger.includes(tjeneste.navn)).reduce((total, element)=> total + element.tid, 0);
         time.start = new Date(`${time.dato}T${time.tidspunkt}:00`);
@@ -95,6 +88,12 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
     }).filter(x=>x);
     let allevakter = v.concat(frii);
     sVakterTimebestillinger(allevakter);
+
+    } catch (error) {
+      alert("Noe gikk galt. Sjekk internettforbindelsen din og prøv igjen.");
+      varsleFeil();
+    }
+    
   }
 
     const MIN_DATE = new Date(2020, 0, 1, 7, 0, 0); // 08:00
@@ -114,9 +113,9 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
           "Content-Type":"application/json"
         },
         body: JSON.stringify({passord: gjentaNyttPassord}),
-        //credentials:'include'
+        credentials:'include'
       };
-      const request = await fetch("http://localhost:1226/login/oppdaterPassord", options);
+      const request = await fetch("/login/oppdaterPassord", options);
       const response = await request.json();
       if(response){
         varsle();
@@ -139,7 +138,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
             "Content-Type":"application/json"
           },
           body: JSON.stringify({telefonnummer: parseInt(nyttTlf)}),
-          //credentials:'include'
+          credentials:'include'
         };
 
         const request = await fetch("/login/oppdaterTelefonnummer", options);
