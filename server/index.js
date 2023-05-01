@@ -29,20 +29,26 @@ app.use(express.static('build'));
 //Limiting the total amount of requests per minute (From any IP address)
 let requestCounterLimit = 0;
 let maksRequestsPerMinutt = 1000;
+let harSendtMail = false;
 if(NODE_ENV === "development"){
   maksRequestsPerMinutt = 20;
 } 
 
 setInterval(() => {
   requestCounterLimit = 0;
-}, 60000);
+  harSendtMail = false;
+}, 60000); //1 minutt
 
+//Middleware som gjelder totale antall requests per minutt
 const requestCounterMiddleware = (req, res, next) => {
-  requestCounterLimit++;
   if(requestCounterLimit > maksRequestsPerMinutt){
-    res.status(429).json({m: "Administrator er på saken. Serveren har for mye trafikk pr minutt. Vennligst prøv igjen om 1 minutt!"});
-    mailer.sendMail(`For mye trafikk for ${BEDRIFT}`, `${maksRequestsPerMinutt} requests per minutt. Evaluer om det er nødvendig å øke antall requests per minutt eller vurder om det er ddos angrep`);
+    if(!harSendtMail){
+      mailer.sendMail(`For mye trafikk for ${BEDRIFT}`, `${maksRequestsPerMinutt} requests per minutt. Evaluer om det er nødvendig å øke antall requests per minutt eller vurder om det er ddos angrep`);
+      harSendtMail = true;
+    }
+    return res.status(429).json({m: "Administrator er på saken. Serveren har for mye trafikk pr minutt. Vennligst prøv igjen om 1 minutt!"});
   } else {
+    requestCounterLimit++;
     next(); 
   }
 
@@ -51,7 +57,7 @@ const requestCounterMiddleware = (req, res, next) => {
 
 const hovedLimiter = rateLimiter({
   windowMs: 30 * 60 * 1000,
-  max: 800,
+  max: 800, //Ikke endre fra 800. Dette er limit pr IP adresse. Kan maks ha 800 requests pr 30 minutt pr IP adresse
   message: {m:"For mye trafikk. Vennligst prøv igjen om 30 min"},
 });
 
