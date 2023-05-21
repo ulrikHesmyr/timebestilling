@@ -21,7 +21,7 @@ const App = ()=> {
 
     const fetchEnvironment = async ()=>{
       const data = await (
-        await fetch("/env/env")
+        await fetch("http://localhost:1226/env/env")
       ).json();
       if(data){
         sEnv(data);

@@ -147,7 +147,7 @@ footer{
   align-items: center;
   color:white;
   padding:0.5rem;
-  background-color: rgb(16, 16, 16);
+  background: var(--farge5);
   margin-top: 2rem;
   text-align: center;
   width: 100%;
@@ -164,7 +164,6 @@ a{
   text-decoration: underline;
   font-weight: 400;
   text-transform: capitalize;
-  font-family: var(--font1);
 }
 
 h4{
@@ -761,7 +760,7 @@ input, button, select, option{
     
     z-index: 3;
     position: fixed;
-    top: 5%;
+    top: -5%;
     left:40%;
     
     display: flex;
@@ -1028,7 +1027,6 @@ header * {
   }
   .timebestilling{
     display:flex;
-    flex-direction: column;
     align-items: center;
     
     

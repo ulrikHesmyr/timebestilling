@@ -11,12 +11,12 @@ function RedigerAapningstider({env, varsleFeil, lagreVarsel, varsle, updateTrigg
   async function oppdaterAapningsTider(d){
     lagreVarsel();
     try {
-      const request = await fetch("/env/oppdaterAapningstider", {
+      const request = await fetch("http://localhost:1226/env/oppdaterAapningstider", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
         },
-        credentials: 'include',
+        //credentials: 'include',
         body: JSON.stringify({dag:d,  aapningstid:aapningstid, stengetid:stengetid, stengt:stengt})
       });
       const response = await request.json();
@@ -53,7 +53,9 @@ function RedigerAapningstider({env, varsleFeil, lagreVarsel, varsle, updateTrigg
         e.preventDefault();
         if(stengetid.length === 5 && aapningstid.length === 5  && parseInt(aapningstid.substring(3,5))%15 === 0 && parseInt(stengetid.substring(3,5))%15 === 0 && !isNaN(parseInt(aapningstid.substring(0,2)))&& !isNaN(parseInt(stengetid.substring(0,2))) && aapningstid.substring(2,3) === ":" && stengetid.substring(2,3) === ":" && minutterFraKlokkeslett(aapningstid) < minutterFraKlokkeslett(stengetid)){
           sVisRedigerAapningstider(false);
-          oppdaterAapningsTider(dag);
+          if(window.confirm("Er du sikker på at du vil endre åpningstidene? NB Husk å endre \"på jobb\"-tidene til hver enkelt ansatt")){
+            oppdaterAapningsTider(dag);
+          }
         } else {
           alert("Ikke riktig format");
         }

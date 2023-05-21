@@ -31,7 +31,7 @@ let requestCounterLimit = 0;
 let maksRequestsPerMinutt = 1000;
 let harSendtMail = false;
 if(NODE_ENV === "development"){
-  maksRequestsPerMinutt = 20;
+  maksRequestsPerMinutt = 100;
 } 
 
 setInterval(() => {
@@ -214,6 +214,7 @@ app.get('/sitemap.xml', (req, res) => {
 });
 
 app.get('*', (req, res)=>{
+  const env = Environment.findOne({bedrift:BEDRIFT});
   res.setHeader(
     'Content-Security-Policy',
     "img-src 'self' data: blob:;"

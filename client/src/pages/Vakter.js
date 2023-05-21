@@ -13,7 +13,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
   
   const farger = ["darkblue", "cadetblue", "chartreuse", "coral", "mediumorchid", "indigo","red","black","purple","peru", "burylwood"];
   const ukedag = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
-  const [ansatt, setAnsatt] = useState([]);
+  const [ansatt, setAnsatt] = useState(env.frisorer.map(frisor=>frisor.navn));
   //timebestillinger og fri
   const [vakterTimebestillinger, sVakterTimebestillinger] = useState();
   
@@ -36,21 +36,15 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
       setisMobile(true);
     }
     
-    //Henter fri
-    async function hentFri(){
-      
-    }
     
-    hentFri();
-    
-    let hihi = env.frisorer.map(e=>e.navn);
+    let hihi = env.frisorer.map(frisor=>frisor.navn);
     oppdaterSynligeElementer(hihi);
   },[]);
 
   async function oppdaterSynligeElementer(a){
     try {
       
-      const request = await fetch("/env/fri");
+      const request = await fetch("http://localhost:1226/env/fri");
       const friElementer = await request.json();
       
       let frii = friElementer.map((element)=>{
@@ -86,6 +80,8 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
       }
       return undefined;
     }).filter(x=>x);
+
+    
     let allevakter = v.concat(frii);
     sVakterTimebestillinger(allevakter);
 
@@ -113,9 +109,9 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
           "Content-Type":"application/json"
         },
         body: JSON.stringify({passord: gjentaNyttPassord}),
-        credentials:'include'
+        //credentials:'include'
       };
-      const request = await fetch("/login/oppdaterPassord", options);
+      const request = await fetch("http://localhost:1226/login/oppdaterPassord", options);
       const response = await request.json();
       if(response){
         varsle();
@@ -137,11 +133,11 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
           headers:{
             "Content-Type":"application/json"
           },
-          body: JSON.stringify({telefonnummer: parseInt(nyttTlf)}),
-          credentials:'include'
+          body: JSON.stringify({telefonnummer: nyttTlf}),
+          //credentials:'include'
         };
 
-        const request = await fetch("/login/oppdaterTelefonnummer", options);
+        const request = await fetch("http://localhost:1226/login/oppdaterTelefonnummer", options);
         const response = await request.json();
         if(response){
           varsle();

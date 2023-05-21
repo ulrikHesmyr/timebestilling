@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {minutterFraKlokkeslett} from './Klokkeslett.js'
+import {klokkeslettFraMinutter, minutterFraKlokkeslett} from './Klokkeslett.js'
 
 function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel, varsleFeil}){
 
@@ -9,13 +9,22 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
     const [tlfNyFrisor, sTlfNyFrisor] = useState("");
     const [frisorTjenester, setFrisortjenester] = useState([]); //Skal være indekser, akkurat som i databasen
     const [bildeAvFrisor, sBildeAvFrisor] = useState(null);
-    const [paaJobb, sPaaJobb] = useState(env.klokkeslett.map(obj => ({ ...obj })));
+    const [paaJobb, sPaaJobb] = useState(env.klokkeslett.map(obj => ({ ...obj, pauser:[]})));
     
     const [adminTilgang, sAdminTilgang] = useState(false);
 
     const [preview, setPreview] = useState(null);
     const [leggtil, sLeggTil] = useState(false);
 
+
+    const [visPause, sVisPause] = useState(false);
+    const [pauseTidspunkt, sPauseTidspunkt] = useState("06:00");
+    const [pauseDag, sPauseDag] = useState("");
+
+    let pauseTidspunkter = [];
+    for(let i = minutterFraKlokkeslett("06:00"); i < minutterFraKlokkeslett("22:00"); i += 15){
+        pauseTidspunkter.push(klokkeslettFraMinutter(i));
+    }
 
     async function lagre(){
         try {
@@ -33,10 +42,10 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
         formData.append("paaJobb", JSON.stringify(paaJobb));
         const options2 = {
             method:"POST",
-            credentials: 'include',
+            //credentials: 'include',
             body: formData
         }
-        const request2 = await fetch("/env/opprettFrisor", options2);
+        const request2 = await fetch("http://localhost:1226/env/opprettFrisor", options2);
         const response2 = await request2.json();
 
         //Oppretter bruker for frisøren
@@ -53,10 +62,10 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
                 headers:{
                     "Content-Type":"application/json"
                 },
-                credentials: 'include',
+                //credentials: 'include',
                 body: JSON.stringify(data)
             }
-            const request = await fetch("/login/opprettBruker", options);
+            const request = await fetch("http://localhost:1226/login/opprettBruker", options);
             const response = await request.json();
             if(response && response.m){
                 alert(response.m);
@@ -108,7 +117,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
             sNyFrisorTittel(e.target.value);
         }} value={nyFrisorTittel} type="text" placeholder='eks.: Frisør, Terapeut, etc.' maxLength={20}></input></label>
 
-        <label style={{fontWeight:"bold"}}>Info: <textarea onChange={(e)=>{
+        <label style={{fontWeight:"bold"}}>Beskrivelse: <textarea onChange={(e)=>{
             sNyFrisorBeskrivelse(e.target.value);
         }} value={nyFrisorBeskrivelse} placeholder='Navn har jobbet hos oss siden... Hen er kreativ og liker å jobbe med... Nøyaktig og opptatt av å forstå kundens behov...'></textarea></label>
 
@@ -181,7 +190,73 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
             )
         })}
 
-        <p>Nedenfor krysser du av boksen (slik at den ikke er tom) dersom denne frisøren skal ha administrator-rettigheter og få tilgang til dette panelet.</p>
+        <p style={{fontWeight:"bold"}}>Legg inn pauser:</p>
+        <p className='litentekst'>Legg inn pauser. Hver pause varer 15 minutter</p>
+
+        <button onClick={(e)=>{
+            e.preventDefault();
+            sVisPause(true);
+            console.log(paaJobb);
+        }}>Legg til pause <img className='ikonKnapper' alt="Legg til pause knapp" src="leggtil.png"></img></button>
+
+        {visPause && <div className='fokus'>
+                <div className='lukk' onClick={(e)=>{
+                    e.preventDefault();
+                    sVisPause(false);
+                }}></div>
+
+                <h2>Velg pause</h2>
+                <p>Velg tidspunkt for pausen og hvilken dag pausen skal gjelde under</p>
+                <div style={{display:"flex", flexDirection:"column"}}>
+                    <label>Velg pausens tidspunkt:
+                        <select value={pauseTidspunkt} onChange={(e)=>{
+                            sPauseTidspunkt(e.target.value);
+                        }}>
+                            {pauseTidspunkter.map((tidspunkt)=>{
+                                return <option key={tidspunkt} value={tidspunkt}>{tidspunkt}</option>
+                            })}
+                            
+                        </select>
+                    </label>
+                    <label>Velg dag for pausen:
+                        <select value={pauseDag} onChange={(e)=>{
+                            sPauseDag(e.target.value);
+                        }}>
+                            {paaJobb.map((d)=>{
+                                return <option key={d.dag} value={d.dag}>{d.dag}</option>
+                            })}
+                            
+                        </select>
+                    </label>
+
+                    <button onClick={()=>{
+                        const nyPaaJobb = [...paaJobb];
+                        let index = nyPaaJobb.findIndex((d)=>d.dag === pauseDag);
+                        nyPaaJobb[index].pauser.push(pauseTidspunkt);
+                        sPaaJobb(nyPaaJobb);
+                        sVisPause(false);
+                    }}>Bekreft</button>
+                </div>
+            </div>}
+            <p className='litentekst'>Valgte pauser:</p>
+            {paaJobb.map(dag=>{
+                if(dag.pauser.length > 0) return (<ul>{dag.dag}
+                {dag.pauser.map(p=>{
+                    return (<li>{p} <img onClick={(e)=>{
+                        e.preventDefault();
+                        const nyPaaJobb = [...paaJobb];
+                        let index = nyPaaJobb.findIndex((d)=>d.dag === dag.dag);
+                        let pauseIndex = nyPaaJobb[index].pauser.findIndex((p)=>p === p);
+                        nyPaaJobb[index].pauser.splice(pauseIndex, 1);
+                        sPaaJobb(nyPaaJobb);
+                    }} alt="Fjern pause" src="delete.png" className='ikonKnapper'></img></li>)
+                })}
+                
+                </ul>)
+            })}
+
+            <p style={{fontWeight:"bold"}}>Legg inn administrator-tilgang:</p>
+        <p>Nedenfor krysser du av boksen dersom denne frisøren skal ha administrator-rettigheter og få tilgang til dette panelet.</p>
         <label>Admin tilgang: <input type="checkbox" onChange={(e)=>{
             sAdminTilgang(e.target.checked);
         }}></input> </label>
@@ -211,7 +286,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
         sLeggTil(true);
 
     }}>
-        <img className='ikonKnapper' src='leggtil.png' alt='Legg til Frisør'></img>Ny Frisør
+        <img className='ikonKnapper' src='leggtil.png' alt='Legg til Frisør'></img>Ny ansatt
     </button>}
     </>
   )

@@ -84,7 +84,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
     }
 
     async function fetchBestilteTimer(){
-        const request = await fetch('/timebestilling/hentBestiltetimer');
+        const request = await fetch('http://localhost:1226/timebestilling/hentBestiltetimer');
         const response = await request.json();
         
           if(response){
@@ -93,7 +93,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
     }
       
     async function hentFri(){
-        const request = await fetch("/env/fri");
+        const request = await fetch("http://localhost:1226/env/fri");
         const response = await request.json();
         if(response){
             sFriElementer(response);

@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import {hentDato} from '../App'
-import { minutterFraKlokkeslett } from './Klokkeslett';
+import { minutterFraKlokkeslett, klokkeslettFraMinutter } from './Klokkeslett';
 function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVarsel, varsleFeil, sUpdateTrigger, updateTrigger}){
 
     const [visDetaljer, sVisDetaljer] = useState(false);
@@ -18,7 +18,9 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
     const [tittel, sTittel] = useState(frisor.tittel);
     const [beskrivelse, sBeskrivelse] = useState(frisor.beskrivelse);
     const [paaJobb, sPaaJobb] = useState(frisor.paaJobb.map(obj => ({ ...obj })));
-    
+    const [nyPause, sNyPause] = useState("06:00");
+    const [nyPauseDag, sNyPauseDag] = useState("Søndag");
+
     //Viser redigeringssider
     const [visRedigerBehandlinger, sVisRedigerBehandlinger] = useState(false);     
     const [visSiOpp, sVisSiOpp] = useState(false);     
@@ -26,7 +28,14 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
     const [visRedigerPaaJobb, sVisRedigerPaaJobb] = useState(false);
     const [visGiAdmin, sVisGiAdmin] = useState(false);
     const [visGiAdminKnapp, sVisGiAdminKnapp] = useState(false);
+    const [visEndrePauser, sVisEndrePauser] = useState(false);
 
+
+    
+    let pauseTidspunkter = [];
+    for(let i = minutterFraKlokkeslett("06:00"); i < minutterFraKlokkeslett("22:00"); i += 15){
+        pauseTidspunkter.push(klokkeslettFraMinutter(i));
+    }
     
 
     //Nye behandlinger
@@ -36,6 +45,34 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
     useEffect(() => {
       hentAdminInfo(frisor.navn);
     }, [frisor.navn, updateTrigger])
+
+    //Oppdaterer pausetider
+    async function oppdaterPaaJobb(p){
+      try {
+
+      lagreVarsel();
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        //credentials: 'include',
+        body: JSON.stringify({navn:frisor.navn, paaJobb:p})
+      }
+      const request = await fetch('http://localhost:1226/env/oppdaterPaaJobb', options);
+      const response = await request.json();
+      if(response){
+        varsle();
+        sUpdateTrigger(!updateTrigger);
+      } else {
+        alert("Noe gikk galt, prøv på nytt");
+      }
+      } catch (error) {
+        alert("Noe gikk galt. Sjekk internettforbindelsen og prøv på nytt");
+        varsleFeil();
+      }
+    }
+
     //Oppdaterer tittel og beskrivelse for ansatt
     async function oppdaterTittelOgBeskrivelse(){
       try {
@@ -46,10 +83,10 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
         headers: {
           'Content-Type': 'application/json'
         },
-        credentials: 'include',
+        //credentials: 'include',
         body: JSON.stringify({navn:frisor.navn, tittel:tittel, beskrivelse:beskrivelse})
       }
-      const request = await fetch('/env/oppdaterTittelOgBeskrivelse', options);
+      const request = await fetch('http://localhost:1226/env/oppdaterTittelOgBeskrivelse', options);
       const response = await request.json();
       if(response){
         varsle();
@@ -73,10 +110,10 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({brukernavn:n}),
-                credentials:'include'
+                //credentials:'include'
 
             }
-            const request = await fetch("/env/hentAdminInfo", options);
+            const request = await fetch("http://localhost:1226/env/hentAdminInfo", options);
             const response = await request.json();
             if(response){
               sVisGiAdminKnapp(!response.admin);
@@ -95,11 +132,11 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
           headers: {
             'Content-Type': 'application/json'
           },
-          credentials: 'include',
+          //credentials: 'include',
           body: JSON.stringify({navn:n})
 
         }
-        const request = await fetch('/env/giAdmin', options);
+        const request = await fetch('http://localhost:1226/env/giAdmin', options);
         const response = await request.json();
         if(response){
           varsle();
@@ -123,10 +160,10 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
         headers: {
           'Content-Type': 'application/json'
         },
-        credentials: 'include',
+        //credentials: 'include',
         body: JSON.stringify({navn:frisor.navn, telefon:parseInt(telefonAnsatt)})
       }
-      const request = await fetch('/env/oppdaterTelefonAnsatt', options);
+      const request = await fetch('http://localhost:1226/env/oppdaterTelefonAnsatt', options);
       const response = await request.json();
       if(response){
         varsle();
@@ -140,31 +177,6 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
       }
     }
 
-    async function oppdaterPaaJobb(){
-      try {
-        
-      lagreVarsel();
-      const options = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include',
-        body: JSON.stringify({navn:frisor.navn, paaJobb:paaJobb})
-      }
-      const request = await fetch('/env/oppdaterPaaJobb', options);
-      const response = await request.json();
-      if(response){
-        varsle();
-        sUpdateTrigger(!updateTrigger);
-      } else {
-        alert("Noe gikk galt, prøv på nytt");
-      }
-      } catch (error) {
-        alert("Noe gikk galt. Sjekk internetttilkoblingen din og prøv på nytt");
-        varsleFeil();
-      }
-    }
 
     async function oppdaterBilde(navn){
       try {
@@ -177,11 +189,11 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
 
         const options = {
           method: 'POST',
-          credentials: 'include',
+          //credentials: 'include',
           body: formData
         }
 
-        const request = await fetch('/env/oppdaterBildeFrisor', options);
+        const request = await fetch('http://localhost:1226/env/oppdaterBildeFrisor', options);
         const response = await request.json();
         if(response.m){
           alert(response.m);
@@ -240,10 +252,10 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
         headers: {
           'Content-Type': 'application/json'
         },
-        credentials: 'include',
+        //credentials: 'include',
         body: JSON.stringify({navn:navn.toLowerCase()})
       }
-      const request = await fetch('/login/resetPassord', options);
+      const request = await fetch('http://localhost:1226/login/resetPassord', options);
       const response = await request.json();
       if(response.valid){
         varsle();
@@ -266,6 +278,7 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
     }, [frisor])
   return (
     <>
+    
     <div onClick={()=>{
           sVisDetaljer(!visDetaljer);
       }}  style={{display:"flex", height:"3rem", fontSize:"larger", flexDirection:"row", alignItems:"center", margin:"0.7rem",padding:"0.3rem", cursor:"pointer", borderLeft:"thin solid rgba(0,0,0,0.4)"}}>
@@ -289,9 +302,18 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
     </div>
 
       <div style={{fontSize:"small"}}>
-      Behandlinger: 
       <ul>
-      {env.tjenester.filter((tjeneste)=>frisorTjenester.includes(tjeneste.navn)).map((element)=>(<li key={element.navn}>{element.navn}</li>))}
+        <h3>Behandlinger: </h3>
+        {env.tjenester.filter((tjeneste)=>frisorTjenester.includes(tjeneste.navn)).map((element)=>(<li key={element.navn}>{element.navn}</li>))}
+      </ul>
+      <ul>
+        <h3>På jobb: </h3>
+        {paaJobb.map((dag)=>(<li key={dag.dag}>{dag.dag}: {dag.stengt?"ikke på jobb":`${dag.open} - ${dag.closed}`}</li>))}
+        <h3>Pauser: </h3>
+        {paaJobb.map((dag)=>{if(dag.pauser.length > 0) return <p key={dag.dag}>{dag.dag}{dag.pauser.map((p)=>{
+          //console.log("p", p);
+          return <li key={p}>{p}</li>  
+        })}</p>})}
       </ul>
       </div>
       
@@ -331,6 +353,10 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
                 sVisRedigerPaaJobb(true);
               }}>Rediger "på jobb"-tider</button>
 
+              <button onClick={()=>{
+                sVisEndrePauser(true);
+              }}>Endre pauser</button>
+
               
               <button onClick={()=>{
                 sVisRedigerTittelOgBeskrivelse(true);
@@ -360,6 +386,60 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
               }}>{frisor.oppsigelse === "Ikke oppsagt"?"Legg inn dato for oppsigelse":"Rediger oppsigelse"}</button>
 
             </div>   
+
+            {visEndrePauser && <div className='fokus'>
+              <div onClick={()=>{sVisEndrePauser(false)}} className='lukk'></div>
+              <h4>Endre pauser for {frisor.navn}</h4>
+              <p>Her kan du fjerne eller legge til pauser for {frisor.navn}. Pausene varer i 15 minutter</p>
+              {paaJobb.map(dag=>{
+                if(dag.pauser.length > 0) return (<ul>{dag.dag}
+                {dag.pauser.map(p=>{
+                    return (<li style={{padding:"0.5rem"}}>{p} <img onClick={(e)=>{
+                        e.preventDefault();
+                        const nyPaaJobb = [...paaJobb];
+                        let index = nyPaaJobb.findIndex((d)=>d.dag === dag.dag);
+                        let pauseIndex = nyPaaJobb[index].pauser.findIndex((p)=>p === p);
+                        nyPaaJobb[index].pauser.splice(pauseIndex, 1);
+                        sPaaJobb(nyPaaJobb);
+                        oppdaterPaaJobb(nyPaaJobb);
+                    }} alt="Fjern pause" src="delete.png" className='ikonKnapper'></img></li>)
+                })}
+                
+                </ul>)
+            })}
+
+            <div style={{display:"flex", flexDirection:"column", alignItems:"flex-end"}}>
+            <label>Velg dag for pausen: <select value={nyPauseDag} onChange={(e)=>{
+                sNyPauseDag(e.target.value);
+            }}>
+                {paaJobb.map(dag=>{
+                    return (<option value={dag.dag}>{dag.dag}</option>)
+                })}
+            </select></label>
+            <label>Velg pausens tidspunkt:
+                        <select value={nyPause} onChange={(e)=>{
+                            sNyPause(e.target.value);
+                            console.log(e.target.value)
+                        }}>
+                            {pauseTidspunkter.map((tidspunkt)=>{
+                                return <option key={tidspunkt} value={tidspunkt}>{tidspunkt}</option>
+                            })}
+                            
+                        </select>
+                    </label>
+                    <p>Legg til pause {nyPauseDag} klokken {nyPause}</p>
+            <button onClick={(e)=>{
+
+                e.preventDefault();
+                const nyPaaJobb = [...paaJobb];
+                let index = nyPaaJobb.findIndex((d)=>d.dag === nyPauseDag);
+                nyPaaJobb[index].pauser.push(nyPause);
+                sPaaJobb(nyPaaJobb);
+                oppdaterPaaJobb(nyPaaJobb);
+            }}>Bekreft</button>
+            </div>
+            </div>}
+
 
             {visGiAdmin?<div className='fokus'>
               <div onClick={()=>{
@@ -494,7 +574,7 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
 
                     e.preventDefault();
                     sVisRedigerPaaJobb(false);
-                    oppdaterPaaJobb();
+                    oppdaterPaaJobb(paaJobb);
                 }}>Lagre</button>
             </div>
 
