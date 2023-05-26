@@ -321,6 +321,8 @@ input, button, select, option{
   padding:1rem;
   position: absolute;
   z-index: 5;
+  width: 50vw;
+  align-items: baseline;
 }
   
   .navBar{

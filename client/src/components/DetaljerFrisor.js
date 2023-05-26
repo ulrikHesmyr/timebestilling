@@ -14,6 +14,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
     const [preview, sPreview] = useState(null);
     const [visRedigerTelefonAnsatt, sVisRedigerTelefonAnsatt] = useState(false);
     const [telefonAnsatt, sTelefonAnsatt] = useState();
+    const [visRedigerEpostAnsatt, sVisRedigerEpostAnsatt] = useState();
     const [visRedigerTittelOgBeskrivelse, sVisRedigerTittelOgBeskrivelse] = useState(false);
     const [tittel, sTittel] = useState(frisor.tittel);
     const [beskrivelse, sBeskrivelse] = useState(frisor.beskrivelse);
@@ -30,7 +31,6 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
     const [visGiAdminKnapp, sVisGiAdminKnapp] = useState(false);
     const [visEndrePauser, sVisEndrePauser] = useState(false);
     const [leggTilPauseSynlig, sLeggTilPauseSynlig] = useState(false);
-
 
     
     let pauseTidspunkter = [];

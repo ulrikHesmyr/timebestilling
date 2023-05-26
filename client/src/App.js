@@ -51,6 +51,7 @@ const App = ()=> {
               <div></div>
               <div></div>
             </button>
+            <img src="logo.png"></img>
       </div>
             {(synligMeny?(
             <nav id="navigation" className='navBar' role="region" aria-labelledby='burgerButton' aria-hidden={!synligMeny}>

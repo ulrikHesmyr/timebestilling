@@ -4,7 +4,7 @@ function sendMail(subject, message, mailAddress = process.env.PERSONAL_ADDR){
     const transporter = nodemailer.createTransport({
         service:'gmail',
         host:'smtp.gmail.com',
-        secure:false,
+        secure:true,
         auth:{
             user:process.env.MAIL_ADDR,
             pass:process.env.MAIL_PASS

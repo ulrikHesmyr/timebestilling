@@ -193,7 +193,7 @@ router.post('/bestilltime', ansattSjekker, async (req,res)=>{
 
             let brukerTilAnsatt = await Brukere.findOne({brukernavn: medarbeider.toLowerCase()});
             if(brukerTilAnsatt){
-                if(brukerTilAnsatt.aktivertEpost && brukerTilAnsatt.epost.length > 1){
+                if(brukerTilAnsatt.aktivertEpost && brukerTilAnsatt.epost){
                     mailer.sendMail(`Du har fått en timereservasjon!`, `Reservasjon for "${behandlinger.join(", ")}" \n${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}, kl.:${tidspunkt}\n\nTimen er registrert på: ${kunde} ${kundensTelefonnummer}\n\n`, `${brukerTilAnsatt.epost}`);
                 }
             }

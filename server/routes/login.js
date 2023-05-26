@@ -39,6 +39,16 @@ router.post("/oppdaterPassord", authorization, async(req,res)=>{
     }
     const oppdatertPassord = await Brukere.findOneAndUpdate({brukernavn:bruker}, {passord:jwt.sign({passord: passord}, PASSORD_KEY)});
     if(oppdatertPassord){
+        const accessToken = jwt.sign({brukernavn:bruker, passord: jwt.sign({passord: passord}, PASSORD_KEY), brukertype: req.brukertype}, ACCESS_TOKEN_KEY, {expiresIn:'480m'});
+
+        //Setter cookie for å holde brukeren logget inn
+        
+        const expirationDateAccess = new Date(Date.now() + 24 * 60 * 60 * 1000); // 1 døgn
+        res.cookie("access_token", accessToken, {
+            httpOnly: true,
+            secure: process.env.HTTPS_ENABLED == "secure",
+            expires: expirationDateAccess
+        });
         return res.send({message:"Oppdatert passord"});
     } else {
         return res.status(404);
@@ -98,6 +108,26 @@ router.post("/opprettBruker", authorization, async (req,res)=>{
     }
 })
 
+router.post("/endreEpost", authorization, async (req,res)=>{
+    const {nyEpost} = req.body;
+        const oppdatertBruker = await Brukere.findOneAndUpdate({brukernavn: req.brukernavn}, {epost: nyEpost});
+        if(oppdatertBruker){
+            return res.send({message:"Oppdatert bruker", valid:true});
+        } else {
+            return res.status(404);
+        }
+    
+})
+
+router.post("/endreVarlinger", authorization, async (req, res)=>{
+    const {aktivertEpost} = req.body;
+    const oppdatertBruker = await Brukere.findOneAndUpdate({brukernavn: req.brukernavn}, {aktivertEpost: aktivertEpost});
+    if(oppdatertBruker){
+        return res.send({message:"Oppdatert bruker", valid:true, aktivertEpost:aktivertEpost});
+    } else {
+        return res.status(404);
+    }
+})
 
 router.post("/slettBruker", authorization, async (req,res)=>{
     //Sletter bruker fra databasen
@@ -134,7 +164,7 @@ router.get("/loggetinn", authorization, async (req,res)=>{
             return bestilling;
     })
             
-        return res.json({valid:true,bruker:{navn:finnBruker.brukernavn, telefonnummer: jwt.verify(finnBruker.telefonnummer, TLF_SECRET).telefonnummer}, message:"Du er nå logget inn", brukertype: (req.brukertype==="admin"?"admin":"vakter"), env:env, bestilteTimer:bestilteTimer});
+        return res.json({valid:true, bruker:{epost: finnBruker.epost, aktivertEpost: finnBruker.aktivertEpost, navn:finnBruker.brukernavn, telefonnummer: jwt.verify(finnBruker.telefonnummer, TLF_SECRET).telefonnummer}, message:"Du er nå logget inn", brukertype: (req.brukertype==="admin"?"admin":"vakter"), env:env, bestilteTimer:bestilteTimer});
         
     } catch (error) {
         console.log(error);
@@ -190,7 +220,7 @@ router.post("/TWOFA", twofaLimiter, async (req,res)=>{
         })
         res.clearCookie("two_FA");
         
-        return res.json({valid:true,bruker:{navn:finnBruker.brukernavn, telefonnummer: jwt.verify(finnBruker.telefonnummer, TLF_SECRET).telefonnummer}, message:"Du er nå logget inn", brukertype: (brukertype==="admin"?"admin":"vakter"), env:env, bestilteTimer:bestilteTimer});
+        return res.json({valid:true,bruker:{epost: finnBruker.epost, aktivertEpost: finnBruker.aktivertEpost, navn:finnBruker.brukernavn, telefonnummer: jwt.verify(finnBruker.telefonnummer, TLF_SECRET).telefonnummer}, message:"Du er nå logget inn", brukertype: (brukertype==="admin"?"admin":"vakter"), env:env, bestilteTimer:bestilteTimer});
         
 
     } else {
@@ -266,7 +296,7 @@ router.post('/auth',loginLimiter, async (req,res)=>{
                 httpOnly: true,
                 secure: process.env.HTTPS_ENABLED == "secure",
             })
-            return res.json({valid:true,bruker:{navn:finnBruker.brukernavn, telefonnummer: jwt.verify(finnBruker.telefonnummer, TLF_SECRET).telefonnummer}, message:"Du er nå logget inn", brukertype: (brukertype==="admin"?"admin":"vakter"), env:env, bestilteTimer:bestilteTimer});
+            return res.json({valid:true,bruker:{epost: finnBruker.epost, aktivertEpost: finnBruker.aktivertEpost, navn:finnBruker.brukernavn, telefonnummer: jwt.verify(finnBruker.telefonnummer, TLF_SECRET).telefonnummer}, message:"Du er nå logget inn", brukertype: (brukertype==="admin"?"admin":"vakter"), env:env, bestilteTimer:bestilteTimer});
             
         } else {
 

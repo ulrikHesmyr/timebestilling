@@ -22,6 +22,8 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
     const [pauseTidspunkt, sPauseTidspunkt] = useState("06:00");
     const [pauseDag, sPauseDag] = useState("");
 
+    
+
     let pauseTidspunkter = [];
     for(let i = minutterFraKlokkeslett("06:00"); i < minutterFraKlokkeslett("22:00"); i += 15){
         pauseTidspunkter.push(klokkeslettFraMinutter(i));
@@ -82,7 +84,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
                 sNyFrisorTittel("");
                 sBildeAvFrisor(null);
                 sAdminTilgang(false);
-                sPaaJobb(env.klokkeslett.map(obj => ({ ...obj })));
+                sPaaJobb(env.klokkeslett.map(obj => ({ ...obj, pauser:[]})));
             } else {
                 alert("Noe gikk galt. Prøv igjen.");
             }
@@ -131,8 +133,13 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
             sEpost(e.target.value);
         }} value={epost} type="email"></input> </label>
         <label style={{display:"flex", alignItems:"center"}}>Last opp bilde av ansatt: <input accept="image/*" onChange={(e)=>{
-            sBildeAvFrisor(e.target.files[0]);
-            setPreview(URL.createObjectURL(e.target.files[0]));
+            
+            if(e.target.files[0].size < 2000000){
+                sBildeAvFrisor(e.target.files[0]);
+                setPreview(URL.createObjectURL(e.target.files[0]));
+            } else {
+                alert("Bildet er for stort. Maks 2mb.");
+            }
         }} type="file" name="uploaded_file"></input>Last opp bilde her: Maks 2mb {preview && <img className='frisorbilde' style={{height:"300px"}} alt='Forhåndsvisning av bildet' src={preview}></img>}</label>
         
 
@@ -202,7 +209,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
         <button onClick={(e)=>{
             e.preventDefault();
             sVisPause(true);
-            console.log(paaJobb);
+            
         }}>Legg til pause <img className='ikonKnapper' alt="Legg til pause knapp" src="leggtil.png"></img></button>
 
         {visPause && <div className='fokus'>
@@ -246,13 +253,13 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
             </div>}
             <p className='litentekst'>Valgte pauser:</p>
             {paaJobb.map(dag=>{
-                if(dag.pauser.length > 0) return (<ul>{dag.dag}
+                if(dag.pauser.length > 0) return (<ul key={dag.dag}>{dag.dag}
                 {dag.pauser.map(p=>{
                     return (<li key={p}>{p} <img onClick={(e)=>{
                         e.preventDefault();
                         const nyPaaJobb = [...paaJobb];
                         let index = nyPaaJobb.findIndex((d)=>d.dag === dag.dag);
-                        let pauseIndex = nyPaaJobb[index].pauser.findIndex((p)=>p === p);
+                        let pauseIndex = nyPaaJobb[index].pauser.findIndex((h)=>h === p);
                         nyPaaJobb[index].pauser.splice(pauseIndex, 1);
                         sPaaJobb(nyPaaJobb);
                     }} alt="Fjern pause" src="delete.png" className='ikonKnapper'></img></li>)
@@ -276,6 +283,12 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
             </button>
             <button onClick={(e)=>{
                     e.preventDefault();
+
+                    if(env.frisorer.map(frisor => frisor.navn.toLowerCase()).includes(nyFrisorNavn.toLowerCase())){
+                        alert("Frisør finnes allerede");
+                        return;
+                    }
+
                     if(epost.length > 0 && frisorTjenester.length > 0 && tlfNyFrisor.length===8 && nyFrisorNavn !== "" && !isNaN(parseInt(tlfNyFrisor)) && bildeAvFrisor !== null){
                         lagre();
                         

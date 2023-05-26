@@ -7,7 +7,6 @@ const authorization = async (req,res,next) => {
     try {
         
         if(NODE_ENV === "production"){
-            //Trenger egentlig ikke req.admin = false
             req.admin = false;
             const token = req.cookies.access_token;
             if(!token){
@@ -28,7 +27,7 @@ const authorization = async (req,res,next) => {
             }
         } else {
             req.admin = true;
-            req.brukernavn = "admin";
+            req.brukernavn = "ulrik";
             req.brukertype = "admin";
             return next();
 

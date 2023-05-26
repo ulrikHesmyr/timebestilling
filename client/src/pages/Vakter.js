@@ -22,6 +22,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
   const [visRedigerPassord, sVisRedigerPassord] = useState(false);
   const [visInnstillinger, sVisInnstillinger] = useState(false);
   const [visEndreEpost, sVisEndreEpost] = useState(false);
+  const [aktivertEpost, sAktivertEpost] = useState(bruker.aktivertEpost);
   const [nyttTlf, sNyttTlf] = useState(bruker.telefonnummer);
   const [lagretTlf, sLagretTlf] = useState(bruker.telefonnummer);
   const [nyEpost, sNyEpost] = useState(bruker.epost);
@@ -32,7 +33,6 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
   const [visGjentaPassord, sVisGjentaPassord] = useState(false);
 
   const [isMobile, setisMobile] = useState(false);
-  
   useEffect(()=>{
     
     if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
@@ -43,6 +43,26 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
     let hihi = env.frisorer.map(frisor=>frisor.navn);
     oppdaterSynligeElementer(hihi);
   },[]);
+
+  async function endreVarlinger(){
+    //Aktiverer eller deaktiverer epost varslinger i databasen
+    try {
+      lagreVarsel();
+      const request = await fetch("http://localhost:1226/login/endreVarlinger", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({aktivertEpost: !aktivertEpost})
+      });
+      const response = await request.json();
+      if(response && response.valid){
+        varsle();
+        sAktivertEpost(response.aktivertEpost)
+      }
+    } catch(erorr){
+      varsleFeil();
+      alert("Noe gikk galt, sjekk internettet og prøv igjen");
+    }  
+  }
 
   async function oppdaterSynligeElementer(a){
     try {
@@ -106,6 +126,21 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
       try {
         lagreVarsel();
         //Endrer eposten til den ansatte i databasen
+
+        const options = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({brukernavn: bruker.navn, nyEpost: nyEpost}),
+        }
+        const request = await fetch("http://localhost:1226/login/endreEpost", options);
+        const response = await request.json();
+        if(response){
+          varsle();
+          sVisEndreEpost(false);
+          sLagretEpost(nyEpost);
+        }
       } catch (error) {
         alert("Noe skjedde galt. Sjekk internettforbindelsen og prøv på nytt!");
         varsleFeil();
@@ -139,7 +174,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
     async function oppdaterTelefonnummer(){ 
       try {
         lagreVarsel();
-      if(!isNaN(parseInt(nyttTlf)) && nyttTlf.length === 8){
+      if(nyttTlf >= 40000000){
         //Sender en request til serveren for å endre telefonnummeret til den ansatte
         const options = {
           method:"POST",
@@ -171,32 +206,50 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
           <div style={{display:"flex", flexDirection:"row"}}>
           <p>Logget inn som: {bruker.navn}</p><button onClick={(e)=>{
             e.preventDefault();
-            sVisInnstillinger(!visInnstillinger);
+            sVisInnstillinger(true);
             }}><img src="settings.png" alt="Innstillinger for ansatt" style={{height:"1.4rem"}}></img></button></div>
           
-            {visInnstillinger?<>
-            <p>Din epost: {lagretEpost}
-            {visEndreEpost?<>
+            {visInnstillinger?<div className='fokus'>
+              <div onClick={()=>{
+                sVisInnstillinger(false);
+              }} className='lukk'></div>
+              <h4>Logget inn som {bruker.navn}</h4>
+            <div style={{display:"flex", flexDirection:"row", flexWrap:"wrap", alignItems:"center"}}>
+            {visEndreEpost?<div className='fokus'>
+              <h4>Endre epost-adresse</h4>
+              <p>Epostadressen brukes til å motta varslinger på epost når noen reserverer time hos deg</p>
+            Din epost: {lagretEpost}
+              <label>Ny epost: <input onChange={(e)=>{
+                sNyEpost(e.target.value);
+              }} value={nyEpost}></input></label>
             <div>
-              <button>Avbryt</button>
+              
+              <button onClick={()=>{
+                sVisEndreEpost(false);
+                sNyEpost(lagretEpost);
+              }}>Avbryt</button>
               <button onClick={()=>{
                 sVisEndreEpost(false);
                 endreEpost();
               }}>Lagre</button>
             </div>
-            </>:<button onClick={()=>{
+            </div>:<>Din epost: {lagretEpost} <button onClick={()=>{
             sVisEndreEpost(true);
-          }} ><img src="rediger.png" alt='rediger epost' style={{height:"1.4rem"}}></img></button>}
-            </p>
+          }} ><img src="rediger.png" alt='rediger epost' style={{height:"1.4rem"}}></img></button></>}
+            
+            </div>
           
-            <p>Ditt telefonnummer: {lagretTlf} 
-            {visRedigerTelefonnummer?<>
-            <label>Skriv inn nytt telefonnummer: <input inputMode="numeric" value={nyttTlf} maxLength={8} onChange={(e)=>{
+            
+            {visRedigerTelefonnummer?<div className='fokus'>
+              <h4>Endre telefonnummer</h4>
+              <p>Telefonnummeret ditt lagres beskyttet og kryptert og brukes kun for tofaktorautentisering.</p>
+            <label>Skriv inn nytt telefonnummer: +47<input inputMode="numeric" value={nyttTlf} maxLength={8} onChange={(e)=>{
               let newValue = e.target.value;
               if(/^\d*$/.test(newValue)){
                 sNyttTlf(newValue);
               }
             }}></input> </label>
+            <div>
             <button onClick={(e)=>{
               e.preventDefault();
               sVisRedigerTelefonnummer(false);
@@ -206,21 +259,23 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
               e.preventDefault();
               sVisRedigerTelefonnummer(false);
               oppdaterTelefonnummer();
-            }}>Lagre</button>
-            </>:<>
+            }}>Lagre</button></div>
+            </div>:<div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>Ditt telefonnummer: {lagretTlf} 
             <button onClick={(e)=>{
               //Redigerer telefonnummer
               e.preventDefault();
               sVisRedigerTelefonnummer(true);
             }}>
               <img src="rediger.png" alt="Rediger telefonnummer" style={{height:"1.4rem"}}></img>
-            </button>(brukes kun for tofaktorautentisering)</>  }
-          </p>
+            </button></div>  }
+          
           
           <div>
           Rediger passord
           {visRedigerPassord?<>
-          <div>
+          <div className='fokus'>
+            <h4>Endre passord</h4>
+            <p>Endre passordet som du bruker for å logge inn.</p>
           <label>Nytt passord: <input type={visNyttPassord?"text":"password"} onChange={(e)=>{
             sNyttPassord(e.target.value);
           }} value={nyttPassord}></input><input type="checkbox" onChange={()=>{
@@ -231,7 +286,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
           }} value={gjentaNyttPassord}></input><input type="checkbox" onChange={()=>{
             sVisGjentaPassord(!visGjentaPassord);
           }}></input></label>
-
+          <div>
           <button onClick={()=>{sVisRedigerPassord(false); sNyttPassord(""); sGjentaNyttPassord("");}}>Avbryt</button>
           <button onClick={()=>{
             if(nyttPassord === gjentaNyttPassord){
@@ -242,18 +297,28 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
             } else {
               alert("Passordene er ikke like");
             }
-          }} >Lagre</button>
+          }} >Lagre</button></div>
           </div>
           </>:
           <button onClick={()=>{
             sVisRedigerPassord(true);
           }} ><img src="rediger.png" alt='rediger passord' style={{height:"1.4rem"}}></img></button>
           }</div>
+
+          <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>Varslinger (epost) for timebestilling: {aktivertEpost? <div style={{color:"green", padding:"0.2rem"}}>Aktivert <button onClick={()=>{
+            if(window.confirm("Er du sikker på at du vil deaktivere varslinger på epost?")){
+              endreVarlinger();
+            }
+          }}>Deaktiver</button></div>:<div style={{color:"red", padding:"0.2rem"}}>Deaktivert<button onClick={()=>{
+            if(window.confirm("Er du sikker på at du vil aktivere varslinger på epost?")){
+              endreVarlinger();
+            }
+          }}>Aktiver</button></div>}</div>
           
 
-           </>:""}
-           <h5>Bestille time:</h5>
-           <p>Bestill time her: <Link to="/timebestilling">bestill time</Link> </p>
+           </div>:""}
+           <h3>Bestille time:</h3>
+           <p>Bestill time her: <Link to="/timebestilling">BESTILL TIME</Link> </p>
           <h3>Velg vakter for:</h3>
         <div className='velgFrisorVakter'>
         {env.frisorer.map((frisorElement)=>(
