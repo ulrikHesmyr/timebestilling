@@ -11,6 +11,7 @@ function Login(){
     const [loggetInn, toggleLoggetInn] = useState(false);
     const [passordSynlig, sPassordsynlig] = useState(false);
     const [updateTrigger, sUpdateTrigger] = useState(false);
+    const [lasterSynlig, sLasterSynlig] = useState(false);
 
     //Bruker må velge hvilken brukertype de er
     const [brukertypeValg, sBrukertypeValg] = useState("vakter");
@@ -54,6 +55,7 @@ function Login(){
     let format = /[()<>.:[\]-_;,`'*`^+?!&%¤$£#"/=]/;
 
     useEffect(()=>{
+        sLasterSynlig(true);
         alleredeLoggetInn();
     },[updateTrigger]);
 
@@ -187,6 +189,7 @@ function Login(){
             sEnv(response.env);
             sBestiltetimer(response.bestilteTimer);
             sBruker(response.bruker);
+            sLasterSynlig(false);
         } else {
             sTrykketLoggInn(false);
         }
@@ -207,7 +210,7 @@ function Login(){
 
     return(
         <>
-
+        {lasterSynlig && <div className='laster'></div>}
         <div className={lagrerVarslingSynlig?"varsling varsel":"skjul varsel"}><div>Lagrer...</div></div>
         <div className={varslingSynlig?"varsling varsel":"skjul varsel"}><div>Endringene er lagret!</div></div>
         <div className={visFeil?"varsling varsel":"skjul varsel"} style={{background:"red !important", color:"white !important"}}><div>Feilet</div></div>

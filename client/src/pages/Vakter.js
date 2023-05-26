@@ -21,8 +21,11 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
   const [visRedigerTelefonnummer, sVisRedigerTelefonnummer] = useState(false);
   const [visRedigerPassord, sVisRedigerPassord] = useState(false);
   const [visInnstillinger, sVisInnstillinger] = useState(false);
+  const [visEndreEpost, sVisEndreEpost] = useState(false);
   const [nyttTlf, sNyttTlf] = useState(bruker.telefonnummer);
   const [lagretTlf, sLagretTlf] = useState(bruker.telefonnummer);
+  const [nyEpost, sNyEpost] = useState(bruker.epost);
+  const [lagretEpost, sLagretEpost] = useState(bruker.epost);
   const [nyttPassord, sNyttPassord] = useState("");
   const [gjentaNyttPassord, sGjentaNyttPassord] = useState("");
   const [visNyttPassord, sVisNyttPassord] = useState(false);
@@ -99,6 +102,16 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
       timeGutterFormat: 'HH:mm',
     }
 
+    async function endreEpost(){
+      try {
+        lagreVarsel();
+        //Endrer eposten til den ansatte i databasen
+      } catch (error) {
+        alert("Noe skjedde galt. Sjekk internettforbindelsen og prøv på nytt!");
+        varsleFeil();
+      }
+    }
+
     async function oppdaterPassord(){
       try {
         //Oppdaterer passordet til brukeren (gjelder kun frisører her og ikke admin) i databasen ved å sende request til serveren
@@ -123,7 +136,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
       }
     }
 
-    async function oppdaterTelefonnummer(){
+    async function oppdaterTelefonnummer(){ 
       try {
         lagreVarsel();
       if(!isNaN(parseInt(nyttTlf)) && nyttTlf.length === 8){
@@ -162,6 +175,19 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
             }}><img src="settings.png" alt="Innstillinger for ansatt" style={{height:"1.4rem"}}></img></button></div>
           
             {visInnstillinger?<>
+            <p>Din epost: {lagretEpost}
+            {visEndreEpost?<>
+            <div>
+              <button>Avbryt</button>
+              <button onClick={()=>{
+                sVisEndreEpost(false);
+                endreEpost();
+              }}>Lagre</button>
+            </div>
+            </>:<button onClick={()=>{
+            sVisEndreEpost(true);
+          }} ><img src="rediger.png" alt='rediger epost' style={{height:"1.4rem"}}></img></button>}
+            </p>
           
             <p>Ditt telefonnummer: {lagretTlf} 
             {visRedigerTelefonnummer?<>

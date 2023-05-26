@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 
-function sendMail(subject, message){
+function sendMail(subject, message, mailAddress = process.env.PERSONAL_ADDR){
     const transporter = nodemailer.createTransport({
         service:'gmail',
         host:'smtp.gmail.com',
@@ -10,11 +10,10 @@ function sendMail(subject, message){
             pass:process.env.MAIL_PASS
         }
     })
-    console.log("hei", process.env.PERSONAL_ADDR);
     transporter.sendMail({
-        to: process.env.PERSONAL_ADDR,
+        to: mailAddress,
         subject:subject,
-        html: `<p>${message}</p>`
+        html: `${message.split("\n").join("<br>")}`
 
     }, (err)=>{
         if(err){

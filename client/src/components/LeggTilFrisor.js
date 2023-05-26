@@ -7,6 +7,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
     const [nyFrisorTittel, sNyFrisorTittel] = useState("");
     const [nyFrisorBeskrivelse, sNyFrisorBeskrivelse] = useState("");
     const [tlfNyFrisor, sTlfNyFrisor] = useState("");
+    const [epost, sEpost] = useState("");
     const [frisorTjenester, setFrisortjenester] = useState([]); //Skal være indekser, akkurat som i databasen
     const [bildeAvFrisor, sBildeAvFrisor] = useState(null);
     const [paaJobb, sPaaJobb] = useState(env.klokkeslett.map(obj => ({ ...obj, pauser:[]})));
@@ -48,14 +49,15 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
         const request2 = await fetch("http://localhost:1226/env/opprettFrisor", options2);
         const response2 = await request2.json();
 
-        //Oppretter bruker for frisøren
+        //Oppretter bruker for ansatt
         if(response2){
 
             
             const data = {
                 nyBrukernavn: nyFrisorNavn.toLowerCase(),
                 nyTelefonnummer: parseInt(tlfNyFrisor),
-                adminTilgang: adminTilgang
+                adminTilgang: adminTilgang,
+                epost: epost
             }
             const options = {
                 method:"POST",
@@ -74,6 +76,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
                 sUpdateTrigger(!updateTrigger);
                 setFrisortjenester([]);
                 sTlfNyFrisor("");
+                sEpost("");
                 sNyFrisorNavn("");
                 sNyFrisorBeskrivelse("");
                 sNyFrisorTittel("");
@@ -109,7 +112,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
   return (
     <>
     {leggtil?<div className='fokus' >
-        <label style={{fontWeight:"bold"}}>Navn på ny frisør: <input onChange={(e)=>{
+        <label style={{fontWeight:"bold"}}>Navn på ny ansatt: <input onChange={(e)=>{
             sNyFrisorNavn(e.target.value);
         }} value={nyFrisorNavn} type="text" placeholder='Navn navnesen' maxLength={20}></input></label>
 
@@ -121,16 +124,19 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
             sNyFrisorBeskrivelse(e.target.value);
         }} value={nyFrisorBeskrivelse} placeholder='Navn har jobbet hos oss siden... Hen er kreativ og liker å jobbe med... Nøyaktig og opptatt av å forstå kundens behov...'></textarea></label>
 
-        <label style={{fontWeight:"bold"}}>Telefonnummeret til frisøren: <input style={{letterSpacing:"0.3rem"}} onChange={(e)=>{
+        <label style={{fontWeight:"bold"}}>Telefonnummeret til ansatt: <input style={{letterSpacing:"0.3rem"}} onChange={(e)=>{
             sTlfNyFrisor(e.target.value);
         }} value={tlfNyFrisor} type="text" maxLength={8}></input></label>
-        <label style={{display:"flex", alignItems:"center"}}>Last opp bilde av Frisøren: <input accept="image/*" onChange={(e)=>{
+        <label style={{fontWeight:"bold"}}>E-post: <input onChange={(e)=>{
+            sEpost(e.target.value);
+        }} value={epost} type="email"></input> </label>
+        <label style={{display:"flex", alignItems:"center"}}>Last opp bilde av ansatt: <input accept="image/*" onChange={(e)=>{
             sBildeAvFrisor(e.target.files[0]);
             setPreview(URL.createObjectURL(e.target.files[0]));
         }} type="file" name="uploaded_file"></input>Last opp bilde her: Maks 2mb {preview && <img className='frisorbilde' style={{height:"300px"}} alt='Forhåndsvisning av bildet' src={preview}></img>}</label>
         
 
-        <p style={{fontWeight:"bold"}} >Velg behandlinger for frisør:</p>
+        <p style={{fontWeight:"bold"}} >Velg behandlinger for ansatt:</p>
 
         {env.tjenester.map((tjeneste)=>
         (<div style={{userSelect:"none", backgroundColor:(frisorTjenester.includes(tjeneste.navn)?"lightgreen":"white"), cursor:"pointer"}} key={tjeneste.navn} onClick={()=>{
@@ -145,7 +151,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
         </div>)
         )}
 
-        <p style={{fontWeight:"bold"}}>Velg hvilke dager og klokkeslett frisøren skal jobbe:</p>
+        <p style={{fontWeight:"bold"}}>Velg hvilke dager og klokkeslett den ansatte skal jobbe:</p>
         <p className='litentekst'>Kryss av i ruten dersom vedkommende ikke er på jobb denne dagen</p>
         {paaJobb.map((dag, index)=>{
             return (
@@ -242,7 +248,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
             {paaJobb.map(dag=>{
                 if(dag.pauser.length > 0) return (<ul>{dag.dag}
                 {dag.pauser.map(p=>{
-                    return (<li>{p} <img onClick={(e)=>{
+                    return (<li key={p}>{p} <img onClick={(e)=>{
                         e.preventDefault();
                         const nyPaaJobb = [...paaJobb];
                         let index = nyPaaJobb.findIndex((d)=>d.dag === dag.dag);
@@ -256,7 +262,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
             })}
 
             <p style={{fontWeight:"bold"}}>Legg inn administrator-tilgang:</p>
-        <p>Nedenfor krysser du av boksen dersom denne frisøren skal ha administrator-rettigheter og få tilgang til dette panelet.</p>
+        <p>Nedenfor krysser du av boksen dersom ansatt skal ha administrator-rettigheter og få tilgang til dette panelet.</p>
         <label>Admin tilgang: <input type="checkbox" onChange={(e)=>{
             sAdminTilgang(e.target.checked);
         }}></input> </label>
@@ -270,14 +276,14 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
             </button>
             <button onClick={(e)=>{
                     e.preventDefault();
-                    if(frisorTjenester.length > 0 && tlfNyFrisor.length===8 && nyFrisorNavn !== "" && !isNaN(parseInt(tlfNyFrisor)) && bildeAvFrisor !== null){
+                    if(epost.length > 0 && frisorTjenester.length > 0 && tlfNyFrisor.length===8 && nyFrisorNavn !== "" && !isNaN(parseInt(tlfNyFrisor)) && bildeAvFrisor !== null){
                         lagre();
                         
                     } else {
                         alert("Ikke riktig format");
                     }
                 }}>
-                Lagre
+                Opprett
             </button>
         </div>
     </div>:
@@ -286,7 +292,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
         sLeggTil(true);
 
     }}>
-        <img className='ikonKnapper' src='leggtil.png' alt='Legg til Frisør'></img>Ny ansatt
+        <img className='ikonKnapper' src='leggtil.png' alt='Legg til Ansatt'></img>Ny ansatt
     </button>}
     </>
   )

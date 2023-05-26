@@ -10,7 +10,7 @@ function Klokkeslett({sMidlertidigDato, harEndretDatoen, datoForsteLedige, sDato
     useEffect(()=>{
         
 
-        let aapningstider = [];
+        
         
         let frisorerVelgImellom;
         let ledigeTotalt = [];
@@ -31,13 +31,14 @@ function Klokkeslett({sMidlertidigDato, harEndretDatoen, datoForsteLedige, sDato
         for(let n = 0; n < frisorerVelgImellom.length; n++){
 
             
-
+            let aapningstider = [];
             //Sjekker tider den ansatte er på jobb for den gjeldende dagen i uka
             let gjeldendeDag = frisorerVelgImellom[n].paaJobb[new Date(dato).getDay()];
-            if(gjeldendeDag.stengt === false){ 
+            if(!gjeldendeDag.stengt){ 
                 for(let i = minutterFraKlokkeslett(gjeldendeDag.open); i <= minutterFraKlokkeslett(gjeldendeDag.closed);i+=15){
                     aapningstider.push(klokkeslettFraMinutter(i))
                 }
+                
             }
 
 
@@ -58,15 +59,13 @@ function Klokkeslett({sMidlertidigDato, harEndretDatoen, datoForsteLedige, sDato
                 }
             }).filter(x => x).concat(ekstra);
 
-            console.log(frisorerVelgImellom[n].paaJobb[new Date(dato).getDay()].pauser);
-
             let okkupert = produkt.map(p=>p.tid).reduce((total, tid)=>total+tid, 0);
             frisorerVelgImellom[n].paaJobb[new Date(dato).getDay()].pauser.forEach(element=>{
                 //Finner tidspunkter som er utilgjengelige ut ifra pausene og tiden det tar å utføre behandlingen
                 for(let u = (minutterFraKlokkeslett(element) - okkupert+15); minutterFraKlokkeslett(element) >= u; u+=15){
                     utilgjengelige.push(klokkeslettFraMinutter(u));
                 }
-                console.log(utilgjengelige)
+                
                 
             })
 

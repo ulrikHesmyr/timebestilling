@@ -7,6 +7,8 @@ const authorization = async (req,res,next) => {
     try {
         
         if(NODE_ENV === "production"){
+            //Trenger egentlig ikke req.admin = false
+            req.admin = false;
             const token = req.cookies.access_token;
             if(!token){
                 return res.send({message:"Du må logge inn.", valid:false})

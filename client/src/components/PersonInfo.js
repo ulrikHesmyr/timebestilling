@@ -165,13 +165,12 @@ function PersonInfo({env, smsBekreftelse, sSmsBekreftelse, totalTid, totalPris, 
                 </div>):""
             }
 
-                <p>Bekreftelse på din reservasjon sendes på SMS</p>
                 <p>Denne siden bruker informasjonskapsler. Ønsker du å lese mer om vår bruk av cookies, kan du lese mer <a aria-label="Åpne personvernserklæringen og brukervilkår i ny fane" rel='noreferrer' target="_blank" href='/personvaernserklaering-og-brukervilkaar'>her</a></p>
                 <p>Jeg godtar <a aria-label="Åpne personvernserklæringen og brukervilkår i ny fane" rel='noreferrer' target="_blank" href='/personvaernserklaering-og-brukervilkaar'>personvernserkæringen, brukervilkår og bruk av cookies</a> ved å trykke "send inn reservasjon"</p>
                 <label style={{display:"flex", justifyContent:"center", flexDirection:"column"}} htmlFor='sms_bekreftelse'>
-                    <div style={{display:"flex", alignItems:"center", flexDirection:"row"}}>Få bekreftelse på SMS? <input style={{height:"1.4rem", width:"1.4rem"}} required aria-required id="sms_bekreftelse" type='checkbox' checked={smsBekreftelse} onChange={(e)=>{
+                    <div style={{display:"flex", alignItems:"center", flexDirection:"row"}}>Få bekreftelse på SMS? <input style={{height:"1.4rem", width:"1.4rem"}} required aria-required id="sms_bekreftelse" type='checkbox' checked={smsBekreftelse} onChange={()=>{
                         
-                        sSmsBekreftelse(!e.target.checked);
+                        sSmsBekreftelse(!smsBekreftelse);
                     }} onKeyDown={(e)=>{
                         if(e.code === "Enter" || e.code === "Space"){
                             e.preventDefault();

@@ -280,29 +280,6 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
         }
     }
 
-    async function oppdaterFrisorer(frisorArray){
-        try {
-            lagreVarsel();
-        const options = {
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body: JSON.stringify({frisorer:frisorArray}),
-            //credentials:'include'
-        }
-        const request = await fetch("http://localhost:1226/env/oppdaterFrisorer", options);
-        const response = await request.json();
-        if(response){
-            varsle();
-            sUpdateTrigger(!updateTrigger);
-        }
-        } catch (error) {
-            alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen.");
-            varsleFeil();
-        }
-    }
-
     async function oppdaterOmOss(){
         try {
             lagreVarsel();
@@ -352,7 +329,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
             body: JSON.stringify({adresse:adresse}),
             //credentials:'include'
         }
-        const request = await fetch("http://localhost:1226/env/oppdaterAdresse", options);
+        const request = await fetch("/env/oppdaterAdresse", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -699,7 +676,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     <div className='frisorOversikt'>
                         {env.frisorer.map((frisor)=>(
                                 <div key={frisor.navn}>
-                                    <DetaljerFrisor frisor={frisor} bruker={bruker} env={env} oppdaterFrisorer={oppdaterFrisorer} varsleFeil={varsleFeil} lagreVarsel={lagreVarsel} varsle={varsle} updateTrigger={updateTrigger} sUpdateTrigger={sUpdateTrigger} />
+                                    <DetaljerFrisor frisor={frisor} bruker={bruker} env={env} varsleFeil={varsleFeil} lagreVarsel={lagreVarsel} varsle={varsle} updateTrigger={updateTrigger} sUpdateTrigger={sUpdateTrigger} />
                                 </div>
                         ))}
                     </div>

@@ -122,7 +122,9 @@ header{
   height:80vh;
 }
 
-
+footer a {
+  text-decoration: underline;
+}
 select{
   width: fit-content;
 }
@@ -147,7 +149,7 @@ footer{
   align-items: center;
   color:white;
   padding:0.5rem;
-  background: var(--farge5);
+  background: var(--background1);
   margin-top: 2rem;
   text-align: center;
   width: 100%;
@@ -155,15 +157,24 @@ footer{
   font-family: var(--font4);
   position: absolute;
   bottom: 0;
+  text-shadow: 0px 0px 4px black;
+  box-shadow: 0px 6px 10px inset rgba(0, 0, 0, 0.55);
 }
 footer *{
   margin:0.5rem;
 }
+.kontaktsiden a {
+  text-decoration: underline;
+}
+
+.omOss a{
+  text-decoration: underline;
+}
 
 a{
-  text-decoration: underline;
   font-weight: 400;
-  text-transform: capitalize;
+  text-shadow: none !important;
+  text-decoration: none;
 }
 
 h4{
@@ -264,6 +275,9 @@ input, button, select, option{
 }
 .timebestilling * {
   margin:0.15rem;
+}
+.timebestilling a{
+  text-decoration: underline;
 }
 .omOss{
   max-width: 100%;

@@ -177,7 +177,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
                     tidspunkt:klokkeslettet,
                     //frisor: (frisor === false?env.frisorer.indexOf(forsteFrisor):env.frisorer.indexOf(frisor)),
                     behandlinger:produkt.map(tjeneste=>tjeneste.navn),
-                    telefonnummer: parseInt(telefonnummer),
+                    telefonnummer: telefonnummer,
                     kunde:navn,
                     medarbeider:(frisor === false? forsteFrisor.navn:frisor.navn),
                     SMS_ENABLED: smsBekreftelse,

@@ -80,13 +80,14 @@ router.post("/oppdaterTelefonnummer", authorization, async (req,res)=>{ //Legg t
 //BRUKERE
 
 router.post("/opprettBruker", authorization, async (req,res)=>{
-    const {nyBrukernavn, nyTelefonnummer, adminTilgang} = req.body;
+    const {nyBrukernavn, nyTelefonnummer, adminTilgang, epost} = req.body;
     if(req.admin){
         const nyBruker = await Brukere.create({
             brukernavn: nyBrukernavn,
             passord: jwt.sign({passord: nyBrukernavn}, PASSORD_KEY),
             telefonnummer: jwt.sign({telefonnummer: nyTelefonnummer}, TLF_SECRET),
-            admin: adminTilgang
+            admin: adminTilgang,
+            epost: epost
         });
 
         if(nyBruker){

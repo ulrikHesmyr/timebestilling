@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import {hentDato} from '../App'
 import { minutterFraKlokkeslett, klokkeslettFraMinutter } from './Klokkeslett';
-function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVarsel, varsleFeil, sUpdateTrigger, updateTrigger}){
+function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, sUpdateTrigger, updateTrigger}){
 
     const [visDetaljer, sVisDetaljer] = useState(false);
 
@@ -29,6 +29,7 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
     const [visGiAdmin, sVisGiAdmin] = useState(false);
     const [visGiAdminKnapp, sVisGiAdminKnapp] = useState(false);
     const [visEndrePauser, sVisEndrePauser] = useState(false);
+    const [leggTilPauseSynlig, sLeggTilPauseSynlig] = useState(false);
 
 
     
@@ -71,6 +72,53 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
         alert("Noe gikk galt. Sjekk internettforbindelsen og prøv på nytt");
         varsleFeil();
       }
+    }
+
+    async function leggTilPause(){
+      try {
+        lagreVarsel();
+        const options = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          //credentials: 'include',
+          body: JSON.stringify({navn:frisor.navn, pause:nyPause, dag:nyPauseDag})
+        }
+        const request = await fetch('http://localhost:1226/env/leggTilPause', options);
+        const response = await request.json();
+        if(response){
+          varsle();
+          sUpdateTrigger(!updateTrigger);
+        } 
+        } catch (error) {
+          alert("Noe gikk galt. Sjekk internettforbindelsen og prøv på nytt");
+          varsleFeil();
+        }
+    }
+
+    //Fjerner pause en gitt dag for vilkårlig ansatt
+    async function fjernPause(pause, dag, navn){
+      try {
+        lagreVarsel();
+        const options = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          //credentials: 'include',
+          body: JSON.stringify({navn:navn, pause:pause, dag:dag})
+        }
+        const request = await fetch('http://localhost:1226/env/fjernPause', options);
+        const response = await request.json();
+        if(response){
+          varsle();
+          sUpdateTrigger(!updateTrigger);
+        } 
+        } catch (error) {
+          alert("Noe gikk galt. Sjekk internettforbindelsen og prøv på nytt");
+          varsleFeil();
+        }
     }
 
     //Oppdaterer tittel og beskrivelse for ansatt
@@ -117,6 +165,7 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
             const response = await request.json();
             if(response){
               sVisGiAdminKnapp(!response.admin);
+              //Trenger ikke sUpdatetrigger
             }
         } catch (error) {
             varsleFeil();
@@ -136,7 +185,7 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
           body: JSON.stringify({navn:n})
 
         }
-        const request = await fetch('http://localhost:1226/env/giAdmin', options);
+        const request = await fetch("http://localhost:1226/env/giAdmin", options);
         const response = await request.json();
         if(response){
           varsle();
@@ -163,7 +212,7 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
         //credentials: 'include',
         body: JSON.stringify({navn:frisor.navn, telefon:parseInt(telefonAnsatt)})
       }
-      const request = await fetch('http://localhost:1226/env/oppdaterTelefonAnsatt', options);
+      const request = await fetch("http://localhost:1226/env/oppdaterTelefonAnsatt", options);
       const response = await request.json();
       if(response){
         varsle();
@@ -193,7 +242,7 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
           body: formData
         }
 
-        const request = await fetch('http://localhost:1226/env/oppdaterBildeFrisor', options);
+        const request = await fetch("http://localhost:1226/env/oppdaterBildeFrisor", options);
         const response = await request.json();
         if(response.m){
           alert(response.m);
@@ -211,36 +260,64 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
       
     }
 
-    async function siOppFrisor(){
-      let tempFrisorer = env.frisorer;
-      if(ikkeSiOpp){
-        tempFrisorer.map((f)=>{
-          if(f.navn === frisor.navn){
-            f.oppsigelse = "Ikke oppsagt";
-          }
-          return f});
-      } else {
-        tempFrisorer.map((f)=>{
-          if(f.navn === frisor.navn){
-            f.oppsigelse = oppsigelsesDato;
-          }
-          return f});
-      }
+    async function siOppFrisor(){ 
 
-      oppdaterFrisorer(tempFrisorer);
+      lagreVarsel();
+      try {
+        
+        const options = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          //credentials: 'include',
+          body: JSON.stringify({navn: frisor.navn, ikkeSiOpp:ikkeSiOpp, dato:oppsigelsesDato})
+        }
+        const request = await fetch("http://localhost:1226/env/siOppFrisor", options);
+        const response = await request.json();
+
+        if(response.valid){  
+          varsle();
+          sUpdateTrigger(!updateTrigger);
+        }
+
+      } catch (error) {
+        alert("Noe gikk galt, sjekk internettforbindelsen og prøv på nytt");
+        varsleFeil();
+      }
       sVisRedigerFrisor(false);
       sVisSiOpp(false);
     }
-    
+
+    //endre her 
     async function oppdaterBehandlinger(){
       //Oppdaterer behandlinger i databasen
-      let tempFrisorer = env.frisorer;
-      tempFrisorer.map((f)=>{
-        if(f.navn === frisor.navn){
-          f.produkter = frisorTjenester;
+      lagreVarsel();
+      try {
+
+        const options = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          //credentials: 'include',
+          body: JSON.stringify({navn:frisor.navn, behandlinger:frisorTjenester})
         }
-        return f});
-      oppdaterFrisorer(tempFrisorer);
+        const request = await fetch("http://localhost:1226/env/oppdaterBehandlingerFrisor", options);
+        const response = await request.json();
+        if(response.valid){
+          varsle();
+          sUpdateTrigger(!updateTrigger);
+        } else {
+          alert("Noe gikk galt, prøv på nytt");
+        }
+      }
+      catch (error) {
+        alert("Noe gikk galt, sjekk internettforbindelsen og prøv på nytt");
+        varsleFeil();
+      }
+      
+      
     }
 
     async function resetPassord(navn){
@@ -255,7 +332,7 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
         //credentials: 'include',
         body: JSON.stringify({navn:navn.toLowerCase()})
       }
-      const request = await fetch('http://localhost:1226/login/resetPassord', options);
+      const request = await fetch("http://localhost:1226/login/resetPassord", options);
       const response = await request.json();
       if(response.valid){
         varsle();
@@ -311,7 +388,7 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
         {paaJobb.map((dag)=>(<li key={dag.dag}>{dag.dag}: {dag.stengt?"ikke på jobb":`${dag.open} - ${dag.closed}`}</li>))}
         <h3>Pauser: </h3>
         {paaJobb.map((dag)=>{if(dag.pauser.length > 0) return <p key={dag.dag}>{dag.dag}{dag.pauser.map((p)=>{
-          //console.log("p", p);
+          
           return <li key={p}>{p}</li>  
         })}</p>})}
       </ul>
@@ -392,34 +469,39 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
               <h4>Endre pauser for {frisor.navn}</h4>
               <p>Her kan du fjerne eller legge til pauser for {frisor.navn}. Pausene varer i 15 minutter</p>
               {paaJobb.map(dag=>{
-                if(dag.pauser.length > 0) return (<ul>{dag.dag}
+                if(dag.pauser.length > 0) return (<ul key={dag.dag}>{dag.dag}
                 {dag.pauser.map(p=>{
-                    return (<li style={{padding:"0.5rem"}}>{p} <img onClick={(e)=>{
+                    return (<li key={p} style={{padding:"0.5rem", display:"flex", flexDirection:"row", alignItems:"center"}}>{p} <img onClick={(e)=>{
                         e.preventDefault();
-                        const nyPaaJobb = [...paaJobb];
-                        let index = nyPaaJobb.findIndex((d)=>d.dag === dag.dag);
-                        let pauseIndex = nyPaaJobb[index].pauser.findIndex((p)=>p === p);
-                        nyPaaJobb[index].pauser.splice(pauseIndex, 1);
-                        sPaaJobb(nyPaaJobb);
-                        oppdaterPaaJobb(nyPaaJobb);
+                        if(window.confirm("Ønsker du å slette denne pausen?")){
+                          let nyPaaJobb = [...paaJobb];
+                          nyPaaJobb.forEach(d=>{
+                            if(d.dag === dag.dag){
+                              d.pauser = d.pauser.filter(pause=>pause !== p);
+                            }
+                          })
+                          sPaaJobb(nyPaaJobb);
+                          //Fjerner en pause fra ansattes pauser
+                          fjernPause(p, dag.dag, frisor.navn);
+                        }
                     }} alt="Fjern pause" src="delete.png" className='ikonKnapper'></img></li>)
                 })}
                 
                 </ul>)
             })}
 
-            <div style={{display:"flex", flexDirection:"column", alignItems:"flex-end"}}>
+            {leggTilPauseSynlig? <div style={{display:"flex", flexDirection:"column", alignItems:"flex-start"}}>
+            <h4>Velg dag og tid for pausen</h4>
             <label>Velg dag for pausen: <select value={nyPauseDag} onChange={(e)=>{
                 sNyPauseDag(e.target.value);
             }}>
                 {paaJobb.map(dag=>{
-                    return (<option value={dag.dag}>{dag.dag}</option>)
+                    return (<option key={dag.dag} value={dag.dag}>{dag.dag}</option>)
                 })}
             </select></label>
             <label>Velg pausens tidspunkt:
                         <select value={nyPause} onChange={(e)=>{
                             sNyPause(e.target.value);
-                            console.log(e.target.value)
                         }}>
                             {pauseTidspunkter.map((tidspunkt)=>{
                                 return <option key={tidspunkt} value={tidspunkt}>{tidspunkt}</option>
@@ -428,16 +510,23 @@ function DetaljerFrisor({env, bruker, oppdaterFrisorer, frisor, varsle, lagreVar
                         </select>
                     </label>
                     <p>Legg til pause {nyPauseDag} klokken {nyPause}</p>
-            <button onClick={(e)=>{
+            <div>
+              <button onClick={()=>{
+                sLeggTilPauseSynlig(false);
+              }}>Avbryt</button>
+              <button onClick={(e)=>{
 
-                e.preventDefault();
-                const nyPaaJobb = [...paaJobb];
-                let index = nyPaaJobb.findIndex((d)=>d.dag === nyPauseDag);
-                nyPaaJobb[index].pauser.push(nyPause);
-                sPaaJobb(nyPaaJobb);
-                oppdaterPaaJobb(nyPaaJobb);
-            }}>Bekreft</button>
-            </div>
+              e.preventDefault();
+              sLeggTilPauseSynlig(false);
+              const nyPaaJobb = [...paaJobb];
+              let index = nyPaaJobb.findIndex((d)=>d.dag === nyPauseDag);
+              nyPaaJobb[index].pauser.push(nyPause);
+              sPaaJobb(nyPaaJobb);
+              leggTilPause();
+              }}>Bekreft</button></div>
+            </div>:<button onClick={()=>{
+              sLeggTilPauseSynlig(true);
+            }}><img alt="Legg til pause" src="leggtil.png" className='ikonKnapper'></img> Legg til pause</button>}
             </div>}
 
 

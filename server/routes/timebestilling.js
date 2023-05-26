@@ -9,6 +9,7 @@ const mailer = require("../configuration/mailer");
 const authorization = require("../middleware/authorization");
 
 const Bestilttime = require("../model/bestilling");
+const Brukere = require("../model/brukere");
 const Env = require("../model/env");
 const FriTimene = require("../model/fri");
 
@@ -17,9 +18,11 @@ const {NODE_ENV, SMSPIN_SECRET, ACCESS_TOKEN_KEY, SMSPINVALID_SECRET, CUSTOMER_K
 let intervall = 30 * 60 * 1000; // 30 min
 if(NODE_ENV === "development") intervall = 2* 60 * 1000; // 2 minutter
 
+let bestillingsLimit = 3;
+if(NODE_ENV === "development") bestillingsLimit = 1;
 const bestillingLimiter = rateLimiter({
     windowMs: intervall,
-    max: 3,
+    max: bestillingsLimit,
     message: {m:"Du har bestilt for mange ganger, vent 30 min før du bestiller igjen! \n\nKontakt oss på telefon dersom du må bestille time med en gang."}
 });
 
@@ -31,21 +34,70 @@ const hentBestillingerLimiter = rateLimiter({
 
 let antallMeldingerSendt = 400; //Hardcoded fra strex pr 08.03.2023
 let antallmeldinger = 1800; //Kjøpt pr 08.03.2023
-  
 
-router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
+//For å la ansatte bestille så mye de ønsker
+function ansattSjekker(req,res,next){
+    const ansattBestilling = req.cookies.access_token; 
+    const ansattBestilling2 = req.cookies.two_FA_valid; 
+    let ansatt = false;
+    if(ansattBestilling){
+        ansatt = jwt.verify(ansattBestilling, ACCESS_TOKEN_KEY);
+    } else if (ansattBestilling2){
+        ansatt = jwt.verify(ansattBestilling2, ACCESS_TOKEN_KEY);
+    }
+
+    if(NODE_ENV === "development"){
+        next()
+    } else {
+        
+        if(!ansatt){
+            bestillingLimiter(req,res,next);
+        } else {
+            next();
+        }
+    }  
+    
+}
+
+router.post('/bestilltime', ansattSjekker, async (req,res)=>{
     try {
         const env = await Env.findOne();
-        const {dato, behandlinger, kunde, medarbeider, telefonnummer, tidspunkt, SMS_ENABLED} = req.body; //frisor
+        const {dato, behandlinger, kunde, medarbeider, telefonnummer, tidspunkt, SMS_ENABLED} = req.body; 
+        if(!(dato && behandlinger && kunde && medarbeider && telefonnummer && tidspunkt)){
+            return res.status(400).json({m:"Mangler informasjon"});
+        }
+        if(telefonnummer.length !== 8){
+            return res.status(400).json({m:"Telefonnummeret må være 8 siffer"});
+        }
+        if(behandlinger.length < 1){
+            return res.status(400).json({m:"Du må velge minst en behandling"});
+        }
+        if(kunde.length < 2){
+            return res.status(400).json({m:"Du må skrive inn navnet ditt"});
+        }
         const t = await Bestilttime.findOne({dato: dato, medarbeider: medarbeider, tidspunkt:tidspunkt});
         
         let finnesIkkeKollisjon = true; 
         let totalTid = env.tjenester.filter(tjeneste=> behandlinger.includes(tjeneste.navn)).reduce((total, tjeneste)=>total + tjeneste.tid, 0);
+        let tidspunktTid = minutterFraKlokkeslett(tidspunkt);
 
-        for(let i = minutterFraKlokkeslett(tidspunkt); i < (minutterFraKlokkeslett(tidspunkt) + totalTid);i+=15){
+        for(let i = tidspunktTid; i < (tidspunktTid + totalTid);i+=15){
             let f = await Bestilttime.findOne({dato: dato, medarbeider: medarbeider, tidspunkt:klokkeslettFraMinutter(i)});
             if(f) finnesIkkeKollisjon = false;
         }
+
+        //Sjekker om timen kræsjer med reserverte timer
+        
+        const bestilteTimer = await Bestilttime.find({medarbeider: medarbeider, dato: dato});
+        
+        bestilteTimer.forEach(bestilt => {
+            let tidReservert = env.tjenester.filter(tjeneste=> bestilt.behandlinger.includes(tjeneste.navn)).reduce((total, tjeneste)=>total + tjeneste.tid, 0);
+            
+
+            if(tidspunktTid >= minutterFraKlokkeslett(bestilt.tidspunkt) && tidspunktTid < minutterFraKlokkeslett(bestilt.tidspunkt) + tidReservert){
+                finnesIkkeKollisjon = false;
+            }
+        });
         const fritimene = await FriTimene.find({medarbeider: medarbeider});
         if(fritimene){
             fritimene.forEach(fri => {
@@ -60,7 +112,7 @@ router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
                     let friDag = fri.friDag;
                     if(dato === friDag){
                         for(let i = minutterFraKlokkeslett(fri.fraKlokkeslett); i < minutterFraKlokkeslett(fri.tilKlokkeslett);i+=15){
-                            if(i === minutterFraKlokkeslett(tidspunkt)){
+                            if(i === tidspunktTid){
                                 finnesIkkeKollisjon = false;
                             }
                         }
@@ -68,8 +120,44 @@ router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
                 }
             });
         }
+
+        //Går igjennom sjekker om timereservasjonen er legitim
+        let gyldigFormat = true;
+        let naa = new Date(new Date().setHours(new Date().getHours() + 2));
+        let bestillingsTid = new Date(new Date(dato + " " + tidspunkt + ":00").setHours(new Date(dato + " " + tidspunkt + ":00").getHours() + 2));
         
-        if(!t && finnesIkkeKollisjon){
+        //Sjekker om dato er i riktig format
+        if(bestillingsTid.getFullYear() > (naa.getFullYear() + 2)){
+            gyldigFormat = false;
+        }
+        //Sjekker om dato ikke er i fortiden
+        if(bestillingsTid < naa){
+            gyldigFormat = false;
+        }
+
+        //Sjekker om tidspunkt er innenfor åpningstidene til den ansatte og ikke kræsjer med pauser
+        env.frisorer.forEach(frisor => {
+            if(frisor.navn === medarbeider){
+                
+                //Sjekker med åpningstidene
+                let open = frisor.paaJobb[new Date(dato).getDay()].open;
+                let closed = frisor.paaJobb[new Date(dato).getDay()].closed;
+                if(tidspunktTid < minutterFraKlokkeslett(open) || (tidspunktTid + totalTid) > minutterFraKlokkeslett(closed)){
+                    gyldigFormat = false;
+                }
+
+                //Sjekker med pauser
+                frisor.paaJobb[new Date(dato).getDay()].pauser.forEach(pause => {
+                    if(tidspunktTid + totalTid > minutterFraKlokkeslett(pause) && tidspunktTid < minutterFraKlokkeslett(pause) + 15){
+                        gyldigFormat = false;
+                    }
+                });
+            }
+
+        });
+
+        //Sjekker om tidspunkt er innenfor frisørens åpningstid
+        if(!t && finnesIkkeKollisjon && gyldigFormat){
 
             let kundensTelefonnummer = telefonnummer;
             if(NODE_ENV === "production"){
@@ -102,6 +190,13 @@ router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
                 kunde: jwt.sign({kunde}, CUSTOMER_KEY),
                 telefonnummer: jwt.sign({telefonnummer: kundensTelefonnummer}, CUSTOMER_KEY)
             })
+
+            let brukerTilAnsatt = await Brukere.findOne({brukernavn: medarbeider.toLowerCase()});
+            if(brukerTilAnsatt){
+                if(brukerTilAnsatt.aktivertEpost && brukerTilAnsatt.epost.length > 1){
+                    mailer.sendMail(`Du har fått en timereservasjon!`, `Reservasjon for "${behandlinger.join(", ")}" \n${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}, kl.:${tidspunkt}\n\nTimen er registrert på: ${kunde} ${kundensTelefonnummer}\n\n`, `${brukerTilAnsatt.epost}`);
+                }
+            }
             
 
             //Sender SMS med bekreftelse
@@ -130,9 +225,9 @@ router.post('/bestilltime', bestillingLimiter, async (req,res)=>{
             if(bestillNyTime){
                 bestillNyTime.kunde = jwt.verify(bestillNyTime.kunde, CUSTOMER_KEY).kunde;
                 bestillNyTime.telefonnummer = jwt.verify(bestillNyTime.telefonnummer, CUSTOMER_KEY).telefonnummer;
-                return res.send({message: "Time er bestilt", bestiltTime: bestillNyTime, valid:true})
+                return res.send({bestiltTime: bestillNyTime, valid:true})
             } else {
-                return res.send({message: "Noe har skjedd galt, prøv igjen", valid:false})
+                return res.send({m: "Noe har skjedd galt, prøv igjen", valid:false})
             }
         } else {
             return res.send({bestillingAlreadyExcist: true});

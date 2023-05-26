@@ -40,6 +40,7 @@ const App = ()=> {
           http-equiv="Content-Security-Policy"
           content="img-src 'self' data: blob:;"
         />
+        {env && <meta name="description" content={env.omOssArtikkel} />}
       </Helmet>
         <BrowserRouter><div className='navHeader'>
         

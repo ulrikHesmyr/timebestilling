@@ -4,6 +4,8 @@ const bruker = new mongoose.Schema({
     brukernavn: {type:String},
     passord:{type:String},
     telefonnummer:{type:String},
+    epost:{type:String},
+    aktivertEpost:{type:Boolean, default:true},
     admin:{type:Boolean, default:false}
   })
 

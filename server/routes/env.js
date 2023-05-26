@@ -1,4 +1,5 @@
 const express = require("express");
+const jwt = require("jsonwebtoken");
 const router = express.Router();
 const Environment = require("../model/env");
 const FriElementer = require("../model/fri");
@@ -8,7 +9,7 @@ const sharp = require("sharp");
 const rateLimiter = require("express-rate-limit");
 
 const authorization = require("../middleware/authorization");
-const {BEDRIFT} = process.env;
+const {BEDRIFT, TLF_SECRET} = process.env;
 
 const hentEnvLimiter = rateLimiter({
     max:100,
@@ -210,6 +211,36 @@ router.post('/nyKategori', authorization, async(req,res)=>{
             console.log(error);
         }
     }
+})
+
+router.post("/siOppFrisor", authorization, async(req,res)=>{
+    const {navn, dato, ikkeSiOpp} = req.body;
+    if(req.admin){
+        try {
+            const env = await Environment.findOne({bedrift:BEDRIFT});
+            let tempFrisorer = env.frisorer;
+            if(ikkeSiOpp){
+                tempFrisorer.map((f)=>{
+                    if(f.navn === navn){
+                      f.oppsigelse = "Ikke oppsagt";
+                    }
+                    return f});
+            } else {
+                tempFrisorer.map((f)=>{
+                    if(f.navn === navn){
+                      f.oppsigelse = dato;
+                    }
+                    return f});
+            }
+            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {frisorer:tempFrisorer});
+            if(oppdatertEnv){
+                return res.send({message:"Frisør oppdatert", valid:true});
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
 })
 
 router.post('/oppdaterTelefonnummer', authorization, async(req,res)=>{
@@ -462,7 +493,7 @@ router.post("/oppdaterTelefonAnsatt", authorization, async (req,res)=>{
     const {telefon, navn} = req.body;
     try {
         if(req.admin){
-            const brukere = await Brukere.findOneAndUpdate({brukernavn:navn.toLowerCase()}, {telefonnummer:telefon});
+            const brukere = await Brukere.findOneAndUpdate({brukernavn:navn.toLowerCase()}, {telefonnummer: jwt.sign({telefonnummer: telefon}, TLF_SECRET)});
             if(brukere){
                 return res.send({message:"Telefon oppdatert!"});
             } else {
@@ -506,8 +537,66 @@ router.post("/oppdaterGoogleReviewLink", authorization, async (req,res)=>{
     } catch (error) {
         console.log(error, "error i oppdaterGoogleReviewLink");
     }
-}
-)
+})
+
+router.post("/fjernPause", authorization, async (req, res)=>{
+    const {navn, dag, pause} = req.body;
+    try {
+        if(req.admin){
+            const env = await Environment.findOne({bedrift:BEDRIFT});
+            if(env){
+                let nyFrisorer = env.frisorer.map(frisor => {
+                    if(frisor.navn === navn){
+                        frisor.paaJobb.map(dagPaaJobb => {
+                            if(dagPaaJobb.dag === dag){
+                                dagPaaJobb.pauser = dagPaaJobb.pauser.filter(p => p !== pause);
+                            }
+                        })
+                    }
+                    return frisor;
+                })
+                const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {frisorer:nyFrisorer});
+                if(oppdatertEnv){
+                    return res.send({message:"Fjernet pause", valid:true});
+                } else {
+                    return res.send({valid:false});
+                }
+            }
+        }
+    } catch (error) {
+        console.log(error, "error i fjernPause");
+    }
+})
+
+router.post("/leggTilPause", authorization, async (req, res)=>{
+    //Legger inn ny pause for ansatt på en vilkårlig dag
+    const {navn, dag, pause} = req.body;
+    try {
+        if(req.admin){
+            const env = await Environment.findOne({bedrift:BEDRIFT});
+            if(env){
+                let nyFrisorer = env.frisorer.map(frisor => {
+                    if(frisor.navn === navn){
+                        frisor.paaJobb.map(dagPaaJobb => {
+                            if(dagPaaJobb.dag === dag){
+                                dagPaaJobb.pauser.push(pause);
+                            }
+                        })
+                    }
+                    return frisor;
+                })
+                const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {frisorer:nyFrisorer});
+                if(oppdatertEnv){
+                    return res.send({message:"Pause lagt til!", valid:true});
+                } else {
+                    return res.send({message:"Noe har skjedd gærent i /leggTilPause!"});
+                }
+            }
+        }
+    } catch (error) {
+            
+    }
+})
 
 router.post("/oppdaterTittelOgBeskrivelse", authorization, async (req,res)=>{
     const {navn, tittel, beskrivelse} = req.body;
@@ -557,19 +646,32 @@ router.post("/slettFrisor", authorization, async (req,res)=>{
     }
 })
 
-router.post("/oppdaterFrisorer", authorization, async (req,res)=>{
-    const {frisorer} = req.body;
+router.post("/oppdaterBehandlingerFrisor", authorization, async (req, res)=>{
+    const {navn, behandlinger} = req.body;
+    
     try {
         if(req.admin){
-            const env = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {frisorer:frisorer});
+            const env = await Environment.findOne({bedrift:BEDRIFT});
             if(env){
-                return res.send({message:"Frisører oppdatert!"});
-            } else {
-                return res.send({message:"Noe har skjedd gærent i /oppdaterFrisorer!"});
+                let tempFrisorer = env.frisorer;
+                let nyFrisorer = tempFrisorer.map(frisor => {
+                    if(frisor.navn === navn){
+                        frisor.produkter = behandlinger;
+                    }
+                    return frisor;
+                })
+                const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {frisorer:nyFrisorer});
+                if(oppdatertEnv){
+                    return res.send({message:"Behandlinger oppdatert!", valid: true});
+                } else {
+                    
+                    return res.send({message:"Noe har skjedd gærent i /oppdaterBehandlingerFrisor!"});
+                }
             }
         }
+        
     } catch (error) {
-        console.log(error, "error i oppdaterFrisorer");
+        
     }
 })
 
