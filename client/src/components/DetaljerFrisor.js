@@ -14,7 +14,8 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
     const [preview, sPreview] = useState(null);
     const [visRedigerTelefonAnsatt, sVisRedigerTelefonAnsatt] = useState(false);
     const [telefonAnsatt, sTelefonAnsatt] = useState();
-    const [visRedigerEpostAnsatt, sVisRedigerEpostAnsatt] = useState();
+    const [nyTelefonAnsatt, sNyTelefonAnsatt] = useState();
+    const [epostAnsatt, sEpostAnsatt] = useState();
     const [visRedigerTittelOgBeskrivelse, sVisRedigerTittelOgBeskrivelse] = useState(false);
     const [tittel, sTittel] = useState(frisor.tittel);
     const [beskrivelse, sBeskrivelse] = useState(frisor.beskrivelse);
@@ -57,10 +58,10 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
         headers: {
           'Content-Type': 'application/json'
         },
-        //credentials: 'include',
+        credentials: 'include',
         body: JSON.stringify({navn:frisor.navn, paaJobb:p})
       }
-      const request = await fetch('http://localhost:1226/env/oppdaterPaaJobb', options);
+      const request = await fetch('/env/oppdaterPaaJobb', options);
       const response = await request.json();
       if(response){
         varsle();
@@ -82,10 +83,10 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
           headers: {
             'Content-Type': 'application/json'
           },
-          //credentials: 'include',
+          credentials: 'include',
           body: JSON.stringify({navn:frisor.navn, pause:nyPause, dag:nyPauseDag})
         }
-        const request = await fetch('http://localhost:1226/env/leggTilPause', options);
+        const request = await fetch('/env/leggTilPause', options);
         const response = await request.json();
         if(response){
           varsle();
@@ -106,10 +107,10 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
           headers: {
             'Content-Type': 'application/json'
           },
-          //credentials: 'include',
+          credentials: 'include',
           body: JSON.stringify({navn:navn, pause:pause, dag:dag})
         }
-        const request = await fetch('http://localhost:1226/env/fjernPause', options);
+        const request = await fetch('/env/fjernPause', options);
         const response = await request.json();
         if(response){
           varsle();
@@ -131,10 +132,10 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
         headers: {
           'Content-Type': 'application/json'
         },
-        //credentials: 'include',
+        credentials: 'include',
         body: JSON.stringify({navn:frisor.navn, tittel:tittel, beskrivelse:beskrivelse})
       }
-      const request = await fetch('http://localhost:1226/env/oppdaterTittelOgBeskrivelse', options);
+      const request = await fetch('/env/oppdaterTittelOgBeskrivelse', options);
       const response = await request.json();
       if(response){
         varsle();
@@ -149,7 +150,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
     }
 
     
-      //Henter info om ansatt er admin
+      //Henter info om ansatt er admin, epost og telefonnummer 
       async function hentAdminInfo(n){
         try {
             const options = {
@@ -158,13 +159,16 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({brukernavn:n}),
-                //credentials:'include'
+                credentials:'include'
 
             }
-            const request = await fetch("http://localhost:1226/env/hentAdminInfo", options);
+            const request = await fetch("/env/hentAdminInfo", options);
             const response = await request.json();
             if(response){
               sVisGiAdminKnapp(!response.admin);
+              sTelefonAnsatt(response.tlf);
+              sEpostAnsatt(response.epost);
+              sNyTelefonAnsatt(response.tlf);
               //Trenger ikke sUpdatetrigger
             }
         } catch (error) {
@@ -181,11 +185,11 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
           headers: {
             'Content-Type': 'application/json'
           },
-          //credentials: 'include',
+          credentials: 'include',
           body: JSON.stringify({navn:n})
 
         }
-        const request = await fetch("http://localhost:1226/env/giAdmin", options);
+        const request = await fetch("/env/giAdmin", options);
         const response = await request.json();
         if(response){
           varsle();
@@ -209,10 +213,10 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
         headers: {
           'Content-Type': 'application/json'
         },
-        //credentials: 'include',
-        body: JSON.stringify({navn:frisor.navn, telefon:parseInt(telefonAnsatt)})
+        credentials: 'include',
+        body: JSON.stringify({navn:frisor.navn, telefon: nyTelefonAnsatt})
       }
-      const request = await fetch("http://localhost:1226/env/oppdaterTelefonAnsatt", options);
+      const request = await fetch("/env/oppdaterTelefonAnsatt", options);
       const response = await request.json();
       if(response){
         varsle();
@@ -238,11 +242,11 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
 
         const options = {
           method: 'POST',
-          //credentials: 'include',
+          credentials: 'include',
           body: formData
         }
 
-        const request = await fetch("http://localhost:1226/env/oppdaterBildeFrisor", options);
+        const request = await fetch("/env/oppdaterBildeFrisor", options);
         const response = await request.json();
         if(response.m){
           alert(response.m);
@@ -270,10 +274,10 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
           headers: {
             'Content-Type': 'application/json'
           },
-          //credentials: 'include',
+          credentials: 'include',
           body: JSON.stringify({navn: frisor.navn, ikkeSiOpp:ikkeSiOpp, dato:oppsigelsesDato})
         }
-        const request = await fetch("http://localhost:1226/env/siOppFrisor", options);
+        const request = await fetch("/env/siOppFrisor", options);
         const response = await request.json();
 
         if(response.valid){  
@@ -300,10 +304,10 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
           headers: {
             'Content-Type': 'application/json'
           },
-          //credentials: 'include',
+          credentials: 'include',
           body: JSON.stringify({navn:frisor.navn, behandlinger:frisorTjenester})
         }
-        const request = await fetch("http://localhost:1226/env/oppdaterBehandlingerFrisor", options);
+        const request = await fetch("/env/oppdaterBehandlingerFrisor", options);
         const response = await request.json();
         if(response.valid){
           varsle();
@@ -329,10 +333,10 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
         headers: {
           'Content-Type': 'application/json'
         },
-        //credentials: 'include',
+        credentials: 'include',
         body: JSON.stringify({navn:navn.toLowerCase()})
       }
-      const request = await fetch("http://localhost:1226/login/resetPassord", options);
+      const request = await fetch("/login/resetPassord", options);
       const response = await request.json();
       if(response.valid){
         varsle();
@@ -379,6 +383,9 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
     </div>
 
       <div style={{fontSize:"small"}}>
+        <h3>Info om ansatt: </h3>
+        E-post: {epostAnsatt}<br></br>
+        Telefon: {telefonAnsatt}
       <ul>
         <h3>Behandlinger: </h3>
         {env.tjenester.filter((tjeneste)=>frisorTjenester.includes(tjeneste.navn)).map((element)=>(<li key={element.navn}>{element.navn}</li>))}
@@ -674,22 +681,22 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
             <h4>Endre telefonnummer for {frisor.navn}</h4>
             <p>NB! Endre telefonnummeret til ansatt dersom den ansatte har fått nytt telefonnummer og 
               ikke får loggett inn selv for å endre telefonnummer (ansatt kan bli sperret ute på grunn av tofaktor)</p>
-            <input inputMode="numeric" type="numeric" value={telefonAnsatt} onChange={(e)=>{
+            <input inputMode="numeric" type="numeric" value={nyTelefonAnsatt} onChange={(e)=>{
               e.preventDefault();
-              sTelefonAnsatt(e.target.value);
+              sNyTelefonAnsatt(e.target.value);
             }}></input>
             <div>
               <button onClick={(e)=>{
                 e.preventDefault();
                 sVisRedigerTelefonAnsatt(false);
-                sTelefonAnsatt("");
+                sNyTelefonAnsatt(telefonAnsatt);
               }}>Avbryt</button>
               <button onClick={(e)=>{
                 e.preventDefault();
-                if(telefonAnsatt.length === 8){
+                if(nyTelefonAnsatt.length === 8){
                   oppdaterTelefonAnsatt();
                   sVisRedigerTelefonAnsatt(false);
-                  sTelefonAnsatt("");
+                  sTelefonAnsatt(nyTelefonAnsatt);
                 } else {
                   alert("Telefonnummeret må være på riktig format (8 siffer)");
                 }

@@ -428,7 +428,7 @@ router.post("/hentAdminInfo", authorization, async(req,res)=>{
             const navn = req.body.brukernavn.toLowerCase();
             const bruker = await Brukere.findOne({brukernavn: navn});
             if(bruker){
-                return res.send({valid:true, admin:bruker.admin});
+                return res.send({valid:true, admin:bruker.admin, tlf: jwt.verify(bruker.telefonnummer, TLF_SECRET).telefonnummer, epost: bruker.epost});
             }
         }
     } catch (error) {

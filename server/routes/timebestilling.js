@@ -262,7 +262,7 @@ router.post("/tlfpin", PINlimiter, async (req,res)=>{
                 secure: process.env.HTTPS_ENABLED == "secure",
                 expires: expirationDate
             });
-            const samtykke = JSON.stringify({samtykke: true, expirationDate: expirationDate.toLocaleDateString()});
+            const samtykke = `samtykke: true, expirationDate: ${expirationDate.toLocaleDateString()}`
             
             res.cookie("samtykke_cookies", samtykke, {
                 httpOnly: true,

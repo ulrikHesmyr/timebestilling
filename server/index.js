@@ -4,6 +4,7 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
 const schedule = require("node-schedule");
 const mailer = require("./configuration/mailer");
 const rateLimiter = require("express-rate-limit");
@@ -17,7 +18,7 @@ const Bestiltetimer = require("./model/bestilling");
 const Environment = require("./model/env");
 const FriElementer = require("./model/fri");
 const Brukere = require("./model/brukere");
-const {BEDRIFT, NODE_ENV} = process.env;
+const {BEDRIFT, NODE_ENV, CUSTOMER_KEY} = process.env;
 
 app.use(express.json({limit:'2mb'}));
 app.use(express.urlencoded({extended:false}));
@@ -71,6 +72,7 @@ app.use(hovedLimiter);
 //Sender SMS om feedback fra alle kunder som har hatt behandling i dag. Merk at dette skjer kl 1930
 //FØR timebestillingen slettes fra databasen
 //Dette avhenger av om salongen har aktivert feedback SMS-er i admin panelet
+//19:30
 schedule.scheduleJob('30 19 * * *', async ()=>{
   try {
     const env = await Environment.findOne({bedrift: BEDRIFT});
@@ -90,8 +92,8 @@ schedule.scheduleJob('30 19 * * *', async ()=>{
             let outMessage = {
                 transactionId: uuidv4(),
                 sender:'Target365',
-                recipient:`+47${timebestilling.telefonnummer}`,
-                content:`Hei ${timebestilling.kunde}! Vi håper du er fornøyd med ditt besøk hos oss.\n\nDersom det er ønskelig, så legg gjerne igjen en tilbakemelding på besøket. Du kan gi oss en tilbakemelding ved å trykke på linken under. \n\n${process.env.GOOGLE_REVIEW_LINK} \n\nMed vennlig hilsen \n${BEDRIFT}`
+                recipient:`+47${jwt.verify(timebestilling.telefonnummer, CUSTOMER_KEY).telefonnummer}`,
+                content:`Hei ${jwt.verify(timebestilling.kunde, CUSTOMER_KEY).kunde}! Vi håper du er fornøyd med ditt besøk hos oss.\n\nDersom det er ønskelig, så legg gjerne igjen en tilbakemelding på besøket. Du kan gi oss en tilbakemelding ved å trykke på linken under. \n\n${process.env.GOOGLE_REVIEW_LINK} \n\nMed vennlig hilsen \n${BEDRIFT}`
             }
             await serviceClient.postOutMessage(outMessage);
         } 
@@ -102,7 +104,7 @@ schedule.scheduleJob('30 19 * * *', async ()=>{
   }
 })
 
-//Sender ut påminnelse 1 dag i forveien om at kunden har timebestilling
+//Sender ut påminnelse 1 dag i forveien (kl 13:30) om at kunden har timebestilling
 schedule.scheduleJob('30 13 * * *', async ()=>{
   try {
     const imorgen = nesteDag();
@@ -119,8 +121,8 @@ schedule.scheduleJob('30 13 * * *', async ()=>{
             let outMessage = {
                 transactionId: uuidv4(),
                 sender:'Target365',
-                recipient:`+47${timebestilling.telefonnummer}`,
-                content:`Hei ${timebestilling.kunde}! \n\nMinner om bestilt time hos oss imorgen kl.: ${timebestilling.tidspunkt}, vi sees! \n\nDersom det har oppstått noe uforutsett, vennligst ta kontakt med oss via telefon på ${env.kontakt_tlf}! \n\nMed vennlig hilsen \n${BEDRIFT}`
+                recipient:`+47${jwt.verify(timebestilling.telefonnummer, CUSTOMER_KEY).telefonnummer}`,
+                content:`Hei ${jwt.verify(timebestilling.kunde, CUSTOMER_KEY).kunde}! \n\nMinner om bestilt time hos oss imorgen kl.: ${timebestilling.tidspunkt} i ${env.adresse.gatenavn} ${env.adresse.husnummer}, vi sees! \n\nDersom det har oppstått noe uforutsett, vennligst ta kontakt med oss via telefon på ${env.kontakt_tlf}! \n\nMed vennlig hilsen \n${BEDRIFT}`
             }
             await serviceClient.postOutMessage(outMessage);
         } else {

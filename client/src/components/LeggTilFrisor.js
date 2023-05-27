@@ -45,10 +45,10 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
         formData.append("paaJobb", JSON.stringify(paaJobb));
         const options2 = {
             method:"POST",
-            //credentials: 'include',
+            credentials: 'include',
             body: formData
         }
-        const request2 = await fetch("http://localhost:1226/env/opprettFrisor", options2);
+        const request2 = await fetch("/env/opprettFrisor", options2);
         const response2 = await request2.json();
 
         //Oppretter bruker for ansatt
@@ -66,10 +66,10 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
                 headers:{
                     "Content-Type":"application/json"
                 },
-                //credentials: 'include',
+                credentials: 'include',
                 body: JSON.stringify(data)
             }
-            const request = await fetch("http://localhost:1226/login/opprettBruker", options);
+            const request = await fetch("/login/opprettBruker", options);
             const response = await request.json();
             if(response && response.m){
                 alert(response.m);
@@ -114,11 +114,11 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
   return (
     <>
     {leggtil?<div className='fokus' >
-        <label style={{fontWeight:"bold"}}>Navn på ny ansatt: <input onChange={(e)=>{
+        <label style={{fontWeight:"bold"}}>Navn på ny ansatt: <input required onChange={(e)=>{
             sNyFrisorNavn(e.target.value);
         }} value={nyFrisorNavn} type="text" placeholder='Navn navnesen' maxLength={20}></input></label>
 
-        <label style={{fontWeight:"bold"}}>Tittel: <input onChange={(e)=>{
+        <label style={{fontWeight:"bold"}}>Tittel: <input required onChange={(e)=>{
             sNyFrisorTittel(e.target.value);
         }} value={nyFrisorTittel} type="text" placeholder='eks.: Frisør, Terapeut, etc.' maxLength={20}></input></label>
 
@@ -126,13 +126,13 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
             sNyFrisorBeskrivelse(e.target.value);
         }} value={nyFrisorBeskrivelse} placeholder='Navn har jobbet hos oss siden... Hen er kreativ og liker å jobbe med... Nøyaktig og opptatt av å forstå kundens behov...'></textarea></label>
 
-        <label style={{fontWeight:"bold"}}>Telefonnummeret til ansatt: <input style={{letterSpacing:"0.3rem"}} onChange={(e)=>{
+        <label style={{fontWeight:"bold"}}>Telefonnummeret til ansatt: <input required style={{letterSpacing:"0.3rem"}} onChange={(e)=>{
             sTlfNyFrisor(e.target.value);
         }} value={tlfNyFrisor} type="text" maxLength={8}></input></label>
-        <label style={{fontWeight:"bold"}}>E-post: <input onChange={(e)=>{
+        <label style={{fontWeight:"bold"}}>E-post: <input required onChange={(e)=>{
             sEpost(e.target.value);
         }} value={epost} type="email"></input> </label>
-        <label style={{display:"flex", alignItems:"center"}}>Last opp bilde av ansatt: <input accept="image/*" onChange={(e)=>{
+        <label style={{display:"flex", alignItems:"center"}}>Last opp bilde av ansatt: <input required accept="image/*" onChange={(e)=>{
             
             if(e.target.files[0].size < 2000000){
                 sBildeAvFrisor(e.target.files[0]);

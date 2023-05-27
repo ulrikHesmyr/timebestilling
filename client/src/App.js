@@ -21,7 +21,7 @@ const App = ()=> {
 
     const fetchEnvironment = async ()=>{
       const data = await (
-        await fetch("http://localhost:1226/env/env")
+        await fetch("/env/env")
       ).json();
       if(data){
         sEnv(data);
@@ -51,7 +51,7 @@ const App = ()=> {
               <div></div>
               <div></div>
             </button>
-            <img src="logo.png"></img>
+            <img style={{height:"3rem", aspectRatio:"1/1", objectFit:"contain"}} src="logo.png"></img>
       </div>
             {(synligMeny?(
             <nav id="navigation" className='navBar' role="region" aria-labelledby='burgerButton' aria-hidden={!synligMeny}>
