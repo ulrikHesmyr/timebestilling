@@ -70,7 +70,7 @@ router.post('/bestilltime', ansattSjekker, async (req,res)=>{
         if(behandlinger.length < 1){
             return res.status(400).json({m:"Du må velge minst en behandling"});
         }
-        if(kunde.length < 2){
+        if(kunde.length < 1){
             return res.status(400).json({m:"Du må skrive inn navnet ditt"});
         }
         const t = await Bestilttime.findOne({dato: dato, medarbeider: medarbeider, tidspunkt:tidspunkt});
