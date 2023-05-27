@@ -35,8 +35,7 @@ Scenarioer:
 Før produksjon
     FILER
 endre variabler i .env filen
-fjerne http://localhost:1226 fra request i Personinfo.js og Admin.js 
-slette unødvendige filer og fjerne unødvendig kode
+fjerne http://localhost:1226 fra request \
 endre tittel i index.html
 sette NODE_ENV til "production" i .env filen
 un-comment credentials i Login.js, Vakter.js og Admin.js i client
