@@ -216,6 +216,7 @@ app.get('/sitemap.xml', (req, res) => {
 });
 
 app.get('*', (req, res)=>{
+  //res.setHeader('Cache-Control', 'no-store');
   res.setHeader(
     'Content-Security-Policy',
     "img-src 'self' data: blob:;"
