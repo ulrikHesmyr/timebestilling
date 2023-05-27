@@ -457,7 +457,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
                   sVisRedigerFrisor(false);
                   resetPassord(frisor.navn);
                 }
-              }} >Resett innloggings-passord for {frisor.navn}</button>:<p>Rediger passordet ditt i "vakter"-panelet</p>}
+              }} >Resett innloggings-passord for {frisor.navn}</button>:""}
 
                
               <button onClick={(e)=>{
