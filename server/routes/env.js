@@ -322,7 +322,7 @@ const storage = multer.memoryStorage();
 const upload = multer({
     storage: storage,
     dest: 'uploads/',
-    limits: { fileSize: 2 * 1024 * 1024 },
+    limits: { fileSize: 3 * 1024 * 1024 },
     fileFilter: function (req, file, cb) {
       if (!file.originalname.match(/\.(jpg|jpeg|HEIC|heic|heif|HEIF|png|gif|JPG|JPEG|PNG|GIF)$/)) {
         return cb(new Error('Only image files are allowed!'), false);
@@ -335,7 +335,7 @@ const upload = multer({
 const oppdaterBildeFrisor = multer({
     storage: storage,
     dest: 'uploads/',
-    limits: { fileSize: 2 * 1024 * 1024 },
+    limits: { fileSize: 3 * 1024 * 1024 },
     fileFilter: function (req, file, cb) {
       if (!file.originalname.match(/\.(jpg|jpeg|HEIC|heic|heif|HEIF|png|gif|JPG|JPEG|PNG|GIF)$/)) {
         return cb(new Error('Only image files are allowed!'), false);
