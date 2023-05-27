@@ -216,7 +216,6 @@ app.get('/sitemap.xml', (req, res) => {
 });
 
 app.get('*', (req, res)=>{
-  const env = Environment.findOne({bedrift:BEDRIFT});
   res.setHeader(
     'Content-Security-Policy',
     "img-src 'self' data: blob:;"
