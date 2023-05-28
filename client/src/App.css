@@ -1,9 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Courier+Prime&family=Gloock&family=Sorts+Mill+Goudy&display=swap');
 
 @font-face {
   font-family: 'merriweather_blackregular';
-  src: url('merriweather-black-webfont.woff2') format('woff2'),
-       url('merriweather-black-webfont.woff') format('woff');
+  src: url('../src/fonts/merriweather-black-webfont.woff2') format('woff2'),
+       url('../src/fonts/merriweather-black-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 
@@ -14,8 +13,8 @@
 
 @font-face {
   font-family: 'merriweatherbold';
-  src: url('merriweather-bold-webfont.woff2') format('woff2'),
-       url('merriweather-bold-webfont.woff') format('woff');
+  src: url('../src/fonts/merriweather-bold-webfont.woff2') format('woff2'),
+       url('../src/fonts/merriweather-bold-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 
@@ -26,8 +25,8 @@
 
 @font-face {
   font-family: 'merriweatherregular';
-  src: url('merriweather-regular-webfont.woff2') format('woff2'),
-       url('merriweather-regular-webfont.woff') format('woff');
+  src: url('../src/fonts/merriweather-regular-webfont.woff2') format('woff2'),
+       url('../src/fonts/merriweather-regular-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 
@@ -35,8 +34,17 @@
 
 @font-face {
   font-family: 'lilita_oneregular';
-  src: url('lilitaone-regular-webfont.woff2') format('woff2'),
-       url('lilitaone-regular-webfont.woff') format('woff');
+  src: url('../src/fonts/lilitaone-regular-webfont.woff2') format('woff2'),
+       url('../src/fonts/lilitaone-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+@font-face {
+  font-family: 'bebas_neueregular';
+  src: url('../src/fonts/bebasneue-regular-webfont.woff2') format('woff2'),
+       url('../src/fonts/bebasneue-regular-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 
@@ -60,8 +68,8 @@
   --background3:linear-gradient(0deg, rgb(54, 115, 188) 0%, rgb(0, 14, 33) 100%);
   --background4:linear-gradient(0deg, rgba(211,157,39,1) 0%, var(--color3) 100%);
   --background5:linear-gradient(0deg, rgba(85, 85, 85, 0.51) 0%, rgba(0, 0, 0, 0.65) 100%);
-  --font1:'Courier Prime', monospace;
-  --font2:'Gloock', serif;
+  --font1:'bebas_neueregular';
+  --font2:'merriweatherbold';
   --font3:'lilita_oneregular';
   --font4:'merriweatherregular';
   background: white;
