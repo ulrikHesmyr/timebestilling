@@ -18,7 +18,7 @@ const Bestiltetimer = require("./model/bestilling");
 const Environment = require("./model/env");
 const FriElementer = require("./model/fri");
 const Brukere = require("./model/brukere");
-const {BEDRIFT, NODE_ENV, CUSTOMER_KEY} = process.env;
+const {BEDRIFT, NODE_ENV, CUSTOMER_KEY, ACCESS_TOKEN_KEY} = process.env;
 
 app.use(cors());
 app.use(express.json({limit:'5mb'}));
