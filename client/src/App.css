@@ -1,4 +1,47 @@
 @import url('https://fonts.googleapis.com/css2?family=Courier+Prime&family=Gloock&family=Sorts+Mill+Goudy&display=swap');
+
+@font-face {
+  font-family: 'merriweather_blackregular';
+  src: url('merriweather-black-webfont.woff2') format('woff2'),
+       url('merriweather-black-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+
+
+
+@font-face {
+  font-family: 'merriweatherbold';
+  src: url('merriweather-bold-webfont.woff2') format('woff2'),
+       url('merriweather-bold-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+
+
+
+@font-face {
+  font-family: 'merriweatherregular';
+  src: url('merriweather-regular-webfont.woff2') format('woff2'),
+       url('merriweather-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+@font-face {
+  font-family: 'lilita_oneregular';
+  src: url('lilitaone-regular-webfont.woff2') format('woff2'),
+       url('lilitaone-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+
+}
+
 :root{
   --farge1:darkblue;
   --farge2:rgb(54, 115, 188);
@@ -19,8 +62,8 @@
   --background5:linear-gradient(0deg, rgba(85, 85, 85, 0.51) 0%, rgba(0, 0, 0, 0.65) 100%);
   --font1:'Courier Prime', monospace;
   --font2:'Gloock', serif;
-  --font3:'Sorts Mill Goudy', serif;
-  --font4:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  --font3:'lilita_oneregular';
+  --font4:'merriweatherregular';
   background: white;
 }
 html{
