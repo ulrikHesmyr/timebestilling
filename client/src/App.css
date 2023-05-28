@@ -405,7 +405,8 @@ input, button, select, option{
     padding: 0.5rem;
   }
   .tjeneste input{
-    height: 3rem;
+    transform: scale(3,3);
+  -webkit-transform: scale(3,3);
   }
 
   .velgDatoBoks{
