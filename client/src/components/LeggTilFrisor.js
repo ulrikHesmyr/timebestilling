@@ -285,7 +285,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
                     e.preventDefault();
 
                     if(env.frisorer.map(frisor => frisor.navn.toLowerCase()).includes(nyFrisorNavn.toLowerCase())){
-                        alert("Frisør finnes allerede");
+                        alert("Medarbeider finnes allerede");
                         return;
                     }
 

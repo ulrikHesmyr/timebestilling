@@ -187,7 +187,7 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle, lagreVarsel, varsleF
     </div>
     
     {(dagsfraver === "dag" || dagsfraver === "fler"?<>
-    <h4>Velg frisør som skal ha fri:</h4>
+    <h4>Velg ansatt som skal ha fri:</h4>
         <div style={{display:"flex",flexWrap:"wrap"}}>
         {env.frisorer.map((f)=>(
             <div style={{margin:"0.3rem",border:(frisor===f?"3px solid black":"thin solid black"),  cursor:"pointer", padding:"0.5rem", height:"1.4rem", width:"fit-content"}} onClick={()=>{
@@ -258,7 +258,7 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle, lagreVarsel, varsleF
         opprettFri();
         reset();
     } else {
-        alert("Velg frisør og ikke velg samme dato");
+        alert("Velg ansatt og ikke velg samme dato");
     }
 }}>OPPRETT FRI/FRAVÆR</button>
     </>:"")}

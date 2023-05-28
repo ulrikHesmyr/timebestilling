@@ -11,6 +11,7 @@ function Dato({datoForsteLedige, sMidlertidigDato, harEndretDatoen, sHarEndretDa
         <div className='animer-inn velgDatoBoks'>
             <section style={{padding:"0.3rem"}}>
                 <h4>Velg dato her:</h4> 
+                <p>Trykk på boksen for å velge dato</p>
             <input value={midlertidigDato} type="date" min={hentDato()} onChange={(e)=>{
                 
                 if(klokkeslettet != null){

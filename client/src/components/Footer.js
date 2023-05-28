@@ -4,7 +4,6 @@ import {Link} from 'react-router-dom'
 function Footer(){
   return (
     <footer>
-    <p>Ikoner fra <a rel='noreferrer' target="_blank" href='https://fonts.google.com/icons'>google</a></p>
     <Link to="/personvaernserklaering-og-brukervilkaar">Bruk av cookies, personvernserklæring og brukervilkår</Link>
     <Link to="/kontakt-oss">Kontakt oss</Link>
     <Link to="/om-oss">Om oss</Link>

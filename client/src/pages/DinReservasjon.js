@@ -33,7 +33,7 @@ function DinReservasjon({env, hentMaaned, registrertReservasjon, setReservasjon}
                     
                     <div>Time for: {registrertReservasjon.behandlinger.join(", ")}</div>
                     <div>Din time er registrert på {registrertReservasjon.kunde}, tlf.: {registrertReservasjon.telefonnummer}</div>
-                    <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>Din medarbeider for timen: {registrertReservasjon.medarbeider}<img alt="Bilde av frisør" src={frisorBilde} style={{height:"5rem", margin:"1rem"}}></img></div>
+                    <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>Din medarbeider for timen: {registrertReservasjon.medarbeider}<img alt="Bilde av medarbeider" src={frisorBilde} style={{height:"5rem", margin:"1rem"}}></img></div>
                     <div>Estimert pris {totalPris} kr</div>
                     <div>Estimert tid {totalTid} minutter</div>
                     <br></br>

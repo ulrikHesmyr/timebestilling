@@ -27,7 +27,7 @@ function Frisor({tilgjengeligeFrisorer, sDatoForsteLedige, sDato, sMidlertidigDa
     return(
         <div>
             {tilgjengeligeFrisorer.length > 0?<>
-            <div tabIndex={0} aria-label="Velg første ledige frisør" onClick={()=>{
+            <div className="forsteLedige" tabIndex={0} aria-label="Velg første ledige medarbeider" onClick={()=>{
                 sFrisor(false);
                 sDatoForsteLedige(null);
                 sDato(hentDato());
@@ -53,13 +53,13 @@ function Frisor({tilgjengeligeFrisorer, sDatoForsteLedige, sDato, sMidlertidigDa
                     }}
                 style={{ textDecoration:frisor === false?"underline":"none", cursor:"pointer", padding:"0.8rem", width:"fit-content", color:"var(--color3)", borderRadius:"0.4rem", border:"thin solid black", backgroundColor:"white"}}>
                     
-                    Første ledige frisør
+                    Første ledige medarbeider
                 </div>
                 
             <div className="frisorene">
             
                 {frisorBildeArray !== null? tilgjengeligeFrisorer.map((element, index)=>(<div tabIndex={0} role="button" className="frisor" 
-                key={element.navn} aria-label={`Velg frisøren ${element.navn}`} onClick={()=>{
+                key={element.navn} aria-label={`Velg medarbeider med navn ${element.navn}`} onClick={()=>{
                     sFrisor(element);
                     sDatoForsteLedige(null);
                     sDato(hentDato());
@@ -85,23 +85,23 @@ function Frisor({tilgjengeligeFrisorer, sDatoForsteLedige, sDato, sMidlertidigDa
 
                 }}
                 style={{ textDecoration:frisor === element?"underline":"none"}}>
-                    <img className="frisorbilde" src={frisorBildeArray[index]} alt={`Bilde av frisør ${element.navn}`} style={{height:"4rem"}}></img>
+                    <img className="frisorbilde" src={frisorBildeArray[index]} alt={`Bilde av medarbeider ${element.navn}`} style={{height:"4rem"}}></img>
                     {element.navn}
                     
                 </div>)):""}
             </div>
             <div className="valgtFrisorTekst">
-            {frisor === false && "Du har valgt: Første ledige frisør"}
+            {frisor === false && "Du har valgt: Første ledige medarbeider"}
             <div ref={valgtFrisorBoks} ></div>
             {frisor !== null && frisor !== false && <div >Du har valgt:<div
                 key={frisor.navn} style={{display:"flex", flexDirection:"column", alignItems:"center"}}>
                      {frisor.navn}
-                    <img className="frisorbilde" src={frisorBildeArray[tilgjengeligeFrisorer.indexOf(frisor)]} alt={`Bilde av frisør ${frisor.navn}`} style={{height:"4rem"}}></img>
+                    <img className="frisorbilde" src={frisorBildeArray[tilgjengeligeFrisorer.indexOf(frisor)]} alt={`Bilde av medarbeider ${frisor.navn}`} style={{height:"4rem"}}></img>
                     
                 </div></div>}
                 
             </div>
-            </>:"Ingen tilgjengelige frisører for disse behandlingene"}
+            </>:"Ingen tilgjengelige medarbeidere for disse behandlingene"}
             <Fortsett disabled={(frisor !== null?false:true)} previous={1} number={2} displayKomponent={displayKomponent} referanceElement={referanceElement} />
         </div>
     )

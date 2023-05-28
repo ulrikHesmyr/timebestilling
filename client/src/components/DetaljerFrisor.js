@@ -363,7 +363,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
     <div onClick={()=>{
           sVisDetaljer(!visDetaljer);
       }}  style={{display:"flex", height:"3rem", fontSize:"larger", flexDirection:"row", alignItems:"center", margin:"0.7rem",padding:"0.3rem", cursor:"pointer", borderLeft:"thin solid rgba(0,0,0,0.4)"}}>
-      <img className='ikonKnapper' src='detaljer.png' alt="Detaljer om frisør"></img>
+      <img className='ikonKnapper' src='detaljer.png' alt="Detaljer om ansatt"></img>
       <div style={{padding:"0.3rem"}}>{frisor.navn} </div>
       <img className='frisorbilde' src={frisorBilde} style={{height:"1.6rem"}} alt={`Bilde av ${frisor.navn}`}></img>
     </div>
@@ -556,7 +556,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
 
             {visRedigerBilde?<div className='fokus'>
             <h4>Last opp nytt bilde: </h4>
-              <label style={{display:"flex", alignItems:"center"}}>Last opp bilde av Frisøren: <input accept="image/*" onChange={(e)=>{
+              <label style={{display:"flex", alignItems:"center"}}>Last opp bilde av ansatt: <input accept="image/*" onChange={(e)=>{
               sBildeAvFrisor(e.target.files[0]);
               sPreview(URL.createObjectURL(e.target.files[0]));
               }} type="file" name="uploaded_file"></input>Last opp bilde her: Maks 2mb {preview && <img className='frisorbilde' style={{height:"300px"}} alt='Forhåndsvisning av bildet' src={preview}></img>}</label>
@@ -708,8 +708,8 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
               {visSiOpp?<div className='fokus'>
               
                   <h4>Legg inn oppsigelsesdato for {frisor.navn}</h4>
-                  <p>Legg inn datoen som frisøren ikke lenger jobber. Frisøren vil kunne få reservasjoner før denne datoen men 
-                      ikke på denne datoen eller etter. Dette er for å unngå at frisøren får reservasjoner som ikke kan gjennomføres.
+                  <p>Legg inn datoen som ansatt ikke lenger jobber. Ansatt vil kunne få reservasjoner før denne datoen men 
+                      ikke på denne datoen eller etter. Dette er for å unngå at den ansatte får reservasjoner som ikke kan gjennomføres.
                   </p>
                   <input type="date" disabled={ikkeSiOpp} min={hentDato()} value={oppsigelsesDato} onChange={(e)=>{
                       e.preventDefault();
@@ -772,7 +772,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
       <button onClick={(e)=>{
         e.preventDefault();
         sVisRedigerFrisor(true);
-      }} ><img alt='Rediger frisør' src='rediger.png' style={{height:"1.4rem"}}></img></button>}
+      }} ><img alt='Rediger ansatt' src='rediger.png' style={{height:"1.4rem"}}></img></button>}
     </div>:""}
     </>
   )

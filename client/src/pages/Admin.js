@@ -944,7 +944,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     <>
                     <button style={{display:"flex", alignItems:"center"}} onClick={()=>{
                         sVisOpprettBehandling(true);
-                    }} ><img className='ikonKnapper' alt='Legg til frisør' src="leggtil.png" ></img>Opprett ny behandling</button>
+                    }} ><img className='ikonKnapper' alt='Legg til medarbeider' src="leggtil.png" ></img>Opprett ny behandling</button>
                     
                     
                     </>

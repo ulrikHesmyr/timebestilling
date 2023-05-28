@@ -1,5 +1,4 @@
 import React from 'react'
-import {Link} from 'react-router-dom'
 import Footer from '../components/Footer'
 function OmOss({env}){
   return (
@@ -10,8 +9,6 @@ function OmOss({env}){
             <div>{env.omOssArtikkel}
             <br></br>
             <br></br>
-            <div><Link to="/"> Åpningstider, hvor du finner oss, våre ansatte og info om behandlinger</Link></div>
-            <div><Link to="/kontakt-oss">Kontakt oss!</Link></div>
             <div className='bilder'>
               <img  alt='Bilde fra studio' src="bilde1.jpg"></img>
               <img  alt='Bilde fra studio' src="bilde2.jpg"></img>

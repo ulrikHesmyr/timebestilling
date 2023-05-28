@@ -125,7 +125,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
             <div style={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"flex-start", backdropFilter:"blur(5px)"}}>
                 <img src="logo.png" alt='Logo' style={{height:"5rem"}}></img>
                 <div>
-                    <h1>{env.bedrift}</h1>
+                    <h1 className='bedriftNavn'>{env.bedrift}</h1>
                     <p>Her kan du reservere time hos oss! </p>
                 </div>
                 <div ref={behandlingerBoks}></div>
@@ -141,13 +141,13 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
             <div ref={frisorBoks} ></div>
             {(synligKomponent === 0 && env !== null?<div role="region" aria-labelledby='visTjeneseterAria' id="tje" aria-hidden={!(synligKomponent === 0)} > <Tjenester sDatoForsteLedige={sDatoForsteLedige} sFrisor={sFrisor} antallBehandlinger={antallBehandlinger} sAntallBehandlinger={sAntallBehandlinger} sKlokkeslett={sKlokkeslett} env={env} synligKomponent={synligKomponent} displayKomponent={displayKomponent} produkt={produkt} sProdukt={sProdukt} frisor={frisor} /></div>:"")}
            
-            <h2 tabIndex={0} role="button" aria-label='Vis: Velg frisør-boks' aria-expanded={synligKomponent === 1 && produkt.length > 0} aria-controls="fri" id="visFrisorAria" className='overskrift' onClick={()=>{
+            <h2 tabIndex={0} role="button" aria-label='Vis: Velg medarbeider-boks' aria-expanded={synligKomponent === 1 && produkt.length > 0} aria-controls="fri" id="visFrisorAria" className='overskrift' onClick={()=>{
                 if(synligKomponent === 1){
                     displayKomponent(-1);
                 } else {
                     displayKomponent(1);
                 }
-            }} style={{backgroundColor: frisor !== null?"var(--color3)":"var(--color4)"}}><p>2</p>Velg frisør</h2>
+            }} style={{backgroundColor: frisor !== null?"var(--color3)":"var(--color4)"}}><p>2</p>Velg medarbeider</h2>
             <div ref={klokkeslettBoks}></div>
             {(synligKomponent === 1 && produkt.length > 0? <div role="region" aria-labelledby='visFrisorAria' id="fri" aria-hidden={!(synligKomponent === 1 && produkt.length > 0)}> <Frisor sDatoForsteLedige={sDatoForsteLedige} sMidlertidigDato={sMidlertidigDato} sDato={sDato} sFrisorBildeArray={sFrisorBildeArray} frisorBildeArray={frisorBildeArray} tilgjengeligeFrisorer={tilgjengeligeFrisorer} sTilgjengeligeFrisorer={sTilgjengeligeFrisorer} env={env} synligKomponent={synligKomponent} displayKomponent={displayKomponent} klokkeslettet={klokkeslettet} sKlokkeslett={sKlokkeslett} frisor={frisor} sFrisor={sFrisor}  sProdukt={sProdukt}/> </div>:"")}
 
@@ -190,9 +190,9 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
             <div>
             <h3>Din timebestilling</h3>
             <div>Dato {(dato != null?(<p>{parseInt(dato.substring(8,10))}. {hentMaaned(parseInt(dato.substring(5,7)) -1)}</p>):"")}</div>
-            <div>Frisør {(frisor === false?(<p>Første ledige frisør</p>):(frisor != null?(<p>{frisor.navn}</p>):""))}</div>
+            <div>Medarbeider {(frisor === false?(<p>Første ledige medarbeider</p>):(frisor != null?(<p>{frisor.navn}</p>):""))}</div>
             <div>Time for {(produkt.length > 0?(<p>{produkt.map(produkt=>produkt.navn).join(", ")}</p>):"")}</div>
-            <div>Tid {(klokkeslettet != null && produkt.length > 0?(<p>{klokkeslettet}</p>):"")}</div>
+            <div>Klokkeslett {(klokkeslettet != null && produkt.length > 0?(<p>{klokkeslettet}</p>):"")}</div>
             <div>Estimert pris {totalPris} kr</div>
             <div>Estimert tid {totalTid} minutter</div>
             </div>

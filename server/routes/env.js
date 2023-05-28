@@ -234,7 +234,7 @@ router.post("/siOppFrisor", authorization, async(req,res)=>{
             }
             const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {frisorer:tempFrisorer});
             if(oppdatertEnv){
-                return res.send({message:"Frisør oppdatert", valid:true});
+                return res.send({message:"Medarbeider oppdatert", valid:true});
             }
         } catch (error) {
             console.log(error);
@@ -477,7 +477,7 @@ router.post("/opprettFrisor", authorization, upload, async (req,res)=>{
             
             const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {$push:{frisorer:{navn:nyFrisorNavn, produkter:nyFrisorTjenesterArray, img:img, tittel:tittel, beskrivelse:beskrivelse, paaJobb:JSON.parse(paaJobb)}}});
             if(oppdatertEnv){
-                return res.send({message:"Frisør opprettet!"});
+                return res.send({message:"Medarbeider opprettet!"});
             } else {
                 return res.send({message:"Noe har skjedd gærent i /opprettFrisor!"});
             }
@@ -635,7 +635,7 @@ router.post("/slettFrisor", authorization, async (req,res)=>{
                 let nyFrisorer = tempFrisorer.filter(frisor => frisor.navn !== navn);
                 const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {frisorer:nyFrisorer});
                 if(oppdatertEnv){
-                    return res.send({message:"Frisør slettet!"});
+                    return res.send({message:"Medarbeider slettet!"});
                 } else {
                     return res.send({message:"Noe har skjedd gærent i /slettFrisor!"});
                 }

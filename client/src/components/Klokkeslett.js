@@ -194,7 +194,7 @@ function Klokkeslett({sMidlertidigDato, harEndretDatoen, datoForsteLedige, sDato
                <div className='k'>
                 <div>
                 <h4>Velg tidspunkt for timen her:</h4>
-                    <div>Valgt klokkeslett: <strong>{klokkeslettet !== null? klokkeslettet:"--:--"}</strong></div>
+                    <div>Valgt klokkeslett: <strong>{klokkeslettet !== null? klokkeslettet:"--:--"}</strong>{klokkeslettet != null?`- ${klokkeslettFraMinutter(minutterFraKlokkeslett(klokkeslettet) + env.tjenester.filter(element=>produkt.includes(element)).reduce((total, element)=> total + element.tid, 0))}`:""}</div>
     
                 </div>
                

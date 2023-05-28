@@ -150,14 +150,15 @@ function PersonInfo({env, smsBekreftelse, sSmsBekreftelse, totalTid, totalPris, 
                 ):""}
                 <div ref={scrollPINBoks}></div>
                 
+                
 
             {isMobile?(<div className='infoboks'>
                 <div>
                 <h3>Din timebestilling</h3>
                 <div>Dato {(dato != null?(<p>{parseInt(dato.substring(8,10))}. {hentMaaned(parseInt(dato.substring(5,7)) -1)}</p>):"")}</div>
-                <div>Frisør {(frisor === false?(<p>Første ledige frisør</p>):(frisor != null?(<p>{frisor.navn}</p>):""))}</div>
+                <div>Medarbeider {(frisor === false?(<p>Første ledige medarbeider</p>):(frisor != null?(<p>{frisor.navn}</p>):""))}</div>
                 <div>Time for {(produkt.length > 0?(<p>{produkt.map(produkt=>produkt.navn).join(", ")}</p>):"")}</div>
-                <div>Tid {(klokkeslettet != null && produkt.length > 0?(<p>{klokkeslettet}</p>):"")}</div>
+                <div>Klokkeslett {(klokkeslettet != null && produkt.length > 0?(<p>{klokkeslettet}</p>):"")}</div>
                 <div>Estimert pris {totalPris} kr</div>
                 <div>Estimert tid {totalTid} minutter</div>
                 </div>
@@ -167,6 +168,7 @@ function PersonInfo({env, smsBekreftelse, sSmsBekreftelse, totalTid, totalPris, 
 
                 <p>Denne siden bruker informasjonskapsler. Ønsker du å lese mer om vår bruk av cookies, kan du lese mer <a aria-label="Åpne personvernserklæringen og brukervilkår i ny fane" rel='noreferrer' target="_blank" href='/personvaernserklaering-og-brukervilkaar'>her</a></p>
                 <p>Jeg godtar <a aria-label="Åpne personvernserklæringen og brukervilkår i ny fane" rel='noreferrer' target="_blank" href='/personvaernserklaering-og-brukervilkaar'>personvernserkæringen, brukervilkår og bruk av cookies</a> ved å trykke "send inn reservasjon"</p>
+                
                 <label style={{display:"flex", justifyContent:"center", flexDirection:"column"}} htmlFor='sms_bekreftelse'>
                     <div style={{display:"flex", alignItems:"center", flexDirection:"row"}}>Få bekreftelse på SMS? <input style={{height:"1.4rem", width:"1.4rem"}} required aria-required id="sms_bekreftelse" type='checkbox' checked={smsBekreftelse} onChange={()=>{
                         
@@ -180,6 +182,7 @@ function PersonInfo({env, smsBekreftelse, sSmsBekreftelse, totalTid, totalPris, 
                     </div>
                     {new Date(dato) > new Date(nesteDag())? <div className='litentekst'>Påminnelse på SMS kommer dagen før timen, og kommer i tillegg (uansett).</div>:""} 
                 </label>
+
                 {(harregistrert?"Laster...":(<button disabled={!validertSMSpin} style={{padding:"1rem", color:"var(--color2)", backgroundColor:"var(--farge2)"}} onClick={()=>{
                     
                     if(telefonnummer.length === 8 && navn !== ""){
