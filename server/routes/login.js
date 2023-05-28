@@ -37,9 +37,10 @@ router.post("/oppdaterPassord", authorization, async(req,res)=>{
     } else {
         bruker = "admin";
     }
-    const oppdatertPassord = await Brukere.findOneAndUpdate({brukernavn:bruker}, {passord:jwt.sign({passord: passord}, PASSORD_KEY)});
+    let passordet = jwt.sign({passord: passord}, PASSORD_KEY);
+    const oppdatertPassord = await Brukere.findOneAndUpdate({brukernavn:bruker}, {passord:passordet});
     if(oppdatertPassord){
-        const accessToken = jwt.sign({brukernavn:bruker, passord: jwt.sign({passord: passord}, PASSORD_KEY), brukertype: req.brukertype}, ACCESS_TOKEN_KEY, {expiresIn:'480m'});
+        const accessToken = jwt.sign({brukernavn:bruker, passord: passordet, brukertype: req.brukertype}, ACCESS_TOKEN_KEY);
 
         //Setter cookie for å holde brukeren logget inn
         
@@ -208,7 +209,7 @@ router.post("/TWOFA", twofaLimiter, async (req,res)=>{
                 bestilling.telefonnummer = jwt.verify(bestilling.telefonnummer, CUSTOMER_KEY).telefonnummer;
                 return bestilling;
         })
-        const accessToken = jwt.sign({brukernavn:two_FA.brukernavn, passord: finnBruker.passord, brukertype:brukertype}, ACCESS_TOKEN_KEY, {expiresIn:'480m'});
+        const accessToken = jwt.sign({brukernavn:two_FA.brukernavn, passord: finnBruker.passord, brukertype:brukertype}, ACCESS_TOKEN_KEY);
 
         //Setter cookie for å holde brukeren logget inn
         
@@ -291,10 +292,12 @@ router.post('/auth',loginLimiter, async (req,res)=>{
                 return bestilling;
             })
             //Setter access token i cookies
-            const accessToken = jwt.sign({brukernavn:brukernavn, passord: finnBruker.passord, brukertype: brukertype}, ACCESS_TOKEN_KEY,{expiresIn:'480m'});
+            const accessToken = jwt.sign({brukernavn:brukernavn, passord: finnBruker.passord, brukertype: brukertype}, ACCESS_TOKEN_KEY);
+            const expirationDateAccess = new Date(Date.now() + 24 * 60 * 60 * 1000); // 1 døgn
             res.cookie("access_token", accessToken, {
                 httpOnly: true,
                 secure: process.env.HTTPS_ENABLED == "secure",
+                expires: expirationDateAccess
             })
             return res.json({valid:true,bruker:{epost: finnBruker.epost, aktivertEpost: finnBruker.aktivertEpost, navn:finnBruker.brukernavn, telefonnummer: jwt.verify(finnBruker.telefonnummer, TLF_SECRET).telefonnummer}, message:"Du er nå logget inn", brukertype: (brukertype==="admin"?"admin":"vakter"), env:env, bestilteTimer:bestilteTimer});
             

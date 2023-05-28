@@ -40,9 +40,7 @@ function ansattSjekker(req,res,next){
     let ansatt = false;
     if(ansattBestilling){
         ansatt = jwt.verify(ansattBestilling, ACCESS_TOKEN_KEY);
-    } 
-    
-    if (ansattBestilling2){
+    } else if (ansattBestilling2){
         ansatt = jwt.verify(ansattBestilling2, ACCESS_TOKEN_KEY);
     }
 

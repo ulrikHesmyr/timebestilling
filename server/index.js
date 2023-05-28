@@ -58,15 +58,38 @@ const requestCounterMiddleware = (req, res, next) => {
 
 const hovedLimiter = rateLimiter({
   windowMs: 30 * 60 * 1000,
-  max: 800, //Ikke endre fra 800. Dette er limit pr IP adresse. Kan maks ha 800 requests pr 30 minutt pr IP adresse
+  max: 120, //Ikke endre fra 800. Dette er limit pr IP adresse. Kan maks ha 800 requests pr 30 minutt pr IP adresse
   message: {m:"For mye trafikk. Vennligst prøv igjen om 30 min"},
 });
+
+function ansattSjekker(req,res,next){
+  const ansattBestilling = req.cookies.access_token; 
+  const ansattBestilling2 = req.cookies.two_FA_valid; 
+  let ansatt = false;
+  if(ansattBestilling){
+      ansatt = jwt.verify(ansattBestilling, ACCESS_TOKEN_KEY);
+  } else if (ansattBestilling2){
+      ansatt = jwt.verify(ansattBestilling2, ACCESS_TOKEN_KEY);
+  }
+
+  if(NODE_ENV === "development"){
+      next()
+  } else {
+      
+      if(!ansatt){
+          hovedLimiter(req,res,next);
+      } else {
+          next();
+      }
+  }  
+  
+}
 
 
 
 app.use(requestCounterMiddleware);
 
-app.use(hovedLimiter);
+app.use(ansattSjekker);
 
 
 //Sender SMS om feedback fra alle kunder som har hatt behandling i dag. Merk at dette skjer kl 1930
