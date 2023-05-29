@@ -20,7 +20,7 @@ function OmOss({env}){
             
         </div>
     </div>
-        <Footer/>
+        <Footer env={env}/>
     </div>
   )
 }

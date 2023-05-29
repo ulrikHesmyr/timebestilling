@@ -185,7 +185,7 @@ function Hjem({env}){
         </div>
         
         </div>
-        <Footer/>
+        <Footer env={env}/>
             
         </div>
     )

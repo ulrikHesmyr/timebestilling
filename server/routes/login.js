@@ -251,7 +251,7 @@ router.post('/auth',loginLimiter, async (req,res)=>{
                     const two_FA_valid = jwt.verify(allerede2FA, ACCESS_TOKEN_KEY);
                     if(!two_FA_valid.gyldig || two_FA_valid.brukernavn !== brukernavn){
                         res.clearCookie("two_FA_valid");
-                        return res.status(401).json({message:"Du har ikke gyldig 2FA token"});
+                        return res.status(401).json({message:"Prøv igjen!"});
                     }
                 }
             } else {

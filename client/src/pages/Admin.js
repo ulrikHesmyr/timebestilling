@@ -700,10 +700,12 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                                     sNyKategori("");
                                 }}>Avbryt</button>
                                 <button onClick={()=>{
-                                    if(nyKategori !== ""){
+                                    if(nyKategori !== "" && !env.kategorier.includes(nyKategori)){
                                         sVisNyKategori(false);
                                         opprettNyKategori();
                                         sNyKategori("");
+                                    } else {
+                                        alert("Kategorier må være unike");
                                     }
                                 }}>Opprett</button>
                             </div>
@@ -923,7 +925,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                                     sNyBehandlingTid(behandlingsEstimater[0]);
                                 }}>Avbryt</button>
                                 <button onClick={()=>{
-                                    if(nyBehandlingNavn !== "" && nyBehandlingBeskrivelse !== "" && !isNaN(parseInt(nyBehandlingPris)) && nyBehandlingKategori !== "" && !isNaN(parseInt(nyBehandlingPris))){
+                                    if(nyBehandlingNavn !== "" && nyBehandlingBeskrivelse !== "" && !isNaN(parseInt(nyBehandlingPris)) && nyBehandlingKategori !== "" && !isNaN(parseInt(nyBehandlingPris)) && !env.tjenester.map(t=>t.navn).includes(nyBehandlingNavn)){
                                         
                                         opprettNyBehandling({navn:nyBehandlingNavn, beskrivelse:nyBehandlingBeskrivelse, pris:parseInt(nyBehandlingPris), kategori:nyBehandlingKategori, tid:(parseInt(nyBehandlingTid))})
                                         sVisOpprettBehandling(false);

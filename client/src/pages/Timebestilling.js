@@ -137,6 +137,14 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
                 } else {
                     displayKomponent(0);
                 }
+            }} onKeyDown={(e)=>{
+                if(e.code === "Enter" || e.code === "Space"){
+                    if(synligKomponent === 0){
+                        displayKomponent(-1);
+                    } else {
+                        displayKomponent(0);
+                    }
+                }
             }} style={{backgroundColor: produkt.length > 0?"var(--color3)":"var(--color4)"}}><p>1</p>Behandlinger</h2>
             <div ref={frisorBoks} ></div>
             {(synligKomponent === 0 && env !== null?<div role="region" aria-labelledby='visTjeneseterAria' id="tje" aria-hidden={!(synligKomponent === 0)} > <Tjenester sDatoForsteLedige={sDatoForsteLedige} sFrisor={sFrisor} antallBehandlinger={antallBehandlinger} sAntallBehandlinger={sAntallBehandlinger} sKlokkeslett={sKlokkeslett} env={env} synligKomponent={synligKomponent} displayKomponent={displayKomponent} produkt={produkt} sProdukt={sProdukt} frisor={frisor} /></div>:"")}
@@ -147,6 +155,14 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
                 } else {
                     displayKomponent(1);
                 }
+            }} onKeyDown={(e)=>{
+                if(e.code === "Enter" || e.code === "Space"){
+                    if(synligKomponent === 1){
+                        displayKomponent(-1);
+                    } else {
+                        displayKomponent(1);
+                    }
+                }
             }} style={{backgroundColor: frisor !== null?"var(--color3)":"var(--color4)"}}><p>2</p>Velg medarbeider</h2>
             <div ref={klokkeslettBoks}></div>
             {(synligKomponent === 1 && produkt.length > 0? <div role="region" aria-labelledby='visFrisorAria' id="fri" aria-hidden={!(synligKomponent === 1 && produkt.length > 0)}> <Frisor sDatoForsteLedige={sDatoForsteLedige} sMidlertidigDato={sMidlertidigDato} sDato={sDato} sFrisorBildeArray={sFrisorBildeArray} frisorBildeArray={frisorBildeArray} tilgjengeligeFrisorer={tilgjengeligeFrisorer} sTilgjengeligeFrisorer={sTilgjengeligeFrisorer} env={env} synligKomponent={synligKomponent} displayKomponent={displayKomponent} klokkeslettet={klokkeslettet} sKlokkeslett={sKlokkeslett} frisor={frisor} sFrisor={sFrisor}  sProdukt={sProdukt}/> </div>:"")}
@@ -156,6 +172,14 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
                     displayKomponent(-1);
                 } else {
                     displayKomponent(2);
+                }
+            }} onKeyDown={(e)=>{
+                if(e.code === "Enter" || e.code === "Space"){
+                    if(synligKomponent === 2){
+                        displayKomponent(-1);
+                    } else {
+                        displayKomponent(2);
+                    }
                 }
             }} style={{backgroundColor: dato !== null && klokkeslettet !== null ?"var(--color3)":"var(--color4)"}} ><p>3</p> Velg dato og tid</h2>
             <div  role="region" aria-labelledby='visDatoOgKlokkeslettAria' id="dat" aria-hidden={!(synligKomponent === 2 && frisor !== null )}>
@@ -169,6 +193,14 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
                     displayKomponent(-1);
                 } else {
                     displayKomponent(3);
+                }
+            }} onKeyDown={(e)=>{
+                if(e.code === "Enter" || e.code === "Space"){
+                    if(synligKomponent === 3){
+                        displayKomponent(-1);
+                    } else {
+                        displayKomponent(3);
+                    }
                 }
             }} style={{backgroundColor: navn !== "" && telefonnummer.toString().length === 8?"var(--color3)":"var(--color4)"}}><p>4</p>Din info</h2>
             <div role="region" aria-labelledby='visPersonInfoAria' id="per" aria-hidden={!(synligKomponent === 3 && klokkeslettet !== null)}>
@@ -199,7 +231,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
             <p>obs.: Prisene er kun estimert og kan øke dersom det blir brukt hårprodukter eller om det kreves vask osv.</p>
         </div>):"")}
 
-    {isMobile?"":<Footer/>}
+    {isMobile?"":<Footer env={env}/>}
     </div>
     )
 }

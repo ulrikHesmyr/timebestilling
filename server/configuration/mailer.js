@@ -19,7 +19,9 @@ function sendMail(subject, message, mailAddress = process.env.PERSONAL_ADDR){
         if(err){
             console.log(err);
         } else {
-            console.log("Email sent");
+            if(process.env.NODE_ENV === "development"){
+                console.log("Email sent");
+            }
         }
     })
 }

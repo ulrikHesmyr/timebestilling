@@ -365,10 +365,13 @@ function randomNumber(min, max){
 }
 //Sletter én enkelt timebestilling
 router.post('/oppdaterTimebestillinger', authorization, async (req,res)=>{
+    const {_id, medarbeider, dato, tidspunkt, behandlinger} = req.body;
     try {
         if(req.admin){
-            const slettTime = await Bestilttime.findOneAndDelete({_id: req.body._id});
-            if(slettTime){
+            const slettTime = await Bestilttime.findOneAndDelete({_id: _id});
+            const brukerTilAnsatt = await Brukere.findOne({brukernavn: medarbeider.toLowerCase()});
+            if(slettTime && brukerTilAnsatt){
+                mailer.sendMail(`Timebestilling slettet!`,`Reservasjon for \"${behandlinger.join(", ")}" \n${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}, kl.:${tidspunkt}, er slettet!`, `${brukerTilAnsatt.epost} `)
                 return res.send({message: "Timebestilling slettet", valid: true})
             } else {
                 return res.send({message: "Noe har skjedd galt, prøv igjen"})
