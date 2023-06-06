@@ -93,18 +93,22 @@ router.post("/oppdaterTelefonnummer", authorization, async (req,res)=>{ //Legg t
 router.post("/opprettBruker", authorization, async (req,res)=>{
     const {nyBrukernavn, nyTelefonnummer, adminTilgang, epost} = req.body;
     if(req.admin){
-        const nyBruker = await Brukere.create({
-            brukernavn: nyBrukernavn,
-            passord: jwt.sign({passord: nyBrukernavn}, PASSORD_KEY),
-            telefonnummer: jwt.sign({telefonnummer: nyTelefonnummer}, TLF_SECRET),
-            admin: adminTilgang,
-            epost: epost
-        });
 
-        if(nyBruker){
-            return res.send({message:"Ny bruker opprettet"});
-        } else {
-            return res.status(404);
+        try {
+            const nyBruker = await Brukere.create({
+                brukernavn: nyBrukernavn,
+                passord: jwt.sign({passord: nyBrukernavn}, PASSORD_KEY),
+                telefonnummer: jwt.sign({telefonnummer: nyTelefonnummer}, TLF_SECRET),
+                admin: adminTilgang,
+                epost: epost
+            });
+    
+            if(nyBruker){
+                return res.send({message:"Ny bruker opprettet"});
+            }
+        } catch (error) {
+            console.log(error);
+            return res.status(404).send({m:"Brukeren eksisterer allerede"});
         }
     }
 })

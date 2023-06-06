@@ -38,7 +38,7 @@ endre variabler i .env filen
 fjerne http://localhost:1226 fra request \
 endre tittel i index.html
 sette NODE_ENV til "production" i .env filen
-un-comment credentials i Login.js, Vakter.js og Admin.js i client
+un-comment //credentials i Login.js, Vakter.js og Admin.js i client
 bytte farge-variabler i App.css
 Legge inn riktig link for google reviews https://developers.google.com/my-business/content/review-data#list_all_reviews
 Endre bedriftens navn i personvernserklæringen

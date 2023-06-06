@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const bruker = new mongoose.Schema({
-    brukernavn: {type:String},
+    brukernavn: {type:String, unique:true},
     passord:{type:String},
     telefonnummer:{type:String},
     epost:{type:String},

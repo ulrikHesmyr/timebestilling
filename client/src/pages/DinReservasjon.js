@@ -15,11 +15,11 @@ function DinReservasjon({env, hentMaaned, registrertReservasjon, setReservasjon}
         //Lager et array med base64 bilder
         async function hentBilder(){
             let gjeldendeFrisor = env.frisorer.find(f=>f.navn === registrertReservasjon.medarbeider);
-            const array = new Uint8Array(gjeldendeFrisor.img.data.data);
-            const base = window.btoa(String.fromCharCode.apply(null, array));
-            const base64Image = `data:${gjeldendeFrisor.img.contentType};base64,${base}`;
-            
-            sFrisorBilde(base64Image);
+            const imgBlob = await fetch("http://localhost:1227/uploads/" + gjeldendeFrisor.img)
+            .then(r => r.blob());
+      
+          const imgBlobUrl = URL.createObjectURL(imgBlob);
+            sFrisorBilde(imgBlobUrl);
         }
         hentBilder();
     }, [registrertReservasjon, env.frisorer])

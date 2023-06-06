@@ -238,6 +238,10 @@ app.get('/sitemap.xml', (req, res) => {
   res.sendFile('./sitemap.xml', { root: __dirname });
 });
 
+app.get('/uploads/:filename', (req, res) => {
+  res.sendFile(path.join(__dirname, 'uploads', req.params.filename));
+});
+
 app.get('*', (req, res)=>{
   //res.setHeader('Cache-Control', 'no-store');
   res.setHeader(

@@ -5,7 +5,7 @@ function SMS({env, varsle, lagreVarsel, varsleFeil, sUpdateTrigger, updateTrigge
 
     const [aktivertFeedbackSMS, setAktivertFeedbackSMS] = useState(env.aktivertFeedbackSMS);
     const [aktivertSMSpin, setAktivertSMSpin] = useState(env.aktivertSMSpin);
-
+    const [aktivertTimebestilling, sAktivertTimebestilling] = useState(env.aktivertTimebestilling);
     //Google review link
     const [visRedigerGoogleReviewLink, sVisRedigerGoogleReviewLink] = useState(false);
     const [googleReviewLink, sGoogleReviewLink] = useState(env.googleReviewLink);
@@ -19,9 +19,9 @@ function SMS({env, varsle, lagreVarsel, varsleFeil, sUpdateTrigger, updateTrigge
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({googleReviewLink:googleReviewLink}),
-            credentials:'include'
+            //credentials:'include'
         }
-        const request = await fetch("/env/oppdaterGoogleReviewLink", options);
+        const request = await fetch("http://localhost:1227/env/oppdaterGoogleReviewLink", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -35,13 +35,13 @@ function SMS({env, varsle, lagreVarsel, varsleFeil, sUpdateTrigger, updateTrigge
     async function endreStatusSMSfeedback(nyStatus){
         try {
             lagreVarsel();
-        const res = await fetch("/env/endreStatusSMSfeedback", {
+        const res = await fetch("http://localhost:1227/env/endreStatusSMSfeedback", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({nyStatus}),
-            credentials: 'include'
+            //credentials: 'include'
         });
         const data = await res.json();
         if(data){
@@ -55,15 +55,38 @@ function SMS({env, varsle, lagreVarsel, varsleFeil, sUpdateTrigger, updateTrigge
         }
     }
 
-    async function endreStatusSMSpin(nyStatus){
+    async function endreAktivertTimebestilling(nyStatus){
         try {
             lagreVarsel();
-        const res = await fetch("/env/endreStatusSMSpin", {
+        const res = await fetch("http://localhost:1227/env/endreAktivertTimebestilling", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            credentials: 'include',
+            body: JSON.stringify({aktivert: nyStatus}),
+            //credentials: 'include'
+        });
+        const data = await res.json();
+        if(data){
+            sAktivertTimebestilling(nyStatus);
+            varsle();
+            sUpdateTrigger(!updateTrigger);
+        }
+        } catch (error) {
+            alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen.");
+            varsleFeil();   
+        }
+    }
+
+    async function endreStatusSMSpin(nyStatus){
+        try {
+            lagreVarsel();
+        const res = await fetch("http://localhost:1227/env/endreStatusSMSpin", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            //credentials: 'include',
             body: JSON.stringify({nyStatus})
         });
         const data = await res.json();
@@ -130,6 +153,13 @@ function SMS({env, varsle, lagreVarsel, varsleFeil, sUpdateTrigger, updateTrigge
             </p>
             <div className='SMSkonfigBoks'>
                 SMS-PIN: <StatusMelding funksjon={endreStatusSMSpin} status={aktivertSMSpin}/>
+            </div>
+        </div>
+        <div>
+            <h4>Timebestilling</h4>
+            <p>Velg dersom du ønsker å ha timebestilling for nettsiden din.</p>
+            <div className='SMSkonfigBoks'>
+                Timebestilling: <StatusMelding funksjon={endreAktivertTimebestilling} status={aktivertTimebestilling}/>
             </div>
         </div>
     </div>

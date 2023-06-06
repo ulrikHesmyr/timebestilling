@@ -11,7 +11,7 @@ function Footer({env}){
     {env.sosialeMedier.map((medie)=>(
       <a key={medie.platform}  style={{display:"flex", flexDirection:"row", alignItems:"center"}}
        rel='noreferrer' target="_blank" href={medie.link}>
-          <img loading='eager' src={`${medie.platform}.png`} style={{height:"1rem", objectFit:"contain"}} alt={`${medie.platform}`}></img>
+          <img loading='eager' src={`${medie.platform}.png`} style={{height:"2rem", objectFit:"contain"}} alt={`${medie.platform}`}></img>
       </a>
     ))}
     </div>

@@ -61,6 +61,10 @@ router.post('/bestilltime', ansattSjekker, async (req,res)=>{
     try {
         const env = await Env.findOne();
         const {dato, behandlinger, kunde, medarbeider, telefonnummer, tidspunkt, SMS_ENABLED} = req.body; 
+        if(!env.aktivertTimebestilling){
+            return res.status(400).json({m:"Timebestilling er ikke aktivert"});
+        }
+        
         if(!(dato && behandlinger && kunde && medarbeider && telefonnummer && tidspunkt)){
             return res.status(400).json({m:"Mangler informasjon"});
         }

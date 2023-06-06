@@ -37,7 +37,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
         
         let formData = new FormData();
         formData.append("uploaded_file", bildeAvFrisor);
-        formData.append("nyFrisorNavn", nyFrisorNavn);
+        formData.append("navn", nyFrisorNavn);
         formData.append("nyFrisorTlf", parseInt(tlfNyFrisor));
         formData.append("nyFrisorTjenester", frisorTjenester);
         formData.append("tittel", nyFrisorTittel);
@@ -45,10 +45,10 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
         formData.append("paaJobb", JSON.stringify(paaJobb));
         const options2 = {
             method:"POST",
-            credentials: 'include',
+            //credentials: 'include',
             body: formData
         }
-        const request2 = await fetch("/env/opprettFrisor", options2);
+        const request2 = await fetch("http://localhost:1227/env/opprettFrisor/" + nyFrisorNavn, options2);
         const response2 = await request2.json();
 
         //Oppretter bruker for ansatt
@@ -66,10 +66,10 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
                 headers:{
                     "Content-Type":"application/json"
                 },
-                credentials: 'include',
+                //credentials: 'include',
                 body: JSON.stringify(data)
             }
-            const request = await fetch("/login/opprettBruker", options);
+            const request = await fetch("http://localhost:1227/login/opprettBruker", options);
             const response = await request.json();
             if(response && response.m){
                 alert(response.m);

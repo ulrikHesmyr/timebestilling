@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const env = new mongoose.Schema({
     kontakt_epost:{type:String},
     kontakt_tlf:{type: Number},
+    aktivertTimebestilling:{type:Boolean, default:true},
     sosialeMedier:[{platform: String, bruker: String, link: String}],
     bedrift:{type:String},
     antallBestillinger:{type:Number},
@@ -24,10 +25,7 @@ const env = new mongoose.Schema({
     frisorer:[
         {
             navn:{type:String},
-            img:{
-                data:Buffer,
-                contentType:String
-            },
+            img:{type:String},
             produkter:[String],
             oppsigelse:{type: String, default: "Ikke oppsagt"},
             tittel:{type:String},

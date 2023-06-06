@@ -6,17 +6,16 @@ function Frisor({tilgjengeligeFrisorer, sDatoForsteLedige, sDato, sMidlertidigDa
 
     const valgtFrisorBoks = useRef(null);
     const referanceElement = useRef(null);
-    function genererBilder(){
+    async function genererBilder(){
         
         //Lager et array med base64 bilder
         let midlertidigArray = [];
         for(let i = 0; i < tilgjengeligeFrisorer.length; i++){
-            const array = new Uint8Array(tilgjengeligeFrisorer[i].img.data.data);
-            const base = window.btoa(String.fromCharCode.apply(null, array));
-            const base64Image = `data:${tilgjengeligeFrisorer[i].img.contentType};base64,${base}`;
-
-            //const base64Image = `data:${env.frisorer[i].img.contentType};base64,${window.btoa(env.frisorer[i].img.data.data)}`;
-            midlertidigArray.push(base64Image);
+            const imgBlob = await fetch("http://localhost:1227/uploads/" + tilgjengeligeFrisorer[i].img)
+            .then(r => r.blob());
+      
+          const imgBlobUrl = URL.createObjectURL(imgBlob);
+          midlertidigArray.push(imgBlobUrl);
         }
         sFrisorBildeArray(midlertidigArray);
     }
@@ -85,7 +84,7 @@ function Frisor({tilgjengeligeFrisorer, sDatoForsteLedige, sDato, sMidlertidigDa
 
                 }}
                 style={{ textDecoration:frisor === element?"underline":"none"}}>
-                    <img className="frisorbilde" src={frisorBildeArray[index]} alt={`Bilde av medarbeider ${element.navn}`} style={{height:"4rem"}}></img>
+                    <img className="velgmedarbeider" src={frisorBildeArray[index]} alt={`Bilde av medarbeider ${element.navn}`}></img>
                     {element.navn}
                     
                 </div>)):""}
@@ -96,7 +95,7 @@ function Frisor({tilgjengeligeFrisorer, sDatoForsteLedige, sDato, sMidlertidigDa
             {frisor !== null && frisor !== false && <div >Du har valgt:<div
                 key={frisor.navn} style={{display:"flex", flexDirection:"column", alignItems:"center"}}>
                      {frisor.navn}
-                    <img className="frisorbilde" src={frisorBildeArray[tilgjengeligeFrisorer.indexOf(frisor)]} alt={`Bilde av medarbeider ${frisor.navn}`} style={{height:"4rem"}}></img>
+                    <img className="velgmedarbeider" style={{height:"6rem"}} src={frisorBildeArray[tilgjengeligeFrisorer.indexOf(frisor)]} alt={`Bilde av medarbeider ${frisor.navn}`}></img>
                     
                 </div></div>}
                 

@@ -26,12 +26,11 @@ function Hjem({env}){
             
         let midlertidigArray = [];
         for(let i = 0; i < env.frisorer.length; i++){
-            const array = new Uint8Array(env.frisorer[i].img.data.data);
-            const base = window.btoa(String.fromCharCode.apply(null, array));
-            const base64Image = `data:${env.frisorer[i].img.contentType};base64,${base}`;
-
-            //const base64Image = `data:${env.frisorer[i].img.contentType};base64,${window.btoa(env.frisorer[i].img.data.data)}`;
-            midlertidigArray.push(base64Image);
+            const imgBlob = await fetch("http://localhost:1227/uploads/" + env.frisorer[i].img)
+            .then(r => r.blob());
+      
+          const imgBlobUrl = URL.createObjectURL(imgBlob);
+          midlertidigArray.push(imgBlobUrl); 
         }
         sFrisorBildeArray(midlertidigArray);
     }
@@ -46,8 +45,15 @@ function Hjem({env}){
             <header>
                 <div className="bedriftNavnHeader"> <div className="viEr" >Vi er </div>{env.bedrift}</div>
                 <div>
-                    <p className="bestilleTimeplz">Ønsker du å bestille time hos oss?</p>
-                    <Link to="/timebestilling" className='navBarBestillTime' tabIndex={0}><div style={{textShadow:"1px 1px 3px black"}}>Bestill time</div></Link>
+                    {env.aktivertTimebestilling ? <>
+                        <p className="bestilleTimeplz">Ønsker du å bestille time hos oss?</p>
+                    <Link to="/timebestilling" className='navBarBestillTime' tabIndex={0}><div style={{textShadow:"1px 1px 3px black"}}>Bestill time</div></Link></>:
+                    <>
+                        <p  className="bestilleTimeplz">Bestill time på telefon:</p>
+                        <div className='navBarBestillTime'>
+                            <a href={`tel:+47 ${env.kontakt_tlf}`} >{env.kontakt_tlf}</a>
+                        </div>
+                    </>}
                 </div>
             </header>
 
@@ -70,12 +76,12 @@ function Hjem({env}){
                 </div>
             </div>
             <div className="hjemsideSeksjon">
-                <h2>Våre ansatte</h2>
+                <h2>Våre medarbeidere</h2>
                 <div className="frisorene">
                     {frisorBildeArray !== null? env.frisorer.map((frisor, index)=>(
                     <div key={frisor.navn}style={{margin:"1rem"}}>
                         <h4>{frisor.navn}</h4>
-                        <img className="frisorbilde" src={frisorBildeArray[index]} alt={`Bilde av ansatt ${frisor.navn}`} style={{height:"4rem"}}></img>
+                        <img className="velgmedarbeider" src={frisorBildeArray[index]} alt={`Bilde av ansatt ${frisor.navn}`}></img>
                         <button id={frisor.navn} aria-expanded={visDetaljerFrisor && detaljerFrisor !== null} aria-label={`Vis detaljer om ansatt: ${frisor.navn}`} className="infoFrisorKnapp" onClick={()=>{
                             sDetaljerFrisor(frisor);
                             sVisDetaljerFrisor(true);

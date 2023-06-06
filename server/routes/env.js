@@ -316,49 +316,47 @@ router.get('/env', hentEnvLimiter, async(req,res)=>{
     }
 })
 
-const storage = multer.memoryStorage();
-
-//Multer instance for bilde når man oppretter ny frisør
-const upload = multer({
-    storage: storage,
-    dest: 'uploads/',
-    limits: { fileSize: 3 * 1024 * 1024 },
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads/');
+    },
+    filename: function (req, file, cb) {
+        const filNavn = req.params.navn.toLowerCase() + '.jpg';
+        cb(null, filNavn);
+    },
+    limits: { fileSize: 6 * 1024 * 1024 },
     fileFilter: function (req, file, cb) {
       if (!file.originalname.match(/\.(jpg|jpeg|HEIC|heic|heif|HEIF|png|gif|JPG|JPEG|PNG|GIF)$/)) {
         return cb(new Error('Only image files are allowed!'), false);
       }
       cb(null, true);
     }
+
+
+    
+});
+
+//Multer instance for bilde når man oppretter ny frisør
+const upload = multer({
+    storage: storage
 }).single("uploaded_file");
 
 //Multer instance for å oppdatere bilde av frisør
 const oppdaterBildeFrisor = multer({
-    storage: storage,
-    dest: 'uploads/',
-    limits: { fileSize: 3 * 1024 * 1024 },
-    fileFilter: function (req, file, cb) {
-      if (!file.originalname.match(/\.(jpg|jpeg|HEIC|heic|heif|HEIF|png|gif|JPG|JPEG|PNG|GIF)$/)) {
-        return cb(new Error('Only image files are allowed!'), false);
-      }
-      cb(null, true);
-    }
+    storage: storage
 }).single("uploaded_file");
 
-router.post("/oppdaterBildeFrisor", authorization, oppdaterBildeFrisor, async (req,res)=>{
+router.post("/oppdaterBildeFrisor/:navn", authorization, oppdaterBildeFrisor, async (req,res)=>{
 
     
     const {navn} = req.body;
     try {
         if(req.admin){
             //Konverterer bilde fra request til buffer, og reduserer størrelsen til 200x200px
-            sharp(req.file.buffer).resize({height: 400, width: 400, fit:'inside'}).toBuffer().then(async (data)=>{
-            const img = {
-                data: new Buffer.from(data),
-                contentType: req.file.mimetype
-            };
-
+            
             const env = await Environment.findOne({bedrift:BEDRIFT});
             if(env){
+                const img = navn + ".jpg";
                 let nyFrisorer = env.frisorer.map(frisor => {
                     if(frisor.navn === navn){
                         frisor.img = img;
@@ -372,12 +370,28 @@ router.post("/oppdaterBildeFrisor", authorization, oppdaterBildeFrisor, async (r
                     return res.send({valid:false});
                 }
             }
-        })
         }
     } catch (error) {
         console.log(error, "error i oppdaterBildeFrisor");
     }
 });
+
+router.post("/endreAktivertTimebestilling", authorization, async (req, res)=>{
+    const {aktivert} = req.body;
+    try {
+        if(req.admin){
+            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {aktivertTimebestilling:aktivert});
+            if(oppdatertEnv){
+                return res.send({valid:true});
+            } else {
+                return res.send({valid:false});
+            }
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+);
 
 router.post("/leggTilHoytidsdag", authorization, async (req, res)=>{
     const {dag, dato} = req.body;
@@ -462,27 +476,23 @@ router.post("/oppdaterPaaJobb", authorization, async (req,res)=>{
     }
 });
 
-router.post("/opprettFrisor", authorization, upload, async (req,res)=>{ 
+router.post("/opprettFrisor/:navn", authorization, upload, async (req,res)=>{ 
 
    
-    const {nyFrisorNavn, nyFrisorTjenester, tittel, beskrivelse, paaJobb} = req.body;
+    const {nyFrisorTjenester, tittel, beskrivelse, paaJobb} = req.body;
+    const {navn} = req.params;
     let nyFrisorTjenesterArray = nyFrisorTjenester.split(",");
     try {
         if(req.admin){
-            sharp(req.file.buffer).resize({height: 400, width: 400, fit:'inside'}).toBuffer().then(async (data)=>{
-            const img = {
-                data: new Buffer.from(data),
-                contentType: req.file.mimetype
-            };
-            
-            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {$push:{frisorer:{navn:nyFrisorNavn, produkter:nyFrisorTjenesterArray, img:img, tittel:tittel, beskrivelse:beskrivelse, paaJobb:JSON.parse(paaJobb)}}});
+            const img = navn.toLowerCase() + ".jpg";
+            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {$push:{frisorer:{navn:navn, produkter:nyFrisorTjenesterArray, img:img, tittel:tittel, beskrivelse:beskrivelse, paaJobb:JSON.parse(paaJobb)}}});
             if(oppdatertEnv){
                 return res.send({message:"Medarbeider opprettet!"});
             } else {
                 return res.send({message:"Noe har skjedd gærent i /opprettFrisor!"});
             }
             
-        })
+        
         }
     } catch (error) {
         console.log(error, "error i opprettFrisor");

@@ -21,7 +21,7 @@ const App = ()=> {
 
     const fetchEnvironment = async ()=>{
       const data = await (
-        await fetch("/env/env")
+        await fetch("http://localhost:1227/env/env")
       ).json();
       if(data){
         sEnv(data);
@@ -34,55 +34,55 @@ const App = ()=> {
 
 
   return (
-    <>  
-    <Helmet>
-        <meta
-          http-equiv="Content-Security-Policy"
-          content="img-src 'self' data: blob:;"
-        />
-      </Helmet>
-        <BrowserRouter><div className='navHeader'>
-        
-        <button tabIndex={0} id="burgerButton" className='burger' aria-label='Vis navigasjonsmeny' aria-expanded={synligMeny} aria-controls="navigation" onClick={()=>{
-              setSynligmeny(!synligMeny);
-            }} style={{background:"transparent", border: "none"}}>
-              <div></div>
-              <div></div>
-              <div></div>
-            </button>
-            <img style={{height:"3rem", aspectRatio:"1/1", objectFit:"contain"}} src="logo.png"></img>
-      </div>
-            {(synligMeny?(
-            <nav id="navigation" className='navBar' role="region" aria-labelledby='burgerButton' aria-hidden={!synligMeny}>
-              <Link onClick={()=>{
-                setSynligmeny(false);
-              }} to="/">VI ER {(env !== null? env.bedrift:"")} <p>Åpningstider, behandlinger, våre ansatte og hvor du finner oss!</p></Link>
-
-              <Link onClick={()=>{
-                setSynligmeny(false);
-              }} to="/timebestilling">Bestill time <p>Reserver time hos oss</p></Link>
-
-              <Link onClick={()=>{
-                setSynligmeny(false);
-              }} to="/kontakt-oss">Kontakt oss<p>Ta kontakt via epost, telefon eller sosiale medier</p></Link>
-
-              <Link onClick={()=>{
-                setSynligmeny(false);
-              }} to="/om-oss">Om oss<p>Bli kjent</p></Link>
-
-            </nav >):(
-            <Routes>
-              <Route exact path="/timebestilling" element={(registrertReservasjon?<DinReservasjon env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} registrertReservasjon={registrertReservasjon} />:(env !== null?<Timebestilling env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} />:<div className="laster"></div>))} />
-              <Route exact path="/" element={(env !== null?<Hjem env={env}/>:<div className="laster"></div>)} />
-              <Route exact path="/logginn" element={<Login/>} />
-              <Route exact path="/kontakt-oss" element={(env !== null? <Kontakt env={env}/>:<div className="laster"></div>)}/>
-              <Route exact path="/personvaernserklaering-og-brukervilkaar" element={env !== null?<PB env={env}/>:<div className="laster"></div>}/>
-              <Route exact path="/om-oss" element={env !== null?<OmOss env={env}/>:<div className="laster"></div>}/>
+    <>{env !== null && <>  
+      <Helmet>
+          <meta
+            http-equiv="Content-Security-Policy"
+            content="img-src 'self' data: blob:;"
+          />
+        </Helmet>
+          <BrowserRouter><div className='navHeader'>
+          
+          <button tabIndex={0} id="burgerButton" className='burger' aria-label='Vis navigasjonsmeny' aria-expanded={synligMeny} aria-controls="navigation" onClick={()=>{
+                setSynligmeny(!synligMeny);
+              }} style={{background:"transparent", border: "none"}}>
+                <div></div>
+                <div></div>
+                <div></div>
+              </button>
+              <img style={{height:"3rem", aspectRatio:"1/1", objectFit:"contain"}} src="logo.png"></img>
+        </div>
+              {(synligMeny?(
+              <nav id="navigation" className='navBar' role="region" aria-labelledby='burgerButton' aria-hidden={!synligMeny}>
+                <Link onClick={()=>{
+                  setSynligmeny(false);
+                }} to="/">VI ER {(env !== null? env.bedrift:"")} <p>Åpningstider, behandlinger, våre ansatte og hvor du finner oss!</p></Link>
+  {env.aktivertTimebestilling &&
+                <Link onClick={()=>{
+                  setSynligmeny(false);
+                }} to="/timebestilling">Bestill time <p>Reserver time hos oss</p></Link>
+  }
+                <Link onClick={()=>{
+                  setSynligmeny(false);
+                }} to="/kontakt-oss">Kontakt oss<p>Ta kontakt via epost, telefon eller sosiale medier</p></Link>
+  
+                <Link onClick={()=>{
+                  setSynligmeny(false);
+                }} to="/om-oss">Om oss<p>Bli kjent</p></Link>
+  
+              </nav >):(
+              <Routes>
+                {env.aktivertTimebestilling && <Route exact path="/timebestilling" element={(registrertReservasjon?<DinReservasjon env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} registrertReservasjon={registrertReservasjon} />:(env !== null?<Timebestilling env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} />:<div className="laster"></div>))} />}
+                <Route exact path="/" element={(env !== null?<Hjem env={env}/>:<div className="laster"></div>)} />
+                <Route exact path="/logginn" element={<Login/>} />
+                <Route exact path="/kontakt-oss" element={(env !== null? <Kontakt env={env}/>:<div className="laster"></div>)}/>
+                <Route exact path="/personvaernserklaering-og-brukervilkaar" element={env !== null?<PB env={env}/>:<div className="laster"></div>}/>
+                <Route exact path="/om-oss" element={env !== null?<OmOss env={env}/>:<div className="laster"></div>}/>
+                
+              </Routes>))}
               
-            </Routes>))}
-            
-        
-      </BrowserRouter></>
+          
+        </BrowserRouter></>}</>
   );
 }
 
