@@ -22,23 +22,24 @@ function Hjem({env}){
     const [kategoriSynlig, setKategoriSynlig] = useState(env.kategorier.map(kategori=>kategori = false));
     const [K, sK] = useState(false);
 
-    async function hentBilder(){
-            
-        let midlertidigArray = [];
-        for(let i = 0; i < env.frisorer.length; i++){
-            const imgBlob = await fetch("http://localhost:1227/uploads/" + env.frisorer[i].img)
-            .then(r => r.blob());
-      
-          const imgBlobUrl = URL.createObjectURL(imgBlob);
-          midlertidigArray.push(imgBlobUrl); 
-        }
-        sFrisorBildeArray(midlertidigArray);
-    }
+    
     useEffect(()=>{
         //Lager et array med base64 bilder
-        
+        async function hentBilder(){
+            
+            let midlertidigArray = [];
+            for(let i = 0; i < env.frisorer.length; i++){
+                console.log(env);
+                const imgBlob = await fetch("http://localhost:1227/uploads/" + env.frisorer[i].img)
+                .then(r => r.blob());
+          
+              const imgBlobUrl = URL.createObjectURL(imgBlob);
+              midlertidigArray.push(imgBlobUrl); 
+            }
+            sFrisorBildeArray(midlertidigArray);
+        }
         hentBilder();
-    }, [env])
+    }, [])
 
     return(<div style={{position:"relative"}}>
         <div className="hjem">
