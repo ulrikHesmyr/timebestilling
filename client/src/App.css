@@ -969,12 +969,62 @@ input, button, select, option {
     height: 1rem;
     cursor: pointer;
   }
-  
+  .omOssElement{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    height:10rem;
+  }
+  .handlingerOmOss{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+  }
+  .slettKnapp{
+    background-image: url("../public/delete.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    aspect-ratio: 1/1;
+    border: none;
+    cursor: pointer;
+
+  }
   .frisorbilde{
     object-fit: cover;
     border: 2px solid var(--color3);
     aspect-ratio: 1/1;
     width: 20%;
+    
+  }
+  .column{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .flyttOpp{
+    transform: rotateZ(90deg);
+  }
+  .flyttNed{
+    transform: rotateZ(-90deg);
+  }
+  .flytteKnapper{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .omOssFeed{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  .omOssBilde{
+    object-fit: cover;
+    border: 2px solid var(--color3);
+    height: 10rem;
   }
   .velgmedarbeider{
     height: 4rem;

@@ -336,6 +336,27 @@ const storage = multer.diskStorage({
     
 });
 
+
+const storage2 = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads/');
+    },
+    filename: function (req, file, cb) {
+        const filNavn = req.params.filnavn;
+        cb(null, filNavn);
+    },
+    limits: { fileSize: 6 * 1024 * 1024 },
+    fileFilter: function (req, file, cb) {
+      if (!file.originalname.match(/\.(jpg|jpeg|HEIC|heic|heif|HEIF|png|gif|JPG|JPEG|PNG|GIF)$/)) {
+        return cb(new Error('Only image files are allowed!'), false);
+      }
+      cb(null, true);
+    }
+
+
+    
+});
+
 //Multer instance for bilde når man oppretter ny frisør
 const upload = multer({
     storage: storage
@@ -358,7 +379,7 @@ router.post("/oppdaterBildeFrisor/:navn", authorization, oppdaterBildeFrisor, as
             if(env){
                 const img = navn + ".jpg";
                 let nyFrisorer = env.frisorer.map(frisor => {
-                    if(frisor.navn === navn){
+                    if(frisor.navn.toLowerCase() === navn){
                         frisor.img = img;
                     }
                     return frisor;
@@ -375,6 +396,110 @@ router.post("/oppdaterBildeFrisor/:navn", authorization, oppdaterBildeFrisor, as
         console.log(error, "error i oppdaterBildeFrisor");
     }
 });
+
+const omOssBilde = multer({
+    storage: storage2
+}).single("uploaded_file");
+
+router.post("/lastOppBilde/:filnavn", authorization, omOssBilde, async (req, res)=>{
+    const {objektet} = req.body;
+    try {
+        if(req.admin){
+            const oppdaterEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {$push:{omOssFeed: JSON.parse(objektet)}});
+            if(oppdaterEnv){
+                return res.send({valid:true});
+            }
+        }
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+router.post("/slettInnhold", authorization, async (req, res)=>{
+    const {content} = req.body;
+    try {
+        if(req.admin){
+            const env = await Environment.findOne({bedrift:BEDRIFT});
+            if(env){
+                let nyOmOssFeed = env.omOssFeed.filter(element => element.content != content);
+                const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {omOssFeed:nyOmOssFeed});
+                if(oppdatertEnv){
+                    return res.send({valid:true});
+                } 
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400);
+    }
+})
+
+router.post("/flyttOpp", authorization, async (req, res)=>{
+    const {index} = req.body;
+    try {
+        if(req.admin){
+            const env = await Environment.findOne({bedrift:BEDRIFT});
+            if(env){
+
+                let temp = env.omOssFeed[index];
+                let tempOmOssFeed = [...env.omOssFeed];
+                tempOmOssFeed[index] = env.omOssFeed[index-1];
+                tempOmOssFeed[index-1] = temp;
+                const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {omOssFeed:tempOmOssFeed});
+                if(oppdatertEnv){
+                    return res.send({valid:true});
+                }
+
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400);
+    }
+});
+
+
+router.post("/flyttNed", authorization, async (req, res)=>{
+    const {index} = req.body;
+    try {
+        if(req.admin){
+            const env = await Environment.findOne({bedrift:BEDRIFT});
+            if(env){
+
+                let temp = env.omOssFeed[index];
+                let tempOmOssFeed = [...env.omOssFeed];
+                tempOmOssFeed[index] = env.omOssFeed[index+1];
+                tempOmOssFeed[index+1] = temp;
+                const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {omOssFeed:tempOmOssFeed});
+                if(oppdatertEnv){
+                    return res.send({valid:true});
+                }
+
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400);
+    }
+});
+
+
+
+router.post("/leggTilInnhold", authorization, async (req, res)=>{
+    const {objektet} = req.body;
+    try {
+        if(req.admin){
+            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {$push:{omOssFeed:objektet}});
+            if(oppdatertEnv){
+                return res.send({valid:true});
+            } else {
+                return res.send({valid:false});
+            }
+        }
+    } catch (error) {
+        console.log(error);
+    }
+})
 
 router.post("/endreAktivertTimebestilling", authorization, async (req, res)=>{
     const {aktivert} = req.body;

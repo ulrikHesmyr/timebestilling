@@ -29,7 +29,6 @@ function Hjem({env}){
             
             let midlertidigArray = [];
             for(let i = 0; i < env.frisorer.length; i++){
-                console.log(env);
                 const imgBlob = await fetch("http://localhost:1227/uploads/" + env.frisorer[i].img)
                 .then(r => r.blob());
           

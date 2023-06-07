@@ -2,6 +2,7 @@ import React, { useState} from 'react'
 import RedigerKontakt from '../components/RedigerKontakt';
 import LeggTilFrisor from '../components/LeggTilFrisor';
 import DetaljerFrisor from '../components/DetaljerFrisor';
+import RedigerOmOss from '../components/RedigerOmOss';
 import Fri from '../components/Fri';
 import RedigerAapningstider from '../components/RedigerAapningstider';
 import SMS from '../components/SMS';
@@ -392,13 +393,19 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                         setSynligKomponent(4);
                     }}>BEHANDLINGER</button>
 
-                    <button  style={{borderRadius:"0  0.5rem 0 0 ", margin:"0", border:"2px solid black", borderBottom:(synligKomponent=== 5? "none":"2px solid black"), color:(synligKomponent=== 5? "black":"rgba(0,0,0,0.5)")}} onClick={(e)=>{
+                    <button  style={{borderRadius:"0  0 0 0 ", margin:"0", border:"2px solid black", borderBottom:(synligKomponent=== 5? "none":"2px solid black"), color:(synligKomponent=== 5? "black":"rgba(0,0,0,0.5)")}} onClick={(e)=>{
                         e.preventDefault();
                         setSynligKomponent(5);
                     }}>SMS-feedback, bestillings-PIN, etc.</button>
 
+                    <button onClick={(e)=>{
+                        e.preventDefault();
+                        setSynligKomponent(6);
+                    }} style={{borderRadius:"0  0.5rem 0 0 ", margin:"0", border:"2px solid black", borderBottom:(synligKomponent=== 6? "none":"2px solid black"), color:(synligKomponent=== 6? "black":"rgba(0,0,0,0.5)")}}>Om-oss siden</button>
+
                     </div>:""}
 
+                {synligKomponent === 6 && env !== null? <RedigerOmOss env={env} varsleFeil={varsleFeil} varsle={varsle} lagreVarsel={lagreVarsel} sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} />:""}
                 
                 <Fri env={env} bestilteTimer={bestilteTimer} synligKomponent={synligKomponent} lagreVarsel={lagreVarsel} varsle={varsle} varsleFeil={varsleFeil} />
 
@@ -487,9 +494,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     <div className='redigeringsBoks'>
                         {visRedigerOmOss?<div className='fokus'>
 
-                            <h4>Rediger "Om oss"-artikkelen</h4>
+                            <h4>Rediger startside-artikkelen</h4>
                             <p>
-                                Her kan du redigere teksten som vises på "Om oss"-siden og øverst på forsiden.
+                                Her kan du redigere teksten som vises øverst på startsiden.
                             </p>
                             <label>Tekst: <textarea value={omOssTekst} onChange={(e)=>{
                                 sOmOssTekst(e.target.value);
@@ -511,7 +518,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                         </div>:<div style={{display:"flex", flexDirection:"row", alignItems:"center"}} >
                         <button className='redigerKnapp' onClick={()=>{
                             sVisRedigerOmOss(true);
-                        }}></button>Rediger "Om oss"-artikkel
+                        }}></button>Rediger startside-teksten
                         
                         </div>}
                         <p className='redigeringsElement'>{omOssTekst.substring(0, 25)}...</p>

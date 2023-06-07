@@ -10,6 +10,7 @@ const env = new mongoose.Schema({
     kategorier: [String],
     googleReviewLink: {type:String},
     omOssArtikkel: {type:String},
+    omOssFeed:[Object],
     adresse:{gatenavn:String, husnummer:String, postnummer:String, poststed:String, bokstav:String, rep:{lat:String,lng:String}},
     aktivertFeedbackSMS: {type:Boolean, default:false},
     aktivertSMSpin: {type:Boolean, default:false},

@@ -1,6 +1,10 @@
-import React from 'react'
+import React, {useState} from 'react'
 import Footer from '../components/Footer'
+
 function OmOss({env}){
+
+  const [omOssFeed, sOmOssFeed] = useState([...env.omOssFeed]);
+
   return (
     <div style={{position:"relative"}}>
     <div className='omOss'>
@@ -9,13 +13,9 @@ function OmOss({env}){
             <div>{env.omOssArtikkel}
             <br></br>
             <br></br>
-            <div className='bilder'>
-              <img  alt='Bilde fra studio' src="bilde1.jpg"></img>
-              <img  alt='Bilde fra studio' src="bilde2.jpg"></img>
-              <img  alt='Bilde fra studio' src="bilde3.jpg"></img>
-              <img  alt='Bilde fra studio' src="bilde4.jpg"></img>
-              <img  alt='Bilde fra studio' src="bilde1.jpg"></img>
-            </div>
+              <div className='omOssFeed'>
+                display greier her
+              </div>
             </div>
             
         </div>
@@ -25,4 +25,4 @@ function OmOss({env}){
   )
 }
 
-export default React.memo(OmOss)
+export default React.memo(OmOss);
