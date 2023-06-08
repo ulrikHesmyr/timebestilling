@@ -3,6 +3,7 @@ import Footer from '../components/Footer'
 import {Link} from 'react-router-dom'
 
 function Kontakt({env}){
+
     return(
         <div className='kontaktbakgrunn'>
             
@@ -13,7 +14,7 @@ function Kontakt({env}){
                     navigator.clipboard.writeText(env.kontakt_epost);
                     alert("Kopiert epost til utklippstavle!");
                 }}>{env.kontakt_epost}</div>
-                <div>{env.kontakt_tlf}</div>
+                <a href={`tel:+47${env.kontakt_tlf}`}>+47 {env.kontakt_tlf.toString().replace(/(\d{3})(\d{2})(\d{3})/, '$1 $2 $3')}</a>
                 <div style={{display:"flex", flexDirection:"column"}}>
                     <h4>Ønsker du å bestille time?</h4>
                     <p>Bestill time her: <Link to="/timebestilling">bestill time</Link> </p>

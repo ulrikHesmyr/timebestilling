@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useRef} from "react";
 import { Link } from "react-router-dom";
 import Footer from '../components/Footer'
 
@@ -10,6 +10,8 @@ import Footer from '../components/Footer'
                 </video>
  */
 function Hjem({env}){
+
+    const aapningstider = useRef(null);
 
     //Bildene til de ansatte
     const [frisorBildeArray, sFrisorBildeArray] = useState(null);
@@ -61,12 +63,17 @@ function Hjem({env}){
         <div className="startContainer">
         <div style={{padding:"2rem"}}>
                 <h1>Velkommen!</h1>
-                <p style={{fontSize:"larger"}}>{env.omOssArtikkel}</p>
+                <p className="storbokstav" style={{fontSize:"larger"}}>{env.omOssArtikkel}</p>
             </div>
         <div className="startside">
             
-            <div className="hjemsideSeksjon">
-                <h2>Åpningstider</h2>
+            <div ref={aapningstider} className="hjemsideSeksjon">
+                <div className="overskriftContainer">
+                    <hr></hr>
+                    <div className="h2Container">
+                        <h2>Åpningstider</h2>
+                    </div>
+                </div>
                 <div>
                      {env.klokkeslett.map((tid, index)=>(
                          <div key={tid.dag} style={{display:"flex", flexDirection:"row", justifyContent:"space-evenly", fontWeight:(new Date().getDay() === index? "bold":"400")}}>
@@ -76,21 +83,32 @@ function Hjem({env}){
                 </div>
             </div>
             <div className="hjemsideSeksjon">
-                <h2>Våre medarbeidere</h2>
+            <div className="overskriftContainer">
+                    <hr></hr>
+                    <div className="h2Container">
+                        <h2>Våre medarbeidere</h2>
+                    </div>
+                </div>
                 <div className="frisorene">
                     {frisorBildeArray !== null? env.frisorer.map((frisor, index)=>(
-                    <div key={frisor.navn}style={{margin:"1rem"}}>
-                        <h4>{frisor.navn}</h4>
-                        <img className="velgmedarbeider" src={frisorBildeArray[index]} alt={`Bilde av ansatt ${frisor.navn}`}></img>
-                        <button id={frisor.navn} aria-expanded={visDetaljerFrisor && detaljerFrisor !== null} aria-label={`Vis detaljer om ansatt: ${frisor.navn}`} className="infoFrisorKnapp" onClick={()=>{
-                            sDetaljerFrisor(frisor);
+                    <div id={frisor.navn} 
+                    aria-expanded={visDetaljerFrisor && detaljerFrisor !== null}
+                     aria-label={`Vis detaljer om ansatt: ${frisor.navn}`}
+                      key={frisor.navn} className="frisorHjem" onClick={()=>{
+                        sDetaljerFrisor(index);
+                        sVisDetaljerFrisor(true);
+                    }} onKeyDown={(e)=>{
+                        if(e.code === "Enter" || e.code === "Space"){
+                            sDetaljerFrisor(index);
                             sVisDetaljerFrisor(true);
-                        }} onKeyDown={(e)=>{
-                            if(e.code === "Enter" || e.code === "Space"){
-                                sDetaljerFrisor(frisor);
-                                sVisDetaljerFrisor(true);
-                            }
-                        }}></button>
+                        }
+                    }}>
+                            <h4 style={{margin:"0.3rem", width:"max-content"}}>{frisor.navn}</h4>
+                            <img className="velgmedarbeider" src={frisorBildeArray[index]} alt={`Bilde av ansatt ${frisor.navn}`}></img>
+                        <div className="row">
+                            <p style={{margin:"0.1rem"}}>{frisor.tittel}</p>
+                            <div className="infoFrisorKnapp" ></div>
+                        </div>
                         </div>
                     )):"hhh"}
                     {visDetaljerFrisor && detaljerFrisor !== null?
@@ -106,12 +124,47 @@ function Hjem({env}){
                                 }
                             }}>
                             </div>
-                            <img className="frisorbilde" src={frisorBildeArray[env.frisorer.indexOf(detaljerFrisor)]} alt={`Bilde av ansatt ${detaljerFrisor.navn}`} style={{height:"20rem", width:"20rem"}}></img>
-                                <div>
-                                    <h3 style={{margin:"0"}}>{detaljerFrisor.navn}</h3>
-                                    {detaljerFrisor.tittel}
+                            <h3>Våre medarbeidere</h3>
+                            <p>Bli kjent med våre medarbeidere og gjerne les litt om de nedenfor!</p>
+                            <div className="rotasjonSirkler">
+                                {env.frisorer.map((f, index)=>{
+                                    return <div key={index} className={index === detaljerFrisor?"rotasjonSirkel aktivSirkel":"rotasjonSirkel"}></div>
+                                })}
+                                
+                            </div>
+                            <div className="bildeRotasjon">
+                                <div className="row">
+                                    <button onClick={()=>{
+                                        if(detaljerFrisor > 0){
+                                            sDetaljerFrisor(detaljerFrisor-1);
+                                        } else {
+                                            sDetaljerFrisor(env.frisorer.length-1);
+                                        }
+                                    }} className="venstre"></button>
+                                    <button onClick={()=>{
+                                        if(detaljerFrisor > env.frisorer.length-2){
+                                            sDetaljerFrisor(0);
+                                        } else {
+                                            sDetaljerFrisor(detaljerFrisor+1);
+                                        }
+                                    }} className="hoyre"></button>
                                 </div>
-                                <p>{detaljerFrisor.beskrivelse}</p>
+                               <div className="bildeRotasjonBilder">
+                                    {env.frisorer.map((f, index)=>
+                                        <div key={index} className="column">
+                                            <img key={index} className={index === detaljerFrisor?"frisorbilde bildeDisplayImg":"frisorbilde bildeNoneDisplayImg"} src={frisorBildeArray[index]} alt={`Bilde av ansatt ${env.frisorer[index].navn}`} ></img>
+                                        </div>
+                                    )}
+                                </div>
+                                    <div>
+                                        <h3 style={{margin:"0"}}>{env.frisorer[detaljerFrisor].navn}</h3>
+                                        {env.frisorer[detaljerFrisor].tittel}
+                                    </div>
+                                    <p>{env.frisorer[detaljerFrisor].beskrivelse}</p>
+                                    
+                               
+                            </div>
+                                
                         </div>
                     </>:<></>}
                 </div>
@@ -122,8 +175,12 @@ function Hjem({env}){
         <div className="startside">
             
             <div className="hjemsideSeksjon">
-                <h2>Hvor du finner oss</h2>
-
+            <div className="overskriftContainer">
+                    <hr></hr>
+                    <div className="h2Container">
+                        <h2>Hvor du finner oss</h2>
+                    </div>
+                </div>
                 <div>
                     
                     <div tabIndex={0} aria-label={`Adressen er: ${env.adresse.gatenavn} ${env.adresse.husnummer}${env.adresse.bokstav}, ${env.adresse.postnummer} ${env.adresse.poststed}.Trykk her for å vise lokasjonen til salongen i kart`} onClick={()=>{
@@ -138,7 +195,12 @@ function Hjem({env}){
             </div>
             
             <div className="hjemsideSeksjon">
-                <h2 >Våre behandlinger</h2>
+            <div className="overskriftContainer">
+                    <hr></hr>
+                    <div className="h2Container">
+                        <h2>Våre behandlinger</h2>
+                    </div>
+                </div>
                 <div className="behandlingerHjemsiden">
                 {env.kategorier.map((kategori, index)=>(
                     <div  key={kategori} style={{cursor:"pointer", transition:"0.2s ease all", padding:"0.3rem", borderRadius:(kategoriSynlig[index]?"0 0 1rem 1rem":"0 0 0 0")}}>
@@ -188,7 +250,26 @@ function Hjem({env}){
                     ))}
                 </div>
             </div>
+            
         </div>
+        <div className="seksjon">
+        <div className="overskriftContainer">
+                    <hr></hr>
+                    <div className="h2Container">
+                        <h2>Produkter</h2>
+                    </div>
+                </div>
+                <div className="row">
+                    <p>I butikken finner du produkter fra følgende leverandører!</p>
+                    <div className="row">
+                        <img className="bildeFooter" src="/produkter/cutrin.png" alt="Cutrin logo"></img>
+                        <img className="bildeFooter" src="/produkter/moroccanoil.png" alt="Moroccanoil logo"></img>
+                        <img className="bildeFooter" src="/produkter/ref.png" alt="Ref logo"></img>
+                        <img className="bildeFooter" src="/produkter/renati.png" alt="Renati logo" style={{mixBlendMode:"exclusion"}}></img>
+                        <img className="bildeFooter" src="/produkter/special.png" alt="Special logo"></img>
+                    </div>
+                </div>
+            </div>
         
         </div>
         <Footer env={env}/>

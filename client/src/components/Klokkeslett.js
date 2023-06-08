@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useRef} from 'react'
 import Fortsett from './Fortsett';
 import { hentDato, nesteDag } from '../App';
 
@@ -7,6 +7,7 @@ function Klokkeslett({sMidlertidigDato, harEndretDatoen, datoForsteLedige, sDato
     const [ledigeTimer, setLedigeTimer] = useState([]);
     const ukedag = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
 
+    const valgtKlokkeslett = useRef(null);
     useEffect(()=>{
         
 
@@ -204,6 +205,7 @@ function Klokkeslett({sMidlertidigDato, harEndretDatoen, datoForsteLedige, sDato
                         let randomFrisor = tid.frisorer[randomNumber(tid.frisorer.length)];
                         sForsteFrisor(randomFrisor);
                         sKlokkeslett(tid.tid);
+                        valgtKlokkeslett.current.scrollIntoView({behavior: "smooth", block: "end"});
                     }}
                     onKeyDown={(e)=>{
                         if(e.code === "Enter" || e.code === "Space"){
@@ -221,7 +223,7 @@ function Klokkeslett({sMidlertidigDato, harEndretDatoen, datoForsteLedige, sDato
                     }
                 }} style={{opacity:"0", margin:"1rem"}} aria-label={(klokkeslettet !== null?`DU har valgt tidspunktet ${klokkeslettet}, ${ukedag[new Date(dato).getDay()]} ${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}, trykk for å endre på dette tidspunktet?`:"Velg klokkeslett og dato ovenfor")}></button>
                </div>
-                
+                <div ref={valgtKlokkeslett}></div>
                 <Fortsett displayKomponent={displayKomponent} previous={2} number={3} disabled={(klokkeslettet !== null? false:true)} />
                
             </div>:""}</>

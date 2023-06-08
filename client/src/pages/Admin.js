@@ -1,4 +1,4 @@
-import React, { useState} from 'react'
+import React, { useState, useEffect} from 'react'
 import RedigerKontakt from '../components/RedigerKontakt';
 import LeggTilFrisor from '../components/LeggTilFrisor';
 import DetaljerFrisor from '../components/DetaljerFrisor';
@@ -82,6 +82,16 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
     //}, [env])
     //Oppdaterer en vilkårlig tjeneste i databasen
 
+
+    useEffect(()=>{
+        sAdresse(env.adresse);
+        sKontakt_epost(env.kontakt_epost);
+        sKontakt_tlf(env.kontakt_tlf);
+        sAdresseTekst((`${env.adresse.gatenavn} ${env.adresse.husnummer}${env.adresse.bokstav?env.adresse.bokstav:""}, ${env.adresse.postnummer} ${env.adresse.poststed}`));
+        sNyBehandlingKategori(env.kategorier[0]);
+        sBehandlingForSletting(env.tjenester[0].navn);
+        sOmOssTekst(env.omOssArtikkel);
+    }, [env]);
 
     //Sletter en høytidsdag
     async function slettHoytidsdag(d){
@@ -396,7 +406,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     <button  style={{borderRadius:"0  0 0 0 ", margin:"0", border:"2px solid black", borderBottom:(synligKomponent=== 5? "none":"2px solid black"), color:(synligKomponent=== 5? "black":"rgba(0,0,0,0.5)")}} onClick={(e)=>{
                         e.preventDefault();
                         setSynligKomponent(5);
-                    }}>SMS-feedback, bestillings-PIN, etc.</button>
+                    }}>SMS-feedback, bestillings-PIN, timebestilling etc.</button>
 
                     <button onClick={(e)=>{
                         e.preventDefault();
@@ -425,7 +435,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     <h4>Finn og slett en timebestilling</h4>
                     <p>
                         Søk etter navnet eller telefonnummeret til en kunde og trykk på søppel-ikonet og deretter trykk "Ok" i dialogboksen for å slette timen.
-                        <li>Dersom en kunde ønsker å flytte timen, så bestiller de en ny time, og  den forrige timen</li>
+                        <li>Dersom en kunde ønsker å flytte timen, så bestiller de en ny time, og  den forrige timen slettes nedenfor</li>
                     </p>
 
                     <label>Søk etter kunde eller telefonnummer: <input type="text" value={sok} onChange={(e)=>{
@@ -436,7 +446,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                         if(time.kunde.toUpperCase().indexOf(sok.toUpperCase()) > -1 || sok === "" || time.telefonnummer.toString().toUpperCase().indexOf(sok.toUpperCase()) > -1){
                             return (
                                 <div key={index} style={{display:'flex', flexDirection:"row", flexWrap:"wrap", padding:"0.3rem"}}>
-                                    <li>{time.medarbeider}: {time.dato} {time.tidspunkt} KUNDE: {time.kunde} {time.telefonnummer} </li>
+                                    <li>{time.medarbeider}: {parseInt(time.dato.substring(8,10))}. {hentMaaned(parseInt(time.dato.substring(5,7)) -1)} {time.tidspunkt} KUNDE: {time.kunde} {time.telefonnummer} </li>
                                     <img alt='Slett time' className='ikonKnapper' onClick={()=>{
                                         if(window.confirm("Er du sikker på at du vil slette denne timebestillingen?")){
                                             oppdaterTimebestillinger(time);
@@ -458,7 +468,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 <div>
                     {bestilteTimer.map((time, index)=>(
                                 <div key={index}>
-                                    <li>{time.medarbeider}: {time.dato} {time.tidspunkt} KUNDE: {time.kunde} {time.telefonnummer}</li>
+                                    <li>{time.medarbeider}: {parseInt(time.dato.substring(8,10))}. {hentMaaned(parseInt(time.dato.substring(5,7)) -1)} {time.tidspunkt} KUNDE: {time.kunde} {time.telefonnummer}</li>
                                 </div>
                             )
                     )}
@@ -531,7 +541,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                             }} className='lukk'></div>
                             <h4>Rediger høytidsdager</h4>
                             <p>
-                                Her kan du legge til eller fjerner de dagene i året hvor salongen er stengt. (Høytidsdager)
+                                Her kan du legge inn de dagene i året hvor salongen er stengt. Datoene gjentar seg hvert år, så det er ikke behov for å legge inn samme dato flere ganger.
                             </p>
 
                             {leggtilhoytid?<>
@@ -561,7 +571,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                             }}> <img alt='Vis legg til høytid modul' className='ikonKnapper' src='leggtil.png'></img>
                                 Legg til høytidsdag
                                 </button>}
-                            <div>
+                            <div >
                                 {env.hoytidsdager.map((dag, index)=>{
                                     return(
                                         <div key={index}>
@@ -580,6 +590,15 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                             <button className='redigerKnapp' onClick={()=>{
                                 sVisRedigerHoytidsdager(true);
                             }}></button>Høytidsdager
+                            <div className='redigeringsElement'>
+                            {env.hoytidsdager.map((dag, index)=>{
+                                    return(
+                                        <div key={index}>
+                                            <p>{dag.dag} - {parseInt(dag.dato.substring(8,10))}. {hentMaaned(parseInt(dag.dato.substring(5,7)) -1)} </p>
+                                        </div>
+                                    )
+                                })}  
+                            </div>
                         </div>}
                        
                     </div>
@@ -975,6 +994,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                         <div>
                             <button onClick={()=>{
                                 sVisSlettBehandling(false);
+                                sBehandlingForSletting(env.tjenester[0].navn);
                             }}>Avbryt</button>
                             <button onClick={()=>{
                                 if(window.confirm("Ønsker du å slette " + behandlingForSletting + "?")){

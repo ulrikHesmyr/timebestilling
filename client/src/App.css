@@ -50,6 +50,11 @@
 
 }
 
+::selection{
+  background: var(--farge5);
+  color: var(--color1);
+}
+
 :root{
   --farge1:darkblue;
   --farge2:rgb(54, 115, 188);
@@ -117,6 +122,11 @@ body{
   width:50px;
   z-index: 1000;
 }
+.bildeFooter{
+  mix-blend-mode: luminosity;
+    object-fit: contain;
+    width: 20%;
+}
 
 .laster{
   -webkit-transition-property: -webkit-transform;
@@ -174,6 +184,9 @@ header{
 }
 a{
   color:var(--farge5);
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  font-weight: 400;
+  font-family: var(--font1);
 }
 footer a {
   text-decoration: underline;
@@ -224,15 +237,14 @@ footer *{
   text-decoration: underline;
 }
 
+.redigerOmOssSiden{
+  padding: 1rem;
+}
+
 .omOss a{
   text-decoration: underline;
 }
 
-a{
-  font-weight: 400;
-  text-shadow: none !important;
-  text-decoration: none;
-}
 
 h4{
   border-bottom: thin solid black;
@@ -264,6 +276,7 @@ button:disabled{
   margin-top: 8rem;
   font-family: var(--font4);
   animation: bestillAnimasjon 0.5s ease 1;
+  gap: 1rem;
 }
 .kontaktbakgrunn{
   display: flex;
@@ -293,7 +306,14 @@ button:disabled{
   flex-direction: row;
   flex-wrap: wrap;
 }
-
+.row{
+  align-items: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+}
 .tjenestene *{
   margin: 0.5rem;
 }
@@ -424,6 +444,7 @@ input, button, select, option {
     color:black;
     margin:0;
     font-size: large;
+    text-shadow: none !important;
   }
   
   
@@ -577,30 +598,77 @@ input, button, select, option {
     flex-wrap:wrap;
     
   }
-  .overskrift{
+  
+  .overskriftene{
     display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    max-width: 100vw;
+    margin-top: 1rem;
+    font-size: 0.6rem;
+  }
+
+  
+  .overskrift{
+    /*display: grid;
     grid-template-columns: 1fr 5fr;
     border: thin solid black;
-    border-radius: 1rem;
     cursor: pointer;
     padding: 0.4rem;
     align-items: center;
-    width: 95%;
     z-index: 2;
     color: var(--color1);
+    font-size: large;
+    margin:0;
+    height:3rem;
+    clip-path: polygon(96% 0, 100% 50%, 96% 100%, 0 98%, 0 0);
+*/
+    margin:0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    justify-content: space-evenly;
+    z-index: 2;
+    
+    color: var(--color1);
+    transition: 0.2s ease all;
+    padding:0.2rem;
+    text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5); 
+    background:var(--background5);
+  }
+  .overskrift:first-of-type {
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 10px;
+  }
+  .overskrift:last-of-type {
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 10px;
   }
   .overskrift p{
     display: flex;
     border-radius: 50%;
     height:2rem;
     aspect-ratio: 1/1;
-    border-top:1px solid var(--color1);
-    border-right:1px solid var(--color1);
     align-items: center;
     justify-content: center;
-    background-color: black;
-    color:white;
+    
+    background:var(--background1);
+    color: var(--color1);
+    font-size: large;
+    font-family: monospace;
+    
   }
+
+  .aktivOverskrift{
+    transform: translateY(5px);
+    border-bottom-left-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
+  }
+  
+  .gjennomfortOverskrift{
+    background:var(--background4);
+  }
+
 
   @keyframes animer-inn{
     from{
@@ -689,6 +757,29 @@ input, button, select, option {
     background-color: rgba(0, 0, 0, 0.25);
     color:var(--color1);
     cursor:not-allowed;
+  }
+
+  #per a {
+    font-family: inherit;
+    text-shadow: none;
+  }
+  .overskriftContainer{
+    position: relative;
+    width: 100%;
+  }
+  .overskriftContainer hr{
+    position: absolute;
+    top:1.8rem;
+    width: 100%;
+  }
+  .overskriftContainer .h2Container{
+    display: flex;
+    justify-content: center;
+  }
+  .overskriftContainer h2{
+    position: relative;
+    background-color: white;
+    padding: 0 0.4rem 0 0.4rem;
   }
 
   .eventWrapper{
@@ -935,6 +1026,15 @@ input, button, select, option {
     display: flex;
     flex-direction: column;
     z-index: 6;
+    animation: fokus 0.2s   1 ;
+  }
+  @keyframes fokus{
+    0%{
+      transform: translateY(100%);
+    }
+    100%{
+      transform: translateY(0%);
+    }
   }
   .detaljerFrisor{
     font-size: larger;
@@ -942,7 +1042,7 @@ input, button, select, option {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     text-align: center;
     overflow-x: hidden;
     padding-top: 4rem;
@@ -981,6 +1081,15 @@ input, button, select, option {
     flex-direction: row;
     gap: 1rem;
   }
+
+  .omOssSiden{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 2rem;
+    align-items: center;
+  }
+
   .slettKnapp{
     background-image: url("../public/delete.png");
     background-position: center;
@@ -996,41 +1105,139 @@ input, button, select, option {
     border: 2px solid var(--color3);
     aspect-ratio: 1/1;
     width: 20%;
-    
+    transition: 0.1s ease all;
   }
   .column{
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    align-items: center;
   }
   .flyttOpp{
     transform: rotateZ(90deg);
+    padding:0.2rem;
+  }
+  .venstre{
+    background:url("../public/lukket.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    aspect-ratio: 1/1;
+    border: none;
+    width: 2rem !important;
+  }
+  .hoyre{
+    background:url("../public/lukket.png");
+    transform: rotateZ(180deg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    aspect-ratio: 1/1;
+    border: none;
+    width: 2rem !important;
+  }
+  .bildeRotasjon{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .rotasjonSirkler{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem;
+  }
+  .bildeDisplayImg{
+    height:18rem;
+    width:18rem;
+    z-index: 2;
+  }
+  .bildeNoneDisplayImg{
+    width:5rem;
+    height:5rem;
+    position: absolute;
+    opacity: 0.5;
+  }
+  .bildeRotasjonBilder{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  .rotasjonSirkel{
+    width:1rem;
+    aspect-ratio: 1/1;
+    background:black;
+    border-radius: 50%;
+    transition: 0.3s ease all;
+    box-shadow: none;
+  }
+  .aktivSirkel{
+    background:var(--farge5);
+    box-shadow: 0px 6px 2px black;
+    transform: translateY(-6px);
+  }
+  .frisorHjem{
+    cursor: pointer;
+    margin:1rem;
+    width: max-content;
+  }
+  .frisorHjem:hover .velgmedarbeider{
+    transform: scale(1.1);
   }
   .flyttNed{
     transform: rotateZ(-90deg);
+    padding:0.2rem;
   }
   .flytteKnapper{
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
+
+  /*REDIGER SIDEN*/
   .omOssFeed{
     display: flex;
     flex-direction: column;
     justify-content: center;
     gap: 1rem;
     padding: 1rem;
+    border: solid thin rgba(0, 0, 0, 0.45);
   }
   .omOssBilde{
     object-fit: cover;
     border: 2px solid var(--color3);
-    height: 10rem;
+    height: inherit;
   }
+
+
+  /*Om oss SIDEN*/
+  .omOssBildene{
+    object-fit: cover;
+    border: thin solid var(--color3);
+    width: 30%;
+  }
+  .omOssDiv{
+    height:40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
   .velgmedarbeider{
     height: 4rem;
     object-fit: cover;
     border: 2px solid var(--color3);
     aspect-ratio: 1/1;
+    
+    transition: 0.2s ease all;
   }
   
   
@@ -1083,6 +1290,12 @@ input, button, select, option {
   text-shadow: 0px 0px 5px black;
   transition: 0.3s ease all;
 }
+.seksjon{
+  align-items: center;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
 .adresseLink .adresseBlur:hover{
   cursor: pointer;
   color:var(--farge5);
@@ -1099,8 +1312,13 @@ input, button, select, option {
   /*******************************************************************************************************************/
 
 @media (width <= 900px){
-  
-  
+
+.omOssBildene{
+  width: 100%;
+}
+.overskriftContainer hr{
+  display: none;
+}
 header * {
   margin:0;
 }
@@ -1108,7 +1326,20 @@ header * {
   display: flex;
   flex-direction: column;
 }
+.seksjon{
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  align-items: flex-start;
+}
 
+.seksjon h2 {
+  writing-mode: vertical-lr;
+    text-align: left;
+    color: rgba(0, 0, 0, 0.75);
+    font-weight: 200;
+    border-top: thin solid rgba(0, 0, 0, 0.5);
+    padding-top: 0.4rem;
+}
 .adminKnapper button{
   padding:1rem;
   border-radius: none !important;
@@ -1139,7 +1370,9 @@ header * {
   .fortsett *{
     width: 100%;
   }
-  
+  .bildeFooter{
+    width:8rem;
+  }
   .startside{
     display: flex;
     flex-direction: column;
@@ -1201,9 +1434,6 @@ header * {
   flex-direction: column;
 }
   
-  h1{
-    font-size: large;
-  }
   
   .hjem{
     display: flex;

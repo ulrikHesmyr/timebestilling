@@ -6,6 +6,7 @@ const FriElementer = require("../model/fri");
 const Brukere = require("../model/brukere");
 const multer = require('multer');
 const sharp = require("sharp");
+const fs = require("fs");
 const rateLimiter = require("express-rate-limit");
 
 const authorization = require("../middleware/authorization");
@@ -421,6 +422,10 @@ router.post("/slettInnhold", authorization, async (req, res)=>{
         if(req.admin){
             const env = await Environment.findOne({bedrift:BEDRIFT});
             if(env){
+                if(content.includes(".jpg")){
+                    fs.unlinkSync("./uploads/" + content);//Sletter bildet fra server
+                }
+
                 let nyOmOssFeed = env.omOssFeed.filter(element => element.content != content);
                 const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {omOssFeed:nyOmOssFeed});
                 if(oppdatertEnv){

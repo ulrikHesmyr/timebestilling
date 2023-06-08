@@ -6,8 +6,6 @@ function RedigerOmOss({env, varlseFeil, varsle, lagreVarsel, sUpdateTrigger, upd
     
     const [omOssFeed, sOmOssFeed] = useState([...env.omOssFeed]);
 
-    const [imageBlobs, sImageBlobs] = useState(new Map());
-
     const [visLeggTilInnhold, sVisLeggTilInnhold] = useState(false);
 
     const [type, sType] = useState("");
@@ -181,8 +179,9 @@ function RedigerOmOss({env, varlseFeil, varsle, lagreVarsel, sUpdateTrigger, upd
     }
   
     return (
-    <div>
-        <h2>Rediger Om-oss siden</h2>
+    <div className='redigerOmOssSiden'>
+        <h2>Rediger "Om oss"-siden</h2>
+        <p>Nedenfor kan du legge til, slette eller endre rekkefølgen på innholdet som er synlig på "om oss"-siden. Du kan legge til bilder, overskrifter eller paragrafer.</p>
         <div className='omOssFeed'>
             {omOssFeed.map((innhold, index) => 
                 <div key={index} className='omOssElement'>
@@ -258,25 +257,43 @@ function RedigerOmOss({env, varlseFeil, varsle, lagreVarsel, sUpdateTrigger, upd
                                 sAlt("");
                             }}>Avbryt</button>
                             <button onClick={()=>{
+                                let valid = true;
                                 switch(type){
                                     case "i":
-                                        leggTilBilde();
+                                        if(alt !== "" && i !== null){
+                                            leggTilBilde();
+                                        } else {
+                                            alert("Du må legge til et bilde og en beskrivelse av bildet");
+                                            valid = false;
+                                        }
                                         break;
                                     case "h":
-                                        leggTilInnhold({content: h, type: "h"});
+                                        if(h !== ""){
+                                            leggTilInnhold({content: h, type: "h"});
+                                        } else {
+                                            alert("Du må legge til en overskrift");
+                                            valid = false;
+                                        }
                                         break;
                                     case "p":
-                                        leggTilInnhold({content: p, type: "p"});
+                                        if(p !== ""){
+                                            leggTilInnhold({content: p, type: "p"});
+                                        } else {
+                                            alert("Du må legge til en paragraf");
+                                            valid = false;
+                                        }
                                         break;
                                     default:
                                         break;
                                 }
-                                sType("");
-                                sPreviewImg(null);
-                                sI(null);
-                                sH("");
-                                sP("");
-                                sAlt("");
+                                if(valid){
+                                    sType("");
+                                    sPreviewImg(null);
+                                    sI(null);
+                                    sH("");
+                                    sP("");
+                                    sAlt("");
+                                }
                             }}>Lagre</button>
                         </div>
                     </div>}

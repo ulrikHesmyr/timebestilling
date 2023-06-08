@@ -103,6 +103,14 @@ function SMS({env, varsle, lagreVarsel, varsleFeil, sUpdateTrigger, updateTrigge
 
   return (
     <div className='SMSside'>
+        
+        <div>
+            <h4>Timebestilling</h4>
+            <p>Velg om du vil ha timebestilling for din nettside aktivert eller deaktivert. Når den er aktivert, vil folk kunne bestille time. Dersom timebestilling er deaktivert, vil man ikke lenger kunne bestille time, men timer som er bestilt fra før, vil fortsatt ligge i systemet og må gjennomføres.</p>
+            <div className='SMSkonfigBoks'>
+                Timebestilling: <StatusMelding funksjon={endreAktivertTimebestilling} status={aktivertTimebestilling}/>
+            </div>
+        </div>
         <div>
             <h4>SMS /m google review link</h4>
             <p>SMS sendes ut til alle kunder samme dag som besøket</p>
@@ -153,13 +161,6 @@ function SMS({env, varsle, lagreVarsel, varsleFeil, sUpdateTrigger, updateTrigge
             </p>
             <div className='SMSkonfigBoks'>
                 SMS-PIN: <StatusMelding funksjon={endreStatusSMSpin} status={aktivertSMSpin}/>
-            </div>
-        </div>
-        <div>
-            <h4>Timebestilling</h4>
-            <p>Velg dersom du ønsker å ha timebestilling for nettsiden din.</p>
-            <div className='SMSkonfigBoks'>
-                Timebestilling: <StatusMelding funksjon={endreAktivertTimebestilling} status={aktivertTimebestilling}/>
             </div>
         </div>
     </div>

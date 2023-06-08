@@ -132,15 +132,15 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
         <label style={{fontWeight:"bold"}}>E-post: <input required onChange={(e)=>{
             sEpost(e.target.value);
         }} value={epost} type="email"></input> </label>
-        <label style={{display:"flex", alignItems:"center"}}>Last opp bilde av ansatt: <input required accept="image/*" onChange={(e)=>{
-            
-            if(e.target.files[0].size < 2000000){
+        <label style={{display:"flex", alignItems:"center", flexWrap:"wrap", flexDirection:"row"}}>Last opp bilde av ansatt: <input required accept="image/*" onChange={(e)=>{
+            let maksStr = 12000000;
+            if(e.target.files[0].size < maksStr){
                 sBildeAvFrisor(e.target.files[0]);
                 setPreview(URL.createObjectURL(e.target.files[0]));
             } else {
-                alert("Bildet er for stort. Maks 2mb.");
+                alert("Bildet er for stort. Maks " + 12000000/1000000 + "mb");
             }
-        }} type="file" name="uploaded_file"></input>Last opp bilde her: Maks 2mb {preview && <img className='frisorbilde' style={{height:"300px"}} alt='Forhåndsvisning av bildet' src={preview}></img>}</label>
+        }} type="file" name="uploaded_file"></input>Maks 12mb {preview && <img style={{height:"14rem", width:"14rem", objectFit:"contain"}} alt='Forhåndsvisning av bildet' src={preview}></img>}</label>
         
 
         <p style={{fontWeight:"bold"}} >Velg behandlinger for ansatt:</p>
