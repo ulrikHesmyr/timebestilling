@@ -1,38 +1,15 @@
-import React, {useEffect, useRef} from "react";
+import React, {useRef} from "react";
 import { hentDato } from "../App";
 import Fortsett from "./Fortsett";
 
-function Frisor({tilgjengeligeFrisorer, sDatoForsteLedige, sDato, sMidlertidigDato, frisorBildeArray, sFrisorBildeArray, displayKomponent, klokkeslettet, sKlokkeslett ,frisor, sFrisor}){
+function Frisor({tilgjengeligeFrisorer, sDatoForsteLedige, sDato, sMidlertidigDato, displayKomponent, klokkeslettet, sKlokkeslett ,frisor, sFrisor}){
 
     const valgtFrisorBoks = useRef(null);
     const referanceElement = useRef(null);
 
-    async function genererBilder(){
-        
-        let midlertidigArray = [];
-        for(let i = 0; i < tilgjengeligeFrisorer.length; i++){
-            const imgBlob = await fetch("/uploads/" + tilgjengeligeFrisorer[i].img);
-      
-            if(imgBlob){
-                midlertidigArray.push(imgBlob);
-            }
-        }
-        sFrisorBildeArray(midlertidigArray);
-    }
-    
-    
-    useEffect(()=>{
-        genererBilder();
-    }, [])
-    
-    useEffect(()=>{
-        genererBilder();
-    }, [tilgjengeligeFrisorer])
-
-    
     return(
         <div>
-            {tilgjengeligeFrisorer.length > 0 && frisorBildeArray !== null?<>
+            {tilgjengeligeFrisorer.length > 0?<>
             <div className="forsteLedige" tabIndex={0} aria-label="Velg første ledige medarbeider" onClick={()=>{
                 sFrisor(false);
                 sDatoForsteLedige(null);
@@ -64,7 +41,7 @@ function Frisor({tilgjengeligeFrisorer, sDatoForsteLedige, sDato, sMidlertidigDa
                 
             <div className="frisorene">
             
-                {frisorBildeArray !== null? tilgjengeligeFrisorer.map((element, index)=>(<div tabIndex={0} role="button" className="frisor" 
+                {tilgjengeligeFrisorer.map((element, index)=>(<div tabIndex={0} role="button" className="frisor" 
                 key={element.navn} aria-label={`Velg medarbeider med navn ${element.navn}`} onClick={()=>{
                     sFrisor(element);
                     sDatoForsteLedige(null);
@@ -75,7 +52,7 @@ function Frisor({tilgjengeligeFrisorer, sDatoForsteLedige, sDato, sMidlertidigDa
                         sKlokkeslett(null);
                     }
 
-                }} 
+                }}
                 onKeyDown={(e)=>{
                     if(e.code === "Enter" || e.code === "Space"){
                         
@@ -91,10 +68,10 @@ function Frisor({tilgjengeligeFrisorer, sDatoForsteLedige, sDato, sMidlertidigDa
 
                 }}
                 style={{ textDecoration:frisor === element?"underline":"none"}}>
-                    <img className="velgmedarbeider" src={frisorBildeArray[index]} alt={`Bilde av medarbeider ${element.navn}`}></img>
+                    <img className="velgmedarbeider" src={`${window.origin}/uploads/${element.img}`} alt={`Bilde av medarbeider ${element.navn}`}></img>
                     {element.navn}
                     
-                </div>)):""}
+                </div>))}
             </div>
             <div className="valgtFrisorTekst">
             {frisor === false && "Du har valgt: Første ledige medarbeider"}
@@ -102,7 +79,7 @@ function Frisor({tilgjengeligeFrisorer, sDatoForsteLedige, sDato, sMidlertidigDa
             {frisor !== null && frisor !== false && <div >Du har valgt:<div
                 key={frisor.navn} style={{display:"flex", flexDirection:"column", alignItems:"center"}}>
                      {frisor.navn}
-                    <img className="velgmedarbeider" style={{height:"6rem"}} src={frisorBildeArray[tilgjengeligeFrisorer.indexOf(frisor)]} alt={`Bilde av medarbeider ${frisor.navn}`}></img>
+                    <img className="velgmedarbeider" style={{height:"6rem"}} src={`${window.origin}/uploads/${frisor.img}`} alt={`Bilde av medarbeider ${frisor.navn}`}></img>
                     
                 </div></div>}
                 

@@ -25,21 +25,6 @@ function Hjem({env}){
     const [K, sK] = useState(false);
 
     
-    useEffect(()=>{
-        async function hentBilder(){
-            
-            let midlertidigArray = [];
-            for(let i = 0; i < env.frisorer.length; i++){
-                const imgBlob = await fetch("/uploads/" + env.frisorer[i].img);
-          
-                if(imgBlob){
-                    midlertidigArray.push(imgBlob); 
-                }
-            }
-            sFrisorBildeArray(midlertidigArray);
-        }
-        hentBilder();
-    }, [])
 
     return(<div style={{position:"relative"}}>
         <div className="hjem">
@@ -89,7 +74,7 @@ function Hjem({env}){
                     </div>
                 </div>
                 <div className="frisorene">
-                    {frisorBildeArray !== null? env.frisorer.map((frisor, index)=>(
+                    {env.frisorer.map((frisor, index)=>(
                     <div id={frisor.navn} 
                     aria-expanded={visDetaljerFrisor && detaljerFrisor !== null}
                      aria-label={`Vis detaljer om ansatt: ${frisor.navn}`}
@@ -103,13 +88,13 @@ function Hjem({env}){
                         }
                     }}>
                             <h4 style={{margin:"0.3rem", width:"max-content"}}>{frisor.navn}</h4>
-                            <img className="velgmedarbeider" src={frisorBildeArray[index]} alt={`Bilde av ansatt ${frisor.navn}`}></img>
+                            <img className="velgmedarbeider" src={`${window.origin}/uploads/${env.frisorer[index].img}`} alt={`Bilde av ansatt ${frisor.navn}`}></img>
                         <div className="row">
                             <p style={{margin:"0.1rem"}}>{frisor.tittel}</p>
                             <div className="infoFrisorKnapp" ></div>
                         </div>
                         </div>
-                    )):"hhh"}
+                    ))}
                     {visDetaljerFrisor && detaljerFrisor !== null?
                     <>
                         <div role="region" aria-hidden={!visDetaljerFrisor && detaljerFrisor == null} className="fokus detaljerFrisor">

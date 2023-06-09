@@ -18,47 +18,6 @@ function RedigerOmOss({env, varlseFeil, varsle, lagreVarsel, sUpdateTrigger, upd
     const [previewImg, sPreviewImg] = useState(null);
 
 
-    useEffect(()=>{
-
-        
-        async function hentBlob(){
-            let tempOmOss = [...env.omOssFeed]
-            for(let i = 0; i < tempOmOss.length; i++){
-                if(tempOmOss[i].type === "i"){
-                    const imgBlob = await fetch("/uploads/" + tempOmOss[i].content);
-
-                    if(imgBlob){
-                        tempOmOss[i].src = imgBlob;
-                    }
-                }
-            }
-            sOmOssFeed(tempOmOss);
-            
-        }
-        hentBlob();
-        
-    }, [env.omOssFeed]);
-
-    useEffect(()=>{
-        async function hentBlob(){
-            let tempOmOss = [...env.omOssFeed]
-            for(let i = 0; i < tempOmOss.length; i++){
-                if(tempOmOss[i].type === "i"){
-                    const imgBlob = await fetch("/uploads/" + tempOmOss[i].content);
-
-                    if(imgBlob){
-                        tempOmOss[i].src = imgBlob;
-                    }
-                }
-            }
-            sOmOssFeed(tempOmOss);
-            
-        }
-        hentBlob();
-
-        
-    }, []);
-
     async function leggTilInnhold(objektet){
         lagreVarsel();
         try {
@@ -185,7 +144,7 @@ function RedigerOmOss({env, varlseFeil, varsle, lagreVarsel, sUpdateTrigger, upd
         <div className='omOssFeed'>
             {omOssFeed.map((innhold, index) => 
                 <div key={index} className='omOssElement'>
-                    {innhold.type === "i" && <img className='omOssBilde' src={innhold.src} alt={innhold.alt}></img>}
+                    {innhold.type === "i" && <img className='omOssBilde' src={`${window.origin}/uploads/${innhold.content}`} alt={innhold.alt}></img>}
                     {innhold.type === "p" && <p>{innhold.content}</p>}
                     {innhold.type === "h" && <h2>{innhold.content}</h2>}
                     <div className='handlingerOmOss'>
@@ -302,9 +261,6 @@ function RedigerOmOss({env, varlseFeil, varsle, lagreVarsel, sUpdateTrigger, upd
         </div>
         
         :<button className='row' onClick={()=>{
-            //const mittObjekt = new P("aaaaaaaaaaaaaaaaaaaaaaa");
-            //leggTilInnhold(mittObjekt, "p");
-            //sOmOssFeed([...omOssFeed, mittObjekt]);
             sVisLeggTilInnhold(true);
         }}><img alt="Legg til innhold" src="leggtil.png" className='ikonKnapper'></img>Legg til</button>}
     </div>

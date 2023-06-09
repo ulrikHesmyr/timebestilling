@@ -1,30 +1,8 @@
-import React, {useState, useEffect} from 'react'
+import React from 'react'
 import Footer from '../components/Footer'
 
 function OmOss({env}){
 
-  const [omOssFeed, sOmOssFeed] = useState([...env.omOssFeed]);
-
-  
-  useEffect(()=>{
-    async function hentBlob(){
-        let tempOmOss = [...env.omOssFeed]
-        for(let i = 0; i < tempOmOss.length; i++){
-            if(tempOmOss[i].type === "i"){
-                const imgBlob = await fetch("/uploads/" + tempOmOss[i].content);
-
-                if(imgBlob){
-                    tempOmOss[i].src = imgBlob;
-                }
-            }
-        }
-        sOmOssFeed(tempOmOss);
-        
-    }
-    hentBlob();
-
-    
-}, []);
 
   return (
     <div style={{position:"relative"}}>
@@ -38,11 +16,11 @@ function OmOss({env}){
             <br></br>
             <br></br>
               <div className="omOssSiden">
-              {omOssFeed.map((innhold, index) => {
+              {env.omOssFeed.map((innhold, index) => {
 
                   return (
                   <div key={index} className='omOssDiv'>
-                      {innhold.type === "i" && <img className='omOssBildene' src={innhold.src} alt={innhold.alt}></img>}
+                      {innhold.type === "i" && <img className='omOssBildene' src={`${window.origin}/uploads/${innhold.content}`} alt={innhold.alt}></img>}
                       {innhold.type === "p" && <p>{innhold.content}</p>}
                       {innhold.type === "h" && <h2>{innhold.content}</h2>}
                       

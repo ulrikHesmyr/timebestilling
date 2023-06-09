@@ -348,28 +348,6 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
       }
     }
     
-    const [frisorBilde, sFrisorBilde] = useState(null);
-
-
-    useEffect(()=>{
-
-      //NB det nedenfor fungerer ikke i DEV fordi req.brukernavn blir satt til "ulrik" uansett
-      async function hentBilde(filNavn) {
-        try {
-          const imgBlob = await fetch("/uploads/" + filNavn);
-      
-          if (imgBlob) {
-            sFrisorBilde(imgBlob);
-          }
-        } catch (error) {
-          alert("Noe gikk galt, sjekk internettforbindelsen og prøv på nytt");
-          varsleFeil();
-        }
-      }
-      
-      hentBilde(frisor.img);
-      
-    }, [frisor])
   return (
     <>
     
@@ -378,7 +356,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
       }}  style={{display:"flex", height:"3rem", fontSize:"larger", flexDirection:"row", alignItems:"center", margin:"0.7rem",padding:"0.3rem", cursor:"pointer", borderLeft:"thin solid rgba(0,0,0,0.4)"}}>
       <img className='ikonKnapper' src='detaljer.png' alt="Detaljer om ansatt"></img>
       <div style={{padding:"0.3rem"}}>{frisor.navn} </div>
-      <img className='frisorbilde' src={frisorBilde} alt={`Bilde av ${frisor.navn}`}></img>
+      <img className='frisorbilde' src={`${window.origin}/uploads/${frisor.img}`} alt={`Bilde av ${frisor.navn}`}></img>
     </div>
     
 
@@ -392,7 +370,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
           {tittel}
       </div>
       <p>{beskrivelse}</p>
-      <img className='frisorbilde' src={frisorBilde} alt={`Bilde av ${frisor.navn}`}></img>
+      <img className='frisorbilde' src={`${window.origin}/uploads/${frisor.img}`} alt={`Bilde av ${frisor.navn}`}></img>
     </div>
 
       <div style={{fontSize:"small"}}>
