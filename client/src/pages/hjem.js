@@ -98,8 +98,6 @@ function Hjem({env}){
                                 }
                             }}>
                             </div>
-                            <h3>Våre medarbeidere</h3>
-                            <p>Bli kjent med våre medarbeidere og gjerne les litt om de nedenfor!</p>
                             <div className="rotasjonSirkler">
                                 {env.frisorer.map((f, index)=>{
                                     return <div key={index} className={index === detaljerFrisor?"rotasjonSirkel aktivSirkel":"rotasjonSirkel"}></div>

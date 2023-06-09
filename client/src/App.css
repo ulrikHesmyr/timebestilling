@@ -1193,15 +1193,17 @@ input, button, select, option {
   .bildeNoneDisplayImg{
     width:5rem;
     height:5rem;
+    -webkit-position: absolute;
     position: absolute;
     opacity: 0.5;
   }
   .bildeRotasjonBilder{
     display: flex;
     flex-direction: row;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-start;
     position: relative;
+    align-items: center;
+    flex-wrap: wrap;
   }
   .rotasjonSirkel{
     width:1rem;
