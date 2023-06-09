@@ -1193,7 +1193,6 @@ input, button, select, option {
   .bildeNoneDisplayImg{
     width:5rem;
     height:5rem;
-    -webkit-position: absolute;
     position: absolute;
     opacity: 0.5;
   }
@@ -1346,7 +1345,9 @@ input, button, select, option {
   /*******************************************************************************************************************/
 
 @media (width <= 900px){
-
+.bildeNoneDisplayImg{
+  position: inherit;
+}
 .omOssBildene{
   width: 100%;
 }
