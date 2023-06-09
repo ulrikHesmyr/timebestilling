@@ -162,7 +162,7 @@ function PersonInfo({env, smsBekreftelse, sSmsBekreftelse, totalTid, totalPris, 
                 <div>Estimert pris {totalPris} kr</div>
                 <div>Estimert tid {totalTid} minutter</div>
                 </div>
-                <p>obs.: Prisene er kun estimert og kan øke dersom det blir brukt hårprodukter eller om det kreves vask osv.</p>
+                <p>Obs.: Alle priser er fra-priser</p>
                 </div>):""
             }
 

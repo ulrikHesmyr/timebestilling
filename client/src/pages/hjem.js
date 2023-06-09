@@ -1,21 +1,11 @@
-import React, {useEffect, useState, useRef} from "react";
+import React, {useState, useRef} from "react";
 import { Link } from "react-router-dom";
 import Footer from '../components/Footer'
 
 
-/*
- <video autoplay muted loop id="myVideo">
-                <source src="startside.mp4" type="video/mp4"></source>
-                Your browser does not support HTML5 video.
-                </video>
- */
 function Hjem({env}){
 
     const aapningstider = useRef(null);
-
-    //Bildene til de ansatte
-    const [frisorBildeArray, sFrisorBildeArray] = useState(null);
-
     //Deltajer ansatte
     const [visDetaljerFrisor, sVisDetaljerFrisor] = useState(false);
     const [detaljerFrisor, sDetaljerFrisor] = useState(null);

@@ -76,12 +76,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
     //Om oss
     const [visRedigerOmOss, sVisRedigerOmOss] = useState(false);
     const [omOssTekst, sOmOssTekst] = useState(env.omOssArtikkel);
-    //useEffect(()=>{
-    //    sKontakt_epost(env.kontakt_epost);
-    //    sKontakt_tlf(env.kontakt_tlf);
-    //}, [env])
-    //Oppdaterer en vilkårlig tjeneste i databasen
-
+   
 
     useEffect(()=>{
         sAdresse(env.adresse);

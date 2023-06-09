@@ -8,21 +8,6 @@ function DinReservasjon({env, hentMaaned, registrertReservasjon, setReservasjon}
     const totalPris = gjeldendeTjenester.reduce((total, element)=> total + element.pris, 0);
     const navigate = useNavigate();
 
-    //const [frisorBilde, sFrisorBilde] = useState(null);
-//
-//
-    //useEffect(()=>{
-    //    async function hentBilder(){
-    //        let gjeldendeFrisor = env.frisorer.find(f=>f.navn === registrertReservasjon.medarbeider);
-    //        const image = await fetch("/uploads/" + gjeldendeFrisor.img);
-    //  
-    //        if(image){
-    //            sFrisorBilde(image);
-    //        }
-    //    }
-    //    hentBilder();
-    //}, [registrertReservasjon, env.frisorer])
-    
     return (
         (registrertReservasjon?
             <div className='reservasjon'>
