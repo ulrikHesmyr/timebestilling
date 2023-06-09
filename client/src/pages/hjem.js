@@ -32,8 +32,9 @@ function Hjem({env}){
             for(let i = 0; i < env.frisorer.length; i++){
                 const imgBlob = await fetch("/uploads/" + env.frisorer[i].img);
           
-              const imgBlobUrl = URL.createObjectURL(imgBlob);
-              midlertidigArray.push(imgBlobUrl); 
+                if(imgBlob){
+                    midlertidigArray.push(imgBlob); 
+                }
             }
             sFrisorBildeArray(midlertidigArray);
         }

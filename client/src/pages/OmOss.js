@@ -13,8 +13,9 @@ function OmOss({env}){
             if(tempOmOss[i].type === "i"){
                 const imgBlob = await fetch("/uploads/" + tempOmOss[i].content);
 
-                const imgBlobUrl = URL.createObjectURL(imgBlob);
-                tempOmOss[i].src = imgBlobUrl;
+                if(imgBlob){
+                    tempOmOss[i].src = imgBlob;
+                }
             }
         }
         sOmOssFeed(tempOmOss);

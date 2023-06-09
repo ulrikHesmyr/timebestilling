@@ -360,10 +360,8 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
         try {
           const imgBlob = await fetch("/uploads/" + filNavn);
       
-          const imgBlobUrl = URL.createObjectURL(imgBlob);
-      
-          if (imgBlobUrl) {
-            sFrisorBilde(imgBlobUrl);
+          if (imgBlob) {
+            sFrisorBilde(imgBlob);
           }
         } catch (error) {
           alert("Noe gikk galt, sjekk internettforbindelsen og prøv på nytt");

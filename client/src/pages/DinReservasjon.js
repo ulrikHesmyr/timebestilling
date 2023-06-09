@@ -16,8 +16,9 @@ function DinReservasjon({env, hentMaaned, registrertReservasjon, setReservasjon}
             let gjeldendeFrisor = env.frisorer.find(f=>f.navn === registrertReservasjon.medarbeider);
             const imgBlob = await fetch("/uploads/" + gjeldendeFrisor.img);
       
-          const imgBlobUrl = URL.createObjectURL(imgBlob);
-            sFrisorBilde(imgBlobUrl);
+            if(imgBlob){
+                sFrisorBilde(imgBlob);
+            }
         }
         hentBilder();
     }, [registrertReservasjon, env.frisorer])
