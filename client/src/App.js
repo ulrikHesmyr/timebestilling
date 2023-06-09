@@ -38,7 +38,7 @@ const App = ()=> {
       <Helmet>
           <meta
             http-equiv="Content-Security-Policy"
-            content="img-src 'self' data: blob:;"
+            content="img-src 'self' blob:;"
           />
         </Helmet>
           <BrowserRouter><div className='navHeader'>
