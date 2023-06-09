@@ -229,7 +229,7 @@ function RedigerOmOss({env, varlseFeil, varsle, lagreVarsel, sUpdateTrigger, upd
                     
                     {type === "i" && <><label>Last opp bilde her: <input onChange={(e)=>{
                         sI(e.target.files[0]);
-                        sPreviewImg(URL.createObjectURL(e.target.files[0]))
+                        sPreviewImg(e.target.files[0])
                     }} type="file" accept='image/*'></input>
                     {previewImg !== null && <img style={{height:"10rem"}} src={previewImg}></img>}
                     

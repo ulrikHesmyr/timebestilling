@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react'
 import {BrowserRouter, Route, Routes, Link} from 'react-router-dom'
-import {Helmet} from 'react-helmet'
 import Timebestilling from './pages/Timebestilling'
 import Hjem from './pages/hjem'
 import DinReservasjon from './pages/DinReservasjon'
@@ -35,12 +34,6 @@ const App = ()=> {
 
   return (
     <>{env !== null && <>  
-      <Helmet>
-          <meta
-            http-equiv="Content-Security-Policy"
-            content="img-src 'self' blob:;"
-          />
-        </Helmet>
           <BrowserRouter><div className='navHeader'>
           
           <button tabIndex={0} id="burgerButton" className='burger' aria-label='Vis navigasjonsmeny' aria-expanded={synligMeny} aria-controls="navigation" onClick={()=>{

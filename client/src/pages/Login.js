@@ -239,7 +239,7 @@ function Login(){
         {(loggetInn && env !== null?<div>
         
      <div style={{marginTop:"8rem", padding:"0.5rem",color:"blue", cursor:"pointer", userSelect:"none"}} onClick={loggut}>LOGG UT</div> {(brukertype === "admin"?<Admin env={env} bruker={bruker} sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} lagreVarsel={lagreVarsel} varsle={varsle} varsleFeil={varsleFeil} bestilteTimer={bestilteTimer}/>:(brukertype === "vakter"?<Vakter env={env} loggut={loggut} bruker={bruker} varsle={varsle} varsleFeil={varsleFeil} lagreVarsel={lagreVarsel} bestilteTimer={bestilteTimer} />:""))}</div>:(<div className='login'>
-        <form className='loginForm'>
+        <form className='loginForm' name='login' id="login">
             <label>Brukernavn: <input disabled={disableInputFields} name='brukernavn' value={brukernavn} maxLength={20} type="text" placeholder='brukernavn' onChange={(e)=>{
                 if(!format.test(e.target.value)){
                     setBrukernavn(e.target.value);

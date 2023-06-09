@@ -350,8 +350,6 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
     
     const [frisorBilde, sFrisorBilde] = useState(null);
 
-    const {URL} = window;
-
 
     useEffect(()=>{
 
@@ -573,7 +571,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
             <h4>Last opp nytt bilde: </h4>
               <label style={{display:"flex", alignItems:"center"}}>Last opp bilde av ansatt: <input accept="image/*" onChange={(e)=>{
               sBildeAvFrisor(e.target.files[0]);
-              sPreview(URL.createObjectURL(e.target.files[0]));
+              sPreview(e.target.files[0]);
               }} type="file" name="uploaded_file"></input>Last opp bilde her: Maks 2mb {preview && <img className='frisorbilde' style={{height:"300px"}} alt='Forhåndsvisning av bildet' src={preview}></img>}</label>
       
       <div>

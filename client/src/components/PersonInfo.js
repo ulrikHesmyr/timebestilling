@@ -90,7 +90,7 @@ function PersonInfo({env, smsBekreftelse, sSmsBekreftelse, totalTid, totalPris, 
 
     return (
         <div className={synligKomponent === 4? 'animer-inn':''}>
-            <form>
+            <form name='dinInfo' id='dinInfo'>
                 <label htmlFor="navn">Navn: * <input aria-label='Navn' required aria-required maxLength={20} value={navn} type="text" placeholder='Navn Navnesen' name='navn' id='navn' onChange={(e)=>{
                     if(!format.test(e.target.value)){ //Legg inn regex
                         sNavn(e.target.value);

@@ -649,6 +649,7 @@ input, button, select, option {
     display: flex;
     border-radius: 50%;
     height:2rem;
+    width:2rem;
     aspect-ratio: 1/1;
     align-items: center;
     justify-content: center;
@@ -666,6 +667,7 @@ input, button, select, option {
   .ferdig{
     height: inherit;
     animation: ferdigAnimasjon 0.25s ease 1;
+    width: 80%;
   }
 
   @keyframes ferdigAnimasjon{
