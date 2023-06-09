@@ -84,7 +84,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
     }
 
     async function fetchBestilteTimer(){
-        const request = await fetch("http://localhost:1227/timebestilling/hentBestiltetimer");
+        const request = await fetch("/timebestilling/hentBestiltetimer");
         const response = await request.json();
         
           if(response){
@@ -93,7 +93,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
     }
       
     async function hentFri(){
-        const request = await fetch("http://localhost:1227/env/fri");
+        const request = await fetch("/env/fri");
         const response = await request.json();
         if(response){
             sFriElementer(response);
@@ -142,7 +142,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
                     displayKomponent(0);
                 }
             }} >
-                <p>1</p>Behandlinger</h2>
+                {produkt.length > 0?<p><img className='ferdig' src="ferdig.png"></img></p>:<p className='tilbake'>1</p>}Behandlinger</h2>
 
             <h2 tabIndex={0} role="button" 
             aria-label='Vis: Velg medarbeider-boks' 
@@ -163,7 +163,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
                     }
                 }
             }} >
-                <p>2</p>Velg medarbeider</h2>
+                {frisor !== null?<p><img className='ferdig' src="ferdig.png"></img></p>:<p className='tilbake'>2</p>}Velg medarbeider</h2>
 
             <h2 tabIndex={0} role="button" 
             aria-label='Vis valg av klokkeslett og dato' 
@@ -184,7 +184,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
                     }
                 }
             }} >
-                <p>3</p> Velg dato og tid</h2>
+                {klokkeslettet !== null?<p><img className='ferdig' src="ferdig.png"></img></p>:<p className='tilbake'>3</p>} Velg dato og tid</h2>
 
             <h2 tabIndex={0} role="button" 
             aria-label='Vis din info boks' 
@@ -205,7 +205,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
                     }
                 }
             }} >
-                <p>4</p>Din info</h2>
+                {telefonnummer.length === 8 && navn !== ""?<p><img className='ferdig' src="ferdig.png"></img></p>:<p className='tilbake'>4</p>}Din info</h2>
 
             </div>
             <div ref={frisorBoks} ></div>

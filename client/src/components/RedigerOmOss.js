@@ -25,7 +25,7 @@ function RedigerOmOss({env, varlseFeil, varsle, lagreVarsel, sUpdateTrigger, upd
             let tempOmOss = [...env.omOssFeed]
             for(let i = 0; i < tempOmOss.length; i++){
                 if(tempOmOss[i].type === "i"){
-                    const imgBlob = await fetch("http://localhost:1227/uploads/" + tempOmOss[i].content)
+                    const imgBlob = await fetch("/uploads/" + tempOmOss[i].content)
                     .then(r => r.blob());
 
                     const imgBlobUrl = URL.createObjectURL(imgBlob);
@@ -44,7 +44,7 @@ function RedigerOmOss({env, varlseFeil, varsle, lagreVarsel, sUpdateTrigger, upd
             let tempOmOss = [...env.omOssFeed]
             for(let i = 0; i < tempOmOss.length; i++){
                 if(tempOmOss[i].type === "i"){
-                    const imgBlob = await fetch("http://localhost:1227/uploads/" + tempOmOss[i].content)
+                    const imgBlob = await fetch("/uploads/" + tempOmOss[i].content)
                     .then(r => r.blob());
 
                     const imgBlobUrl = URL.createObjectURL(imgBlob);
@@ -69,7 +69,7 @@ function RedigerOmOss({env, varlseFeil, varsle, lagreVarsel, sUpdateTrigger, upd
             },
             body: JSON.stringify({objektet: objektet})
           }
-          const response = await fetch('http://localhost:1227/env/leggTilInnhold', options);
+          const response = await fetch('/env/leggTilInnhold', options);
           const data = await response.json();
           if(data){
             varsle();
@@ -94,7 +94,7 @@ function RedigerOmOss({env, varlseFeil, varsle, lagreVarsel, sUpdateTrigger, upd
                 method: 'POST',
                 body: formData
             }
-            const response = await fetch('http://localhost:1227/env/lastOppBilde/' + mittObjekt.content, options);
+            const response = await fetch('/env/lastOppBilde/' + mittObjekt.content, options);
             const data = await response.json();
             if(data){
                 varsle();
@@ -116,7 +116,7 @@ function RedigerOmOss({env, varlseFeil, varsle, lagreVarsel, sUpdateTrigger, upd
                 },
                 body: JSON.stringify({content: content})
             }
-            const response = await fetch('http://localhost:1227/env/slettInnhold', options);
+            const response = await fetch('/env/slettInnhold', options);
             const data = await response.json();
             if(data){
                 varsle();
@@ -139,7 +139,7 @@ function RedigerOmOss({env, varlseFeil, varsle, lagreVarsel, sUpdateTrigger, upd
                     },
                     body: JSON.stringify({index: index})
                 }
-                const request = await fetch('http://localhost:1227/env/flyttOpp', options);
+                const request = await fetch('/env/flyttOpp', options);
                 const data = await request.json();
                 if(data){
                     varsle();
@@ -164,7 +164,7 @@ function RedigerOmOss({env, varlseFeil, varsle, lagreVarsel, sUpdateTrigger, upd
                     },
                     body: JSON.stringify({index: index})
                 }
-                const request = await fetch('http://localhost:1227/env/flyttNed', options);
+                const request = await fetch('/env/flyttNed', options);
                 const data = await request.json();
                 if(data){
                     varsle();

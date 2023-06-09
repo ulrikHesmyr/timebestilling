@@ -11,7 +11,7 @@ function Frisor({tilgjengeligeFrisorer, sDatoForsteLedige, sDato, sMidlertidigDa
         //Lager et array med base64 bilder
         let midlertidigArray = [];
         for(let i = 0; i < tilgjengeligeFrisorer.length; i++){
-            const imgBlob = await fetch("http://localhost:1227/uploads/" + tilgjengeligeFrisorer[i].img)
+            const imgBlob = await fetch("/uploads/" + tilgjengeligeFrisorer[i].img)
             .then(r => r.blob());
       
           const imgBlobUrl = URL.createObjectURL(imgBlob);

@@ -15,7 +15,7 @@ function DinReservasjon({env, hentMaaned, registrertReservasjon, setReservasjon}
         //Lager et array med base64 bilder
         async function hentBilder(){
             let gjeldendeFrisor = env.frisorer.find(f=>f.navn === registrertReservasjon.medarbeider);
-            const imgBlob = await fetch("http://localhost:1227/uploads/" + gjeldendeFrisor.img)
+            const imgBlob = await fetch("/uploads/" + gjeldendeFrisor.img)
             .then(r => r.blob());
       
           const imgBlobUrl = URL.createObjectURL(imgBlob);

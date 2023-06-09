@@ -585,6 +585,7 @@ input, button, select, option {
   }
 
   .reservasjon{
+    animation: bestillAnimasjon 0.3s ease 1;
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -627,14 +628,14 @@ input, button, select, option {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    justify-content: space-evenly;
+    justify-content: flex-start;
     z-index: 2;
     
     color: var(--color1);
     transition: 0.2s ease all;
     padding:0.2rem;
     text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5); 
-    background:var(--background5);
+    background:var(--color3);
   }
   .overskrift:first-of-type {
     border-top-left-radius: 20px;
@@ -658,15 +659,44 @@ input, button, select, option {
     font-family: monospace;
     
   }
+  .tilbake{
+    
+    animation: ferdigAnimasjon 0.25s ease 1;
+  }
+  .ferdig{
+    height: inherit;
+    animation: ferdigAnimasjon 0.25s ease 1;
+  }
+
+  @keyframes ferdigAnimasjon{
+    0%{
+      opacity: 0;
+      transform: rotateZ(30deg);
+    }
+    20%{
+      opacity:0;
+      clip-path: polygon(0 0, 31% 0, 10% 100%, 0% 100%);
+    }
+    50%{
+      clip-path: polygon(0 0, 31% 0, 100% 100%, 0% 100%);
+      transform: rotateZ(-5deg);
+
+    }
+    100%{
+      opacity: 1;
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+      transform: rotateZ(0deg);
+    }
+  }
 
   .aktivOverskrift{
-    transform: translateY(5px);
+    transform: scale(1.05);
+    box-shadow: 0px -5px 5px rgba(0, 0, 0, 0.5);
     border-bottom-left-radius: 0px !important;
     border-bottom-right-radius: 0px !important;
-  }
-  
-  .gjennomfortOverskrift{
-    background:var(--background4);
+    z-index: 5;
+    background:var(--color1);
+    color: var(--color3);
   }
 
 

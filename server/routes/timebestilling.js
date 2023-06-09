@@ -386,6 +386,10 @@ router.post('/oppdaterTimebestillinger', authorization, async (req,res)=>{
     }
 })
 
+//router.post("/googleCalendarAPI", async (req, res)=>{
+//    
+//});
+
 router.get('/hentBestiltetimer', hentBestillingerLimiter, async (req,res)=>{
     try {
         await Bestilttime.find({},'dato tidspunkt medarbeider behandlinger', function(err, docs){

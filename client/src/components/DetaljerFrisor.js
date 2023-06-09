@@ -58,10 +58,10 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
         headers: {
           'Content-Type': 'application/json'
         },
-        //credentials: 'include',
+        credentials: 'include',
         body: JSON.stringify({navn:frisor.navn, paaJobb:p})
       }
-      const request = await fetch("http://localhost:1227/env/oppdaterPaaJobb", options);
+      const request = await fetch("/env/oppdaterPaaJobb", options);
       const response = await request.json();
       if(response){
         varsle();
@@ -83,10 +83,10 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
           headers: {
             'Content-Type': 'application/json'
           },
-          //credentials: 'include',
+          credentials: 'include',
           body: JSON.stringify({navn:frisor.navn, pause:nyPause, dag:nyPauseDag})
         }
-        const request = await fetch("http://localhost:1227/env/leggTilPause", options);
+        const request = await fetch("/env/leggTilPause", options);
         const response = await request.json();
         if(response){
           varsle();
@@ -107,10 +107,10 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
           headers: {
             'Content-Type': 'application/json'
           },
-          //credentials: 'include',
+          credentials: 'include',
           body: JSON.stringify({navn:navn, pause:pause, dag:dag})
         }
-        const request = await fetch("http://localhost:1227/env/fjernPause", options);
+        const request = await fetch("/env/fjernPause", options);
         const response = await request.json();
         if(response){
           varsle();
@@ -132,10 +132,10 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
         headers: {
           'Content-Type': 'application/json'
         },
-        //credentials: 'include',
+        credentials: 'include',
         body: JSON.stringify({navn:frisor.navn, tittel:tittel, beskrivelse:beskrivelse})
       }
-      const request = await fetch("http://localhost:1227/env/oppdaterTittelOgBeskrivelse", options);
+      const request = await fetch("/env/oppdaterTittelOgBeskrivelse", options);
       const response = await request.json();
       if(response){
         varsle();
@@ -159,10 +159,10 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({brukernavn:n}),
-                //credentials:'include'
+                credentials:'include'
 
             }
-            const request = await fetch("http://localhost:1227/env/hentAdminInfo", options);
+            const request = await fetch("/env/hentAdminInfo", options);
             const response = await request.json();
             if(response){
               sVisGiAdminKnapp(!response.admin);
@@ -185,11 +185,11 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
           headers: {
             'Content-Type': 'application/json'
           },
-          //credentials: 'include',
+          credentials: 'include',
           body: JSON.stringify({navn:n})
 
         }
-        const request = await fetch("http://localhost:1227/env/giAdmin", options);
+        const request = await fetch("/env/giAdmin", options);
         const response = await request.json();
         if(response){
           varsle();
@@ -213,10 +213,10 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
         headers: {
           'Content-Type': 'application/json'
         },
-        //credentials: 'include',
+        credentials: 'include',
         body: JSON.stringify({navn:frisor.navn, telefon: nyTelefonAnsatt})
       }
-      const request = await fetch("http://localhost:1227/env/oppdaterTelefonAnsatt", options);
+      const request = await fetch("/env/oppdaterTelefonAnsatt", options);
       const response = await request.json();
       if(response){
         varsle();
@@ -242,11 +242,11 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
 
         const options = {
           method: 'POST',
-          //credentials: 'include',
+          credentials: 'include',
           body: formData
         }
 
-        const request = await fetch("http://localhost:1227/env/oppdaterBildeFrisor/" + navn, options);
+        const request = await fetch("/env/oppdaterBildeFrisor/" + navn, options);
         const response = await request.json();
         if(response.m){
           alert(response.m);
@@ -274,10 +274,10 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
           headers: {
             'Content-Type': 'application/json'
           },
-          //credentials: 'include',
+          credentials: 'include',
           body: JSON.stringify({navn: frisor.navn, ikkeSiOpp:ikkeSiOpp, dato:oppsigelsesDato})
         }
-        const request = await fetch("http://localhost:1227/env/siOppFrisor", options);
+        const request = await fetch("/env/siOppFrisor", options);
         const response = await request.json();
 
         if(response.valid){  
@@ -304,10 +304,10 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
           headers: {
             'Content-Type': 'application/json'
           },
-          //credentials: 'include',
+          credentials: 'include',
           body: JSON.stringify({navn:frisor.navn, behandlinger:frisorTjenester})
         }
-        const request = await fetch("http://localhost:1227/env/oppdaterBehandlingerFrisor", options);
+        const request = await fetch("/env/oppdaterBehandlingerFrisor", options);
         const response = await request.json();
         if(response.valid){
           varsle();
@@ -333,10 +333,10 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
         headers: {
           'Content-Type': 'application/json'
         },
-        //credentials: 'include',
+        credentials: 'include',
         body: JSON.stringify({navn:navn.toLowerCase()})
       }
-      const request = await fetch("http://localhost:1227/login/resetPassord", options);
+      const request = await fetch("/login/resetPassord", options);
       const response = await request.json();
       if(response.valid){
         varsle();
@@ -358,7 +358,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
       //NB det nedenfor fungerer ikke i DEV fordi req.brukernavn blir satt til "ulrik" uansett
       async function hentBilde(filNavn) {
         try {
-          const imgBlob = await fetch("http://localhost:1227/uploads/" + filNavn)
+          const imgBlob = await fetch("/uploads/" + filNavn)
             .then(r => r.blob());
       
           const imgBlobUrl = URL.createObjectURL(imgBlob);
