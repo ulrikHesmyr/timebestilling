@@ -6,6 +6,7 @@ function Frisor({tilgjengeligeFrisorer, sDatoForsteLedige, sDato, sMidlertidigDa
 
     const valgtFrisorBoks = useRef(null);
     const referanceElement = useRef(null);
+
     async function genererBilder(){
         
         //Lager et array med base64 bilder
@@ -20,12 +21,19 @@ function Frisor({tilgjengeligeFrisorer, sDatoForsteLedige, sDato, sMidlertidigDa
         sFrisorBildeArray(midlertidigArray);
     }
     
+    
+    useEffect(()=>{
+        genererBilder();
+    }, [])
+    
     useEffect(()=>{
         genererBilder();
     }, [tilgjengeligeFrisorer])
+
+    
     return(
         <div>
-            {tilgjengeligeFrisorer.length > 0?<>
+            {tilgjengeligeFrisorer.length > 0 && frisorBildeArray !== null?<>
             <div className="forsteLedige" tabIndex={0} aria-label="Velg første ledige medarbeider" onClick={()=>{
                 sFrisor(false);
                 sDatoForsteLedige(null);
