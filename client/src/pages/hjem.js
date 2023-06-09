@@ -136,7 +136,7 @@ function Hjem({env}){
                                <div className="bildeRotasjonBilder">
                                     {env.frisorer.map((f, index)=>
                                         <div key={index} className="column">
-                                            <img key={index} className={index === detaljerFrisor?"frisorbilde bildeDisplayImg":"frisorbilde bildeNoneDisplayImg"} src={frisorBildeArray[index]} alt={`Bilde av ansatt ${env.frisorer[index].navn}`} ></img>
+                                            <img key={index} className={index === detaljerFrisor?"frisorbilde bildeDisplayImg":"frisorbilde bildeNoneDisplayImg"} src={`${window.origin}/uploads/${env.frisorer[index].img}`} alt={`Bilde av ansatt ${env.frisorer[index].navn}`} ></img>
                                         </div>
                                     )}
                                 </div>
