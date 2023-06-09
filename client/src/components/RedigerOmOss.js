@@ -25,8 +25,7 @@ function RedigerOmOss({env, varlseFeil, varsle, lagreVarsel, sUpdateTrigger, upd
             let tempOmOss = [...env.omOssFeed]
             for(let i = 0; i < tempOmOss.length; i++){
                 if(tempOmOss[i].type === "i"){
-                    const imgBlob = await fetch("/uploads/" + tempOmOss[i].content)
-                    .then(r => r.blob());
+                    const imgBlob = await fetch("/uploads/" + tempOmOss[i].content);
 
                     const imgBlobUrl = URL.createObjectURL(imgBlob);
                     tempOmOss[i].src = imgBlobUrl;
@@ -45,7 +44,7 @@ function RedigerOmOss({env, varlseFeil, varsle, lagreVarsel, sUpdateTrigger, upd
             for(let i = 0; i < tempOmOss.length; i++){
                 if(tempOmOss[i].type === "i"){
                     const imgBlob = await fetch("/uploads/" + tempOmOss[i].content)
-                    .then(r => r.blob());
+                    ;
 
                     const imgBlobUrl = URL.createObjectURL(imgBlob);
                     tempOmOss[i].src = imgBlobUrl;

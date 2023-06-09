@@ -26,13 +26,11 @@ function Hjem({env}){
 
     
     useEffect(()=>{
-        //Lager et array med base64 bilder
         async function hentBilder(){
             
             let midlertidigArray = [];
             for(let i = 0; i < env.frisorer.length; i++){
-                const imgBlob = await fetch("/uploads/" + env.frisorer[i].img)
-                .then(r => r.blob());
+                const imgBlob = await fetch("/uploads/" + env.frisorer[i].img);
           
               const imgBlobUrl = URL.createObjectURL(imgBlob);
               midlertidigArray.push(imgBlobUrl); 

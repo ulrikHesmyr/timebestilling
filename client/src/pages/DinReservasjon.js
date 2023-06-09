@@ -12,11 +12,9 @@ function DinReservasjon({env, hentMaaned, registrertReservasjon, setReservasjon}
     const navigate = useNavigate();
 
     useEffect(()=>{
-        //Lager et array med base64 bilder
         async function hentBilder(){
             let gjeldendeFrisor = env.frisorer.find(f=>f.navn === registrertReservasjon.medarbeider);
-            const imgBlob = await fetch("/uploads/" + gjeldendeFrisor.img)
-            .then(r => r.blob());
+            const imgBlob = await fetch("/uploads/" + gjeldendeFrisor.img);
       
           const imgBlobUrl = URL.createObjectURL(imgBlob);
             sFrisorBilde(imgBlobUrl);

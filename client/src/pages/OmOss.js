@@ -11,8 +11,7 @@ function OmOss({env}){
         let tempOmOss = [...env.omOssFeed]
         for(let i = 0; i < tempOmOss.length; i++){
             if(tempOmOss[i].type === "i"){
-                const imgBlob = await fetch("/uploads/" + tempOmOss[i].content)
-                .then(r => r.blob());
+                const imgBlob = await fetch("/uploads/" + tempOmOss[i].content);
 
                 const imgBlobUrl = URL.createObjectURL(imgBlob);
                 tempOmOss[i].src = imgBlobUrl;

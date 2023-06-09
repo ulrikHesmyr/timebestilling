@@ -358,8 +358,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
       //NB det nedenfor fungerer ikke i DEV fordi req.brukernavn blir satt til "ulrik" uansett
       async function hentBilde(filNavn) {
         try {
-          const imgBlob = await fetch("/uploads/" + filNavn)
-            .then(r => r.blob());
+          const imgBlob = await fetch("/uploads/" + filNavn);
       
           const imgBlobUrl = URL.createObjectURL(imgBlob);
       
