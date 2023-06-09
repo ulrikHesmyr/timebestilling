@@ -108,7 +108,7 @@ function Frisor({tilgjengeligeFrisorer, sDatoForsteLedige, sDato, sMidlertidigDa
                 </div></div>}
                 
             </div>
-            </>:"Ingen tilgjengelige medarbeidere for disse behandlingene"}
+            </>:(tilgjengeligeFrisorer.length < 1?"Ingen tilgjengelige medarbeidere for disse behandlingene":<div className="laster"></div>)}
             <Fortsett disabled={(frisor !== null?false:true)} previous={1} number={2} displayKomponent={displayKomponent} referanceElement={referanceElement} />
         </div>
     )

@@ -246,7 +246,7 @@ app.get('*', (req, res)=>{
   //res.setHeader('Cache-Control', 'no-store');
   res.setHeader(
     'Content-Security-Policy',
-    "img-src 'self' data: blob:;"
+    "img-src 'self' blob:;"
   );
   res.sendFile(path.join(__dirname, 'build/index.html'));     
   
