@@ -1,4 +1,4 @@
-import React, {useState, useRef} from "react";
+import React, {useState, useRef, useEffect} from "react";
 import Fortsett from "./Fortsett.js";
 import { Link } from "react-router-dom";
 
