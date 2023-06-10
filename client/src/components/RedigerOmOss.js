@@ -62,7 +62,7 @@ function RedigerOmOss({env, varlseFeil, varsle, lagreVarsel, sUpdateTrigger, upd
             if(data){
                 varsle();
                 sUpdateTrigger(!updateTrigger);
-                sVisLeggTilInnhold(false);
+                sVisLeggTilInnhold(false);  
             }   
         } catch (error) {
             varlseFeil();

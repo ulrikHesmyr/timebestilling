@@ -383,7 +383,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 onClick={()=>{
                     sMenySynlig(!menySynlig);
                 }}></img>
-                <div>
+                <div style={{position:"relative"}}>
                     <div className={menySynlig?'adminKnapper':"ikkesynlig adminKnapper"}>
                     
                         <div className={synligKomponent === 1?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
@@ -433,7 +433,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 {synligKomponent === 5? <SMS env={env} varsleFeil={varsleFeil} varsle={varsle} lagreVarsel={lagreVarsel} sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} />:""}
 
                 
-                {synligKomponent === 1 && bestilteTimer !== null?(<>
+                {synligKomponent === 1 && bestilteTimer !== null?(<div className='fjernTimebestillingerSiden'>
                 <h3>Timebestillinger</h3>
                 <p>Bestill time her: <Link to="/timebestilling">bestill time</Link> </p>
 
@@ -484,13 +484,13 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                             )
                     )}
                 </div>
-                </>
+                </div>
                     
             ):""}
 
 
             {synligKomponent === 3?(
-                <>
+                <div className='redigerAnsatteOsvSiden'>
                 
                 <h3>Ansatte, kategorier, åpningstider og kontakt-info</h3>
                 
@@ -910,11 +910,11 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 
 
                 
-            </div></>
+            </div></div>
             ):""}
             {synligKomponent === 4?(
             <>
-                <div>
+                <div className='redigerBehandlinger'>
                 <h3>Behandlinger:</h3>
                 {visOpprettBehandling?
                     <div className='fokus'>

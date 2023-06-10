@@ -147,7 +147,7 @@ function Fri ({env, bestilteTimer, synligKomponent, varsle, lagreVarsel, varsleF
     },[synligKomponent, updateTrigger])
   return (
     <>
-    {(synligKomponent === 2?<div>
+    {(synligKomponent === 2?<div className='fridagerOgFraever'>
         <h3>Fridager og fravær</h3>
         
         {(!leggTilFri?<button style={{display:"flex", flexDirection:"row", alignItems:"center"}} onClick={(e)=>{

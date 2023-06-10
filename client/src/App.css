@@ -241,6 +241,19 @@ footer *{
 
 .redigerOmOssSiden{
   padding: 1rem;
+  animation: bestillAnimasjon 0.2s ease 1;
+}
+.redigerBehandlinger{
+  animation: bestillAnimasjon 0.2s ease 1;
+}
+.redigerAnsatteOsvSiden{
+  animation: bestillAnimasjon 0.2s ease 1;
+}
+.fridagerOgFraever{
+  animation: bestillAnimasjon 0.2s ease 1;
+}
+.fjernTimebestillingerSiden{
+  animation: bestillAnimasjon 0.2s ease 1;
 }
 
 .omOss a{
@@ -1021,6 +1034,7 @@ input, button, select, option {
     flex-direction: column;
     align-items: flex-start;
     padding: 2rem;
+    animation: bestillAnimasjon 0.2s ease 1;
   }
   .SMSkonfigBoks{
     display: flex;
@@ -1325,7 +1339,7 @@ input, button, select, option {
   transition: 0.3s ease all;
   
   background: var(--color1);
-  position: fixed;
+  position: absolute;
 }
 
 .ikkesynlig{

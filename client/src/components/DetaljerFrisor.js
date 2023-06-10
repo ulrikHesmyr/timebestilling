@@ -547,7 +547,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
 
             {visRedigerBilde?<div className='fokus'>
             <h4>Last opp nytt bilde: </h4>
-              <label style={{display:"flex", alignItems:"center", flexDirection:"column"}}>Last opp bilde av medarbeider: <input accept="image/*" onChange={(e)=>{
+              <label style={{display:"flex", alignItems:"flex-start", flexDirection:"column"}}>Last opp bilde av medarbeider: <input accept="image/*" onChange={(e)=>{
               sBildeAvFrisor(e.target.files[0]);
               sPreview(URL.createObjectURL(e.target.files[0]));
               }} type="file" name="uploaded_file"></input>Last opp bilde her: Maks 12mb {preview && <img className='frisorbilde' style={{height:"300px"}} alt='Forhåndsvisning av bildet' src={preview}></img>}</label>
