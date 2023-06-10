@@ -8,6 +8,15 @@ function Klokkeslett({sMidlertidigDato, harEndretDatoen, datoForsteLedige, sDato
     const ukedag = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
 
     const valgtKlokkeslett = useRef(null);
+
+    
+    const [isMobile, setIsMobile] = useState(false);
+    
+    useEffect(()=>{
+      const userAgent = window.navigator.userAgent;
+      setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent));
+    }, []);
+
     useEffect(()=>{
         
 
@@ -205,7 +214,9 @@ function Klokkeslett({sMidlertidigDato, harEndretDatoen, datoForsteLedige, sDato
                         let randomFrisor = tid.frisorer[randomNumber(tid.frisorer.length)];
                         sForsteFrisor(randomFrisor);
                         sKlokkeslett(tid.tid);
-                        valgtKlokkeslett.current.scrollIntoView({behavior: "smooth", block: "end"});
+                        if(!isMobile){
+                            valgtKlokkeslett.current.scrollIntoView({behavior: "smooth", block: "end"});
+                        }
                     }}
                     onKeyDown={(e)=>{
                         if(e.code === "Enter" || e.code === "Space"){

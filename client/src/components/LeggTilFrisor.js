@@ -136,7 +136,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
             let maksStr = 12000000;
             if(e.target.files[0].size < maksStr){
                 sBildeAvFrisor(e.target.files[0]);
-                setPreview(e.target.files[0]);
+                setPreview(URL.createObjectURL(e.target.files[0]));
             } else {
                 alert("Bildet er for stort. Maks " + 12000000/1000000 + "mb");
             }

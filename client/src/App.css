@@ -62,7 +62,7 @@
   --farge4:rgba(0, 18, 184, 0.758);
   --farge5:rgba(211,157,39,1);
   --farge6:rgba(253,187,45,1);
-  --farge7:rgba(85, 85, 85, 0.51);
+  --farge7:rgba(136, 136, 136, 0.51);
   --farge8:#151515d4;
   --color1:white;
   --color2:white;
@@ -127,7 +127,9 @@ body{
     object-fit: contain;
     width: 20%;
 }
-
+.c{
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
 .laster{
   -webkit-transition-property: -webkit-transform;
   transition-duration: 1.2s;
@@ -218,7 +220,7 @@ footer{
   align-items: center;
   color:white;
   padding:0.5rem;
-  background:var(--farge8);
+  background:var(--farge7);
   margin-top: 2rem;
   text-align: center;
   width: 100%;
@@ -467,8 +469,11 @@ input, button, select, option {
   }
   @keyframes bestillAnimasjon {
     0% {
-      opacity: 0.8;
+      opacity: 0;
       transform: translateY(100px);
+    }
+    20%{
+      opacity: 0;
     }
     100% {
       opacity: 1;
@@ -662,7 +667,7 @@ input, button, select, option {
   }
   .tilbake{
     
-    animation: ferdigAnimasjon 0.25s ease 1;
+    animation: tilbakeAnimasjon 0.2s ease 1;
   }
   .ferdig{
     height: inherit;
@@ -688,6 +693,18 @@ input, button, select, option {
       opacity: 1;
       clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
       transform: rotateZ(0deg);
+    }
+  }
+
+  @keyframes tilbakeAnimasjon{
+    0%{
+      transform:rotateZ(30deg);
+    }
+    50%{
+      transform:rotateZ(-25deg);
+    }
+    100%{
+      transform:rotateZ(0deg);
     }
   }
 
@@ -1346,11 +1363,17 @@ input, button, select, option {
 
 @media (width <= 900px){
 .bildeNoneDisplayImg{
+  width:3rem;
+    height:3rem;
   position: inherit;
 }
 .omOssBildene{
   width: 100%;
 }
+.bildeDisplayImg{
+    height:14rem;
+    width:14rem;
+  }
 .overskriftContainer hr{
   display: none;
 }

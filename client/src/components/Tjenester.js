@@ -8,6 +8,13 @@ function Tjenester({env, sDatoForsteLedige, antallBehandlinger, sAntallBehandlin
     const valgtBehandlingScroll = useRef(null);
     const [kategoriSynlig, setKategoriSynlig] = useState(env.kategorier.map(kategori=>kategori = false));
     const [K, sK] = useState(false);
+
+    const [isMobile, setIsMobile] = useState(false);
+    
+  useEffect(()=>{
+    const userAgent = window.navigator.userAgent;
+    setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent));
+  }, [])
     
     return(
         <div className='animer-inn'>
@@ -49,7 +56,9 @@ function Tjenester({env, sDatoForsteLedige, antallBehandlinger, sAntallBehandlin
                                         sDatoForsteLedige(null);
                                         antallBehandlinger[index]++;
                                         sAntallBehandlinger(antallBehandlinger);
-                                        valgtBehandlingScroll.current.scrollIntoView({behavior:"smooth", block:"center"});
+                                        if(!isMobile){
+                                            valgtBehandlingScroll.current.scrollIntoView({behavior:"smooth", block:"center"});
+                                        }
                                     } else {
                                         sProdukt(produkt.filter(p=>p !== tjeneste));
                                         antallBehandlinger[index]--;
@@ -65,7 +74,9 @@ function Tjenester({env, sDatoForsteLedige, antallBehandlinger, sAntallBehandlin
                                             sDatoForsteLedige(null);
                                             antallBehandlinger[index]++;
                                             sAntallBehandlinger(antallBehandlinger);
-                                            valgtBehandlingScroll.current.scrollIntoView({behavior:"smooth", block:"center"});
+                                            if(!isMobile){
+                                                valgtBehandlingScroll.current.scrollIntoView({behavior:"smooth", block:"center"});
+                                            }
                                         } else {
                                             sProdukt(produkt.filter(p=>p !== tjeneste));
                                             antallBehandlinger[index]--;

@@ -21,7 +21,7 @@ const Brukere = require("./model/brukere");
 const {BEDRIFT, NODE_ENV, CUSTOMER_KEY, ACCESS_TOKEN_KEY} = process.env;
 
 app.use(cors());
-app.use(express.json({limit:'5mb'}));
+app.use(express.json({limit:'12mb'}));
 app.use(express.urlencoded({extended:false}));
 app.use(cookieParser());
 app.use(helmet());

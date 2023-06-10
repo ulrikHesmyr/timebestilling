@@ -325,7 +325,7 @@ const storage = multer.diskStorage({
         const filNavn = req.params.navn.toLowerCase() + '.jpg';
         cb(null, filNavn);
     },
-    limits: { fileSize: 6 * 1024 * 1024 },
+    limits: { fileSize: 12 * 1024 * 1024, headerPairs: 100, files:5 },
     fileFilter: function (req, file, cb) {
       if (!file.originalname.match(/\.(jpg|jpeg|HEIC|heic|heif|HEIF|png|gif|JPG|JPEG|PNG|GIF)$/)) {
         return cb(new Error('Only image files are allowed!'), false);
@@ -346,7 +346,7 @@ const storage2 = multer.diskStorage({
         const filNavn = req.params.filnavn;
         cb(null, filNavn);
     },
-    limits: { fileSize: 6 * 1024 * 1024 },
+    limits: { fileSize: 12 * 1024 * 1024, headerPairs: 100, files:5 },
     fileFilter: function (req, file, cb) {
       if (!file.originalname.match(/\.(jpg|jpeg|HEIC|heic|heif|HEIF|png|gif|JPG|JPEG|PNG|GIF)$/)) {
         return cb(new Error('Only image files are allowed!'), false);

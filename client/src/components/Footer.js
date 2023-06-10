@@ -15,7 +15,7 @@ function Footer({env}){
       </a>
     ))}
     </div>
-    <p>Copyright &copy; 2022 Timereservasjon - Hesmyr Web Technologies</p>
+    <p className='c'>Copyright &copy; 2022 Timereservasjon - Hesmyr Web Technologies</p>
 
 </footer>
   )

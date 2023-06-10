@@ -252,12 +252,12 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
           alert(response.m);
         } else if(response.valid){
           varsle();
-          sUpdateTrigger(!updateTrigger);
+          window.location.reload();
         } else {
           alert("Noe gikk galt, prøv på nytt");
         }
       } catch (error) {
-        alert("Bilde er for stort eller på feil format. Prøv et bilde på png eller jpg format og mindre enn 2MB");
+        alert("Bilde er for stort eller på feil format. Prøv et bilde på png eller jpg format eller prøv å nedjuster bildestørrelsen");
         varsleFeil();
 
       }
@@ -549,7 +549,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
             <h4>Last opp nytt bilde: </h4>
               <label style={{display:"flex", alignItems:"center"}}>Last opp bilde av ansatt: <input accept="image/*" onChange={(e)=>{
               sBildeAvFrisor(e.target.files[0]);
-              sPreview(e.target.files[0]);
+              sPreview(URL.createObjectURL(e.target.files[0]));
               }} type="file" name="uploaded_file"></input>Last opp bilde her: Maks 2mb {preview && <img className='frisorbilde' style={{height:"300px"}} alt='Forhåndsvisning av bildet' src={preview}></img>}</label>
       
       <div>
