@@ -1323,22 +1323,26 @@ input, button, select, option {
   flex-direction: column;
   width:50%;
   transition: 0.3s ease all;
+  
+  background: var(--color1);
+  position: fixed;
 }
+
 .ikkesynlig{
   transform: translateX(-150%);
   height: 1px;
-  visibility: hidden;
 }
 .adminKnapp{
   margin: 0;
-    border-radius: none;
-    border: thin solid black;
-    font-size: large;
-    font-weight: 700;
-    height: 2rem;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
+  border-radius: none;
+  border: thin solid black;
+  font-size: large;
+  font-weight: 700;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding:1rem;
 }
 .aktivSide{
   background: var(--farge4);
@@ -1424,9 +1428,6 @@ header * {
 }
 .adminKnapper{
   width:100%;
-}
-.adminKnapper div{
-  padding:1rem;
 }
   .frisorOversikt{
     display: flex;

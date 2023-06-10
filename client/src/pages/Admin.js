@@ -383,46 +383,48 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 onClick={()=>{
                     sMenySynlig(!menySynlig);
                 }}></img>
-                <div className={menySynlig?'adminKnapper':"ikkesynlig adminKnapper"}>
-                
-                    <div className={synligKomponent === 1?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
-                        e.preventDefault();
-                        setSynligKomponent(1);
-                        sMenySynlig(false);
-                    }}>TIMEBESTILLINGER</div>
-
-                
-                    <div className={synligKomponent === 2?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
-                        e.preventDefault();
-                        setSynligKomponent(2);
-                        sMenySynlig(false);
-                    }}>FRIDAGER OG FRAVÆR</div>
-
-                    <div className={synligKomponent === 3?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
-                        e.preventDefault();
-                        setSynligKomponent(3);
-                        sMenySynlig(false);
-                    }}>KONTAKT-INFO, KATEGORIER, ANSATTE etc.</div>
-
-                    <div className={synligKomponent === 4?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
-                        e.preventDefault();
-                        setSynligKomponent(4);
-                        sMenySynlig(false);
-                    }}>BEHANDLINGER</div>
-
-                    <div className={synligKomponent === 5?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
-                        e.preventDefault();
-                        setSynligKomponent(5);
-                        sMenySynlig(false);
-                    }}>SMS-feedback, bestillings-PIN, timebestilling etc.</div>
-
-                    <div className={synligKomponent === 6?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
-                        e.preventDefault();
-                        setSynligKomponent(6);
-                        sMenySynlig(false);
-                    }}>Om-oss siden</div>
-
+                <div>
+                    <div className={menySynlig?'adminKnapper':"ikkesynlig adminKnapper"}>
+                    
+                        <div className={synligKomponent === 1?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
+                            e.preventDefault();
+                            setSynligKomponent(1);
+                            sMenySynlig(false);
+                        }}>TIMEBESTILLINGER</div>
+        
+                    
+                        <div className={synligKomponent === 2?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
+                            e.preventDefault();
+                            setSynligKomponent(2);
+                            sMenySynlig(false);
+                        }}>FRIDAGER OG FRAVÆR</div>
+        
+                        <div className={synligKomponent === 3?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
+                            e.preventDefault();
+                            setSynligKomponent(3);
+                            sMenySynlig(false);
+                        }}>KONTAKT-INFO, KATEGORIER, ANSATTE etc.</div>
+        
+                        <div className={synligKomponent === 4?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
+                            e.preventDefault();
+                            setSynligKomponent(4);
+                            sMenySynlig(false);
+                        }}>BEHANDLINGER</div>
+        
+                        <div className={synligKomponent === 5?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
+                            e.preventDefault();
+                            setSynligKomponent(5);
+                            sMenySynlig(false);
+                        }}>SMS-feedback, bestillings-PIN, timebestilling etc.</div>
+        
+                        <div className={synligKomponent === 6?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
+                            e.preventDefault();
+                            setSynligKomponent(6);
+                            sMenySynlig(false);
+                        }}>Om-oss siden</div>
+    
                     </div>
+                </div>
 
                 {synligKomponent === 6? <RedigerOmOss env={env} varsleFeil={varsleFeil} varsle={varsle} lagreVarsel={lagreVarsel} sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} />:""}
                 
@@ -527,7 +529,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                                 }}>
                                     Avbryt
                                 </button>
-                                <button disabled={omOssTekst === env.omOssTekst} onClick={()=>{
+                                <button disabled={omOssTekst === env.omOssArtikkel} onClick={()=>{
                                     sVisRedigerOmOss(false);
                                     oppdaterOmOss();
                                 }}>
@@ -568,7 +570,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                                 }}>
                                     Avbryt
                                 </button>
-                                <button disabled={hoytidsdag === ""} onClick={()=>{
+                                <button disabled={hoytidsdag === "" || hoytidsdato === ""} onClick={()=>{
                                     sVisRedigerHoytidsdager(false);
                                     sLeggtilhoytid(false);
                                     leggTilHoytidsDag();
@@ -862,7 +864,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                                 sLinkNyttMedie("");
                             }}>Avbryt</button>
 
-                            <button disabled={muligeSosialeMedier.length === env.sosialeMedier.length} onClick={()=>{
+                            <button disabled={brukerNyttMedie === "" || linkNyttMedie === ""} onClick={()=>{
                                 if((brukerNyttMedie === "" || linkNyttMedie === "") || muligeSosialeMedier.length === env.sosialeMedier.length){
                                     alert("Du må fylle ut alle feltene!");
                                 } else {

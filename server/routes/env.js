@@ -426,8 +426,12 @@ router.post("/slettInnhold", authorization, async (req, res)=>{
             const env = await Environment.findOne({bedrift:BEDRIFT});
             if(env){
                 if(content.includes(".jpg")){
-                    fs.unlinkSync("./uploads/" + content);//Sletter bildet fra server
+                    if(fs.existsSync("./uploads/" + content)){
+                        fs.unlinkSync("./uploads/" + content);//Sletter bildet fra server
+                    }
+                       
                 }
+                
 
                 let nyOmOssFeed = env.omOssFeed.filter(element => element.content != content);
                 const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {omOssFeed:nyOmOssFeed});
