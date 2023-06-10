@@ -374,7 +374,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
     </div>
 
       <div style={{fontSize:"small"}}>
-        <h3>Info om ansatt: </h3>
+        <h3>Info om medarbeider: </h3>
         E-post: {epostAnsatt}<br></br>
         Telefon: {telefonAnsatt}
       <ul>
@@ -400,7 +400,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
           
           <div style={{display:"flex", justifyContent:"space-between", width:"100%"}}>
             
-          <div style={{margin:"0.5rem"}}>Velg hva du vil redigere for ansatt: <p style={{fontWeight:"bolder", fontSize:"larger"}}>{frisor.navn}</p></div>
+          <div style={{margin:"0.5rem"}}>Velg hva du vil redigere: <p style={{fontWeight:"bolder", fontSize:"larger"}}>{frisor.navn}</p></div>
             <img alt='Lukk' onClick={(e)=>{
                 e.preventDefault();
                 sVisRedigerFrisor(false);
@@ -547,10 +547,10 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
 
             {visRedigerBilde?<div className='fokus'>
             <h4>Last opp nytt bilde: </h4>
-              <label style={{display:"flex", alignItems:"center"}}>Last opp bilde av ansatt: <input accept="image/*" onChange={(e)=>{
+              <label style={{display:"flex", alignItems:"center", flexDirection:"column"}}>Last opp bilde av medarbeider: <input accept="image/*" onChange={(e)=>{
               sBildeAvFrisor(e.target.files[0]);
               sPreview(URL.createObjectURL(e.target.files[0]));
-              }} type="file" name="uploaded_file"></input>Last opp bilde her: Maks 2mb {preview && <img className='frisorbilde' style={{height:"300px"}} alt='Forhåndsvisning av bildet' src={preview}></img>}</label>
+              }} type="file" name="uploaded_file"></input>Last opp bilde her: Maks 12mb {preview && <img className='frisorbilde' style={{height:"300px"}} alt='Forhåndsvisning av bildet' src={preview}></img>}</label>
       
       <div>
         <button onClick={(e)=>{
@@ -558,7 +558,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
           sVisRedigerBilde(false);
           sBildeAvFrisor(null);
         }}>Avbryt</button>
-        <button onClick={(e)=>{
+        <button disabled={bildeAvFrisor === null} onClick={(e)=>{
           e.preventDefault();
           if(bildeAvFrisor){  
             oppdaterBilde(frisor.navn.toLowerCase());
@@ -586,7 +586,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
                   sTittel(frisor.tittel);
                   sBeskrivelse(frisor.beskrivelse);
                 }}>Avbryt</button>
-                <button onClick={(e)=>{
+                <button disabled={frisor.tittel === tittel && frisor.beskrivelse === beskrivelse} onClick={(e)=>{
                   e.preventDefault();
                   oppdaterTittelOgBeskrivelse();
                   sVisRedigerTittelOgBeskrivelse(false);
@@ -599,7 +599,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
             <div style={{display:"flex", flexDirection:"row", flexWrap:"wrap"}}>
             <div>
                 <h4>Rediger "på jobb"-tider for {frisor.navn}</h4>
-                <p>Endre på tidene hvor ansatt er på jobb. Dette gjør at kunder kun kan reservere time når ansatt er på jobb. Se åpningstidene til butikken for referanse</p>
+                <p>Endre på tidene hvor medarbeider er på jobb. Dette gjør at kunder kun kan reservere time når medarbeider er på jobb. Se åpningstidene til butikken for referanse</p>
                 {env.klokkeslett.map((dag, index)=>{
                     return (
                         <div key={dag.dag}>{dag.dag} {dag.open} - {dag.closed}</div>
@@ -625,7 +625,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
                             nyPaaJobb[index].open = detteKlokkeslettet;
                             sPaaJobb(nyPaaJobb);
                         } else {
-                            alert("Klokkeslettet må være før ansatt er ferdig på jobb");
+                            alert("Klokkeslettet må være før medarbeider er ferdig på jobb");
                         }
                     }} type='time' step="1800" min={env.klokkeslett[index].open} max={dag.closed} value={env.klokkeslett[index].stengt?undefined:dag.open}></input> 
                     
@@ -670,8 +670,8 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
 
             {visRedigerTelefonAnsatt?<div className='fokus'>
             <h4>Endre telefonnummer for {frisor.navn}</h4>
-            <p>NB! Endre telefonnummeret til ansatt dersom den ansatte har fått nytt telefonnummer og 
-              ikke får loggett inn selv for å endre telefonnummer (ansatt kan bli sperret ute på grunn av tofaktor)</p>
+            <p>NB! Endre telefonnummeret til medarbeider dersom den ansatte har fått nytt telefonnummer og 
+              ikke får loggett inn selv for å endre telefonnummer (medarbeider kan bli sperret ute på grunn av tofaktor)</p>
             <input inputMode="numeric" type="numeric" value={nyTelefonAnsatt} onChange={(e)=>{
               e.preventDefault();
               sNyTelefonAnsatt(e.target.value);
@@ -682,7 +682,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
                 sVisRedigerTelefonAnsatt(false);
                 sNyTelefonAnsatt(telefonAnsatt);
               }}>Avbryt</button>
-              <button onClick={(e)=>{
+              <button disabled={nyTelefonAnsatt.length !== 8} onClick={(e)=>{
                 e.preventDefault();
                 if(nyTelefonAnsatt.length === 8){
                   oppdaterTelefonAnsatt();
@@ -699,7 +699,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
               {visSiOpp?<div className='fokus'>
               
                   <h4>Legg inn oppsigelsesdato for {frisor.navn}</h4>
-                  <p>Legg inn datoen som ansatt ikke lenger jobber. Ansatt vil kunne få reservasjoner før denne datoen men 
+                  <p>Legg inn datoen som medarbeider ikke lenger jobber. Ansatt vil kunne få reservasjoner før denne datoen men 
                       ikke på denne datoen eller etter. Dette er for å unngå at den ansatte får reservasjoner som ikke kan gjennomføres.
                   </p>
                   <input type="date" disabled={ikkeSiOpp} min={hentDato()} value={oppsigelsesDato} onChange={(e)=>{
@@ -714,7 +714,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
                       e.preventDefault();
                       sVisSiOpp(false);
                   }} >Avbryt</button>
-                  <button onClick={(e)=>{
+                  <button disabled={ikkeSiOpp === (frisor.oppsigelse === "ikke oppsagt") && oppsigelsesDato === frisor.oppsigelse} onClick={(e)=>{
                       e.preventDefault();
                       sVisSiOpp(false);
                       siOppFrisor();
@@ -750,7 +750,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
                       sVisRedigerBehandlinger(false);
                     }}>Avbryt</button>
 
-                    <button onClick={()=>{
+                    <button disabled={frisor.produkter === frisorTjenester} onClick={()=>{
                       //Lagre behandlinger
                       oppdaterBehandlinger();
                       sVisRedigerBehandlinger(false);

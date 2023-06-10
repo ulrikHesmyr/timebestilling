@@ -49,7 +49,7 @@ function RedigerAapningstider({env, varsleFeil, lagreVarsel, varsle, updateTrigg
         sAapningstid(dag.open);
         sStengetid(dag.closed);
       }}>Avbryt</button>
-      <button onClick={(e)=>{
+      <button disabled={stengt === dag.stengt && stengetid === dag.closed && aapningstid === dag.open} onClick={(e)=>{
         e.preventDefault();
         if(stengetid.length === 5 && aapningstid.length === 5  && parseInt(aapningstid.substring(3,5))%15 === 0 && parseInt(stengetid.substring(3,5))%15 === 0 && !isNaN(parseInt(aapningstid.substring(0,2)))&& !isNaN(parseInt(stengetid.substring(0,2))) && aapningstid.substring(2,3) === ":" && stengetid.substring(2,3) === ":" && minutterFraKlokkeslett(aapningstid) < minutterFraKlokkeslett(stengetid)){
           sVisRedigerAapningstider(false);

@@ -97,7 +97,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
 
 
         } catch (error) {
-            alert("Bildet er for stort eller på feil format. Bilde må ha formatet .jpg, .jpeg, eller .png og være mindre enn 2mb.");
+            alert("Bildet er for stort eller på feil format. Bilde må ha formatet .jpg, .jpeg, eller .png og være mindre enn 12mb.");
             varsleFeil();
         }
     }

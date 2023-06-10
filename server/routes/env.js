@@ -12,6 +12,9 @@ const rateLimiter = require("express-rate-limit");
 const authorization = require("../middleware/authorization");
 const {BEDRIFT, TLF_SECRET} = process.env;
 
+//Maks størrelse på filer som lastes opp
+const maxSize = 12 * 1024 * 1024;
+
 const hentEnvLimiter = rateLimiter({
     max:100,
     windowMs:30*60*1000,
@@ -325,7 +328,6 @@ const storage = multer.diskStorage({
         const filNavn = req.params.navn.toLowerCase() + '.jpg';
         cb(null, filNavn);
     },
-    limits: { fileSize: 12 * 1024 * 1024, headerPairs: 100, files:5 },
     fileFilter: function (req, file, cb) {
       if (!file.originalname.match(/\.(jpg|jpeg|HEIC|heic|heif|HEIF|png|gif|JPG|JPEG|PNG|GIF)$/)) {
         return cb(new Error('Only image files are allowed!'), false);
@@ -346,7 +348,6 @@ const storage2 = multer.diskStorage({
         const filNavn = req.params.filnavn;
         cb(null, filNavn);
     },
-    limits: { fileSize: 12 * 1024 * 1024, headerPairs: 100, files:5 },
     fileFilter: function (req, file, cb) {
       if (!file.originalname.match(/\.(jpg|jpeg|HEIC|heic|heif|HEIF|png|gif|JPG|JPEG|PNG|GIF)$/)) {
         return cb(new Error('Only image files are allowed!'), false);
@@ -357,15 +358,16 @@ const storage2 = multer.diskStorage({
 
     
 });
-
 //Multer instance for bilde når man oppretter ny frisør
 const upload = multer({
-    storage: storage
+    storage: storage,
+    limits: { fieldNameSize:10000, fieldSize: maxSize, fileSize: maxSize, headerPairs: 100, files:5 },
 }).single("uploaded_file");
 
 //Multer instance for å oppdatere bilde av frisør
 const oppdaterBildeFrisor = multer({
-    storage: storage
+    storage: storage,
+    limits: { fieldNameSize:10000, fieldSize: maxSize, fileSize: maxSize, headerPairs: 100, files:5 },
 }).single("uploaded_file");
 
 router.post("/oppdaterBildeFrisor/:navn", authorization, oppdaterBildeFrisor, async (req,res)=>{
@@ -399,7 +401,8 @@ router.post("/oppdaterBildeFrisor/:navn", authorization, oppdaterBildeFrisor, as
 });
 
 const omOssBilde = multer({
-    storage: storage2
+    storage: storage2,
+    limits: { fieldNameSize:10000, fieldSize: maxSize, fileSize: maxSize, headerPairs: 100, files:5 },
 }).single("uploaded_file");
 
 router.post("/lastOppBilde/:filnavn", authorization, omOssBilde, async (req, res)=>{

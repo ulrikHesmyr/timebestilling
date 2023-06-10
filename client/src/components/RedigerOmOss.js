@@ -17,6 +17,10 @@ function RedigerOmOss({env, varlseFeil, varsle, lagreVarsel, sUpdateTrigger, upd
 
     const [previewImg, sPreviewImg] = useState(null);
 
+    useEffect(()=>{
+        sOmOssFeed([...env.omOssFeed]);
+    }, [env.omOssFeed]);
+
 
     async function leggTilInnhold(objektet){
         lagreVarsel();
@@ -215,7 +219,7 @@ function RedigerOmOss({env, varlseFeil, varsle, lagreVarsel, sUpdateTrigger, upd
                                 sP("");
                                 sAlt("");
                             }}>Avbryt</button>
-                            <button onClick={()=>{
+                            <button disabled={(alt === "" || i == null) && h === "" && p === ""} onClick={()=>{
                                 let valid = true;
                                 switch(type){
                                     case "i":

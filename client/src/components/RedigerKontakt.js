@@ -79,7 +79,7 @@ function RedigerKontakt({number, setState, state, sUpdateTrigger, updateTrigger,
             }}>
                 Avbryt
             </button>
-            <button onClick={(e)=>{
+            <button disabled={tempState === state} onClick={(e)=>{
                 e.preventDefault();
                 setState(tempState);
                 sAvbrytOgLagreSynlig(false);

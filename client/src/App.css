@@ -204,15 +204,13 @@ header .bedriftNavnHeader{
   margin-left: 0.8rem;
   margin-right: 1rem;
   text-align: center;
-  animation: bestillAnimasjon 0.5s ease-in-out 1;
-  animation-delay: 0.5s;
 }
 .bedriftNavn{
   font-family: var(--font4);
 }
 
 textarea{
-  width: 18rem;
+  width: 16rem;
   height: 5rem;
 }
 footer{
@@ -891,7 +889,7 @@ input, button, select, option {
   .redigerKnapp{
     background:url("../public/rediger.png");
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size: contain;
     background-position: center;
     width: 2rem;
     height: 2rem;
@@ -1328,9 +1326,19 @@ input, button, select, option {
 }
 .ikkesynlig{
   transform: translateX(-150%);
+  height: 1px;
+  visibility: hidden;
 }
 .adminKnapp{
-  margin:0;
+  margin: 0;
+    border-radius: none;
+    border: thin solid black;
+    font-size: large;
+    font-weight: 700;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
 }
 .aktivSide{
   background: var(--farge4);
@@ -1417,9 +1425,8 @@ header * {
 .adminKnapper{
   width:100%;
 }
-.adminKnapper button{
+.adminKnapper div{
   padding:1rem;
-  border-radius: none !important;
 }
   .frisorOversikt{
     display: flex;

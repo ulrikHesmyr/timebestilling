@@ -385,42 +385,42 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 }}></img>
                 <div className={menySynlig?'adminKnapper':"ikkesynlig adminKnapper"}>
                 
-                    <button className={synligKomponent === 1?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
+                    <div className={synligKomponent === 1?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
                         e.preventDefault();
                         setSynligKomponent(1);
                         sMenySynlig(false);
-                    }}>TIMEBESTILLINGER</button>
+                    }}>TIMEBESTILLINGER</div>
 
                 
-                    <button className={synligKomponent === 2?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
+                    <div className={synligKomponent === 2?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
                         e.preventDefault();
                         setSynligKomponent(2);
                         sMenySynlig(false);
-                    }}>FRIDAGER OG FRAVÆR</button>
+                    }}>FRIDAGER OG FRAVÆR</div>
 
-                    <button className={synligKomponent === 3?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
+                    <div className={synligKomponent === 3?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
                         e.preventDefault();
                         setSynligKomponent(3);
                         sMenySynlig(false);
-                    }}>KONTAKT-INFO, KATEGORIER, ANSATTE etc.</button>
+                    }}>KONTAKT-INFO, KATEGORIER, ANSATTE etc.</div>
 
-                    <button className={synligKomponent === 4?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
+                    <div className={synligKomponent === 4?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
                         e.preventDefault();
                         setSynligKomponent(4);
                         sMenySynlig(false);
-                    }}>BEHANDLINGER</button>
+                    }}>BEHANDLINGER</div>
 
-                    <button className={synligKomponent === 5?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
+                    <div className={synligKomponent === 5?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
                         e.preventDefault();
                         setSynligKomponent(5);
                         sMenySynlig(false);
-                    }}>SMS-feedback, bestillings-PIN, timebestilling etc.</button>
+                    }}>SMS-feedback, bestillings-PIN, timebestilling etc.</div>
 
-                    <button className={synligKomponent === 6?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
+                    <div className={synligKomponent === 6?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
                         e.preventDefault();
                         setSynligKomponent(6);
                         sMenySynlig(false);
-                    }}>Om-oss siden</button>
+                    }}>Om-oss siden</div>
 
                     </div>
 
@@ -527,7 +527,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                                 }}>
                                     Avbryt
                                 </button>
-                                <button onClick={()=>{
+                                <button disabled={omOssTekst === env.omOssTekst} onClick={()=>{
                                     sVisRedigerOmOss(false);
                                     oppdaterOmOss();
                                 }}>
@@ -568,7 +568,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                                 }}>
                                     Avbryt
                                 </button>
-                                <button onClick={()=>{
+                                <button disabled={hoytidsdag === ""} onClick={()=>{
                                     sVisRedigerHoytidsdager(false);
                                     sLeggtilhoytid(false);
                                     leggTilHoytidsDag();
@@ -681,7 +681,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                                     sAdresseTekst(`${env.adresse.gatenavn} ${env.adresse.husnummer}${env.adresse.bokstav?env.adresse.bokstav:""}, ${env.adresse.postnummer} ${env.adresse.poststed}`);
                                     sMuligeAdresser([]);
                                 }}>Avbryt</button>
-                                <button onClick={()=>{
+                                <button disabled={!kanOppdatereAdresse} onClick={()=>{
                                    if(kanOppdatereAdresse){
                                         if(window.confirm("Er du sikker på at du vil redigere adressen til: " + adresseTekst + "?")){
                                         oppdaterAdresse();
@@ -862,7 +862,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                                 sLinkNyttMedie("");
                             }}>Avbryt</button>
 
-                            <button onClick={()=>{
+                            <button disabled={muligeSosialeMedier.length === env.sosialeMedier.length} onClick={()=>{
                                 if((brukerNyttMedie === "" || linkNyttMedie === "") || muligeSosialeMedier.length === env.sosialeMedier.length){
                                     alert("Du må fylle ut alle feltene!");
                                 } else {
@@ -959,7 +959,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                                     sNyBehandlingKategori(env.kategorier[0]);
                                     sNyBehandlingTid(behandlingsEstimater[0]);
                                 }}>Avbryt</button>
-                                <button onClick={()=>{
+                                <button disabled={!(nyBehandlingNavn !== "" && nyBehandlingBeskrivelse !== "" && !isNaN(parseInt(nyBehandlingPris)) && nyBehandlingKategori !== "" && !isNaN(parseInt(nyBehandlingPris)) && !env.tjenester.map(t=>t.navn).includes(nyBehandlingNavn))} onClick={()=>{
                                     if(nyBehandlingNavn !== "" && nyBehandlingBeskrivelse !== "" && !isNaN(parseInt(nyBehandlingPris)) && nyBehandlingKategori !== "" && !isNaN(parseInt(nyBehandlingPris)) && !env.tjenester.map(t=>t.navn).includes(nyBehandlingNavn)){
                                         
                                         opprettNyBehandling({navn:nyBehandlingNavn, beskrivelse:nyBehandlingBeskrivelse, pris:parseInt(nyBehandlingPris), kategori:nyBehandlingKategori, tid:(parseInt(nyBehandlingTid))})
@@ -1129,7 +1129,7 @@ function DetaljerBehandling({behandling, env, lagreVarsel, varsle, varsleFeil, s
 
         }}>Avbryt</button>
 
-        <button onClick={()=>{
+        <button disabled={behandling.tid === behandlingTid && behandling.pris === behandlingPris && behandling.beskrivelse === behandlingBeskrivelse && behandling.kategori === behandlingKategori} onClick={()=>{
             oppdaterBehandling({navn: behandling.navn, pris:parseInt(behandlingPris), tid:parseInt(behandlingTid), beskrivelse:behandlingBeskrivelse, kategori:behandlingKategori});
             sVisRedigerBehandling(false);
             sVisRedigerKategori(false);
