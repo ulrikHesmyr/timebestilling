@@ -204,6 +204,8 @@ header .bedriftNavnHeader{
   margin-left: 0.8rem;
   margin-right: 1rem;
   text-align: center;
+  animation: bestillAnimasjon 0.5s ease-in-out 1;
+  animation-delay: 0.5s;
 }
 .bedriftNavn{
   font-family: var(--font4);
@@ -1156,6 +1158,13 @@ input, button, select, option {
     width: 20%;
     transition: 0.1s ease all;
   }
+  .frisorbildeAdmin{
+    object-fit: cover;
+    border: 2px solid var(--color3);
+    aspect-ratio: 1/1;
+    transition: 0.1s ease all;
+    height: inherit;
+  }
   .column{
     display: flex;
     flex-direction: column;
@@ -1313,8 +1322,19 @@ input, button, select, option {
   
 .adminKnapper{
   display: flex;
-  flex-direction: row;
-  
+  flex-direction: column;
+  width:50%;
+  transition: 0.3s ease all;
+}
+.ikkesynlig{
+  transform: translateX(-150%);
+}
+.adminKnapp{
+  margin:0;
+}
+.aktivSide{
+  background: var(--farge4);
+  color: var(--color1);
 }
 .adresseLink{
   width:100%;
@@ -1380,10 +1400,6 @@ input, button, select, option {
 header * {
   margin:0;
 }
-.adminKnapper{
-  display: flex;
-  flex-direction: column;
-}
 .seksjon{
   display: grid;
   grid-template-columns: 1fr 3fr;
@@ -1397,6 +1413,9 @@ header * {
     font-weight: 200;
     border-top: thin solid rgba(0, 0, 0, 0.5);
     padding-top: 0.4rem;
+}
+.adminKnapper{
+  width:100%;
 }
 .adminKnapper button{
   padding:1rem;

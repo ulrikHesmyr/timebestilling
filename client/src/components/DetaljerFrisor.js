@@ -356,7 +356,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
       }}  style={{display:"flex", height:"3rem", fontSize:"larger", flexDirection:"row", alignItems:"center", margin:"0.7rem",padding:"0.3rem", cursor:"pointer", borderLeft:"thin solid rgba(0,0,0,0.4)"}}>
       <img className='ikonKnapper' src='detaljer.png' alt="Detaljer om ansatt"></img>
       <div style={{padding:"0.3rem"}}>{frisor.navn} </div>
-      <img className='frisorbilde' src={`${window.origin}/uploads/${frisor.img}`} alt={`Bilde av ${frisor.navn}`}></img>
+      <img className='frisorbildeAdmin' src={`${window.origin}/uploads/${frisor.img}`} alt={`Bilde av ${frisor.navn}`}></img>
     </div>
     
 

@@ -72,6 +72,8 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
         //Slett sosialt medie
     const [visSlettSosialtMedie, sVisSlettSosialtMedie] = useState(false);
 
+    //Navigasjonsburger
+    const [menySynlig, sMenySynlig] = useState(false);
 
     //Om oss
     const [visRedigerOmOss, sVisRedigerOmOss] = useState(false);
@@ -375,46 +377,58 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
     return(
         <div className='adminpanel'>
                 <h1>Ditt skrivebord</h1>
-                {env !== null? <div className='adminKnapper'>
+            { env !== null ?<>
+                <img style={{width:"4rem"}} 
+                src="rekkefolge.png" alt="Navigasjonsburger"
+                onClick={()=>{
+                    sMenySynlig(!menySynlig);
+                }}></img>
+                <div className={menySynlig?'adminKnapper':"ikkesynlig adminKnapper"}>
                 
-                    <button style={{ borderRadius:"0.5rem 0 0 0", margin:"0", borderCollapse:"collapse", border:"2px solid black", borderBottom:(synligKomponent=== 1? "none":"2px solid black"), color:(synligKomponent=== 1? "black":"rgba(0,0,0,0.5)")}} onClick={(e)=>{
+                    <button className={synligKomponent === 1?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
                         e.preventDefault();
                         setSynligKomponent(1);
+                        sMenySynlig(false);
                     }}>TIMEBESTILLINGER</button>
 
                 
-                    <button style={{margin:"0", border:"2px solid black", borderBottom:(synligKomponent=== 2? "none":"2px solid black"), color:(synligKomponent=== 2? "black":"rgba(0,0,0,0.5)")}} onClick={(e)=>{
+                    <button className={synligKomponent === 2?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
                         e.preventDefault();
                         setSynligKomponent(2);
+                        sMenySynlig(false);
                     }}>FRIDAGER OG FRAVÆR</button>
 
-                    <button  style={{margin:"0", border:"2px solid black", borderBottom:(synligKomponent=== 3? "none":"2px solid black"), color:(synligKomponent=== 3? "black":"rgba(0,0,0,0.5)")}} onClick={(e)=>{
+                    <button className={synligKomponent === 3?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
                         e.preventDefault();
                         setSynligKomponent(3);
+                        sMenySynlig(false);
                     }}>KONTAKT-INFO, KATEGORIER, ANSATTE etc.</button>
 
-                    <button  style={{borderRadius:"0 0 0 0 ", margin:"0", border:"2px solid black", borderBottom:(synligKomponent=== 4? "none":"2px solid black"), color:(synligKomponent=== 4? "black":"rgba(0,0,0,0.5)")}} onClick={(e)=>{
+                    <button className={synligKomponent === 4?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
                         e.preventDefault();
                         setSynligKomponent(4);
+                        sMenySynlig(false);
                     }}>BEHANDLINGER</button>
 
-                    <button  style={{borderRadius:"0  0 0 0 ", margin:"0", border:"2px solid black", borderBottom:(synligKomponent=== 5? "none":"2px solid black"), color:(synligKomponent=== 5? "black":"rgba(0,0,0,0.5)")}} onClick={(e)=>{
+                    <button className={synligKomponent === 5?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
                         e.preventDefault();
                         setSynligKomponent(5);
+                        sMenySynlig(false);
                     }}>SMS-feedback, bestillings-PIN, timebestilling etc.</button>
 
-                    <button onClick={(e)=>{
+                    <button className={synligKomponent === 6?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
                         e.preventDefault();
                         setSynligKomponent(6);
-                    }} style={{borderRadius:"0  0.5rem 0 0 ", margin:"0", border:"2px solid black", borderBottom:(synligKomponent=== 6? "none":"2px solid black"), color:(synligKomponent=== 6? "black":"rgba(0,0,0,0.5)")}}>Om-oss siden</button>
+                        sMenySynlig(false);
+                    }}>Om-oss siden</button>
 
-                    </div>:""}
+                    </div>
 
-                {synligKomponent === 6 && env !== null? <RedigerOmOss env={env} varsleFeil={varsleFeil} varsle={varsle} lagreVarsel={lagreVarsel} sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} />:""}
+                {synligKomponent === 6? <RedigerOmOss env={env} varsleFeil={varsleFeil} varsle={varsle} lagreVarsel={lagreVarsel} sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} />:""}
                 
                 <Fri env={env} bestilteTimer={bestilteTimer} synligKomponent={synligKomponent} lagreVarsel={lagreVarsel} varsle={varsle} varsleFeil={varsleFeil} />
 
-                {synligKomponent === 5 && env !== null? <SMS env={env} varsleFeil={varsleFeil} varsle={varsle} lagreVarsel={lagreVarsel} sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} />:""}
+                {synligKomponent === 5? <SMS env={env} varsleFeil={varsleFeil} varsle={varsle} lagreVarsel={lagreVarsel} sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} />:""}
 
                 
                 {synligKomponent === 1 && bestilteTimer !== null?(<>
@@ -473,7 +487,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
             ):""}
 
 
-            {synligKomponent === 3 && env !== null?(
+            {synligKomponent === 3?(
                 <>
                 
                 <h3>Ansatte, kategorier, åpningstider og kontakt-info</h3>
@@ -701,7 +715,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                                 </div>
                         ))}
                     </div>
-                    {env !== null?<LeggTilFrisor env={env} lagreVarsel={lagreVarsel} varsle={varsle} updateTrigger={updateTrigger} varsleFeil={varsleFeil} sUpdateTrigger={sUpdateTrigger} />:""}
+                    <LeggTilFrisor env={env} lagreVarsel={lagreVarsel} varsle={varsle} updateTrigger={updateTrigger} varsleFeil={varsleFeil} sUpdateTrigger={sUpdateTrigger} />
                     
                 </div>
 
@@ -896,7 +910,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 
             </div></>
             ):""}
-            {synligKomponent === 4 && env !== null?(
+            {synligKomponent === 4?(
             <>
                 <div>
                 <h3>Behandlinger:</h3>
@@ -1014,7 +1028,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     
                 </div>
             </>):""}
-                    
+            </>:<div className='laster'></div>}
         </div>
     )
 }
