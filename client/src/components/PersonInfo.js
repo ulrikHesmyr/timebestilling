@@ -8,11 +8,13 @@ function PersonInfo({env, smsBekreftelse, sSmsBekreftelse, totalTid, totalPris, 
     const [visPINBoks, sVisPINBoks] = useState(false);
     const [pin, sPIN] = useState('');
     const [tryktOK, sTryktOK] = useState(!env.aktivertSMSpin);
+    const [skrevetFerdigTlf, sSkrevetFerdigTlf] = useState(false);
     const [visLaster, sVisLaster] = useState(false);
 
     const [visIkkeGodkjent, sVisIkkeGodkjent] = useState(false);
     const sendReservasjonBoks = useRef(null);
     const scrollPINBoks = useRef(null);
+    const verifiserKnapp = useRef(null);
     
     let format = /[`!@#$%^&*()_+=[\]{};':"\\|,.<>/?~]/;
 
@@ -57,7 +59,7 @@ function PersonInfo({env, smsBekreftelse, sSmsBekreftelse, totalTid, totalPris, 
             sendReservasjonBoks.current.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
         } else if(!response.valid) {
             sVisPINBoks(true);
-            scrollPINBoks.current.scrollIntoView({behavior: "smooth"});
+            scrollPINBoks.current.scrollIntoView({behavior: "smooth", block:"center"});
 
         }
     }
@@ -97,7 +99,7 @@ function PersonInfo({env, smsBekreftelse, sSmsBekreftelse, totalTid, totalPris, 
                     }
                 }}></input> </label>
 
-                <label htmlFor="telefonnummer">Telefon: * <input aria-label='Telefonnummer, 8-siffer' required aria-required maxLength={8} inputMode="numeric" value={telefonnummer} type="text" name="telefonnummer" id="telefonnummer" onChange={(e)=>{
+                <label htmlFor="telefonnummer">Telefon: * +47 <input aria-label='Telefonnummer, 8-siffer' required aria-required maxLength={8} inputMode="numeric" value={telefonnummer} type="text" name="telefonnummer" id="telefonnummer" onChange={(e)=>{
                     const newValue = e.target.value;
                     if(/^\d*$/.test(newValue) && (e.target.value.length === 0 || e.target.value[0] === "4" || e.target.value[0] === "9")){
                         sTelefonnummer(newValue);
@@ -111,12 +113,19 @@ function PersonInfo({env, smsBekreftelse, sSmsBekreftelse, totalTid, totalPris, 
                             sVisPINBoks(false);
                             sPIN('');
                         }
+                        if(e.target.value.length === 8){
+                            sSkrevetFerdigTlf(true);
+                            if(!visPINBoks && !validertSMSpin && !tryktOK){
+                                verifiserKnapp.current.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+                            }
+                        }
                     } 
-                }}></input> NB 8 siffer
+                    }}></input> NB 8 siffer
+
+                </label>
 
                 
-
-                {!visPINBoks && !validertSMSpin && !tryktOK?<button aria-label="Valider telefonnummer. Du vil motta en SMS" onClick={(e)=>{
+                {!visPINBoks && !validertSMSpin && !tryktOK && skrevetFerdigTlf?<label ref={verifiserKnapp} htmlFor='verifiser'>Verifiser telefonnummer: <button id="verifiser" name='verifiser' aria-label="Valider telefonnummer. Du vil motta en SMS" onClick={(e)=>{
                     e.preventDefault();
                     if(telefonnummer.length === 8){
                         validerSMSpin();
@@ -124,7 +133,7 @@ function PersonInfo({env, smsBekreftelse, sSmsBekreftelse, totalTid, totalPris, 
                         alert("Telefonnummeret må være 8 siffer langt");
 
                     }
-                }}>OK</button>:""}</label>
+                }}>VERIFISER</button></label>:""}
 
                 
                 
@@ -202,6 +211,7 @@ function PersonInfo({env, smsBekreftelse, sSmsBekreftelse, totalTid, totalPris, 
                         }
                     }
                 }}>SEND INN RESERVASJON</button>))}
+                {!validertSMSpin && <p>Fyll inn navn og telefonnumer, og verifiser telefonnumer dersom det ikke er gjort.</p>}
                 <div  ref={sendReservasjonBoks}></div>
             </form>
         </div>

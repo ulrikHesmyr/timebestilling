@@ -164,6 +164,7 @@ router.post('/bestilltime', ansattSjekker, async (req,res)=>{
             let kundensTelefonnummer = telefonnummer;
             if(NODE_ENV === "production"){
                 
+                //Sjekker om det er en ansatt som bestiller time
                 const ansattBestilling = req.cookies.access_token; 
                 const ansattBestilling2 = req.cookies.two_FA_valid; 
                 let ansatt = false;
@@ -183,16 +184,27 @@ router.post('/bestilltime', ansattSjekker, async (req,res)=>{
                 }
             }
 
+            //Oppretter timebestillingen i databasen
             let bestillNyTime = await Bestilttime.create({
                 dato: dato,
                 tidspunkt: tidspunkt,
-                //frisor: frisor,
                 behandlinger: behandlinger,
                 medarbeider: medarbeider,
                 kunde: jwt.sign({kunde}, CUSTOMER_KEY),
                 telefonnummer: jwt.sign({telefonnummer: kundensTelefonnummer}, CUSTOMER_KEY)
             })
 
+            //Setter samtykke cookie
+            const expirationDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000 * 26); // 26 uker aka 6 måneder
+            const samtykke = {samtykke: true, expires: expirationDate.toLocaleDateString()};
+            
+            res.cookie("samtykke_cookies", samtykke, {
+                httpOnly: true,
+                secure: process.env.HTTPS_ENABLED == "secure",
+                expires: expirationDate
+            });
+
+            //Sender epost til medarbeider
             let brukerTilAnsatt = await Brukere.findOne({brukernavn: medarbeider.toLowerCase()});
             if(brukerTilAnsatt){
                 if(brukerTilAnsatt.aktivertEpost && brukerTilAnsatt.epost){
@@ -256,13 +268,6 @@ router.post("/tlfpin", PINlimiter, async (req,res)=>{
             const token = jwt.sign({tlf: data.tlf}, SMSPINVALID_SECRET);
             const expirationDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000 * 26); // 26 uker aka 6 måneder
             res.cookie("tlfvalid", token, {
-                httpOnly: true,
-                secure: process.env.HTTPS_ENABLED == "secure",
-                expires: expirationDate
-            });
-            const samtykke = `samtykke: true, expirationDate: ${expirationDate.toLocaleDateString()}`
-            
-            res.cookie("samtykke_cookies", samtykke, {
                 httpOnly: true,
                 secure: process.env.HTTPS_ENABLED == "secure",
                 expires: expirationDate

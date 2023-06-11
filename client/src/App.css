@@ -520,7 +520,9 @@ input, button, select, option {
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
   }
-  
+  .kategorier a{
+    text-shadow: none !important;
+  }
   .tjeneste{
     display: grid;
     grid-template-columns: 3fr 1fr;
