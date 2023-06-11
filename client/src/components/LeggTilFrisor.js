@@ -20,7 +20,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
 
     const [visPause, sVisPause] = useState(false);
     const [pauseTidspunkt, sPauseTidspunkt] = useState("06:00");
-    const [pauseDag, sPauseDag] = useState("");
+    const [pauseDag, sPauseDag] = useState(env.klokkeslett[0].dag);
 
     
 
@@ -114,22 +114,22 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
   return (
     <>
     {leggtil?<div className='fokus' >
-        <label style={{fontWeight:"bold"}}>Navn på ny ansatt: <input required onChange={(e)=>{
+        <label style={{display:"flex", flexDirection:"column", fontWeight:"bold"}}>Navn på ny ansatt: <input required onChange={(e)=>{
             sNyFrisorNavn(e.target.value);
         }} value={nyFrisorNavn} type="text" placeholder='Navn navnesen' maxLength={20}></input></label>
 
-        <label style={{fontWeight:"bold"}}>Tittel: <input required onChange={(e)=>{
+        <label style={{display:"flex", flexDirection:"column", fontWeight:"bold"}}>Tittel: <input required onChange={(e)=>{
             sNyFrisorTittel(e.target.value);
         }} value={nyFrisorTittel} type="text" placeholder='eks.: Frisør, Terapeut, etc.' maxLength={20}></input></label>
 
-        <label style={{fontWeight:"bold"}}>Beskrivelse: <textarea onChange={(e)=>{
+        <label style={{display:"flex", flexDirection:"column", fontWeight:"bold"}}>Beskrivelse: <textarea onChange={(e)=>{
             sNyFrisorBeskrivelse(e.target.value);
         }} value={nyFrisorBeskrivelse} placeholder='Navn har jobbet hos oss siden... Hen er kreativ og liker å jobbe med... Nøyaktig og opptatt av å forstå kundens behov...'></textarea></label>
 
-        <label style={{fontWeight:"bold"}}>Telefonnummeret til ansatt: <input required style={{letterSpacing:"0.3rem"}} onChange={(e)=>{
+        <label style={{display:"flex", flexDirection:"column", fontWeight:"bold"}}>Telefonnummeret til ansatt: <input required style={{letterSpacing:"0.3rem"}} onChange={(e)=>{
             sTlfNyFrisor(e.target.value);
         }} value={tlfNyFrisor} type="text" maxLength={8}></input></label>
-        <label style={{fontWeight:"bold"}}>E-post: <input required onChange={(e)=>{
+        <label style={{display:"flex", flexDirection:"column", fontWeight:"bold"}}>E-post: <input required onChange={(e)=>{
             sEpost(e.target.value);
         }} value={epost} type="email"></input> </label>
         <label style={{display:"flex", alignItems:"center", flexWrap:"wrap", flexDirection:"row"}}>Last opp bilde av ansatt: <input required accept="image/*" onChange={(e)=>{

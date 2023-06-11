@@ -1021,7 +1021,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     </>}
                     <div style={{display:"flex", flexDirection:"row", flexWrap:"wrap", gap:"1rem"}}>
                     {env.tjenester.slice(0).reverse().map((behandling)=>(
-                        <div key={behandling.navn} style={{display:"flex", flexDirection:"row", alignItems:"center", margin:"0.3rem"}}>
+                        <div className='behandlingAdminPanel' key={behandling.navn}>
                             <DetaljerBehandling lagreVarsel={lagreVarsel} varsle={varsle} varsleFeil={varsleFeil} sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} behandlingsEstimater={behandlingsEstimater} behandling={behandling} env={env} />
                         </div>
                     ))}

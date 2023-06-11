@@ -10,6 +10,7 @@ const mailer = require("./configuration/mailer");
 const rateLimiter = require("express-rate-limit");
 const cookieParser = require("cookie-parser");
 const helmet = require("helmet");
+const fs = require("fs");
 const { v4: uuidv4 } = require('uuid');
 const Client = require("target365-sdk");
 //heihei
@@ -211,6 +212,9 @@ schedule.scheduleJob('39 23 * * *', async ()=>{
       let slettedeFrisorer = frisorer.filter(frisor => frisor.oppsigelse === hentDatoIDag());
       const oppdatert = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {frisorer:gjenverendeFrisorer});
       slettedeFrisorer.forEach(async frisor => {
+        if(fs.existsSync(`./uploads/${frisor.brukernavn.toLowerCase()}.jpg`)){
+          fs.unlinkSync(`./uploads/${frisor.brukernavn.toLowerCase()}.jpg`);
+        }
         const slettet = await Brukere.deleteOne({brukernavn: frisor.navn.toLowerCase()});
         if(!slettet){
           mailer.sendMail(`Problem database for ${BEDRIFT}`, "Problemer med å slette frisør");

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {hentDato} from '../App'
+import {hentDato, hentMaaned} from '../App'
 import { minutterFraKlokkeslett, klokkeslettFraMinutter } from './Klokkeslett';
 function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, sUpdateTrigger, updateTrigger}){
 
@@ -392,7 +392,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
       </ul>
       </div>
       
-      <div>{frisor.oppsigelse !== "Ikke oppsagt"?`Dato for oppsigelse: ${frisor.oppsigelse}`:""}</div>
+      <div>{frisor.oppsigelse !== "Ikke oppsagt"?`Dato for oppsigelse: ${parseInt(frisor.oppsigelse.substring(8,10))}. ${hentMaaned(parseInt(frisor.oppsigelse.substring(5,7)) -1)}`:""}</div>
       
 
       {visRedigerFrisor?
@@ -550,7 +550,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
               <label style={{display:"flex", alignItems:"flex-start", flexDirection:"column"}}>Last opp bilde av medarbeider: <input accept="image/*" onChange={(e)=>{
               sBildeAvFrisor(e.target.files[0]);
               sPreview(URL.createObjectURL(e.target.files[0]));
-              }} type="file" name="uploaded_file"></input>Last opp bilde her: Maks 12mb {preview && <img className='frisorbilde' style={{height:"300px"}} alt='Forhåndsvisning av bildet' src={preview}></img>}</label>
+              }} type="file" name="uploaded_file"></input>Last opp bilde her: Maks 12mb {preview && <img style={{width:"10rem", aspectRatio:"1/1", objectFit:"contain"}} alt='Forhåndsvisning av bildet' src={preview}></img>}</label>
       
       <div>
         <button onClick={(e)=>{
@@ -609,7 +609,8 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
               <div>
               {paaJobb.map((dag, index)=>{
             return (
-                <div style={{display: "flex", alignItems: "center"}} key={dag.dag}>{dag.dag}
+                <div className='redigerPaaJobb' key={dag.dag}>{dag.dag}
+                    <div>
                     <input type="checkbox" onChange={(e)=>{
                         const nyPaaJobb = [...paaJobb];
                         nyPaaJobb[index].stengt = e.target.checked;
@@ -643,6 +644,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
                             alert("Klokkeslettet må være på riktig format eks.: 08:00, 08:30, 09:00 osv.");
                         }
                     }} type='time' step="1800" min={dag.open} max={env.klokkeslett[index].closed} value={env.klokkeslett[index].stengt?undefined:dag.closed}></input>
+                    </div>
                 </div>
             )
             })}

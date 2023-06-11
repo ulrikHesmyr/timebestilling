@@ -265,7 +265,7 @@ function RedigerOmOss({env, varlseFeil, varsle, lagreVarsel, sUpdateTrigger, upd
                 </div>
         </div>
         
-        :<button className='row' onClick={()=>{
+        :<button style={{display:"flex", gap:"0.2rem", flexDirection:"row", alignItems:"center", justifyContent:"center"}} onClick={()=>{
             sVisLeggTilInnhold(true);
         }}><img alt="Legg til innhold" src="leggtil.png" className='ikonKnapper'></img>Legg til</button>}
     </div>
