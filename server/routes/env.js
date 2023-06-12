@@ -772,27 +772,6 @@ router.post("/oppdaterTittelOgBeskrivelse", authorization, async (req,res)=>{
 })
 
 
-router.post("/slettFrisor", authorization, async (req,res)=>{
-    const {navn} = req.body;
-    try {
-        if(req.admin){
-            const env = await Environment.findOne({bedrift:BEDRIFT});
-            if(env){
-                let tempFrisorer = env.frisorer;
-                let nyFrisorer = tempFrisorer.filter(frisor => frisor.navn !== navn);
-                const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {frisorer:nyFrisorer});
-                if(oppdatertEnv){
-                    return res.send({message:"Medarbeider slettet!"});
-                } else {
-                    return res.send({message:"Noe har skjedd gærent i /slettFrisor!"});
-                }
-            }
-        }
-    } catch (error) {
-        console.log(error, "error i slettFrisor");
-    }
-})
-
 router.post("/oppdaterBehandlingerFrisor", authorization, async (req, res)=>{
     const {navn, behandlinger} = req.body;
     
@@ -822,23 +801,6 @@ router.post("/oppdaterBehandlingerFrisor", authorization, async (req, res)=>{
     }
 })
 
-router.post('/oppdaterEnv',authorization, async(req,res)=>{
-    const {tjenester, kategorier, sosialeMedier, kontakt_tlf, kontakt_epost, klokkeslett} = req.body;
-    try {
-        if(req.admin){
-            
-        const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {tjenester:tjenester, kategorier:kategorier, sosialeMedier:sosialeMedier, kontakt_tlf:kontakt_tlf, kontakt_epost:kontakt_epost, klokkeslett:klokkeslett});
-        
-            if(oppdatertEnv){
-                return res.send({message:"Environment ble oppdatert!"});
-            } else {
-                return res.send({message:"Noe har skjedd gærent i /oppdaterEnv!"});
-            }
-        }
-    } catch (error) {
-        
-    }
-})
 
 router.post("/endreStatusSMSfeedback", authorization, async (req,res)=>{
     const {nyStatus} = req.body;
