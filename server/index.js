@@ -212,8 +212,8 @@ schedule.scheduleJob('39 23 * * *', async ()=>{
       let slettedeFrisorer = frisorer.filter(frisor => frisor.oppsigelse === hentDatoIDag());
       const oppdatert = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {frisorer:gjenverendeFrisorer});
       slettedeFrisorer.forEach(async frisor => {
-        if(fs.existsSync(`./uploads/${frisor.brukernavn.toLowerCase()}.jpg`)){
-          fs.unlinkSync(`./uploads/${frisor.brukernavn.toLowerCase()}.jpg`);
+        if(fs.existsSync(`./uploads/${frisor.navn.toLowerCase()}.jpg`)){
+          fs.unlinkSync(`./uploads/${frisor.navn.toLowerCase()}.jpg`);
         }
         const slettet = await Brukere.deleteOne({brukernavn: frisor.navn.toLowerCase()});
         if(!slettet){
