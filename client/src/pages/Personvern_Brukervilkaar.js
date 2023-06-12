@@ -166,14 +166,14 @@ Vi ønsker at ditt besøk på {window.location.hostname} skal være en god opple
 informasjonskapsler (cookies) til funksjonelle mål. En informasjonskapsel, også kalt cookie, er 
 små filer som nettleseren din mottar fra nettsider du besøker. Filene lagres på datamaskinen eller mobilenheten din, men de 
 er krypterte og vil ikke kunne identifisere deg for uvedkommende. Ved å benytte deg av {window.location.hostname} 
-samtykker du i at vi kan sette informasjonskapsler (cookies) i din nettleser, og de fleste nettlesere er innstilt slik at de automatisk 
+ samtykker du i at vi kan sette informasjonskapsler (cookies) i din nettleser, og de fleste nettlesere er innstilt slik at de automatisk 
 aksepterer informasjonskapsler. Dersom du ikke samtykker til bruk av informasjonskapsler, må du selv trekke tilbake samtykket 
 ved å endre innstillingene i nettleseren din. Les mer om hvordan du gjør dette lenger ned på siden.
 </p>
 
 <p>
 For å bestille time på {window.location.hostname}/timebestilling, så må vi ta cookies (informasjonskapsler) i bruk. Når du 
-har fylt ut din bestilling, så vil vi lagre telefonnummeret ditt i en cookie slik at du ikke trenger å verifisere telefonnummeret ditt
+har sendt inn din bestilling, så vil vi lagre telefonnummeret ditt i en cookie slik at du ikke trenger å verifisere telefonnummeret ditt
  til neste gang. Samtidig bruker vi midlertidige funksjonelle cookies for pin og verifisering, som slettes når verifiseringen er 
  gjennomført, eller når du lukker nettleseren.
 Når du trykker på knappen som sier "send inn reservasjon", så blir du informert om at du samtykker til at vi lagrer informasjonen 
