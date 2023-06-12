@@ -100,10 +100,10 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({dag:d}),
-                credentials:'include'
+                //credentials:'include'
 
             }
-            const request = await fetch("/env/slettHoytidsdag", options);
+            const request = await fetch("http://localhost:1227/env/slettHoytidsdag", options);
             const response = await request.json();
             if(response){
                 varsle();
@@ -125,10 +125,10 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({dag:hoytidsdag, dato:hoytidsdato}),
-                credentials:'include'
+                //credentials:'include'
 
             }
-            const request = await fetch("/env/leggTilHoytidsdag", options);
+            const request = await fetch("http://localhost:1227/env/leggTilHoytidsdag", options);
             const response = await request.json();
             if(response){
                 varsle();
@@ -149,10 +149,10 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({medie:medie}),
-                credentials:'include'
+                //credentials:'include'
 
             }
-            const request = await fetch("/env/leggTilSosialtMedie", options);
+            const request = await fetch("http://localhost:1227/env/leggTilSosialtMedie", options);
             const response = await request.json();
             if(response){
                 varsle();
@@ -174,10 +174,10 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({medie:medie}),
-                credentials:'include'
+                //credentials:'include'
             
             }
-            const request = await fetch("/env/slettSosialtMedie", options);
+            const request = await fetch("http://localhost:1227/env/slettSosialtMedie", options);
             const response = await request.json();
             if(response){
                 varsle();
@@ -199,10 +199,10 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({kategori:kategori}),
-                credentials:'include'
+                //credentials:'include'
             
             }
-            const request = await fetch("/env/slettKategori", options);
+            const request = await fetch("http://localhost:1227/env/slettKategori", options);
             const response = await request.json();
             if(response){
                 varsle();
@@ -224,10 +224,10 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({kategori:nyKategori}),
-                credentials:'include'
+                //credentials:'include'
             
             }
-            const request = await fetch("/env/nyKategori", options);
+            const request = await fetch("http://localhost:1227/env/nyKategori", options);
             const response = await request.json();
             if(response){
                 varsle();
@@ -249,10 +249,10 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({behandling:b}),
-            credentials:'include'
+            //credentials:'include'
 
         }
-        const request = await fetch("/env/slettBehandling", options);
+        const request = await fetch("http://localhost:1227/env/slettBehandling", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -274,9 +274,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({behandling:b}),
-            credentials:'include'
+            //credentials:'include'
         }
-        const request = await fetch("/env/opprettNyBehandling", options);
+        const request = await fetch("http://localhost:1227/env/opprettNyBehandling", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -297,9 +297,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({omOssArtikkel:omOssTekst}),
-            credentials:'include'
+            //credentials:'include'
         }
-        const request = await fetch("/env/oppdaterOmOss", options);
+        const request = await fetch("http://localhost:1227/env/oppdaterOmOss", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -335,9 +335,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({adresse:adresse}),
-            credentials:'include'
+            //credentials:'include'
         }
-        const request = await fetch("/env/oppdaterAdresse", options);
+        const request = await fetch("http://localhost:1227/env/oppdaterAdresse", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -359,9 +359,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify(slettetTime),
-            credentials:'include'
+            //credentials:'include'
         }
-        const request = await fetch("/timebestilling/oppdaterTimebestillinger", options);
+        const request = await fetch("http://localhost:1227/timebestilling/oppdaterTimebestillinger", options);
         const response = await request.json();
         if(response.valid){
             varsle();
@@ -1057,10 +1057,10 @@ function DetaljerBehandling({behandling, env, lagreVarsel, varsle, varsleFeil, s
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({tjeneste: t}),
-                credentials:'include'
+                //credentials:'include'
 
             }
-            const request = await fetch("/env/oppdaterBehandling", options);
+            const request = await fetch("http://localhost:1227/env/oppdaterBehandling", options);
             const response = await request.json();
             if(response){
                 varsle();

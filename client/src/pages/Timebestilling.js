@@ -2,10 +2,12 @@ import React, {useEffect, useState, useRef} from 'react'
 import Tjenester from '../components/Tjenester';
 import Klokkeslett from '../components/Klokkeslett';
 import Frisor from '../components/Frisor';
+import Skisser from '../components/Skisser';
 import PersonInfo from '../components/PersonInfo';
 import Dato from '../components/Dato';
 import { hentDato } from '../App';
 import Footer from '../components/Footer';
+import Fortsett from '../components/Fortsett';
 
 function Timebestilling({env, hentMaaned, setReservasjon}){
     
@@ -23,6 +25,9 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
 
     
     const [dato, sDato] = useState(hentDato());
+    const [skisser, sSkisser] = useState(undefined);
+    const [valgteSkisser, sValgteSkisser] = useState([]);
+    const [skisseFiler, sSkisseFiler] = useState(undefined);
     const [midlertidigDato, sMidlertidigDato] = useState(hentDato());
     const [produkt, sProdukt] = useState([]);
     const [frisor, sFrisor] = useState(null);
@@ -82,7 +87,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
     }
 
     async function fetchBestilteTimer(){
-        const request = await fetch("/timebestilling/hentBestiltetimer");
+        const request = await fetch("http://localhost:1227/timebestilling/hentBestiltetimer");
         const response = await request.json();
         
           if(response){
@@ -91,7 +96,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
     }
       
     async function hentFri(){
-        const request = await fetch("/env/fri");
+        const request = await fetch("http://localhost:1227/env/fri");
         const response = await request.json();
         if(response){
             sFriElementer(response);
@@ -184,11 +189,12 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
             }} >
                 {klokkeslettet !== null?<p><img className='ferdig' src="ferdig.png"></img></p>:<p className='tilbake'>3</p>} Velg dato og tid</h2>
 
-            <h2 tabIndex={0} role="button" 
-            aria-label='Vis din info boks' 
-            aria-expanded={synligKomponent === 3 && klokkeslettet !== null} 
-            aria-controls="per" id="visPersonInfoAria" 
-            className={telefonnummer.length === 8 && navn !== ""? `gjennomfortOverskrift ${(synligKomponent === 3?"aktivOverskrift overskrift":'overskrift')}`:(synligKomponent === 3?"aktivOverskrift overskrift":'overskrift')} onClick={()=>{
+
+                <h2 tabIndex={0} role="button" 
+            aria-label='Vis valg av klokkeslett og dato' 
+            aria-expanded={synligKomponent === 3 && klokkeslettet !== null } 
+            aria-controls="dat" id="visDatoOgKlokkeslettAria" 
+            className={skisser !== null? `gjennomfortOverskrift ${(synligKomponent === 3?"aktivOverskrift overskrift":'overskrift')}`:(synligKomponent === 3?"aktivOverskrift overskrift":'overskrift')} onClick={()=>{
                 if(frisor !== null && produkt.length > 0 && klokkeslettet !== null){
                     displayKomponent(3);
                 } else {
@@ -203,9 +209,31 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
                     }
                 }
             }} >
-                {telefonnummer.length === 8 && navn !== ""?<p><img className='ferdig' src="ferdig.png"></img></p>:<p className='tilbake'>4</p>}Din info</h2>
+                {skisser?<p><img className='ferdig' src="ferdig.png"></img></p>:<p className='tilbake'>4</p>} Last opp skisse</h2>
+            
+            <h2 tabIndex={0} role="button" 
+            aria-label='Vis din info boks' 
+            aria-expanded={synligKomponent === 4 && skisser !== null} 
+            aria-controls="per" id="visPersonInfoAria" 
+            className={telefonnummer.length === 8 && navn !== ""? `gjennomfortOverskrift ${(synligKomponent === 4?"aktivOverskrift overskrift":'overskrift')}`:(synligKomponent === 4?"aktivOverskrift overskrift":'overskrift')} onClick={()=>{
+                if(frisor !== null && produkt.length > 0 && klokkeslettet !== null && skisser !== null){
+                    displayKomponent(4);
+                } else {
+                    alert("Du må velge behandling, medarbeider, dato og klokkeslett først");
+                }
+            }} onKeyDown={(e)=>{
+                if(e.code === "Enter" || e.code === "Space"){
+                    if(frisor !== null && produkt.length > 0 && klokkeslettet !== null){
+                        displayKomponent(4);
+                    } else {
+                        alert("Du må velge behandling, medarbeider, dato og klokkeslett først");
+                    }
+                }
+            }} >
+                {telefonnummer.length === 8 && navn !== "" && skisser !== null?<p><img className='ferdig' src="ferdig.png"></img></p>:<p className='tilbake'>5</p>}Din info</h2>
 
             </div>
+            
             <div ref={frisorBoks} ></div>
             {(synligKomponent === 0 && env !== null?<div role="region" aria-labelledby='visTjeneseterAria' id="tje" aria-hidden={!(synligKomponent === 0)} > <Tjenester sDatoForsteLedige={sDatoForsteLedige} sFrisor={sFrisor} antallBehandlinger={antallBehandlinger} sAntallBehandlinger={sAntallBehandlinger} sKlokkeslett={sKlokkeslett} env={env} synligKomponent={synligKomponent} displayKomponent={displayKomponent} produkt={produkt} sProdukt={sProdukt} frisor={frisor} /></div>:"")}
            
@@ -220,17 +248,25 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
                 {(synligKomponent === 2 && frisor !== null && bestilteTimer !== null? <Klokkeslett harEndretDatoen={harEndretDatoen} datoForsteLedige={datoForsteLedige} sDatoForsteLedige={sDatoForsteLedige} sDato={sDato} sMidlertidigDato={sMidlertidigDato} midlertidigDato={midlertidigDato} friElementer={friElementer} sForsteFrisor={sForsteFrisor} tilgjengeligeFrisorer={tilgjengeligeFrisorer} sTilgjengeligeFrisorer={sTilgjengeligeFrisorer} env={env}  displayKomponent={displayKomponent} klokkeslettet={klokkeslettet} produkt={produkt} bestilteTimer={bestilteTimer} frisor={frisor} sKlokkeslett={sKlokkeslett} dato={dato} hentMaaned={hentMaaned}/>:"")}
             </div>
 
+            <div role="region" aria-labelledby='visDatoOgKlokkeslettAria' 
+            id="dat" aria-hidden={!(synligKomponent === 3 && klokkeslettet !== null )}>
+               {synligKomponent === 3 && <>
+                    <Skisser dato={dato} klokkeslettet={klokkeslettet} valgteSkisser={valgteSkisser} sValgteSkisser={sValgteSkisser} sSkisseFiler={sSkisseFiler} skisseFiler={skisseFiler} sSkisser={sSkisser} skisser={skisser} synligKomponent={synligKomponent} />
+                    <Fortsett displayKomponent={displayKomponent} previous={3} number={4} disabled={(skisser !== null? false:true)} />
+                </>}
+            </div>
+
             
-            <div role="region" aria-labelledby='visPersonInfoAria' id="per" aria-hidden={!(synligKomponent === 3 && klokkeslettet !== null)}>
-                {(synligKomponent === 3 && klokkeslettet !== null?<PersonInfo smsBekreftelse={smsBekreftelse} sSmsBekreftelse={sSmsBekreftelse} env={env} totalPris={totalPris} totalTid={totalTid} klokkeslettet={klokkeslettet} produkt={produkt} frisor={frisor} hentMaaned={hentMaaned} dato={dato} isMobile={isMobile} synligKomponent={synligKomponent} displayKomponent={displayKomponent} telefonnummer={telefonnummer} navn={navn} nullstillData={nullstillData} setReservasjon={setReservasjon} setUpdate={setUpdate} updateDataTrigger={updateDataTrigger} sNavn={sNavn} sTelefonnummer={sTelefonnummer} data={{
+            <div role="region" aria-labelledby='visPersonInfoAria' id="per" aria-hidden={!(synligKomponent === 4 && skisser !== null)}>
+                {(synligKomponent === 4 && skisser !== null?<PersonInfo smsBekreftelse={smsBekreftelse} sSmsBekreftelse={sSmsBekreftelse} env={env} totalPris={totalPris} totalTid={totalTid} klokkeslettet={klokkeslettet} produkt={produkt} frisor={frisor} hentMaaned={hentMaaned} dato={dato} isMobile={isMobile} synligKomponent={synligKomponent} displayKomponent={displayKomponent} telefonnummer={telefonnummer} navn={navn} nullstillData={nullstillData} setReservasjon={setReservasjon} setUpdate={setUpdate} updateDataTrigger={updateDataTrigger} sNavn={sNavn} sTelefonnummer={sTelefonnummer} data={{
                     dato:dato, 
                     tidspunkt:klokkeslettet,
-                    //frisor: (frisor === false?env.frisorer.indexOf(forsteFrisor):env.frisorer.indexOf(frisor)),
                     behandlinger:produkt.map(tjeneste=>tjeneste.navn),
                     telefonnummer: telefonnummer,
                     kunde:navn,
                     medarbeider:(frisor === false? forsteFrisor.navn:frisor.navn),
                     SMS_ENABLED: smsBekreftelse,
+                    skisser:skisser.concat(valgteSkisser)
                 }} />:"")}
             </div>
 

@@ -23,7 +23,7 @@ const {BEDRIFT, NODE_ENV, CUSTOMER_KEY, ACCESS_TOKEN_KEY} = process.env;
 
 app.use(cors());
 app.use(express.json({limit:'12mb'}));
-app.use(express.urlencoded({limit:'12mb'}));
+app.use(express.urlencoded({limit:'12mb', extended: true}));
 app.use(cookieParser());
 app.use(helmet());
 app.use(express.static('build'));

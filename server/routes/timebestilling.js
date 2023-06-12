@@ -4,6 +4,8 @@ const { v4: uuidv4 } = require('uuid');
 const Client = require("target365-sdk");
 const rateLimiter = require("express-rate-limit");
 const jwt = require("jsonwebtoken");
+const fs = require("fs");
+const multer = require("multer");
 
 const mailer = require("../configuration/mailer");
 const authorization = require("../middleware/authorization");
@@ -57,10 +59,19 @@ function ansattSjekker(req,res,next){
     
 }
 
+const skisseUpload = multer({
+    dest: "./uploads/"
+});
+
+
+router.post("/skisser/:antall/:bildefilnavn", async (req,res)=>{
+    return res.send(200);
+});
+
 router.post('/bestilltime', ansattSjekker, async (req,res)=>{
     try {
         const env = await Env.findOne();
-        const {dato, behandlinger, kunde, medarbeider, telefonnummer, tidspunkt, SMS_ENABLED} = req.body; 
+        const {skisser, dato, behandlinger, kunde, medarbeider, telefonnummer, tidspunkt, SMS_ENABLED} = req.body; 
         if(!env.aktivertTimebestilling){
             return res.status(400).json({m:"Timebestilling er ikke aktivert"});
         }
