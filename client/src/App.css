@@ -372,8 +372,8 @@ input, button, select, option {
   gap:1rem;
   grid-template-columns: 2fr 1fr;
   margin-top: 8rem;
-  background: url("../public/bakgrunnsgifh.gif");
-  background-repeat: no-repeat;
+  /*background: url("../public/bakgrunnsgifh.gif");
+  background-repeat: no-repeat;*/
   position: relative;
 }
 .timebestilling * {
