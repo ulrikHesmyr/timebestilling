@@ -285,7 +285,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
             </button></div>  }
           
           
-          <div>
+          <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
           Rediger passord
           {visRedigerPassord?<>
           <div className='fokus'>
@@ -320,7 +320,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
           }} ><img src="rediger.png" alt='rediger passord' style={{height:"1.4rem"}}></img></button>
           }</div>
 
-          <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>Varslinger (epost) for timebestilling: {aktivertEpost? <div style={{color:"green", padding:"0.2rem"}}>Aktivert <button onClick={()=>{
+          <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>Varslinger (epost) for timebestilling: {aktivertEpost? <div style={{color:"green", padding:"0.2rem", display:"flex", alignItems:"center"}}>Aktivert <button onClick={()=>{
             if(window.confirm("Er du sikker på at du vil deaktivere varslinger på epost?")){
               endreVarlinger();
             }
@@ -333,8 +333,9 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
 
            </div>:""}
            <h3>Bestille time:</h3>
-           <p>Bestill time her: <Link to="/timebestilling">BESTILL TIME</Link> </p>
+           <p>Dersom kunde har tatt kontakt over sosiale medier, muntlig eller på telefon, legg inn timebestillingen i systemet <Link to="/timebestilling">her</Link>. </p>
           <h3>Velg timebestillinger for:</h3>
+          <p>Trykk på navn til medarbeider for å kun vise timebestillinger for vedkommende.</p>
         <div className='velgFrisorVakter'>
         {env.frisorer.map((frisorElement)=>(
           <div key={frisorElement.navn} style={{border:(ansatt === frisorElement.navn? "2px solid black":"none"), backgroundColor:farger[env.frisorer.indexOf(frisorElement)], userSelect:"none"}} onClick={()=>{
@@ -349,7 +350,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
           }} >ALLE</div>
         </div>
         <h3>Timebestillinger</h3>
-        <p>Trykk på en timebestilling for å vise all informasjon om timen inkludert skisser</p>
+        <p>Trykk på en timebestilling for å vise all informasjon om timen, inkludert skisser.</p>
         
         <Calendar format={"DD/MM/YYYY HH:mm"}
         components={{
@@ -383,12 +384,25 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
           }} className='lukk'></div>
 
             <h4>{ukedag[new Date(event.dato).getDay() -1]} {parseInt(event.dato.substring(8,10))}. {hentMaaned(parseInt(event.dato.substring(5,7)) -1)} {event.tidspunkt} - {event.slutt}</h4> 
-            <p>Medarbeider: {event.medarbeider}</p>
-            <p>Kunde: {event.kunde} tlf.: {event.telefonnummer}</p> 
-            <p>Behandlinger: {event.behandlinger.join(", ")}</p> 
+            
             <div>
-              <strong>Skisser fra kunden:</strong>
-              <p>Trykk på et bilde for å forstrørre</p>
+              <strong>Medarbeider:</strong>
+              <p> {event.medarbeider}</p>
+            </div>
+            <hr></hr>
+            <div>
+              <strong>Kunde:</strong>
+              <p>{event.kunde} tlf.: {event.telefonnummer}</p> 
+            </div>
+            <hr></hr>
+            <div>
+              <strong>Behandlinger: </strong>
+              {env.tjenester.filter(t=>event.behandlinger.includes(t.navn)).map((t)=>{return <p>{t.kategori} - {t.navn}</p>})}
+            </div>
+            <hr></hr>
+            <div>
+              { event.skisser.length > 0 ? <><strong>Skisser fra kunden:</strong>
+              <p>Trykk på et bilde for å forstrørre</p></>:<p>Ingen skisser vedlagt</p>}
               <div className='row' style={{justifyContent:"flex-start"}}>
                 {event.skisser.map((s, i)=><img key={i} onClick={()=>{
                   sVisSkrivUt(true);

@@ -19,7 +19,7 @@ function Hjem({env}){
     return(<div style={{position:"relative"}}>
         <div className="hjem">
             <header>
-                <div className="bedriftNavnHeader"> <div className="viEr" >Vi er </div>{env.bedrift}</div>
+                <div className="bedriftNavnHeader"><img src="logo.png"></img></div>
                 <div>
                     {env.aktivertTimebestilling ? <>
                         <p className="bestilleTimeplz">Ønsker du å bestille time hos oss?</p>
