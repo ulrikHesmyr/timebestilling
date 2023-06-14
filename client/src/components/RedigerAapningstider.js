@@ -11,12 +11,12 @@ function RedigerAapningstider({env, varsleFeil, lagreVarsel, varsle, updateTrigg
   async function oppdaterAapningsTider(d){
     lagreVarsel();
     try {
-      const request = await fetch("http://localhost:1227/env/oppdaterAapningstider", {
+      const request = await fetch("/env/oppdaterAapningstider", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
         },
-        //credentials: 'include',
+        credentials: 'include',
         body: JSON.stringify({dag:d,  aapningstid:aapningstid, stengetid:stengetid, stengt:stengt})
       });
       const response = await request.json();

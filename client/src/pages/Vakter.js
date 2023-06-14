@@ -32,6 +32,14 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
   const [visNyttPassord, sVisNyttPassord] = useState(false);
   const [visGjentaPassord, sVisGjentaPassord] = useState(false);
 
+  //Detaljer timebestilling
+  const [event, sEvent] = useState();
+  const [visDetaljer, sVisDetaljerEvent] = useState(false);
+
+  //Skrive ut
+  const [visSkrivUt, sVisSkrivUt] = useState(false);
+  const [bildet, sBildet] = useState();
+
   const [isMobile, setisMobile] = useState(false);
   useEffect(()=>{
     
@@ -44,11 +52,17 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
     oppdaterSynligeElementer(hihi);
   },[]);
 
+  function skrivUtBilde(bilde){
+
+    window.open(window.origin + "/uploads/"+ bilde);
+    window.print();
+  }
+
   async function endreVarlinger(){
     //Aktiverer eller deaktiverer epost varslinger i databasen
     try {
       lagreVarsel();
-      const request = await fetch("http://localhost:1227/login/endreVarlinger", {
+      const request = await fetch("/login/endreVarlinger", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({aktivertEpost: !aktivertEpost})
@@ -67,7 +81,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
   async function oppdaterSynligeElementer(a){
     try {
       
-      const request = await fetch("http://localhost:1227/env/fri");
+      const request = await fetch("/env/fri");
       const friElementer = await request.json();
       
       let frii = friElementer.map((element)=>{
@@ -134,7 +148,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
           },
           body: JSON.stringify({brukernavn: bruker.navn, nyEpost: nyEpost}),
         }
-        const request = await fetch("http://localhost:1227/login/endreEpost", options);
+        const request = await fetch("/login/endreEpost", options);
         const response = await request.json();
         if(response){
           varsle();
@@ -157,9 +171,9 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
           "Content-Type":"application/json"
         },
         body: JSON.stringify({passord: gjentaNyttPassord}),
-        //credentials:'include'
+        credentials:'include'
       };
-      const request = await fetch("http://localhost:1227/login/oppdaterPassord", options);
+      const request = await fetch("/login/oppdaterPassord", options);
       const response = await request.json();
       if(response){
         varsle();
@@ -182,10 +196,10 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
             "Content-Type":"application/json"
           },
           body: JSON.stringify({telefonnummer: nyttTlf}),
-          //credentials:'include'
+          credentials:'include'
         };
 
-        const request = await fetch("http://localhost:1227/login/oppdaterTelefonnummer", options);
+        const request = await fetch("/login/oppdaterTelefonnummer", options);
         const response = await request.json();
         if(response){
           varsle();
@@ -202,8 +216,9 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
     }
 
     return(
-        <div className='vaktpanel'>
-          <div style={{display:"flex", flexDirection:"row"}}>
+        <div className='vaktpanel' style={visSkrivUt ? {height:"1px", overflowY:"hidden"}:{}}>
+            <h3>Ditt vaktpanel</h3>
+          <div className='row' style={{justifyContent:"flex-start"}}>
           <p>Logget inn som: {bruker.navn}</p><button onClick={(e)=>{
             e.preventDefault();
             sVisInnstillinger(true);
@@ -319,7 +334,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
            </div>:""}
            <h3>Bestille time:</h3>
            <p>Bestill time her: <Link to="/timebestilling">BESTILL TIME</Link> </p>
-          <h3>Velg vakter for:</h3>
+          <h3>Velg timebestillinger for:</h3>
         <div className='velgFrisorVakter'>
         {env.frisorer.map((frisorElement)=>(
           <div key={frisorElement.navn} style={{border:(ansatt === frisorElement.navn? "2px solid black":"none"), backgroundColor:farger[env.frisorer.indexOf(frisorElement)], userSelect:"none"}} onClick={()=>{
@@ -333,13 +348,15 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
             oppdaterSynligeElementer(alleFrisorenesNavn);
           }} >ALLE</div>
         </div>
-        <p>PS Trykk på timen dersom det som står, ikke er leselig</p>
+        <h3>Timebestillinger</h3>
+        <p>Trykk på en timebestilling for å vise all informasjon om timen inkludert skisser</p>
         
         <Calendar format={"DD/MM/YYYY HH:mm"}
         components={{
             event: ({event}) => (
               <div onClick={()=>{
-                alert(`${ukedag[new Date(event.dato).getDay() -1]} ${parseInt(event.dato.substring(8,10))}. ${hentMaaned(parseInt(event.dato.substring(5,7)) -1)} ${event.tidspunkt}-${event.slutt} ${event.title}  `)
+                sEvent(event);
+                sVisDetaljerEvent(true);
               }}>
                 {event.lengreTid?`${event.tidspunkt} - ${event.title}` :`${event.tidspunkt}-${event.slutt}: ${event.title}`}
               </div>
@@ -359,6 +376,39 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
 
           };
         }}/> 
+
+        {visDetaljer && <div className='fokus'>
+          <div onClick={()=>{
+            sVisDetaljerEvent(false);
+          }} className='lukk'></div>
+
+            <h4>{ukedag[new Date(event.dato).getDay() -1]} {parseInt(event.dato.substring(8,10))}. {hentMaaned(parseInt(event.dato.substring(5,7)) -1)} {event.tidspunkt} - {event.slutt}</h4> 
+            <p>Medarbeider: {event.medarbeider}</p>
+            <p>Kunde: {event.kunde} tlf.: {event.telefonnummer}</p> 
+            <p>Behandlinger: {event.behandlinger.join(", ")}</p> 
+            <div>
+              <strong>Skisser fra kunden:</strong>
+              <p>Trykk på et bilde for å forstrørre</p>
+              <div className='row' style={{justifyContent:"flex-start"}}>
+                {event.skisser.map((s, i)=><img key={i} onClick={()=>{
+                  sVisSkrivUt(true);
+                  sBildet(s);
+                }} className='skisseBilde' alt={s} src={`${window.origin}/uploads/${s}`}></img>)}
+              </div>
+            </div>
+            
+          </div>}
+
+          {visSkrivUt && <div className='skrivUt'>
+            <div className='lukkSkrivUt' onClick={()=>{
+              sBildet(null);
+              sVisSkrivUt(false);
+            }}></div>
+            <img onClick={()=>{
+              window.print()
+            }} alt="Skriv ut bildet" src="skrivut.png"></img>
+            <img className='skrivUtImg' src={`${window.origin}/uploads/${bildet}`}></img>
+            </div>}
         </div>
     )
 }

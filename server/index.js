@@ -160,14 +160,25 @@ schedule.scheduleJob('30 13 * * *', async ()=>{
 })
 
 //Sletter gamle timebestillinger
-schedule.scheduleJob('32 23 * * *', async ()=>{
+schedule.scheduleJob('27 16 * * *', async ()=>{
   try {
     let idag = hentDatoIDag();
-    const gamleTimebestillinger = await Bestiltetimer.deleteMany({dato: idag}).exec();
-    const gamle = gamleTimebestillinger;
-    const oppdatert = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {$inc:{antallBestillinger:gamle.deletedCount}});
-    if(!oppdatert || !gamleTimebestillinger){
-      mailer.sendMail(`Problem database for ${BEDRIFT}`, "Problemer med å oppdatere data for antall bestillinger i databasen");
+    const timebestillinger = await Bestiltetimer.find({dato: idag});
+    if(timebestillinger){
+      console.log(timebestillinger);
+      timebestillinger.forEach((t)=>{
+        t.opplastinger.forEach((o)=>{
+          if(fs.existsSync(`./uploads/${o}`)){
+            fs.unlinkSync(`./uploads/${o}`);
+          }
+        })
+      })
+      const gamleTimebestillinger = await Bestiltetimer.deleteMany({dato: idag}).exec();
+      const gamle = gamleTimebestillinger;
+      const oppdatert = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {$inc:{antallBestillinger:gamle.deletedCount}});
+      if(!oppdatert || !gamleTimebestillinger){
+        mailer.sendMail(`Problem database for ${BEDRIFT}`, "Problemer med å oppdatere data for antall bestillinger i databasen");
+      }
     }
     
   } catch (error) {

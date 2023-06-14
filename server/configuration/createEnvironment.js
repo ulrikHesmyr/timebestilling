@@ -69,17 +69,17 @@ async function opprettEnvironment(){
             aktivertFeedbackSMS: false,
             aktivertSMSpin: false,
             adresse:{
-                
-                    gatenavn:"Teknologivegen",
-                    husnummer:"22",
-                    postnummer:"2815",
-                    poststed:"GJØVIK",
-                    bokstav:"",
-                    rep: {
-                    lat:"60.788817855104554",
-                    lng:"10.689999999999998"
-                    },
+                gatenavn:"Teknologivegen",
+                husnummer:"22",
+                postnummer:"2815",
+                poststed:"GJØVIK",
+                bokstav:"",
+                rep: {
+                lat:"60.788817855104554",
+                lng:"10.689999999999998"
                 },
+            },
+            skisser:[],
             klokkeslett: [
                 
                 {

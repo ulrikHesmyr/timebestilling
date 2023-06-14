@@ -1,6 +1,6 @@
 import React, {useState, useRef} from 'react'
 
-function PersonInfo({env, smsBekreftelse, sSmsBekreftelse, totalTid, totalPris, dato, klokkeslettet, produkt, frisor, hentMaaned, isMobile, synligKomponent, displayKomponent, navn, telefonnummer, nullstillData, setReservasjon ,setUpdate ,updateDataTrigger, data, sNavn, sTelefonnummer}){
+function PersonInfo({skisseFiler, env, smsBekreftelse, sSmsBekreftelse, totalTid, totalPris, dato, klokkeslettet, produkt, frisor, hentMaaned, isMobile, synligKomponent, displayKomponent, navn, telefonnummer, nullstillData, setReservasjon ,setUpdate ,updateDataTrigger, data, sNavn, sTelefonnummer}){
     
     const [harregistrert, sHarRegistrert] = useState(false); //For å passe på at en bruker ikke trykker to ganger før neste side rekker å laste inn
     const [validertSMSpin, sValidertSMSpin] = useState(!env.aktivertSMSpin); 
@@ -19,13 +19,13 @@ function PersonInfo({env, smsBekreftelse, sSmsBekreftelse, totalTid, totalPris, 
     let format = /[`!@#$%^&*()_+=[\]{};':"\\|,.<>/?~]/;
 
     async function validerPIN(p){
-        const request = await fetch("http://localhost:1227/timebestilling/tlfpin", {
+        const request = await fetch("/timebestilling/tlfpin", {
             method:"POST",
             headers:{
                 "Content-Type":"application/json",
             },
             body: JSON.stringify({pin:p}),
-            //credentials: 'include'
+            credentials: 'include'
         });
         const response = await request.json();
         if(response.m){
@@ -43,13 +43,13 @@ function PersonInfo({env, smsBekreftelse, sSmsBekreftelse, totalTid, totalPris, 
     }
     async function validerSMSpin(){
         sTryktOK(true);
-        const request = await fetch("http://localhost:1227/timebestilling/SMSpin", {
+        const request = await fetch("/timebestilling/SMSpin", {
             method:"POST",
             headers:{
                 "Content-Type":"application/json",
             },
             body: JSON.stringify({tlf:telefonnummer}),
-            //credentials: 'include'
+            credentials: 'include'
         });
         const response = await request.json();
         if(response.m){
@@ -64,13 +64,33 @@ function PersonInfo({env, smsBekreftelse, sSmsBekreftelse, totalTid, totalPris, 
         }
     }
     async function registrerData(){
-        const request = await fetch("http://localhost:1227/timebestilling/bestilltime", {
+
+        let formData = new FormData();
+        if(skisseFiler.length > 0){
+            for(let i = 0; i < skisseFiler.length; i++){
+                formData.append("fil", skisseFiler[i]);
+            }
+        }
+
+        for(let i = 0; i < data.behandlinger.length; i++){
+            formData.append("behandlinger", data.behandlinger[i]);
+        } 
+        
+        for(let i = 0; i < data.valgteSkisser.length; i++){
+            formData.append("valgteSkisser", data.valgteSkisser[i]);
+        } 
+        formData.append("dato", data.dato);
+        formData.append("kunde", data.kunde);
+        formData.append("medarbeider", data.medarbeider);
+        formData.append("telefonnummer", data.telefonnummer);
+        formData.append("tidspunkt", data.tidspunkt);
+        formData.append("SMS_ENABLED", data.SMS_ENABLED);
+
+
+        const request = await fetch("/timebestilling/bestilltime", {
             method:"POST",
-            headers:{
-                "Content-Type":"application/json",
-            },
-            body: JSON.stringify(data),
-            //credentials: 'include'
+            body: formData,
+            credentials: 'include'
         });
         const response = await request.json();
         if(response.m){

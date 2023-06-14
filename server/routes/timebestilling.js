@@ -12,10 +12,11 @@ const authorization = require("../middleware/authorization");
 
 const Bestilttime = require("../model/bestilling");
 const Brukere = require("../model/brukere");
+const Environment = require("../model/env");
 const Env = require("../model/env");
 const FriTimene = require("../model/fri");
 
-const {NODE_ENV, SMSPIN_SECRET, ACCESS_TOKEN_KEY, SMSPINVALID_SECRET, CUSTOMER_KEY} = process.env;
+const {BEDRIFT, NODE_ENV, SMSPIN_SECRET, ACCESS_TOKEN_KEY, SMSPINVALID_SECRET, CUSTOMER_KEY} = process.env;
 
 let intervall = 30 * 60 * 1000; // 30 min
 if(NODE_ENV === "development") intervall = 2* 60 * 1000; // 2 minutter
@@ -58,23 +59,84 @@ function ansattSjekker(req,res,next){
     }  
     
 }
+const storage3 = multer.diskStorage({
+    destination: 'uploads/', // Set the directory where uploaded files will be stored
+    filename: (req, file, cb) => {
+      // Set the filename to be unique or as desired (e.g., originalname + timestamp)
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      cb(null, file.originalname + '-' + uniqueSuffix + ".jpg");
+    }
+});
 
-const skisseUpload = multer({
-    dest: "./uploads/"
+// Set the multer configuration
+const upload3 = multer({
+  storage: storage3,
+  limits: { fileSize: 1024 * 1024 * 5 , files: 4} // Set the file size limit (e.g., 5MB)
 });
 
 
-router.post("/skisser/:antall/:bildefilnavn", async (req,res)=>{
-    return res.send(200);
+router.post("/lastOppSkisse", authorization, upload3.array("fil"), async (req,res)=>{
+    if(req.admin){
+        try {
+            let skissene = [];
+            if(req.files){
+                req.files.forEach(file => {
+                    skissene.push(file.filename);
+                });
+            }
+            const env = await Environment.findOneAndUpdate({bedrift: BEDRIFT}, {$push: {skisser: skissene}});
+            if(env){
+                return res.status(200).send({valid:true});
+            }
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send({m:"Noe gikk galt"});   
+        }
+    }
 });
 
-router.post('/bestilltime', ansattSjekker, async (req,res)=>{
+router.post("/slettSkisse/:skissen", authorization, async (req,res)=>{
+    const {skissen} = req.params;
+    if(req.admin){
+        
+        try {
+            if(fs.existsSync(`./uploads/${skissen}`)){
+                fs.unlinkSync(`./uploads/${skissen}`);
+            }
+            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift: BEDRIFT}, {$pull: {skisser: skissen}});
+            if(oppdatertEnv){
+                return res.status(200).send({valid:true});
+            }
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send({m:"Noe gikk galt"});   
+        }
+    }
+});
+
+
+router.post('/bestilltime', ansattSjekker, upload3.array("fil", 4), async (req,res)=>{
     try {
         const env = await Env.findOne();
-        const {skisser, dato, behandlinger, kunde, medarbeider, telefonnummer, tidspunkt, SMS_ENABLED} = req.body; 
+        let {valgteSkisser, dato, behandlinger, kunde, medarbeider, telefonnummer, tidspunkt, SMS_ENABLED} = req.body; 
         if(!env.aktivertTimebestilling){
             return res.status(400).json({m:"Timebestilling er ikke aktivert"});
         }
+        if(!Array.isArray(behandlinger)) behandlinger = [behandlinger];
+        if(!Array.isArray(valgteSkisser)) valgteSkisser = [valgteSkisser];
+
+        let skissene = [];
+        if(req.files){
+            req.files.forEach(file => {
+                skissene.push(file.filename);
+            });
+        }
+        if(valgteSkisser.length > 0 && valgteSkisser[0]){
+            valgteSkisser.forEach(skisse => {
+                skissene.push(skisse);
+            });
+        }
+
         
         if(!(dato && behandlinger && kunde && medarbeider && telefonnummer && tidspunkt)){
             return res.status(400).json({m:"Mangler informasjon"});
@@ -202,7 +264,9 @@ router.post('/bestilltime', ansattSjekker, async (req,res)=>{
                 behandlinger: behandlinger,
                 medarbeider: medarbeider,
                 kunde: jwt.sign({kunde}, CUSTOMER_KEY),
-                telefonnummer: jwt.sign({telefonnummer: kundensTelefonnummer}, CUSTOMER_KEY)
+                telefonnummer: jwt.sign({telefonnummer: kundensTelefonnummer}, CUSTOMER_KEY),
+                skisser: skissene,
+                opplastinger: req.files.map(file=>file.filename),
             })
 
             //Setter samtykke cookie
@@ -225,7 +289,7 @@ router.post('/bestilltime', ansattSjekker, async (req,res)=>{
             
 
             //Sender SMS med bekreftelse
-            if(SMS_ENABLED){
+            if(SMS_ENABLED === "true"){
                 
                 let baseUrl = "https://shared.target365.io/";
                 let keyName = process.env.KEYNAME_SMS;
@@ -388,6 +452,14 @@ router.post('/oppdaterTimebestillinger', authorization, async (req,res)=>{
     const {_id, medarbeider, dato, tidspunkt, behandlinger} = req.body;
     try {
         if(req.admin){
+            const timen = await Bestilttime.findOne({_id: _id});
+            if(timen){
+                timen.opplastinger.forEach(async (opplastning)=>{
+                    if(fs.existsSync("./uploads/" + opplastning)){
+                        fs.unlinkSync("./uploads/" + opplastning);
+                    }
+                })
+                
             const slettTime = await Bestilttime.findOneAndDelete({_id: _id});
             const brukerTilAnsatt = await Brukere.findOne({brukernavn: medarbeider.toLowerCase()});
             if(slettTime && brukerTilAnsatt){
@@ -395,6 +467,7 @@ router.post('/oppdaterTimebestillinger', authorization, async (req,res)=>{
                 return res.send({message: "Timebestilling slettet", valid: true})
             } else {
                 return res.send({message: "Noe har skjedd galt, prøv igjen"})
+            }
             }
         }
     } catch (error) {

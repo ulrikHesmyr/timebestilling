@@ -1,34 +1,40 @@
 import React, {useRef} from 'react'
 
-function Skisser({valgteSkisser, sValgteSkisser, dato, klokkeslettet, sSkisser, skisser, synligKomponent, skisseFiler, sSkisseFiler}){
+function Skisser({env, valgteSkisser, sValgteSkisser, skisseFiler, sSkisseFiler}){
 
-    let bilder = ["omOss.jpg", "bilde3.jpg", "bilde2.jpg", "qdwomOss.jpg", "bildqwde3.jpg", "bilqdde2.jpg"];
     //bytt ut med env.skisser
     const valgteSkisserBoks = useRef(null);
-  return (
+    return (
     <div className='column2'>
-        {skisser || skisseFiler ? <h3 ref={valgteSkisserBoks}>Dine valgte skisser: </h3>:""}
+        <div ref={valgteSkisserBoks}></div>
+        <h3>Velg skisser: </h3>
+        <p>Last opp skisse eller velg en av skissene under, slik at vi kan se hvilke(n) tatovering(er) du vil ha eller noe som ligner på det du vil ha! Det er valgfritt å velge skisser, så dersom du ikke har bestemt deg ennå, så kan du trykke fortsett nedenfor!</p>
+        {valgteSkisser.length > 0 || skisseFiler.length > 0 ? <h4>Dine valgte skisser: </h4>:""}
+
         <div className='row'>
-            {skisseFiler && skisseFiler.map((s, index)=><img key={index} className='skisseBilde' src={URL.createObjectURL(s)}></img>)}
-            {valgteSkisser && valgteSkisser.map((s, index)=><img key={index} className='skisseBilde' src={`${window.origin}/uploads/${s}`}></img>)}
+            {skisseFiler.length > 0 && skisseFiler.map((s, index)=><img alt={s} key={index} className='skisseBilde' src={URL.createObjectURL(s)}></img>)}
+            {valgteSkisser && valgteSkisser.map((s, index)=><img alt={s} key={index} className='skisseBilde' src={`${window.origin}/uploads/${s}`}></img>)}
         </div>
         <h4>Last opp skisse(r)</h4>
         <input onChange={(e)=>{
-            let skisserTemp = [];
-            let skisseFilerTemp = [];
+            if(e.target.files.length < 4){
 
-            for(let i = 0; i < e.target.files.length; i++){
-                skisseFilerTemp.push(e.target.files[i]);
-                skisserTemp.push(new Date().getTime() + "skisse" + i + dato + klokkeslettet + ".jpg");
+                let skisseFilerTemp = [];
+
+                for(let i = 0; i < e.target.files.length; i++){
+                    skisseFilerTemp.push(e.target.files[i]);
+                    
+                }
+                sSkisseFiler(skisseFilerTemp);
+            } else {
+                alert("Du kan ikke laste opp mer enn 3 skisser");
             }
-            console.log(skisseFilerTemp);
-            sSkisser(skisserTemp);
-            sSkisseFiler(skisseFilerTemp);
         }} type='file' accept='image/*' multiple></input>
-        <strong>OG/ELLER</strong>
-        <h4>Velg også skisser herfra</h4>
+        
+        {env.skisser.length > 0 && <>
+        <h4>Velg også skisser herfra</h4></>}
         <div className='row' style={{justifyContent:"flex-start"}}>
-        {bilder.map((bilde, index)=><img style={{border:(valgteSkisser.includes(bilde)?"3px solid black":"")}} key={index} className='skisseBilde' src={`${window.origin}/uploads/${bilde}`} onClick={(e)=>{
+        {env.skisser.map((bilde, index)=><img alt={bilde} style={{border:(valgteSkisser.includes(bilde)?"3px solid black":"")}} key={index} className='skisseBilde' src={`${window.origin}/uploads/${bilde}`} onClick={(e)=>{
             if(!valgteSkisser.includes(bilde)){
                 sValgteSkisser([...valgteSkisser, bilde]);
             } else {

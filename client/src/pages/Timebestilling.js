@@ -25,9 +25,8 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
 
     
     const [dato, sDato] = useState(hentDato());
-    const [skisser, sSkisser] = useState(undefined);
     const [valgteSkisser, sValgteSkisser] = useState([]);
-    const [skisseFiler, sSkisseFiler] = useState(undefined);
+    const [skisseFiler, sSkisseFiler] = useState([]);
     const [midlertidigDato, sMidlertidigDato] = useState(hentDato());
     const [produkt, sProdukt] = useState([]);
     const [frisor, sFrisor] = useState(null);
@@ -87,7 +86,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
     }
 
     async function fetchBestilteTimer(){
-        const request = await fetch("http://localhost:1227/timebestilling/hentBestiltetimer");
+        const request = await fetch("/timebestilling/hentBestiltetimer");
         const response = await request.json();
         
           if(response){
@@ -96,7 +95,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
     }
       
     async function hentFri(){
-        const request = await fetch("http://localhost:1227/env/fri");
+        const request = await fetch("/env/fri");
         const response = await request.json();
         if(response){
             sFriElementer(response);
@@ -145,7 +144,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
                     displayKomponent(0);
                 }
             }} >
-                {produkt.length > 0?<p><img className='ferdig' src="ferdig.png"></img></p>:<p className='tilbake'>1</p>}Behandlinger</h2>
+                {produkt.length > 0?<p><img alt="Ferdig" className='ferdig' src="ferdig.png"></img></p>:<p className='tilbake'>1</p>}Behandlinger</h2>
 
             <h2 tabIndex={0} role="button" 
             aria-label='Vis: Velg medarbeider-boks' 
@@ -166,7 +165,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
                     }
                 }
             }} >
-                {frisor !== null?<p><img className='ferdig' src="ferdig.png"></img></p>:<p className='tilbake'>2</p>}Velg medarbeider</h2>
+                {frisor !== null?<p><img  alt="Ferdig" className='ferdig' src="ferdig.png"></img></p>:<p className='tilbake'>2</p>}Velg medarbeider</h2>
 
             <h2 tabIndex={0} role="button" 
             aria-label='Vis valg av klokkeslett og dato' 
@@ -187,14 +186,14 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
                     }
                 }
             }} >
-                {klokkeslettet !== null?<p><img className='ferdig' src="ferdig.png"></img></p>:<p className='tilbake'>3</p>} Velg dato og tid</h2>
+                {klokkeslettet !== null?<p><img  alt="Ferdig" className='ferdig' src="ferdig.png"></img></p>:<p className='tilbake'>3</p>} Velg dato og tid</h2>
 
 
                 <h2 tabIndex={0} role="button" 
             aria-label='Vis valg av klokkeslett og dato' 
             aria-expanded={synligKomponent === 3 && klokkeslettet !== null } 
             aria-controls="dat" id="visDatoOgKlokkeslettAria" 
-            className={skisser !== null? `gjennomfortOverskrift ${(synligKomponent === 3?"aktivOverskrift overskrift":'overskrift')}`:(synligKomponent === 3?"aktivOverskrift overskrift":'overskrift')} onClick={()=>{
+            className={skisseFiler.length > 0? `gjennomfortOverskrift ${(synligKomponent === 3?"aktivOverskrift overskrift":'overskrift')}`:(synligKomponent === 3?"aktivOverskrift overskrift":'overskrift')} onClick={()=>{
                 if(frisor !== null && produkt.length > 0 && klokkeslettet !== null){
                     displayKomponent(3);
                 } else {
@@ -209,14 +208,14 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
                     }
                 }
             }} >
-                {skisser?<p><img className='ferdig' src="ferdig.png"></img></p>:<p className='tilbake'>4</p>} Last opp skisse</h2>
+                {skisseFiler.length > 0?<p><img  alt="Ferdig" className='ferdig' src="ferdig.png"></img></p>:<p className='tilbake'>4</p>} Last opp skisse</h2>
             
             <h2 tabIndex={0} role="button" 
             aria-label='Vis din info boks' 
-            aria-expanded={synligKomponent === 4 && skisser !== null} 
+            aria-expanded={synligKomponent === 4} 
             aria-controls="per" id="visPersonInfoAria" 
             className={telefonnummer.length === 8 && navn !== ""? `gjennomfortOverskrift ${(synligKomponent === 4?"aktivOverskrift overskrift":'overskrift')}`:(synligKomponent === 4?"aktivOverskrift overskrift":'overskrift')} onClick={()=>{
-                if(frisor !== null && produkt.length > 0 && klokkeslettet !== null && skisser !== null){
+                if(frisor !== null && produkt.length > 0 && klokkeslettet !== null){
                     displayKomponent(4);
                 } else {
                     alert("Du må velge behandling, medarbeider, dato og klokkeslett først");
@@ -230,7 +229,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
                     }
                 }
             }} >
-                {telefonnummer.length === 8 && navn !== "" && skisser !== null?<p><img className='ferdig' src="ferdig.png"></img></p>:<p className='tilbake'>5</p>}Din info</h2>
+                {telefonnummer.length === 8 && navn !== ""?<p><img  alt="Ferdig" className='ferdig' src="ferdig.png"></img></p>:<p className='tilbake'>5</p>}Din info</h2>
 
             </div>
             
@@ -251,22 +250,22 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
             <div role="region" aria-labelledby='visDatoOgKlokkeslettAria' 
             id="dat" aria-hidden={!(synligKomponent === 3 && klokkeslettet !== null )}>
                {synligKomponent === 3 && <>
-                    <Skisser dato={dato} klokkeslettet={klokkeslettet} valgteSkisser={valgteSkisser} sValgteSkisser={sValgteSkisser} sSkisseFiler={sSkisseFiler} skisseFiler={skisseFiler} sSkisser={sSkisser} skisser={skisser} synligKomponent={synligKomponent} />
-                    <Fortsett displayKomponent={displayKomponent} previous={3} number={4} disabled={(skisser !== null? false:true)} />
+                    <Skisser env={env} valgteSkisser={valgteSkisser} sValgteSkisser={sValgteSkisser} sSkisseFiler={sSkisseFiler} skisseFiler={skisseFiler} synligKomponent={synligKomponent} />
+                    <Fortsett displayKomponent={displayKomponent} previous={3} number={4} disabled={false} />
                 </>}
             </div>
 
             
-            <div role="region" aria-labelledby='visPersonInfoAria' id="per" aria-hidden={!(synligKomponent === 4 && skisser !== null)}>
-                {(synligKomponent === 4 && skisser !== null?<PersonInfo smsBekreftelse={smsBekreftelse} sSmsBekreftelse={sSmsBekreftelse} env={env} totalPris={totalPris} totalTid={totalTid} klokkeslettet={klokkeslettet} produkt={produkt} frisor={frisor} hentMaaned={hentMaaned} dato={dato} isMobile={isMobile} synligKomponent={synligKomponent} displayKomponent={displayKomponent} telefonnummer={telefonnummer} navn={navn} nullstillData={nullstillData} setReservasjon={setReservasjon} setUpdate={setUpdate} updateDataTrigger={updateDataTrigger} sNavn={sNavn} sTelefonnummer={sTelefonnummer} data={{
+            <div role="region" aria-labelledby='visPersonInfoAria' id="per" aria-hidden={!(synligKomponent === 4)}>
+                {(synligKomponent === 4 && klokkeslettet !== null?<PersonInfo skisseFiler={skisseFiler} smsBekreftelse={smsBekreftelse} sSmsBekreftelse={sSmsBekreftelse} env={env} totalPris={totalPris} totalTid={totalTid} klokkeslettet={klokkeslettet} produkt={produkt} frisor={frisor} hentMaaned={hentMaaned} dato={dato} isMobile={isMobile} synligKomponent={synligKomponent} displayKomponent={displayKomponent} telefonnummer={telefonnummer} navn={navn} nullstillData={nullstillData} setReservasjon={setReservasjon} setUpdate={setUpdate} updateDataTrigger={updateDataTrigger} sNavn={sNavn} sTelefonnummer={sTelefonnummer} data={{
                     dato:dato, 
                     tidspunkt:klokkeslettet,
-                    behandlinger:produkt.map(tjeneste=>tjeneste.navn),
+                    behandlinger: produkt.map(tjeneste=>tjeneste.navn),
                     telefonnummer: telefonnummer,
                     kunde:navn,
                     medarbeider:(frisor === false? forsteFrisor.navn:frisor.navn),
                     SMS_ENABLED: smsBekreftelse,
-                    skisser:skisser.concat(valgteSkisser)
+                    valgteSkisser: valgteSkisser
                 }} />:"")}
             </div>
 

@@ -1130,6 +1130,22 @@ input, button, select, option {
     outline-offset: 0.2rem;
     transition: 0.2s ease all;
   }
+  .skrivUt{
+    width: 100%;
+    height: 100%;
+    z-index: 7;
+    background: white;
+    position: fixed;
+    top: 0;
+    margin: 0;
+    left: 0;
+  }
+  .skrivUtImg{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  
 
   .fokus button, .fokus input{
     width: fit-content;
@@ -1148,6 +1164,19 @@ input, button, select, option {
     aspect-ratio: 1/1;
   }
 
+  .lukkSkrivUt{
+    cursor: pointer;
+    z-index: 10;
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 4rem;
+    height: 4rem;
+    background: url(../public/avbryt.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+  }
   .ikonKnapper{
     height: 1rem;
     cursor: pointer;
