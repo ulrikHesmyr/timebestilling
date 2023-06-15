@@ -120,12 +120,9 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
 
     <div className='timebestilling'>
         <div className='container'>
-            <div style={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"flex-start", backdropFilter:"blur(5px)"}}>
-                <img src="logo.png" alt='Logo' style={{height:"5rem"}}></img>
-                <div>
-                    <h1 className='bedriftNavn'>{env.bedrift}</h1>
-                    <p>Her kan du reservere time hos oss! </p>
-                </div>
+            <div style={{display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", backdropFilter:"blur(5px)"}}>
+                <img src="logo.png" alt='Logo' style={{height:"5rem"}}></img>        
+                <p>Her kan du reservere time hos oss! </p>
                 <div ref={behandlingerBoks}></div>
             </div>
             <div className='overskriftene'>

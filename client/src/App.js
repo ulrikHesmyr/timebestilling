@@ -43,7 +43,7 @@ const App = ()=> {
                 <div></div>
                 <div></div>
               </button>
-              <img style={{height:"3rem", aspectRatio:"1/1", objectFit:"contain"}} src="logo.png"></img>
+              
         </div>
               {(synligMeny?(
               <nav id="navigation" className='navBar' role="region" aria-labelledby='burgerButton' aria-hidden={!synligMeny}>

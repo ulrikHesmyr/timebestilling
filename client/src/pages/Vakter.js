@@ -32,6 +32,10 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
   const [visNyttPassord, sVisNyttPassord] = useState(false);
   const [visGjentaPassord, sVisGjentaPassord] = useState(false);
 
+
+  const [visDetaljer, sVisDetaljer] = useState(false);
+  const [time, sTime] = useState();
+
   const [isMobile, setisMobile] = useState(false);
   useEffect(()=>{
     
@@ -72,6 +76,8 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
       
       let frii = friElementer.map((element)=>{
       if(a.includes(element.medarbeider)){
+        
+        element.fri = true;
         if(element.lengreTid){
           element.start = new Date(`${element.fraDato}T00:30:00`);
           element.end = new Date(`${element.tilDato}T23:59:00`);
@@ -203,6 +209,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
 
     return(
         <div className='vaktpanel'>
+            <h3>Ditt vaktpanel</h3>
           <div style={{display:"flex", flexDirection:"row"}}>
           <p>Logget inn som: {bruker.navn}</p><button onClick={(e)=>{
             e.preventDefault();
@@ -305,11 +312,11 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
           }} ><img src="rediger.png" alt='rediger passord' style={{height:"1.4rem"}}></img></button>
           }</div>
 
-          <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>Varslinger (epost) for timebestilling: {aktivertEpost? <div style={{color:"green", padding:"0.2rem"}}>Aktivert <button onClick={()=>{
+          <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>Varslinger (epost) for timebestilling: {aktivertEpost? <div style={{color:"green", padding:"0.2rem", display:"flex", alignItems:"center"}}>Aktivert <button onClick={()=>{
             if(window.confirm("Er du sikker på at du vil deaktivere varslinger på epost?")){
               endreVarlinger();
             }
-          }}>Deaktiver</button></div>:<div style={{color:"red", padding:"0.2rem"}}>Deaktivert<button onClick={()=>{
+          }}>Deaktiver</button></div>:<div style={{color:"red", padding:"0.2rem", display:"flex", alignItems:"center"}}>Deaktivert<button onClick={()=>{
             if(window.confirm("Er du sikker på at du vil aktivere varslinger på epost?")){
               endreVarlinger();
             }
@@ -318,8 +325,9 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
 
            </div>:""}
            <h3>Bestille time:</h3>
-           <p>Bestill time her: <Link to="/timebestilling">BESTILL TIME</Link> </p>
+           <p>Dersom kunder bestiller time enten muntlig, over telefon eller over sosiale medier, så legg inn bestillingen i systemet for vedkommende via timebestillingen her på siden. Link: <Link to="/timebestilling">BESTILL TIME</Link> </p>
           <h3>Velg vakter for:</h3>
+          <p>Trykk på navn til medarbeider for å vise timebestillinger for vedkommende.</p>
         <div className='velgFrisorVakter'>
         {env.frisorer.map((frisorElement)=>(
           <div key={frisorElement.navn} style={{border:(ansatt === frisorElement.navn? "2px solid black":"none"), backgroundColor:farger[env.frisorer.indexOf(frisorElement)], userSelect:"none"}} onClick={()=>{
@@ -333,13 +341,18 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
             oppdaterSynligeElementer(alleFrisorenesNavn);
           }} >ALLE</div>
         </div>
-        <p>PS Trykk på timen dersom det som står, ikke er leselig</p>
+        <h3>Timebestillinger</h3>
+        <p>Nedenfor er alle timebestillingene. Trykk på en timebestilling for å vise detaljer. </p>
         
         <Calendar format={"DD/MM/YYYY HH:mm"}
         components={{
             event: ({event}) => (
               <div onClick={()=>{
-                alert(`${ukedag[new Date(event.dato).getDay() -1]} ${parseInt(event.dato.substring(8,10))}. ${hentMaaned(parseInt(event.dato.substring(5,7)) -1)} ${event.tidspunkt}-${event.slutt} ${event.title}  `)
+                if(!event.fri){
+                  sTime(event);
+                  sVisDetaljer(true);
+                }
+                console.log(event);
               }}>
                 {event.lengreTid?`${event.tidspunkt} - ${event.title}` :`${event.tidspunkt}-${event.slutt}: ${event.title}`}
               </div>
@@ -359,6 +372,30 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
 
           };
         }}/> 
+        {visDetaljer && <div className='fokus'>
+          <div onClick={()=>{
+            sVisDetaljer(false);
+          }} className='lukk'></div>
+
+            <h4>{ukedag[new Date(time.dato).getDay() -1]} {parseInt(time.dato.substring(8,10))}. {hentMaaned(parseInt(time.dato.substring(5,7)) -1)} {time.tidspunkt} - {time.slutt}</h4> 
+            
+            <div>
+              <strong>Medarbeider:</strong>
+              <p> {time.medarbeider}</p>
+            </div>
+            <hr></hr>
+            <div>
+              <strong>Kunde:</strong>
+              <p>{time.kunde} tlf.: {time.telefonnummer}</p> 
+            </div>
+            <hr></hr>
+            <div>
+              <strong>Behandlinger: </strong>
+              {env.tjenester.filter(t=>time.behandlinger.includes(t.navn)).map((t)=>{return <p>{t.kategori} - {t.navn}</p>})}
+            </div>
+            
+            
+          </div>}
         </div>
     )
 }
