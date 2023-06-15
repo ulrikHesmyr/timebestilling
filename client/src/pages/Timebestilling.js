@@ -124,7 +124,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
 
     <div className='timebestilling'>
         <div className='container'>
-            <div style={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"flex-start", backdropFilter:"blur(5px)"}}>
+            <div style={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"center", backdropFilter:"blur(5px)"}}>
                 <div className='column'>
                     <img src="logo.png" alt='Logo' style={{height:"5rem"}}></img>
                     <p>Her kan du reservere time hos oss! </p>

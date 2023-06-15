@@ -224,24 +224,7 @@ function Hjem({env}){
             </div>
             
         </div>
-        <div className="seksjon">
-        <div className="overskriftContainer">
-                    <hr></hr>
-                    <div className="h2Container">
-                        <h2>Produkter</h2>
-                    </div>
-                </div>
-                <div className="row">
-                    <p>I butikken finner du produkter fra følgende leverandører!</p>
-                    <div className="row">
-                        <img className="bildeFooter" src="/produkter/cutrin.png" alt="Cutrin logo"></img>
-                        <img className="bildeFooter" src="/produkter/moroccanoil.png" alt="Moroccanoil logo"></img>
-                        <img className="bildeFooter" src="/produkter/ref.png" alt="Ref logo"></img>
-                        <img className="bildeFooter" src="/produkter/renati.png" alt="Renati logo" style={{mixBlendMode:"exclusion"}}></img>
-                        <img className="bildeFooter" src="/produkter/special.png" alt="Special logo"></img>
-                    </div>
-                </div>
-            </div>
+        
         
         </div>
         <Footer env={env}/>

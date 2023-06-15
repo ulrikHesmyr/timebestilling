@@ -891,7 +891,7 @@ input, button, select, option {
     flex-wrap: wrap;
     text-align: center;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: flex-start;
   }
   .sosialemedier *{
     margin: 0.3rem;
