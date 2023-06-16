@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/static/css/main.2ce58273.css",
+    "main.js": "/static/js/main.f76ded4a.js",
+    "static/media/omOss.jpg": "/static/media/omOss.19c2c514a9dc135a376f.jpg",
+    "static/media/adresse.png": "/static/media/adresse.1dbd647242b2117b59ad.png",
+    "static/media/kontaktOss.jpg": "/static/media/kontaktOss.5b3936e8ad2fcd5e2011.jpg",
+    "static/media/startside.jpg": "/static/media/startside.6ec25e11d2217a581da9.jpg",
+    "static/media/merriweather-bold-webfont.woff": "/static/media/merriweather-bold-webfont.15c367407a53b3380c81.woff",
+    "static/media/merriweather-black-webfont.woff": "/static/media/merriweather-black-webfont.6bf6a652fc73607a5313.woff",
+    "static/media/merriweather-regular-webfont.woff": "/static/media/merriweather-regular-webfont.06fc7bfae83c729d8c72.woff",
+    "static/media/lilitaone-regular-webfont.woff": "/static/media/lilitaone-regular-webfont.f632c5b9310a299cef42.woff",
+    "static/media/merriweather-bold-webfont.woff2": "/static/media/merriweather-bold-webfont.1e072051a0a60f61d2cc.woff2",
+    "static/media/merriweather-black-webfont.woff2": "/static/media/merriweather-black-webfont.bcc91e1101d45c0e75a7.woff2",
+    "static/media/merriweather-regular-webfont.woff2": "/static/media/merriweather-regular-webfont.3bceb37f23e8a34efa81.woff2",
+    "static/media/lilitaone-regular-webfont.woff2": "/static/media/lilitaone-regular-webfont.b9eeeda64863e719dff9.woff2",
+    "static/media/bebasneue-regular-webfont.woff": "/static/media/bebasneue-regular-webfont.87a870563c14725ff97e.woff",
+    "static/media/bebasneue-regular-webfont.woff2": "/static/media/bebasneue-regular-webfont.60de5397b7ef9e8b98b1.woff2",
+    "index.html": "/index.html"
+  },
+  "entrypoints": [
+    "static/css/main.2ce58273.css",
+    "static/js/main.f76ded4a.js"
+  ]
+}
