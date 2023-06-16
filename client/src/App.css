@@ -173,6 +173,7 @@ header{
   width: -webkit-fill-available;
   background-image: url("../public/startside.jpg");
   background-position-y: center;
+  background-position-x: center;
   background-repeat: no-repeat;
   background-size: cover;
   display: flex;
@@ -1390,6 +1391,7 @@ input, button, select, option {
   background-repeat: no-repeat;
   background-size: cover;
   color:black;
+  height: 12rem;
 }
 .adresseLink .adresseBlur{
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
@@ -1564,11 +1566,6 @@ header * {
     display: grid;
     grid-template-columns:1fr 1fr 1fr;
     
-  }
-  .frisorene{
-    display: grid;
-    gap:0.1rem;
-    grid-template-columns: 1fr 1fr;
   }
   
   .frisor{

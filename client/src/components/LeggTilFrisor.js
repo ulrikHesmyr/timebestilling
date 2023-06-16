@@ -116,11 +116,11 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
     {leggtil?<div className='fokus' >
         <label style={{display:"flex", flexDirection:"column", fontWeight:"bold"}}>Navn på ny ansatt: <input required onChange={(e)=>{
             sNyFrisorNavn(e.target.value);
-        }} value={nyFrisorNavn} type="text" placeholder='Navn navnesen' maxLength={20}></input></label>
+        }} value={nyFrisorNavn} type="text" placeholder='Navn navnesen' maxLength={30}></input></label>
 
         <label style={{display:"flex", flexDirection:"column", fontWeight:"bold"}}>Tittel: <input required onChange={(e)=>{
             sNyFrisorTittel(e.target.value);
-        }} value={nyFrisorTittel} type="text" placeholder='eks.: Frisør, Terapeut, etc.' maxLength={20}></input></label>
+        }} value={nyFrisorTittel} type="text" placeholder='eks.: Frisør, Terapeut, etc.' maxLength={30}></input></label>
 
         <label style={{display:"flex", flexDirection:"column", fontWeight:"bold"}}>Beskrivelse: <textarea onChange={(e)=>{
             sNyFrisorBeskrivelse(e.target.value);
