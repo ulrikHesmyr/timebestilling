@@ -117,7 +117,7 @@ schedule.scheduleJob('30 19 * * *', async ()=>{
                 transactionId: uuidv4(),
                 sender:'Target365',
                 recipient:`+47${jwt.verify(timebestilling.telefonnummer, CUSTOMER_KEY).telefonnummer}`,
-                content:`Hei ${jwt.verify(timebestilling.kunde, CUSTOMER_KEY).kunde}! Vi håper du er fornøyd med ditt besøk hos oss.\n\nDersom det er ønskelig, så legg gjerne igjen en tilbakemelding på besøket. Du kan gi oss en tilbakemelding ved å trykke på linken under. \n\n${process.env.GOOGLE_REVIEW_LINK} \n\nMed vennlig hilsen \n${BEDRIFT}`
+                content:`Hei ${jwt.verify(timebestilling.kunde, CUSTOMER_KEY).kunde}! Vi håper du er fornøyd med ditt besøk hos oss.\n\nDersom det er ønskelig, så legg gjerne igjen en tilbakemelding på besøket. Du kan gi oss en tilbakemelding ved å trykke på linken under. \n\n${env.googleReviewLink} \n\nMed vennlig hilsen \n${BEDRIFT}`
             }
             await serviceClient.postOutMessage(outMessage);
         } 
