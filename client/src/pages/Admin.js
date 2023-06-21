@@ -1,5 +1,4 @@
 import React, { useState, useEffect} from 'react'
-import RedigerKontakt from '../components/RedigerKontakt';
 import LeggTilFrisor from '../components/LeggTilFrisor';
 import DetaljerFrisor from '../components/DetaljerFrisor';
 import RedigerOmOss from '../components/RedigerOmOss';
@@ -13,9 +12,6 @@ import OffentligeSkisser from '../components/OffentligeSkisser';
 function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsle, lagreVarsel, varsleFeil}){
 
     const behandlingsEstimater = [15,30,45,60,75,90,105,120,135,150,165,180,195,210,225,240];
-
-    const [kontakt_epost, sKontakt_epost] = useState(env.kontakt_epost);
-    const [kontakt_tlf, sKontakt_tlf] = useState(env.kontakt_tlf);
 
     const [visRedigerAapningstider, sVisRedigerAapningstider] = useState(false);
     const [dagForRedigering, sDagForRedigering] = useState();
@@ -83,8 +79,6 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
 
     useEffect(()=>{
         sAdresse(env.adresse);
-        sKontakt_epost(env.kontakt_epost);
-        sKontakt_tlf(env.kontakt_tlf);
         sAdresseTekst((`${env.adresse.gatenavn} ${env.adresse.husnummer}${env.adresse.bokstav?env.adresse.bokstav:""}, ${env.adresse.postnummer} ${env.adresse.poststed}`));
         sNyBehandlingKategori(env.kategorier[0]);
         sBehandlingForSletting(env.tjenester[0].navn);
@@ -101,10 +95,10 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({dag:d}),
-                credentials:'include'
+                //credentials:'include'
 
             }
-            const request = await fetch("/env/slettHoytidsdag", options);
+            const request = await fetch("http://localhost:1228/env/slettHoytidsdag", options);
             const response = await request.json();
             if(response){
                 varsle();
@@ -126,10 +120,10 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({dag:hoytidsdag, dato:hoytidsdato}),
-                credentials:'include'
+                //credentials:'include'
 
             }
-            const request = await fetch("/env/leggTilHoytidsdag", options);
+            const request = await fetch("http://localhost:1228/env/leggTilHoytidsdag", options);
             const response = await request.json();
             if(response){
                 varsle();
@@ -150,10 +144,10 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({medie:medie}),
-                credentials:'include'
+                //credentials:'include'
 
             }
-            const request = await fetch("/env/leggTilSosialtMedie", options);
+            const request = await fetch("http://localhost:1228/env/leggTilSosialtMedie", options);
             const response = await request.json();
             if(response){
                 varsle();
@@ -165,30 +159,6 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
         }
     }
 
-    //Sletter sosialt medie
-    async function slettSosialtMedie(medie){
-        try {
-            lagreVarsel();
-            const options = {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
-                },
-                body: JSON.stringify({medie:medie}),
-                credentials:'include'
-            
-            }
-            const request = await fetch("/env/slettSosialtMedie", options);
-            const response = await request.json();
-            if(response){
-                varsle();
-                sUpdateTrigger(!updateTrigger);
-            }
-        } catch (error) {
-            alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen.");
-            varsleFeil();
-        }
-    }
 
     //Sletter kategori
     async function slettKategori(kategori){
@@ -200,10 +170,10 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({kategori:kategori}),
-                credentials:'include'
+                //credentials:'include'
             
             }
-            const request = await fetch("/env/slettKategori", options);
+            const request = await fetch("http://localhost:1228/env/slettKategori", options);
             const response = await request.json();
             if(response){
                 varsle();
@@ -225,10 +195,10 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({kategori:nyKategori}),
-                credentials:'include'
+                //credentials:'include'
             
             }
-            const request = await fetch("/env/nyKategori", options);
+            const request = await fetch("http://localhost:1228/env/nyKategori", options);
             const response = await request.json();
             if(response){
                 varsle();
@@ -250,10 +220,10 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({behandling:b}),
-            credentials:'include'
+            //credentials:'include'
 
         }
-        const request = await fetch("/env/slettBehandling", options);
+        const request = await fetch("http://localhost:1228/env/slettBehandling", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -275,9 +245,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({behandling:b}),
-            credentials:'include'
+            //credentials:'include'
         }
-        const request = await fetch("/env/opprettNyBehandling", options);
+        const request = await fetch("http://localhost:1228/env/opprettNyBehandling", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -289,28 +259,6 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
         }
     }
 
-    async function oppdaterOmOss(){
-        try {
-            lagreVarsel();
-        const options = {
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body: JSON.stringify({omOssArtikkel:omOssTekst}),
-            credentials:'include'
-        }
-        const request = await fetch("/env/oppdaterOmOss", options);
-        const response = await request.json();
-        if(response){
-            varsle();
-            sUpdateTrigger(!updateTrigger);
-        }
-        } catch (error) {
-            alert("Noe gikk galt. Sjekk internettforbindelsen og prøv igjen.");
-            varsleFeil();   
-        }
-    }
 
 
     async function velgAdresse(){
@@ -336,9 +284,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({adresse:adresse}),
-            credentials:'include'
+            //credentials:'include'
         }
-        const request = await fetch("/env/oppdaterAdresse", options);
+        const request = await fetch("http://localhost:1228/env/oppdaterAdresse", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -360,9 +308,9 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 "Content-Type":"application/json"
             },
             body: JSON.stringify(slettetTime),
-            credentials:'include'
+            //credentials:'include'
         }
-        const request = await fetch("/timebestilling/oppdaterTimebestillinger", options);
+        const request = await fetch("http://localhost:1228/timebestilling/oppdaterTimebestillinger", options);
         const response = await request.json();
         if(response.valid){
             varsle();
@@ -497,54 +445,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 
             <div className='adminMain'>
                 <div>
-                    <h4>Kontakt-info:</h4>
-                    <div className='redigeringsBoks'> 
-                        <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
-                            <RedigerKontakt sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} varsle={varsle} lagreVarsel={lagreVarsel} varsleFeil={varsleFeil} number={true} state={kontakt_tlf} setState={sKontakt_tlf} /><p>Kontakt telefon: </p> 
-                        </div>
-                        <p className='redigeringsElement'>{kontakt_tlf}</p>
-                    </div>
 
-                    <div className='redigeringsBoks'> 
-                        <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
-                            <RedigerKontakt sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} varsle={varsle} lagreVarsel={lagreVarsel} varsleFeil={varsleFeil} number={false} state={kontakt_epost} setState={sKontakt_epost} /> <p>Kontakt e-post:</p>
-                        </div>
-                        <p className='redigeringsElement'>{kontakt_epost}</p>
-                    </div>
-
-
-                    <div className='redigeringsBoks'>
-                        {visRedigerOmOss?<div className='fokus'>
-
-                            <h4>Rediger startside-artikkelen</h4>
-                            <p>
-                                Her kan du redigere teksten som vises øverst på startsiden.
-                            </p>
-                            <label>Tekst: <textarea value={omOssTekst} onChange={(e)=>{
-                                sOmOssTekst(e.target.value);
-                            }}></textarea></label>
-                            <div>
-                                <button onClick={()=>{
-                                    sVisRedigerOmOss(false);
-                                    sOmOssTekst(env.omOssArtikkel);
-                                }}>
-                                    Avbryt
-                                </button>
-                                <button disabled={omOssTekst === env.omOssArtikkel} onClick={()=>{
-                                    sVisRedigerOmOss(false);
-                                    oppdaterOmOss();
-                                }}>
-                                    Lagre
-                                </button>
-                            </div>
-                        </div>:<div style={{display:"flex", flexDirection:"row", alignItems:"center"}} >
-                        <button className='redigerKnapp' onClick={()=>{
-                            sVisRedigerOmOss(true);
-                        }}></button>Rediger startside-teksten
-                        
-                        </div>}
-                        <p className='redigeringsElement'>{omOssTekst.substring(0, 25)}...</p>
-                    </div>
 
                     <div className='redigeringsBoks'>
                         {visRedigerHoytidsdager?<div className='fokus'>
@@ -799,116 +700,6 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
 
                 <OffentligeSkisser varsle={varsle} varsleFeil={varsleFeil} lagreVarsel={lagreVarsel} env={env} sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} />
 
-                <div>
-                    <h4>Sosiale medier:</h4>
-                    <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
-                        <button onClick={()=>{
-                            sVisLeggTilSosialtMedie(true);
-                        }} style={{display:"flex", flexDirection:"row", alignItems:"center"}}><img alt='Legg til platform' className='ikonKnapper' src="leggtil.png"></img>Legg til sosialt medie</button>
-                        <button style={{display:"flex", flexDirection:"row", alignItems:"center"}} onClick={()=>{
-                            sVisSlettSosialtMedie(true);
-                        }}><div className='redigerKnapp'></div>Rediger sosiale medier</button>
-                        
-                    </div>
-
-                    {visSlettSosialtMedie?<div className='fokus'>
-                        <div>
-                            <div className='lukk' onClick={()=>{
-                                sVisSlettSosialtMedie(false);
-                            }}></div>
-                            <h4><br></br>Sosiale medier:</h4>
-                            <p>Her kan du slette sosiale medier som ikke lenger er i bruk, eller om de skal redigeres, så slettes de og opprettes på nytt.</p>
-                            {env.sosialeMedier.map((medie)=>(
-                            <div key={medie.platform}>
-                                <p style={{display:"flex", alignItems:"center", fontSize:"larger"}}>{medie.platform} <img className='ikonKnapper' alt="Slett sosialt medium" src="delete.png" onClick={()=>{
-
-                                    if(window.confirm("Er du sikker på at du vil slette dette sosiale mediet?")){
-                                        sVisSlettSosialtMedie(false);
-                                        let nyttMedieListe = env.sosialeMedier.filter(m=>m.platform !== medie.platform);
-                                        slettSosialtMedie(medie);
-                                        sNyttMedie(muligeSosialeMedier.filter(m=>!nyttMedieListe.map(e=>e.platform).includes(m))[0]);
-                                    }
-                                }}></img></p>
-                            </div>
-                            ))}
-                        </div>
-                    </div>:""}
-
-                    {visLeggTilSosialtMedie?<div className='fokus'>
-                    <div className='lukk' onClick={()=>{
-                        sVisLeggTilSosialtMedie(false);
-                    }}></div>
-                    <h4><br></br>Legg til nytt medie:</h4>
-                    <p>Legg til nytt sosialt medium som automatisk kommer på "kontakt-oss" siden men ikon og link som legges inn her!</p>
-                    
-                    <div style={{display:"flex", flexDirection:"column"}}>
-                        <label>Velg platform:
-                            <select value={nyttMedie} onChange={(e)=>{
-                                sNyttMedie(e.target.value);
-                            }}>
-                            {muligeSosialeMedier.filter(m=>!env.sosialeMedier.map(e=>e.platform).includes(m)).map((medie)=>(
-                                <option key={medie} value={medie}>{medie}</option>
-                            )
-                            )}
-                            </select>
-                        </label>
-                        <label>Brukernavn på platformen: <input type="text" value={brukerNyttMedie} onChange={(e)=>{
-                            sBrukerNyttMedie(e.target.value);
-                        }}></input></label>
-                        <label>Link til siden: <input value={linkNyttMedie} onChange={(e)=>{
-                            sLinkNyttMedie(e.target.value);
-                        }} type="url" placeholder='https://www.instagram.com/gulsetfades/'></input></label>
-
-                        <div>
-                            <button onClick={()=>{
-                                sVisLeggTilSosialtMedie(false);
-                                sNyttMedie(muligeSosialeMedier.filter(m=>!env.sosialeMedier.map(e=>e.platform).includes(m))[0]);
-                                sBrukerNyttMedie("");
-                                sLinkNyttMedie("");
-                            }}>Avbryt</button>
-
-                            <button disabled={brukerNyttMedie === "" || linkNyttMedie === ""} onClick={()=>{
-                                if((brukerNyttMedie === "" || linkNyttMedie === "") || muligeSosialeMedier.length === env.sosialeMedier.length){
-                                    alert("Du må fylle ut alle feltene!");
-                                } else {
-                                    let nyListe = env.sosialeMedier;
-                                    nyListe.push({platform:nyttMedie, bruker:brukerNyttMedie, link:linkNyttMedie});
-                                    leggTilSosialtMedie({platform:nyttMedie, bruker:brukerNyttMedie, link:linkNyttMedie})
-                                    sVisLeggTilSosialtMedie(false);
-                                    sNyttMedie(muligeSosialeMedier.filter(m=>!nyListe.map(e=>e.platform).includes(m))[0]);
-                                    sBrukerNyttMedie("");
-                                    sLinkNyttMedie("");
-                                }
-                            }}>Lagre</button>
-                        </div>
-                    </div>
-                    </div>
-                    :
-                    <div>
-                        {env.sosialeMedier.map((medie)=>(
-                            <div key={medie.platform} >
-                                <p >{medie.platform}: <a rel='noreferrer' target="_blank" href={medie.link} >{medie.bruker}</a></p>
-                            </div>
-                        ))}
-                    </div>}
-
-
-                </div>
-
-                <div>
-                <h4>Åpningstider:</h4>
-                    {visRedigerAapningstider?<>
-                        <RedigerAapningstider env={env} varsleFeil={varsleFeil} lagreVarsel={lagreVarsel} varsle={varsle} updateTrigger={updateTrigger} sUpdateTrigger={sUpdateTrigger} dag={dagForRedigering} sVisRedigerAapningstider={sVisRedigerAapningstider}/>
-                    </> :env.klokkeslett.map((klokkeslett, index)=>(
-                        <div key={index} style={{display:"flex", flexDirection:"row", alignItems:"center", margin:"0.3rem"}}>
-                         {klokkeslett.dag}: {klokkeslett.stengt?"Stengt" :klokkeslett.open} {klokkeslett.stengt?"": "-"} {klokkeslett.stengt?"": klokkeslett.closed}
-                         <button className='redigerKnapp' onClick={()=>{
-                            sDagForRedigering(klokkeslett);
-                            sVisRedigerAapningstider(true);
-                         }}></button>
-                        </div>
-                    ))}
-                </div>
 
                 
 
@@ -1060,10 +851,10 @@ function DetaljerBehandling({behandling, env, lagreVarsel, varsle, varsleFeil, s
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({tjeneste: t}),
-                credentials:'include'
+                //credentials:'include'
 
             }
-            const request = await fetch("/env/oppdaterBehandling", options);
+            const request = await fetch("http://localhost:1228/env/oppdaterBehandling", options);
             const response = await request.json();
             if(response){
                 varsle();

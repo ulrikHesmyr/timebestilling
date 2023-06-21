@@ -19,9 +19,9 @@ function SMS({env, varsle, lagreVarsel, varsleFeil, sUpdateTrigger, updateTrigge
                 "Content-Type":"application/json"
             },
             body: JSON.stringify({googleReviewLink:googleReviewLink}),
-            credentials:'include'
+            //credentials:'include'
         }
-        const request = await fetch("/env/oppdaterGoogleReviewLink", options);
+        const request = await fetch("http://localhost:1228/env/oppdaterGoogleReviewLink", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -35,13 +35,13 @@ function SMS({env, varsle, lagreVarsel, varsleFeil, sUpdateTrigger, updateTrigge
     async function endreStatusSMSfeedback(nyStatus){
         try {
             lagreVarsel();
-        const res = await fetch("/env/endreStatusSMSfeedback", {
+        const res = await fetch("http://localhost:1228/env/endreStatusSMSfeedback", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({nyStatus}),
-            credentials: 'include'
+            //credentials: 'include'
         });
         const data = await res.json();
         if(data){
@@ -58,13 +58,13 @@ function SMS({env, varsle, lagreVarsel, varsleFeil, sUpdateTrigger, updateTrigge
     async function endreAktivertTimebestilling(nyStatus){
         try {
             lagreVarsel();
-        const res = await fetch("/env/endreAktivertTimebestilling", {
+        const res = await fetch("http://localhost:1228/env/endreAktivertTimebestilling", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({aktivert: nyStatus}),
-            credentials: 'include'
+            //credentials: 'include'
         });
         const data = await res.json();
         if(data){
@@ -81,12 +81,12 @@ function SMS({env, varsle, lagreVarsel, varsleFeil, sUpdateTrigger, updateTrigge
     async function endreStatusSMSpin(nyStatus){
         try {
             lagreVarsel();
-        const res = await fetch("/env/endreStatusSMSpin", {
+        const res = await fetch("http://localhost:1228/env/endreStatusSMSpin", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            credentials: 'include',
+            //credentials: 'include',
             body: JSON.stringify({nyStatus})
         });
         const data = await res.json();

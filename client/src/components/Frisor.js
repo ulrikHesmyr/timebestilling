@@ -8,8 +8,8 @@ function Frisor({tilgjengeligeFrisorer, sDatoForsteLedige, sDato, sMidlertidigDa
     const referanceElement = useRef(null);
 
     return(
-        <div>
-            {tilgjengeligeFrisorer.length > 0?<>
+        <div>   
+            {tilgjengeligeFrisorer.length > 0?<div className="animasjon">
             <div className="forsteLedige" tabIndex={0} aria-label="Velg første ledige medarbeider" onClick={()=>{
                 sFrisor(false);
                 sDatoForsteLedige(null);
@@ -84,7 +84,7 @@ function Frisor({tilgjengeligeFrisorer, sDatoForsteLedige, sDato, sMidlertidigDa
                 </div></div>}
                 
             </div>
-            </>:(tilgjengeligeFrisorer.length < 1?"Ingen tilgjengelige medarbeidere for disse behandlingene":<div className="laster"></div>)}
+            </div>:(tilgjengeligeFrisorer.length < 1?"Ingen tilgjengelige medarbeidere for disse behandlingene":<div className="laster"></div>)}
             <Fortsett disabled={(frisor !== null?false:true)} previous={1} number={2} displayKomponent={displayKomponent} referanceElement={referanceElement} />
         </div>
     )

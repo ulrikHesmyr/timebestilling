@@ -1,6 +1,5 @@
 import React, {useState, useRef, useEffect} from "react";
 import Fortsett from "./Fortsett.js";
-import { Link } from "react-router-dom";
 
 
 function Tjenester({env, sDatoForsteLedige, antallBehandlinger, sAntallBehandlinger, sFrisor, sKlokkeslett, displayKomponent, produkt, sProdukt}){
@@ -19,7 +18,7 @@ function Tjenester({env, sDatoForsteLedige, antallBehandlinger, sAntallBehandlin
     return(
         <div className='animer-inn'>
             <div className="kategorier">
-            <Link style={{display:"flex", flexDirection:"row", alignItems:"center", flexWrap:"wrap"}} to="/"><img alt="Info-ikon" src="infoHjem.png" className="ikonKnapper"></img> Les mer om våre behandlinger på startsiden</Link>
+            
                 {env.kategorier.map((kategori, index)=>(
                     <div   key={kategori} style={{transition:"0.2s ease all", border:"thin solid black", padding:"0.3rem", borderRadius:(kategoriSynlig[index]?"0 0 1rem 1rem":"0 0 0 0")}}>
                         <h3 tabIndex={0} id={kategori}  role="button" aria-controls={`${kategori}tjenestene`} aria-label={`Vis behandlingene for kategorien: ${kategori}`} aria-expanded={kategoriSynlig[env.kategorier.indexOf(kategori)]} className="kategori" onClick={()=>{

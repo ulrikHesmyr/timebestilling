@@ -19,13 +19,13 @@ function PersonInfo({skisseFiler, env, smsBekreftelse, sSmsBekreftelse, totalTid
     let format = /[`!@#$%^&*()_+=[\]{};':"\\|,.<>/?~]/;
 
     async function validerPIN(p){
-        const request = await fetch("/timebestilling/tlfpin", {
+        const request = await fetch("http://localhost:1228/timebestilling/tlfpin", {
             method:"POST",
             headers:{
                 "Content-Type":"application/json",
             },
             body: JSON.stringify({pin:p}),
-            credentials: 'include'
+            //credentials: 'include'
         });
         const response = await request.json();
         if(response.m){
@@ -43,13 +43,13 @@ function PersonInfo({skisseFiler, env, smsBekreftelse, sSmsBekreftelse, totalTid
     }
     async function validerSMSpin(){
         sTryktOK(true);
-        const request = await fetch("/timebestilling/SMSpin", {
+        const request = await fetch("http://localhost:1228/timebestilling/SMSpin", {
             method:"POST",
             headers:{
                 "Content-Type":"application/json",
             },
             body: JSON.stringify({tlf:telefonnummer}),
-            credentials: 'include'
+            //credentials: 'include'
         });
         const response = await request.json();
         if(response.m){
@@ -87,10 +87,10 @@ function PersonInfo({skisseFiler, env, smsBekreftelse, sSmsBekreftelse, totalTid
         formData.append("SMS_ENABLED", data.SMS_ENABLED);
 
 
-        const request = await fetch("/timebestilling/bestilltime", {
+        const request = await fetch("http://localhost:1228/timebestilling/bestilltime", {
             method:"POST",
             body: formData,
-            credentials: 'include'
+            //credentials: 'include'
         });
         const response = await request.json();
         if(response.m){

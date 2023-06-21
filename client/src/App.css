@@ -189,7 +189,6 @@ a{
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
   font-weight: 400;
   font-family: var(--font1);
-  letter-spacing: 0.2rem;
 }
 footer a {
   text-decoration: underline;
@@ -372,7 +371,6 @@ input, button, select, option {
   display:grid;
   gap:1rem;
   grid-template-columns: 2fr 1fr;
-  margin-top: 8rem;
   /*background: url("../public/bakgrunnsgifh.gif");
   background-repeat: no-repeat;*/
   position: relative;
@@ -521,6 +519,10 @@ input, button, select, option {
     width:95%;
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
+    animation: hjemAnimasjon 0.3s ease 1;
+  }
+  .animasjon{
+    animation: hjemAnimasjon 0.3s ease 1;
   }
   .kategorier a{
     text-shadow: none !important;
@@ -1587,9 +1589,7 @@ header * {
     
   }
   
-.timebestilling .container{
-  width: 95%;
-}
+
 .infoboks{
   display: flex;
   justify-content: center;

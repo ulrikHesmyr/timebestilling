@@ -66,13 +66,13 @@ function Login(){
             valgtBrukertype:false,
             brukertype:brukertypeValg
         }
-        const request = await fetch("/login/auth", {
+        const request = await fetch("http://localhost:1228/login/auth", {
             method:"POST",
             headers:{
                 "Content-Type":"application/json",
             },
             body: JSON.stringify(data),
-            credentials:'include'
+            //credentials:'include'
         });
         
         const response = await request.json();
@@ -101,13 +101,13 @@ function Login(){
                     brukertype:(hihi ? "admin" : "vakter")
                 }
 
-                const r = await fetch("/login/auth", {
+                const r = await fetch("http://localhost:1228/login/auth", {
                     method:"POST",
                     headers:{
                         "Content-Type":"application/json",
                     },
                     body: JSON.stringify(d),
-                    credentials:'include'
+                    //credentials:'include'
                 });
                 const res = await r.json();
                 if(!res.valid && res.two_FA){
@@ -157,13 +157,13 @@ function Login(){
 
     async function send2FA(){
         //Sender request til TWOFA route på server for å sjekke om PIN stemmer
-        const request = await fetch("/login/TWOFA", {
+        const request = await fetch("http://localhost:1228/login/TWOFA", {
             method:"POST",
             headers:{
                 "Content-Type":"application/json",
             },
             body: JSON.stringify({pin:twoFApin, brukertype:brukertypeValg}),
-            credentials:'include'
+            //credentials:'include'
         });
         const response = await request.json();
         
@@ -179,8 +179,8 @@ function Login(){
     }
 
     async function alleredeLoggetInn(){
-        const request = await fetch("/login/loggetinn",{method:"GET",
-         credentials:'include'
+        const request = await fetch("http://localhost:1228/login/loggetinn",{method:"GET",
+         //credentials:'include'
         });
         const response = await request.json();
         if(response.valid){
@@ -197,8 +197,8 @@ function Login(){
     }
 
     async function loggut(){
-        const request = await fetch("/login/logout", {method:"GET",
-            credentials:'include'
+        const request = await fetch("http://localhost:1228/login/logout", {method:"GET",
+            //credentials:'include'
         });
         const response = await request.json();
         if(response){
@@ -238,7 +238,7 @@ function Login(){
         }
         {(loggetInn && env !== null?<div>
         
-     <div style={{marginTop:"8rem", padding:"0.5rem",color:"blue", cursor:"pointer", userSelect:"none"}} onClick={loggut}>LOGG UT</div> {(brukertype === "admin"?<Admin env={env} bruker={bruker} sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} lagreVarsel={lagreVarsel} varsle={varsle} varsleFeil={varsleFeil} bestilteTimer={bestilteTimer}/>:(brukertype === "vakter"?<Vakter env={env} loggut={loggut} bruker={bruker} varsle={varsle} varsleFeil={varsleFeil} lagreVarsel={lagreVarsel} bestilteTimer={bestilteTimer} />:""))}</div>:(<div className='login'>
+     <div style={{padding:"0.5rem",color:"blue", cursor:"pointer", userSelect:"none"}} onClick={loggut}>LOGG UT</div> {(brukertype === "admin"?<Admin env={env} bruker={bruker} sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} lagreVarsel={lagreVarsel} varsle={varsle} varsleFeil={varsleFeil} bestilteTimer={bestilteTimer}/>:(brukertype === "vakter"?<Vakter env={env} loggut={loggut} bruker={bruker} varsle={varsle} varsleFeil={varsleFeil} lagreVarsel={lagreVarsel} bestilteTimer={bestilteTimer} />:""))}</div>:(<div className='login'>
         <form className='loginForm' name='login' id="login">
             <label>Brukernavn: <input disabled={disableInputFields} name='brukernavn' value={brukernavn} maxLength={20} type="text" placeholder='brukernavn' onChange={(e)=>{
                 if(!format.test(e.target.value)){

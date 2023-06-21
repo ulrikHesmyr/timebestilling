@@ -106,30 +106,6 @@ router.post('/slettBehandling', authorization, async(req,res)=>{
     }
 })
 
-router.post("/oppdaterAapningstider", authorization, async(req,res)=>{
-    const {dag, aapningstid, stengetid, stengt} = req.body;
-    if(req.admin){
-        try {
-            const env = await Environment.findOne({bedrift:BEDRIFT});
-            let nyeAapningstider = env.klokkeslett.map((a)=>{
-                if(a.dag === dag.dag){
-                  a.open = aapningstid; 
-                  a.closed = stengetid;
-                  a.stengt = stengt;
-                } 
-                return a;
-              })
-            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {klokkeslett:nyeAapningstider});
-            if(oppdatertEnv){
-                return res.send({message:"Åpningstider oppdatert", valid:true});
-            } else {
-                return res.status(404);
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
-})
 
 router.post("/oppdaterBehandling", authorization, async(req,res)=>{
     const {tjeneste} = req.body;
@@ -153,37 +129,6 @@ router.post("/oppdaterBehandling", authorization, async(req,res)=>{
     }
 })
 
-router.post("/leggTilSosialtMedie", authorization, async(req,res)=>{
-    const {medie} = req.body;
-    if(req.admin){
-        try {
-            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {$push:{sosialeMedier:medie}});
-            if(oppdatertEnv){
-                return res.send({message:"Sosialt medie opprettet", valid:true});
-            } else {
-                return res.status(404);
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
-})
-
-router.post('/slettSosialtMedie', authorization, async(req,res)=>{
-    const {medie} = req.body;
-    if(req.admin){
-        try {
-            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {$pull:{sosialeMedier:medie}});
-            if(oppdatertEnv){
-                return res.send({message:"Sosialt medie slettet", valid:true});
-            } else {
-                return res.status(404);
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
-})
 
 router.post('/slettKategori', authorization, async(req,res)=>{
     const {kategori} = req.body;
@@ -247,37 +192,6 @@ router.post("/siOppFrisor", authorization, async(req,res)=>{
 
 })
 
-router.post('/oppdaterTelefonnummer', authorization, async(req,res)=>{
-    const {telefonnummer} = req.body;
-    if(req.admin){
-        try {
-            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {kontakt_tlf:telefonnummer});
-            if(oppdatertEnv){
-                return res.send({message:"Telefonnummer oppdatert", valid:true});
-            } else {
-                return res.status(404);
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
-});
-
-router.post('/oppdaterEpost', authorization, async(req,res)=>{
-    const {epost} = req.body;
-    if(req.admin){
-        try {
-            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {kontakt_epost:epost});
-            if(oppdatertEnv){
-                return res.send({message:"Epost oppdatert", valid:true});
-            } else {
-                return res.status(404);
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
-});
 
 router.post('/opprettFri', authorization,async(req,res)=>{
     const {lengreTid, fraDato, tilDato, fraKlokkeslett, tilKlokkeslett, friDag, frisor, medarbeider} = req.body;
@@ -653,22 +567,6 @@ router.post("/oppdaterTelefonAnsatt", authorization, async (req,res)=>{
 }
 )
 
-router.post("/oppdaterOmOss", authorization, async (req,res)=>{
-    const {omOssArtikkel} = req.body;
-    try {
-        if(req.admin){
-            const env = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {omOssArtikkel:omOssArtikkel});
-            if(env){
-                return res.send({message:"Om oss oppdatert!"});
-            } else {
-                return res.status(404).send("Kunne ikke oppdatere om oss");
-            }
-        }
-    } catch (error) {
-        console.log(error, "error i oppdaterOmOss");
-    }
-}
-)
 
 router.post("/oppdaterGoogleReviewLink", authorization, async (req,res)=>{
     const {googleReviewLink} = req.body;

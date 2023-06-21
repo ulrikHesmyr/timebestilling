@@ -31,7 +31,7 @@ function OffentligeSkisser({env, sUpdateTrigger, updateTrigger, lagreVarsel, var
             for(let i = 0; i < skisser.length; i++){
                 formData.append('fil', skisser[i]);
             }
-            const req = await fetch("/timebestilling/lastOppSkisse", {
+            const req = await fetch("http://localhost:1228/timebestilling/lastOppSkisse", {
                 method: "POST",
                 body: formData
             })
@@ -49,19 +49,19 @@ function OffentligeSkisser({env, sUpdateTrigger, updateTrigger, lagreVarsel, var
 
   return (
     <div>
-        <h4>Skisser: </h4>
+        <h4>Bilder: </h4>
         <div style={{display:"flex", flexDirection:"row", alignItems:"center"   }}>
             <button onClick={()=>{
                 sVisLeggTilSkisse(true);
             }} style={{display:"flex", alignItems:"center"}}>
                 <img alt="Legg til ny skisse" className='ikonKnapper' src="leggtil.png"></img>
-                Legg til ny skisse
+                Legg til nytt bilde
             </button>
             <button onClick={()=>{
                 sVisSlettSkisse(true);
             }} style={{display:"flex", alignItems:"center"}}>
                 <img alt="Legg til ny skisse" className='ikonKnapper' src="rediger.png"></img>
-                Rediger skisser
+                Rediger bilder
             </button>
         </div>
         <div  className='row' style={{justifyContent:"flex-start"}}>
@@ -75,8 +75,8 @@ function OffentligeSkisser({env, sUpdateTrigger, updateTrigger, lagreVarsel, var
                 <div className='lukk' onClick={()=>{
                     sVisLeggTilSkisse(false);
                 }}></div>
-                <h4>Legg til ny skisse</h4>
-                <p>Last opp skisser som kundene kan velge når de bestiller time</p>
+                <h4>Legg til nytt bilde</h4>
+                <p>Last opp bilder som kundene kan velge når de bestiller time</p>
                 <input onChange={(e)=>{
                     if(e.target.files.length > 0){
                         let tempFiler = [];
@@ -97,8 +97,8 @@ function OffentligeSkisser({env, sUpdateTrigger, updateTrigger, lagreVarsel, var
                 sVisSlettSkisse(false);
             }}></div>
 
-            <h4>Fjern skisser: </h4>
-            <p>Trykk på slette-ikonet for å slette den fra skissene som kundene kan velge mellom når de bestiller time.</p>
+            <h4>Fjern bilder: </h4>
+            <p>Trykk på slette-ikonet for å slette den fra bildene som kundene kan velge mellom når de bestiller time.</p>
             <div className='column2' style={{alignItems:"flex-start"}}>
                 {env.skisser.map((skisse, index)=>{
                     return <div key={index} className='row'>

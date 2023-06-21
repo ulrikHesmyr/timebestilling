@@ -235,7 +235,7 @@ function Klokkeslett({sMidlertidigDato, harEndretDatoen, datoForsteLedige, sDato
                 }} style={{opacity:"0", margin:"1rem"}} aria-label={(klokkeslettet !== null?`DU har valgt tidspunktet ${klokkeslettet}, ${ukedag[new Date(dato).getDay()]} ${parseInt(dato.substring(8,10))}. ${hentMaaned(parseInt(dato.substring(5,7)) -1)}, trykk for å endre på dette tidspunktet?`:"Velg klokkeslett og dato ovenfor")}></button>
                </div>
                 <div ref={valgtKlokkeslett}></div>
-                <Fortsett displayKomponent={displayKomponent} previous={2} number={3} disabled={(klokkeslettet !== null? false:true)} />
+                
                
             </div>:""}</>
     )

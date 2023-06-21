@@ -62,7 +62,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
     //Aktiverer eller deaktiverer epost varslinger i databasen
     try {
       lagreVarsel();
-      const request = await fetch("/login/endreVarlinger", {
+      const request = await fetch("http://localhost:1228/login/endreVarlinger", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({aktivertEpost: !aktivertEpost})
@@ -81,7 +81,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
   async function oppdaterSynligeElementer(a){
     try {
       
-      const request = await fetch("/env/fri");
+      const request = await fetch("http://localhost:1228/env/fri");
       const friElementer = await request.json();
       
       let frii = friElementer.map((element)=>{
@@ -148,7 +148,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
           },
           body: JSON.stringify({brukernavn: bruker.navn, nyEpost: nyEpost}),
         }
-        const request = await fetch("/login/endreEpost", options);
+        const request = await fetch("http://localhost:1228/login/endreEpost", options);
         const response = await request.json();
         if(response){
           varsle();
@@ -171,9 +171,9 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
           "Content-Type":"application/json"
         },
         body: JSON.stringify({passord: gjentaNyttPassord}),
-        credentials:'include'
+        //credentials:'include'
       };
-      const request = await fetch("/login/oppdaterPassord", options);
+      const request = await fetch("http://localhost:1228/login/oppdaterPassord", options);
       const response = await request.json();
       if(response){
         varsle();
@@ -196,10 +196,10 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
             "Content-Type":"application/json"
           },
           body: JSON.stringify({telefonnummer: nyttTlf}),
-          credentials:'include'
+          //credentials:'include'
         };
 
-        const request = await fetch("/login/oppdaterTelefonnummer", options);
+        const request = await fetch("http://localhost:1228/login/oppdaterTelefonnummer", options);
         const response = await request.json();
         if(response){
           varsle();
