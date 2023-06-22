@@ -26,12 +26,7 @@ function DinReservasjon({env, hentMaaned, registrertReservasjon, setReservasjon}
                     <div className='tekstkomponent' ><img src="smil.png" alt="Bilde av smilefjesikon"></img>Vi sees!</div>
                 </div>:""}
                 <div className='tekstkomponent'>
-                    <button aria-label="Din reservasjon er mottatt. Du vil få bekreftelse på SMS dersom du krysset av for det. Trykk her for å gå til hjemsiden. Vi sees!" style={{padding:"1rem"}} onClick={(e)=>{
-                    e.preventDefault();
-
-                    navigate("/");
-                    setReservasjon(undefined);
-                    }}>GÅ TILBAKE</button><img tabIndex={0} style={{cursor:"pointer"}} src="skrivut.png" alt="Skriv ut bekreftelsen" aria-label='Skriv ut bekreftelsen' onClick={(e)=>{
+                <a className='button' href={`https://${window.location.origin.split(".")[1]}.${window.location.origin.split(".")[2]}`} rel="noreferrer" >OK</a><img tabIndex={0} style={{cursor:"pointer"}} src="skrivut.png" alt="Skriv ut bekreftelsen" aria-label='Skriv ut bekreftelsen' onClick={(e)=>{
                         e.preventDefault();
                         window.print();
                     }} onKeyDown={(e)=>{

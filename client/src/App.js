@@ -2,13 +2,13 @@ import React, {useState, useEffect} from 'react'
 import {BrowserRouter, Route, Routes} from 'react-router-dom'
 import Timebestilling from './pages/Timebestilling'
 import DinReservasjon from './pages/DinReservasjon'
+import PB from './pages/Personvern_Brukervilkaar'
 import Login from './pages/Login'
 import './App.css'
 
 
 const App = ()=> {
   
-  const [synligMeny, setSynligmeny] = useState(false);
   const [env, sEnv] = useState(null);
   const [registrertReservasjon, setReservasjon] = useState(undefined);
 
@@ -19,6 +19,7 @@ const App = ()=> {
         await fetch("http://localhost:1228/env/env")
       ).json();
       if(data){
+        console.log(data);
         sEnv(data);
       }
     }
@@ -30,11 +31,13 @@ const App = ()=> {
 
   return (
     <>{env !== null && <>  
+    <a href={`https://${window.location.origin.split(".")[1]}.${window.location.origin.split(".")[2]}`} rel="noreferrer" ><img src="lukket.png"></img></a>
           <BrowserRouter>
               
               <Routes>
                  <Route exact path="/" element={(registrertReservasjon?<DinReservasjon env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} registrertReservasjon={registrertReservasjon} />:(env !== null?<Timebestilling env={env} hentMaaned={hentMaaned} setReservasjon={setReservasjon} />:<div className="laster"></div>))} />
                 <Route exact path="/logginn" element={<Login/>} />
+                <Route exact path="/personvaernserklaering-og-brukervilkaar" element={<PB env={env} />} />
                 
                 
               </Routes>

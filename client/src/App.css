@@ -1,8 +1,29 @@
 
+
+
 @font-face {
   font-family: 'merriweather_blackregular';
   src: url('../src/fonts/merriweather-black-webfont.woff2') format('woff2'),
        url('../src/fonts/merriweather-black-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('../src/fonts/playfairdisplay-variablefont_wght-webfont.woff2') format('woff2'),
+       url('../src/fonts/playfairdisplay-variablefont_wght-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+
+@font-face {
+  font-family: 'Source Sans 3';
+  src: url('../src/fonts/sourcesans3-variablefont_wght-webfont.woff2') format('woff2'),
+       url('../src/fonts/sourcesans3-variablefont_wght-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 
@@ -77,6 +98,8 @@
   --font2:'merriweatherbold';
   --font3:'lilita_oneregular';
   --font4:'merriweatherregular';
+  --font5:'Playfair Display';
+  --font6:'Source Sans 3';
   background: white;
 }
 html{
@@ -197,7 +220,7 @@ select{
   width: fit-content;
 }
 header .bedriftNavnHeader{
-  font-family: var(--font4);
+  font-family: var(--font5);
   text-shadow: 4px 4px 2px rgba(0, 0, 0, 0.5);
   color:white;
   font-size: max(2rem, 4vw);
@@ -472,7 +495,13 @@ input, button, select, option {
     letter-spacing: 0;
   }
   
-  
+  .button{
+    border: solid thin black;
+    border-radius: 5px;
+    padding: 0 1rem 0 1rem;
+    text-decoration: none;
+    font-size: xx-large;
+  }
   
   .hjem{
     display: flex;
@@ -540,6 +569,10 @@ input, button, select, option {
     border-radius: 1rem;
     padding: 0.5rem;
     gap:0.5rem;
+    font-family: var(--font6);
+  }
+  .tjeneste h4{
+    font-family: var(--font5);
   }
   .tjeneste input{
     transform: scale(2,2);
@@ -1582,6 +1615,9 @@ header * {
   }
   body{
     font-size: medium;
+    font-family: var(--font5);
+    letter-spacing: 0.04rem;
+    word-spacing: 0.2rem;
   }
   .timebestilling{
     display:flex;

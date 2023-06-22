@@ -6,7 +6,6 @@ import Skisser from '../components/Skisser';
 import PersonInfo from '../components/PersonInfo';
 import Dato from '../components/Dato';
 import { hentDato } from '../App';
-import Footer from '../components/Footer';
 import Fortsett from '../components/Fortsett';
 
 function Timebestilling({env, hentMaaned, setReservasjon}){
@@ -121,7 +120,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
     const totalPris = gjeldendeTjenester.reduce((total, element)=> total + element.pris, 0);
 
     return (<>
-    <a href={`https://${window.location.origin.split(".")[1]}.${window.location.origin.split(".")[2]}`} rel="noreferrer" ><img src="lukket.png"></img></a>
+    
 {env.aktivertTimebestilling ? 
     <div className='timebestilling'>
         <div className='container'>
