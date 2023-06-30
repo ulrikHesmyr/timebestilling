@@ -85,7 +85,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
     }
 
     async function fetchBestilteTimer(){
-        const request = await fetch("http://localhost:1228/timebestilling/hentBestiltetimer");
+        const request = await fetch("http://localhost:1227/timebestilling/hentBestiltetimer");
         const response = await request.json();
         
           if(response){
@@ -94,7 +94,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
     }
       
     async function hentFri(){
-        const request = await fetch("http://localhost:1228/env/fri");
+        const request = await fetch("http://localhost:1227/env/fri");
         const response = await request.json();
         if(response){
             sFriElementer(response);
@@ -120,8 +120,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
     const totalPris = gjeldendeTjenester.reduce((total, element)=> total + element.pris, 0);
 
     return (<>
-    
-{env.aktivertTimebestilling ? 
+ 
     <div className='timebestilling'>
         <div className='container'>
             <div style={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"center", backdropFilter:"blur(5px)"}}>
@@ -204,7 +203,7 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
                     }
                 }
             }} >
-                {skisseFiler.length > 0?<p><img  alt="Ferdig" className='ferdig' src="ferdig.png"></img></p>:<p className='tilbake'>4</p>} Last opp skisse</h2>
+                {skisseFiler.length > 0 || valgteSkisser.length > 0?<p><img  alt="Ferdig" className='ferdig' src="ferdig.png"></img></p>:<p className='tilbake'>4</p>} Last opp bilde</h2>
             
             <h2 tabIndex={0} role="button" 
             aria-label='Vis din info boks' 
@@ -284,20 +283,12 @@ function Timebestilling({env, hentMaaned, setReservasjon}){
             <p>Obs.: Alle priser er fra-priser</p>
         </div>):"")}
 
-    </div>: "Timebooking er for øyeblikket deaktivert, vennligst bestill over telefon"}
+    </div>
         
         </>
     )
 }
 
-export function Kvittering(){
-
-    return (
-        <>
-        <p>Kvittering</p>
-        </>
-    )
-}
 
 
 export default React.memo(Timebestilling);

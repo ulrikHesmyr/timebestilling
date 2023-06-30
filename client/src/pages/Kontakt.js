@@ -17,7 +17,7 @@ function Kontakt({env}){
                 <a href={`tel:+47${env.kontakt_tlf}`}>+47 {env.kontakt_tlf.toString().replace(/(\d{3})(\d{2})(\d{3})/, '$1 $2 $3')}</a>
                 <div style={{display:"flex", flexDirection:"column"}}>
                     <h4>Ønsker du å bestille time?</h4>
-                    <p>Bestill time her: <Link to="/timebestilling">bestill time</Link> </p>
+                    <p>Bestill time her: <Link to="/">bestill time</Link> </p>
                 </div>
                 <div className='sosialemedier'>
                     {env.sosialeMedier.map((medie)=>(

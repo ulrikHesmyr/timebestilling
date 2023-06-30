@@ -62,7 +62,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
     //Aktiverer eller deaktiverer epost varslinger i databasen
     try {
       lagreVarsel();
-      const request = await fetch("http://localhost:1228/login/endreVarlinger", {
+      const request = await fetch("http://localhost:1227/login/endreVarlinger", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({aktivertEpost: !aktivertEpost})
@@ -81,7 +81,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
   async function oppdaterSynligeElementer(a){
     try {
       
-      const request = await fetch("http://localhost:1228/env/fri");
+      const request = await fetch("http://localhost:1227/env/fri");
       const friElementer = await request.json();
       
       let frii = friElementer.map((element)=>{
@@ -148,7 +148,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
           },
           body: JSON.stringify({brukernavn: bruker.navn, nyEpost: nyEpost}),
         }
-        const request = await fetch("http://localhost:1228/login/endreEpost", options);
+        const request = await fetch("http://localhost:1227/login/endreEpost", options);
         const response = await request.json();
         if(response){
           varsle();
@@ -173,7 +173,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
         body: JSON.stringify({passord: gjentaNyttPassord}),
         //credentials:'include'
       };
-      const request = await fetch("http://localhost:1228/login/oppdaterPassord", options);
+      const request = await fetch("http://localhost:1227/login/oppdaterPassord", options);
       const response = await request.json();
       if(response){
         varsle();
@@ -199,7 +199,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
           //credentials:'include'
         };
 
-        const request = await fetch("http://localhost:1228/login/oppdaterTelefonnummer", options);
+        const request = await fetch("http://localhost:1227/login/oppdaterTelefonnummer", options);
         const response = await request.json();
         if(response){
           varsle();
@@ -397,7 +397,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
             <hr></hr>
             <div>
               <strong>Behandlinger: </strong>
-              {env.tjenester.filter(t=>event.behandlinger.includes(t.navn)).map((t)=>{return <p>{t.kategori} - {t.navn}</p>})}
+              {env.tjenester.filter(t=>event.behandlinger.includes(t.navn)).map((t, i)=>{return <p key={i} >{t.kategori} - {t.navn}</p>})}
             </div>
             <hr></hr>
             <div>
@@ -407,6 +407,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
                 {event.skisser.map((s, i)=><img key={i} onClick={()=>{
                   sVisSkrivUt(true);
                   sBildet(s);
+                  console.log(s);
                 }} className='skisseBilde' alt={s} src={`${window.origin}/uploads/${s}`}></img>)}
               </div>
             </div>
@@ -421,7 +422,7 @@ function Vakter({env, bestilteTimer, bruker, varsle, lagreVarsel, varsleFeil}){
             <img onClick={()=>{
               window.print()
             }} alt="Skriv ut bildet" src="skrivut.png"></img>
-            <img className='skrivUtImg' src={`${window.origin}/uploads/${bildet}`}></img>
+            <img alt={bildet} className='skrivUtImg' src={`${window.origin}/uploads/${bildet}`}></img>
             </div>}
         </div>
     )

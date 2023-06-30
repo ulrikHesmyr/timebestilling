@@ -97,7 +97,7 @@ app.use(ansattSjekker);
 //FØR timebestillingen slettes fra databasen
 //Dette avhenger av om salongen har aktivert feedback SMS-er i admin panelet
 //19:30
-schedule.scheduleJob('30 19 * * *', async ()=>{
+schedule.scheduleJob('30 17 * * *', async ()=>{
   try {
     const env = await Environment.findOne({bedrift: BEDRIFT});
     if(env && env.aktivertFeedbackSMS){

@@ -78,13 +78,7 @@ const upload3 = multer({
 router.post("/lastOppSkisse", authorization, upload3.array("fil"), async (req,res)=>{
     if(req.admin){
         try {
-            let skissene = [];
-            if(req.files){
-                req.files.forEach(file => {
-                    skissene.push(file.filename);
-                });
-            }
-            const env = await Environment.findOneAndUpdate({bedrift: BEDRIFT}, {$push: {skisser: skissene}});
+            const env = await Environment.findOneAndUpdate({bedrift: BEDRIFT}, {$push: {skisser: {alt: req.body.alt, filnavn: req.files[0].filename}}});
             if(env){
                 return res.status(200).send({valid:true});
             }
@@ -103,7 +97,7 @@ router.post("/slettSkisse/:skissen", authorization, async (req,res)=>{
             if(fs.existsSync(`./uploads/${skissen}`)){
                 fs.unlinkSync(`./uploads/${skissen}`);
             }
-            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift: BEDRIFT}, {$pull: {skisser: skissen}});
+            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift: BEDRIFT}, {$pull: {skisser: {filnavn: skissen}}});
             if(oppdatertEnv){
                 return res.status(200).send({valid:true});
             }
@@ -119,9 +113,7 @@ router.post('/bestilltime', ansattSjekker, upload3.array("fil", 4), async (req,r
     try {
         const env = await Env.findOne();
         let {valgteSkisser, dato, behandlinger, kunde, medarbeider, telefonnummer, tidspunkt, SMS_ENABLED} = req.body; 
-        if(!env.aktivertTimebestilling){
-            return res.status(400).json({m:"Timebestilling er ikke aktivert"});
-        }
+        
         if(!Array.isArray(behandlinger)) behandlinger = [behandlinger];
         if(!Array.isArray(valgteSkisser)) valgteSkisser = [valgteSkisser];
 

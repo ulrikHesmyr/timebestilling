@@ -129,6 +129,10 @@ html{
 body{
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
+  
+  font-family: var(--font5);
+  letter-spacing: 0.04rem;
+  word-spacing: 0.2rem;
 }
 .startContainer{
   padding-bottom:300px;
@@ -209,8 +213,8 @@ header{
 }
 a{
   color:var(--farge5);
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-  font-weight: 400;
+  
+  font-weight: 100;
   font-family: var(--font1);
 }
 footer a {
@@ -494,6 +498,9 @@ input, button, select, option {
     text-shadow: none !important;
     letter-spacing: 0;
   }
+  p{
+    line-height: 1.3rem;
+  }
   
   .button{
     border: solid thin black;
@@ -570,6 +577,7 @@ input, button, select, option {
     padding: 0.5rem;
     gap:0.5rem;
     font-family: var(--font6);
+    font-weight: 600;
   }
   .tjeneste h4{
     font-family: var(--font5);
@@ -612,6 +620,8 @@ input, button, select, option {
     padding:0.7rem;
     transition: 0.5s ease;
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
+    font-family: var(--font6);
+    font-weight: 600;
   }
   
   .frisorene{
@@ -1615,9 +1625,6 @@ header * {
   }
   body{
     font-size: medium;
-    font-family: var(--font5);
-    letter-spacing: 0.04rem;
-    word-spacing: 0.2rem;
   }
   .timebestilling{
     display:flex;

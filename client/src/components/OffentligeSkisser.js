@@ -3,14 +3,19 @@ import React, {useState} from 'react'
 function OffentligeSkisser({env, sUpdateTrigger, updateTrigger, lagreVarsel, varsle, varsleFeil}){
     const [visLeggTilSkisse, sVisLeggTilSkisse] = useState(false);
     const [visSlettSkisse, sVisSlettSkisse] = useState(false);
-    const [skisser, sSkisser] = useState([]);
+    const [skisser, sSkisser] = useState(undefined);
+    const [alt, sAlt] = useState(""); 
 
 
     async function slettSkisse(skisse){
         lagreVarsel();
         try {
-            const req = await fetch(`http://localhost:1227/timebestilling/slettSkisse/${skisse}`, {
-                method: "POST"
+            const req = await fetch("http://localhost:1227/timebestilling/slettSkisse/skisse" + skisse, {
+                method: "POST",
+                //credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                }
             })
             const res = await req.json();
             if(res.valid){
@@ -28,11 +33,12 @@ function OffentligeSkisser({env, sUpdateTrigger, updateTrigger, lagreVarsel, var
         try {
             
             let formData = new FormData();
-            for(let i = 0; i < skisser.length; i++){
-                formData.append('fil', skisser[i]);
-            }
-            const req = await fetch("http://localhost:1228/timebestilling/lastOppSkisse", {
+            formData.append('alt', alt)
+            formData.append('fil', skisser);
+            
+            const req = await fetch("http://localhost:1227/timebestilling/lastOppSkisse", {
                 method: "POST",
+                //credentials: "include",
                 body: formData
             })
             const res = await req.json();
@@ -66,7 +72,7 @@ function OffentligeSkisser({env, sUpdateTrigger, updateTrigger, lagreVarsel, var
         </div>
         <div  className='row' style={{justifyContent:"flex-start"}}>
             {env.skisser.map((skisse, index)=>{
-                return <img className='skisseBilde' key={index} src={`${window.origin}/uploads/${skisse}`} alt={skisse}></img>
+                return <img className='skisseBilde' key={index} src={`${window.origin}/uploads/${skisse.filnavn}`} alt={skisse.alt}></img>
             })}
         </div>
 
@@ -76,18 +82,21 @@ function OffentligeSkisser({env, sUpdateTrigger, updateTrigger, lagreVarsel, var
                     sVisLeggTilSkisse(false);
                 }}></div>
                 <h4>Legg til nytt bilde</h4>
-                <p>Last opp bilder som kundene kan velge når de bestiller time</p>
+                <p>Last opp bilder som kundene kan velge når de bestiller time. Lag også en beskrivelse av bildet slik at svaksynte og andre som bruker skjermleser også kan få med seg innholdet.</p>
                 <input onChange={(e)=>{
                     if(e.target.files.length > 0){
-                        let tempFiler = [];
-                        for(let i = 0; i < e.target.files.length; i++){
-                            tempFiler.push(e.target.files[i]);
-                        }
-                        sSkisser(tempFiler);
+                        sSkisser(e.target.files[0]);
                     }
-                }} type='file' accept='image/*' multiple></input>
+                }} type='file' accept='image/*'></input>
+                <label>Beskrivelse: <input value={alt} onChange={(e)=>{
+                    sAlt(e.target.value);
+                }} ></input></label>
                 <button onClick={()=>{
-                    lastOppSkisse();
+                    if(alt.length > 0 && skisser){
+                        lastOppSkisse();
+                    } else {
+                        alert("Ikke riktig format");
+                    }
                 }}>BEKREFT</button>
             </div>
         }
@@ -102,10 +111,10 @@ function OffentligeSkisser({env, sUpdateTrigger, updateTrigger, lagreVarsel, var
             <div className='column2' style={{alignItems:"flex-start"}}>
                 {env.skisser.map((skisse, index)=>{
                     return <div key={index} className='row'>
-                        <img className='skisseBilde' src={`${window.origin}/uploads/${skisse}`} alt={skisse}></img>
+                        <img className='skisseBilde' src={`${window.origin}/uploads/${skisse.filnavn}`} alt={skisse.alt}></img>
                         <img alt="Slett skisse" onClick={()=>{
                             if(window.confirm("Er du sikker på at du vil slette denne skissen?")){
-                                slettSkisse(skisse);
+                                slettSkisse(skisse.filnavn);
                             }
                         }} className='ikonKnapper' src="delete.png"></img>
                     </div>

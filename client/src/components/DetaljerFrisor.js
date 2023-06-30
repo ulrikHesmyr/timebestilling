@@ -16,7 +16,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
     const [telefonAnsatt, sTelefonAnsatt] = useState();
     const [nyTelefonAnsatt, sNyTelefonAnsatt] = useState();
     const [epostAnsatt, sEpostAnsatt] = useState();
-    const [visRedigerTittelOgBeskrivelse, sVisRedigerTittelOgBeskrivelse] = useState(false);
+    
     const [tittel, sTittel] = useState(frisor.tittel);
     const [beskrivelse, sBeskrivelse] = useState(frisor.beskrivelse);
     const [paaJobb, sPaaJobb] = useState(frisor.paaJobb.map(obj => ({ ...obj })));
@@ -61,7 +61,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
         //credentials: 'include',
         body: JSON.stringify({navn:frisor.navn, paaJobb:p})
       }
-      const request = await fetch("http://localhost:1228/env/oppdaterPaaJobb", options);
+      const request = await fetch("http://localhost:1227/env/oppdaterPaaJobb", options);
       const response = await request.json();
       if(response){
         varsle();
@@ -86,7 +86,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
           //credentials: 'include',
           body: JSON.stringify({navn:frisor.navn, pause:nyPause, dag:nyPauseDag})
         }
-        const request = await fetch("http://localhost:1228/env/leggTilPause", options);
+        const request = await fetch("http://localhost:1227/env/leggTilPause", options);
         const response = await request.json();
         if(response){
           varsle();
@@ -110,7 +110,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
           //credentials: 'include',
           body: JSON.stringify({navn:navn, pause:pause, dag:dag})
         }
-        const request = await fetch("http://localhost:1228/env/fjernPause", options);
+        const request = await fetch("http://localhost:1227/env/fjernPause", options);
         const response = await request.json();
         if(response){
           varsle();
@@ -122,32 +122,6 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
         }
     }
 
-    //Oppdaterer tittel og beskrivelse for ansatt
-    async function oppdaterTittelOgBeskrivelse(){
-      try {
-        
-      lagreVarsel();
-      const options = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        //credentials: 'include',
-        body: JSON.stringify({navn:frisor.navn, tittel:tittel, beskrivelse:beskrivelse})
-      }
-      const request = await fetch("http://localhost:1228/env/oppdaterTittelOgBeskrivelse", options);
-      const response = await request.json();
-      if(response){
-        varsle();
-        sUpdateTrigger(!updateTrigger);
-      } else {
-        alert("Noe gikk galt, prøv på nytt");
-      }
-      } catch (error) {
-        alert("Noe gikk galt. Sjekk internettforbindelsen og prøv på nytt");
-        varsleFeil();
-      }
-    }
 
     
       //Henter info om ansatt er admin, epost og telefonnummer 
@@ -162,7 +136,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
                 //credentials:'include'
 
             }
-            const request = await fetch("http://localhost:1228/env/hentAdminInfo", options);
+            const request = await fetch("http://localhost:1227/env/hentAdminInfo", options);
             const response = await request.json();
             if(response){
               sVisGiAdminKnapp(!response.admin);
@@ -189,7 +163,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
           body: JSON.stringify({navn:n})
 
         }
-        const request = await fetch("http://localhost:1228/env/giAdmin", options);
+        const request = await fetch("http://localhost:1227/env/giAdmin", options);
         const response = await request.json();
         if(response){
           varsle();
@@ -216,7 +190,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
         //credentials: 'include',
         body: JSON.stringify({navn:frisor.navn, telefon: nyTelefonAnsatt})
       }
-      const request = await fetch("http://localhost:1228/env/oppdaterTelefonAnsatt", options);
+      const request = await fetch("http://localhost:1227/env/oppdaterTelefonAnsatt", options);
       const response = await request.json();
       if(response){
         varsle();
@@ -246,7 +220,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
           body: formData
         }
 
-        const request = await fetch("http://localhost:1228/env/oppdaterBildeFrisor/" + navn, options);
+        const request = await fetch("http://localhost:1227/env/oppdaterBildeFrisor/" + navn, options);
         const response = await request.json();
         if(response.m){
           alert(response.m);
@@ -277,7 +251,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
           //credentials: 'include',
           body: JSON.stringify({navn: frisor.navn, ikkeSiOpp:ikkeSiOpp, dato:oppsigelsesDato})
         }
-        const request = await fetch("http://localhost:1228/env/siOppFrisor", options);
+        const request = await fetch("http://localhost:1227/env/siOppFrisor", options);
         const response = await request.json();
 
         if(response.valid){  
@@ -307,7 +281,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
           //credentials: 'include',
           body: JSON.stringify({navn:frisor.navn, behandlinger:frisorTjenester})
         }
-        const request = await fetch("http://localhost:1228/env/oppdaterBehandlingerFrisor", options);
+        const request = await fetch("http://localhost:1227/env/oppdaterBehandlingerFrisor", options);
         const response = await request.json();
         if(response.valid){
           varsle();
@@ -336,7 +310,7 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
         //credentials: 'include',
         body: JSON.stringify({navn:navn.toLowerCase()})
       }
-      const request = await fetch("http://localhost:1228/login/resetPassord", options);
+      const request = await fetch("http://localhost:1227/login/resetPassord", options);
       const response = await request.json();
       if(response.valid){
         varsle();
@@ -432,10 +406,6 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
                 sVisEndrePauser(true);
               }}>Endre pauser</button>
 
-              
-              <button onClick={()=>{
-                sVisRedigerTittelOgBeskrivelse(true);
-              }}>Rediger tittel eller beskrivelse</button>
 
               
               <button style={{background:"yellow"}} onClick={()=>{
@@ -569,30 +539,6 @@ function DetaljerFrisor({env, bruker, frisor, varsle, lagreVarsel, varsleFeil, s
       </div>
             </div>:<></>}
 
-            {visRedigerTittelOgBeskrivelse?<div className='fokus'>
-              <h4>Rediger tittel og/eller beskrivelse for {frisor.navn}</h4>
-              <label>Tittel: <input type="text" value={tittel} onChange={(e)=>{
-                e.preventDefault();
-                sTittel(e.target.value);
-              }}></input></label>
-              <label>Beskrivelse: <textarea value={beskrivelse} onChange={(e)=>{
-                e.preventDefault();
-                sBeskrivelse(e.target.value);
-              }}></textarea></label>
-              <div>
-                <button onClick={(e)=>{
-                  e.preventDefault();
-                  sVisRedigerTittelOgBeskrivelse(false);
-                  sTittel(frisor.tittel);
-                  sBeskrivelse(frisor.beskrivelse);
-                }}>Avbryt</button>
-                <button disabled={frisor.tittel === tittel && frisor.beskrivelse === beskrivelse} onClick={(e)=>{
-                  e.preventDefault();
-                  oppdaterTittelOgBeskrivelse();
-                  sVisRedigerTittelOgBeskrivelse(false);
-                }}>Lagre</button>
-              </div>
-            </div>:<></>}
 
             {visRedigerPaaJobb?<div className='fokus'>
 

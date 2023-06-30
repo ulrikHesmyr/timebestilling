@@ -1,9 +1,7 @@
 import React, { useState, useEffect} from 'react'
 import LeggTilFrisor from '../components/LeggTilFrisor';
 import DetaljerFrisor from '../components/DetaljerFrisor';
-import RedigerOmOss from '../components/RedigerOmOss';
 import Fri from '../components/Fri';
-import RedigerAapningstider from '../components/RedigerAapningstider';
 import SMS from '../components/SMS';
 import {Link} from 'react-router-dom';
 import { hentMaaned } from '../App';
@@ -73,16 +71,11 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
     const [menySynlig, sMenySynlig] = useState(false);
 
     //Om oss
-    const [visRedigerOmOss, sVisRedigerOmOss] = useState(false);
-    const [omOssTekst, sOmOssTekst] = useState(env.omOssArtikkel);
-   
-
     useEffect(()=>{
         sAdresse(env.adresse);
         sAdresseTekst((`${env.adresse.gatenavn} ${env.adresse.husnummer}${env.adresse.bokstav?env.adresse.bokstav:""}, ${env.adresse.postnummer} ${env.adresse.poststed}`));
         sNyBehandlingKategori(env.kategorier[0]);
         sBehandlingForSletting(env.tjenester[0].navn);
-        sOmOssTekst(env.omOssArtikkel);
     }, [env]);
 
     //Sletter en høytidsdag
@@ -98,7 +91,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 //credentials:'include'
 
             }
-            const request = await fetch("http://localhost:1228/env/slettHoytidsdag", options);
+            const request = await fetch("http://localhost:1227/env/slettHoytidsdag", options);
             const response = await request.json();
             if(response){
                 varsle();
@@ -123,7 +116,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 //credentials:'include'
 
             }
-            const request = await fetch("http://localhost:1228/env/leggTilHoytidsdag", options);
+            const request = await fetch("http://localhost:1227/env/leggTilHoytidsdag", options);
             const response = await request.json();
             if(response){
                 varsle();
@@ -147,7 +140,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 //credentials:'include'
 
             }
-            const request = await fetch("http://localhost:1228/env/leggTilSosialtMedie", options);
+            const request = await fetch("http://localhost:1227/env/leggTilSosialtMedie", options);
             const response = await request.json();
             if(response){
                 varsle();
@@ -173,7 +166,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 //credentials:'include'
             
             }
-            const request = await fetch("http://localhost:1228/env/slettKategori", options);
+            const request = await fetch("http://localhost:1227/env/slettKategori", options);
             const response = await request.json();
             if(response){
                 varsle();
@@ -198,7 +191,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 //credentials:'include'
             
             }
-            const request = await fetch("http://localhost:1228/env/nyKategori", options);
+            const request = await fetch("http://localhost:1227/env/nyKategori", options);
             const response = await request.json();
             if(response){
                 varsle();
@@ -223,7 +216,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
             //credentials:'include'
 
         }
-        const request = await fetch("http://localhost:1228/env/slettBehandling", options);
+        const request = await fetch("http://localhost:1227/env/slettBehandling", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -247,7 +240,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
             body: JSON.stringify({behandling:b}),
             //credentials:'include'
         }
-        const request = await fetch("http://localhost:1228/env/opprettNyBehandling", options);
+        const request = await fetch("http://localhost:1227/env/opprettNyBehandling", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -286,7 +279,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
             body: JSON.stringify({adresse:adresse}),
             //credentials:'include'
         }
-        const request = await fetch("http://localhost:1228/env/oppdaterAdresse", options);
+        const request = await fetch("http://localhost:1227/env/oppdaterAdresse", options);
         const response = await request.json();
         if(response){
             varsle();
@@ -310,7 +303,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
             body: JSON.stringify(slettetTime),
             //credentials:'include'
         }
-        const request = await fetch("http://localhost:1228/timebestilling/oppdaterTimebestillinger", options);
+        const request = await fetch("http://localhost:1227/timebestilling/oppdaterTimebestillinger", options);
         const response = await request.json();
         if(response.valid){
             varsle();
@@ -364,18 +357,13 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                             e.preventDefault();
                             setSynligKomponent(5);
                             sMenySynlig(false);
-                        }}>SMS-feedback, bestillings-PIN, timebestilling etc.</div>
+                        }}>SMS</div>
         
-                        <div className={synligKomponent === 6?'aktivSide adminKnapp':"adminKnapp"} onClick={(e)=>{
-                            e.preventDefault();
-                            setSynligKomponent(6);
-                            sMenySynlig(false);
-                        }}>Om-oss siden</div>
     
                     </div>
                 </div>
 
-                {synligKomponent === 6? <RedigerOmOss env={env} varsleFeil={varsleFeil} varsle={varsle} lagreVarsel={lagreVarsel} sUpdateTrigger={sUpdateTrigger} updateTrigger={updateTrigger} />:""}
+                
                 
                 <Fri env={env} bestilteTimer={bestilteTimer} synligKomponent={synligKomponent} lagreVarsel={lagreVarsel} varsle={varsle} varsleFeil={varsleFeil} />
 
@@ -384,7 +372,7 @@ function Admin({env, bruker, bestilteTimer, sUpdateTrigger, updateTrigger, varsl
                 
                 {synligKomponent === 1 && bestilteTimer !== null?(<div className='fjernTimebestillingerSiden'>
                 <h3>Timebestillinger</h3>
-                <p>Bestill time her: <Link to="/timebestilling">bestill time</Link> </p>
+                <p>Bestill time her: <Link to="/">bestill time</Link> </p>
 
                 {visRedigerTimebestillinger?
                 <div className='fokus'>
@@ -854,7 +842,7 @@ function DetaljerBehandling({behandling, env, lagreVarsel, varsle, varsleFeil, s
                 //credentials:'include'
 
             }
-            const request = await fetch("http://localhost:1228/env/oppdaterBehandling", options);
+            const request = await fetch("http://localhost:1227/env/oppdaterBehandling", options);
             const response = await request.json();
             if(response){
                 varsle();

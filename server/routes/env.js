@@ -427,22 +427,6 @@ router.post("/leggTilInnhold", authorization, async (req, res)=>{
     }
 })
 
-router.post("/endreAktivertTimebestilling", authorization, async (req, res)=>{
-    const {aktivert} = req.body;
-    try {
-        if(req.admin){
-            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {aktivertTimebestilling:aktivert});
-            if(oppdatertEnv){
-                return res.send({valid:true});
-            } else {
-                return res.send({valid:false});
-            }
-        }
-    } catch (error) {
-        console.log(error);
-    }
-}
-);
 
 router.post("/leggTilHoytidsdag", authorization, async (req, res)=>{
     const {dag, dato} = req.body;
@@ -530,13 +514,13 @@ router.post("/oppdaterPaaJobb", authorization, async (req,res)=>{
 router.post("/opprettFrisor/:navn", authorization, upload, async (req,res)=>{ 
 
    
-    const {nyFrisorTjenester, tittel, beskrivelse, paaJobb} = req.body;
+    const {nyFrisorTjenester, paaJobb} = req.body;
     const {navn} = req.params;
     let nyFrisorTjenesterArray = nyFrisorTjenester.split(",");
     try {
         if(req.admin){
             const img = navn.toLowerCase() + ".jpg";
-            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {$push:{frisorer:{navn:navn, produkter:nyFrisorTjenesterArray, img:img, tittel:tittel, beskrivelse:beskrivelse, paaJobb:JSON.parse(paaJobb)}}});
+            const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {$push:{frisorer:{navn:navn, produkter:nyFrisorTjenesterArray, img:img, paaJobb:JSON.parse(paaJobb)}}});
             if(oppdatertEnv){
                 return res.send({message:"Medarbeider opprettet!"});
             } else {
@@ -643,31 +627,6 @@ router.post("/leggTilPause", authorization, async (req, res)=>{
     }
 })
 
-router.post("/oppdaterTittelOgBeskrivelse", authorization, async (req,res)=>{
-    const {navn, tittel, beskrivelse} = req.body;
-    try {
-        if(req.admin){
-            const env = await Environment.findOne({bedrift:BEDRIFT});
-            if(env){
-                let nyFrisorer = env.frisorer.map(frisor => {
-                    if(frisor.navn === navn){
-                        frisor.tittel = tittel;
-                        frisor.beskrivelse = beskrivelse;
-                    }
-                    return frisor;
-                })
-                const oppdatertEnv = await Environment.findOneAndUpdate({bedrift:BEDRIFT}, {frisorer:nyFrisorer});
-                if(oppdatertEnv){
-                    return res.send({message:"Tittel og beskrivelse oppdatert!"});
-                } else {
-                    return res.send({message:"Noe har skjedd gærent i /oppdaterTittelOgBeskrivelse!"});
-                }
-            }
-        }
-    } catch (error) {
-        console.log(error, "error i oppdaterTittelOgBeskrivelse");
-    }
-})
 
 
 router.post("/oppdaterBehandlingerFrisor", authorization, async (req, res)=>{

@@ -4,8 +4,6 @@ import {klokkeslettFraMinutter, minutterFraKlokkeslett} from './Klokkeslett.js'
 function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel, varsleFeil}){
 
     const [nyFrisorNavn, sNyFrisorNavn] = useState("");
-    const [nyFrisorTittel, sNyFrisorTittel] = useState("");
-    const [nyFrisorBeskrivelse, sNyFrisorBeskrivelse] = useState("");
     const [tlfNyFrisor, sTlfNyFrisor] = useState("");
     const [epost, sEpost] = useState("");
     const [frisorTjenester, setFrisortjenester] = useState([]); //Skal være indekser, akkurat som i databasen
@@ -40,15 +38,13 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
         formData.append("navn", nyFrisorNavn);
         formData.append("nyFrisorTlf", parseInt(tlfNyFrisor));
         formData.append("nyFrisorTjenester", frisorTjenester);
-        formData.append("tittel", nyFrisorTittel);
-        formData.append("beskrivelse", nyFrisorBeskrivelse);
         formData.append("paaJobb", JSON.stringify(paaJobb));
         const options2 = {
             method:"POST",
             //credentials: 'include',
             body: formData
         }
-        const request2 = await fetch("http://localhost:1228/env/opprettFrisor/" + nyFrisorNavn, options2);
+        const request2 = await fetch("http://localhost:1227/env/opprettFrisor/" + nyFrisorNavn, options2);
         const response2 = await request2.json();
 
         //Oppretter bruker for ansatt
@@ -69,7 +65,7 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
                 //credentials: 'include',
                 body: JSON.stringify(data)
             }
-            const request = await fetch("http://localhost:1228/login/opprettBruker", options);
+            const request = await fetch("http://localhost:1227/login/opprettBruker", options);
             const response = await request.json();
             if(response && response.m){
                 alert(response.m);
@@ -80,8 +76,6 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
                 sTlfNyFrisor("");
                 sEpost("");
                 sNyFrisorNavn("");
-                sNyFrisorBeskrivelse("");
-                sNyFrisorTittel("");
                 sBildeAvFrisor(null);
                 sAdminTilgang(false);
                 sPaaJobb(env.klokkeslett.map(obj => ({ ...obj, pauser:[]})));
@@ -108,8 +102,6 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
         sLeggTil(false);
         sTlfNyFrisor("");
         sNyFrisorNavn("");
-        sNyFrisorBeskrivelse("");
-        sNyFrisorTittel("");
     }
   return (
     <>
@@ -117,14 +109,6 @@ function LeggTilFrisor({env, updateTrigger, sUpdateTrigger, varsle, lagreVarsel,
         <label style={{display:"flex", flexDirection:"column", fontWeight:"bold"}}>Navn på ny ansatt: <input required onChange={(e)=>{
             sNyFrisorNavn(e.target.value);
         }} value={nyFrisorNavn} type="text" placeholder='Navn navnesen' maxLength={20}></input></label>
-
-        <label style={{display:"flex", flexDirection:"column", fontWeight:"bold"}}>Tittel: <input required onChange={(e)=>{
-            sNyFrisorTittel(e.target.value);
-        }} value={nyFrisorTittel} type="text" placeholder='eks.: Frisør, Terapeut, etc.' maxLength={20}></input></label>
-
-        <label style={{display:"flex", flexDirection:"column", fontWeight:"bold"}}>Beskrivelse: <textarea onChange={(e)=>{
-            sNyFrisorBeskrivelse(e.target.value);
-        }} value={nyFrisorBeskrivelse} placeholder='Navn har jobbet hos oss siden... Hen er kreativ og liker å jobbe med... Nøyaktig og opptatt av å forstå kundens behov...'></textarea></label>
 
         <label style={{display:"flex", flexDirection:"column", fontWeight:"bold"}}>Telefonnummeret til ansatt: <input required style={{letterSpacing:"0.3rem"}} onChange={(e)=>{
             sTlfNyFrisor(e.target.value);

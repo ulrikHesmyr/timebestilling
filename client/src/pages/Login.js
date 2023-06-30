@@ -66,7 +66,7 @@ function Login(){
             valgtBrukertype:false,
             brukertype:brukertypeValg
         }
-        const request = await fetch("http://localhost:1228/login/auth", {
+        const request = await fetch("http://localhost:1227/login/auth", {
             method:"POST",
             headers:{
                 "Content-Type":"application/json",
@@ -101,7 +101,7 @@ function Login(){
                     brukertype:(hihi ? "admin" : "vakter")
                 }
 
-                const r = await fetch("http://localhost:1228/login/auth", {
+                const r = await fetch("http://localhost:1227/login/auth", {
                     method:"POST",
                     headers:{
                         "Content-Type":"application/json",
@@ -157,7 +157,7 @@ function Login(){
 
     async function send2FA(){
         //Sender request til TWOFA route på server for å sjekke om PIN stemmer
-        const request = await fetch("http://localhost:1228/login/TWOFA", {
+        const request = await fetch("http://localhost:1227/login/TWOFA", {
             method:"POST",
             headers:{
                 "Content-Type":"application/json",
@@ -179,7 +179,7 @@ function Login(){
     }
 
     async function alleredeLoggetInn(){
-        const request = await fetch("http://localhost:1228/login/loggetinn",{method:"GET",
+        const request = await fetch("http://localhost:1227/login/loggetinn",{method:"GET",
          //credentials:'include'
         });
         const response = await request.json();
@@ -197,7 +197,7 @@ function Login(){
     }
 
     async function loggut(){
-        const request = await fetch("http://localhost:1228/login/logout", {method:"GET",
+        const request = await fetch("http://localhost:1227/login/logout", {method:"GET",
             //credentials:'include'
         });
         const response = await request.json();
