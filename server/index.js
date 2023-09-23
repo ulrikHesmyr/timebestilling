@@ -19,6 +19,7 @@ const Bestiltetimer = require("./model/bestilling");
 const Environment = require("./model/env");
 const FriElementer = require("./model/fri");
 const Brukere = require("./model/brukere");
+const { krypter } = require("./configuration/encryption");
 const {BEDRIFT, NODE_ENV, CUSTOMER_KEY, ACCESS_TOKEN_KEY} = process.env;
 
 app.use(cors());
@@ -290,6 +291,24 @@ function hentDato(d = new Date()){ //Hvilket format true=yyyy-mm-dd, false=["dd"
   return (`${year}-${month}-${day}`);
   
 }
+
+// async function endrePassordene(){
+//   try {
+//     const brukere = await Brukere.find();
+//     brukere.forEach(async bruker => {
+//       const passord = jwt.verify(bruker.passord, process.env.PASSORD_KEY).passord;
+//       const nyttPassord = krypter(passord);
+//       const oppdatert = await Brukere.findOneAndUpdate({brukernavn: bruker.brukernavn}, {passord: nyttPassord});
+//       if(!oppdatert){
+//         console.log("Kunne ikke oppdatere passord");
+//       }
+//     });
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
+
+
 //FOR prod
 
 //const createEnvironment = require("./configuration/createEnvironment");

@@ -13,6 +13,7 @@ const Brukere = require("../model/brukere");
 const authorization = require("../middleware/authorization");
 const {BEDRIFT, ACCESS_TOKEN_KEY, NODE_ENV, TWOFA_SECRET, KEYNAME_SMS, TLF_SECRET, PRIVATE_KEY, CUSTOMER_KEY, PASSORD_KEY} = process.env;
 
+const {krypter, dekrypter} = require("../configuration/encryption");
 
 let loginIntervall = 5;  
 if(NODE_ENV === "development") loginIntervall = 2;
@@ -37,7 +38,7 @@ router.post("/oppdaterPassord", authorization, async(req,res)=>{
     } else {
         bruker = "admin";
     }
-    let passordet = jwt.sign({passord: passord}, PASSORD_KEY);
+    let passordet = krypter(passord);
     const oppdatertPassord = await Brukere.findOneAndUpdate({brukernavn:bruker}, {passord:passordet});
     if(oppdatertPassord){
         const accessToken = jwt.sign({brukernavn:bruker, passord: passordet, brukertype: req.brukertype}, ACCESS_TOKEN_KEY);
@@ -61,7 +62,7 @@ router.post("/resetPassord", authorization, async(req,res)=>{
     //Resetter passordet til en ansatt
     const {navn} = req.body;
     if(req.admin){
-        const bruker = await Brukere.findOneAndUpdate({brukernavn:navn}, {passord:jwt.sign({passord: navn}, PASSORD_KEY),});
+        const bruker = await Brukere.findOneAndUpdate({brukernavn:navn}, {passord:krypter(navn)});
 
         if(bruker){
             return res.json({message:"Reset passord", valid:true});
@@ -97,7 +98,7 @@ router.post("/opprettBruker", authorization, async (req,res)=>{
         try {
             const nyBruker = await Brukere.create({
                 brukernavn: nyBrukernavn,
-                passord: jwt.sign({passord: nyBrukernavn}, PASSORD_KEY),
+                passord: krypter(nyBrukernavn),
                 telefonnummer: jwt.sign({telefonnummer: nyTelefonnummer}, TLF_SECRET),
                 admin: adminTilgang,
                 epost: epost
@@ -189,7 +190,7 @@ router.post("/TWOFA", twofaLimiter, async (req,res)=>{
     //Tar høyde for at brukeren allerede har fått SMS med PIN og har dermed også cookie med kryptert PIN
     const {pin, brukertype} = req.body;
     const two_FA = jwt.verify(req.cookies.two_FA, TWOFA_SECRET);
-    if(two_FA.pin === parseInt(pin)){
+    if(dekrypter(two_FA.pin) === parseInt(pin)){
         //Setter cookie slik at brukeren ikke trenger å autorisere med 2FA neste gang
         const newToken = jwt.sign({brukernavn:two_FA.brukernavn, gyldig:true},ACCESS_TOKEN_KEY);
         const expirationDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000 * 26); //26 uker
@@ -235,12 +236,12 @@ router.post("/TWOFA", twofaLimiter, async (req,res)=>{
 
 router.post('/auth',loginLimiter, async (req,res)=>{
     try {
-        const {brukernavn, passord, valgtBrukertype, brukertype}= req.body;
+        const {brukernavn, passord, valgtBrukertype, brukertype} = req.body;
         const finnBruker = await Brukere.findOne({brukernavn: brukernavn});
-        let passordet = jwt.verify(finnBruker.passord, PASSORD_KEY);
+        let passordet = dekrypter(finnBruker.passord);
         
 
-        if(finnBruker && passordet.passord === passord){
+        if(finnBruker && passordet === passord){
 
             if(finnBruker.admin){
 
@@ -262,7 +263,7 @@ router.post('/auth',loginLimiter, async (req,res)=>{
                 
                 //Dersom brukeren ikke har autorisert med 2FA i denne nettleseren enda
                 const randomGeneratedPIN = randomNumber(2000, 9999);
-                const newToken = jwt.sign({brukernavn: finnBruker.brukernavn, pin: randomGeneratedPIN},TWOFA_SECRET,{expiresIn:'20m'});
+                const newToken = jwt.sign({brukernavn: finnBruker.brukernavn, pin: krypter(randomGeneratedPIN)},TWOFA_SECRET,{expiresIn:'20m'});
                 res.cookie("two_FA", newToken, {
                     httpOnly: true,
                     secure: process.env.HTTPS_ENABLED == "secure",
