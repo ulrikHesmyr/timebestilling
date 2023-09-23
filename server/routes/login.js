@@ -190,7 +190,7 @@ router.post("/TWOFA", twofaLimiter, async (req,res)=>{
     //Tar høyde for at brukeren allerede har fått SMS med PIN og har dermed også cookie med kryptert PIN
     const {pin, brukertype} = req.body;
     const two_FA = jwt.verify(req.cookies.two_FA, TWOFA_SECRET);
-    if(dekrypter(two_FA.pin) === parseInt(pin)){
+    if(dekrypter(two_FA.pin) === pin){
         //Setter cookie slik at brukeren ikke trenger å autorisere med 2FA neste gang
         const newToken = jwt.sign({brukernavn:two_FA.brukernavn, gyldig:true},ACCESS_TOKEN_KEY);
         const expirationDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000 * 26); //26 uker
