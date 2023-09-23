@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const Brukere = require("../model/brukere");
 
 const {ACCESS_TOKEN_KEY, NODE_ENV, PASSORD_KEY} = process.env;
+const {krypter, dekrypter} = require("../configuration/encryption");
 
 const authorization = async (req,res,next) => {
     try {
@@ -13,9 +14,9 @@ const authorization = async (req,res,next) => {
                 return res.send({message:"Du må logge inn.", valid:false})
             } else {
                 const data = jwt.verify(token, ACCESS_TOKEN_KEY);
-                let accessPassord = jwt.verify(data.passord, PASSORD_KEY).passord;
+                let accessPassord = dekrypter(data.passord);
                 const funnetBruker = await Brukere.findOne({brukernavn: data.brukernavn});
-                let passordet = jwt.verify(funnetBruker.passord, PASSORD_KEY).passord;
+                let passordet = dekrypter(funnetBruker.passord);
                 if(funnetBruker && passordet === accessPassord){
                     req.brukernavn = data.brukernavn;
                     req.admin = funnetBruker.admin;
