@@ -263,7 +263,7 @@ router.post('/auth',loginLimiter, async (req,res)=>{
                 
                 //Dersom brukeren ikke har autorisert med 2FA i denne nettleseren enda
                 const randomGeneratedPIN = randomNumber(2000, 9999);
-                const newToken = jwt.sign({brukernavn: finnBruker.brukernavn, pin: krypter(randomGeneratedPIN)},TWOFA_SECRET,{expiresIn:'20m'});
+                const newToken = jwt.sign({brukernavn: finnBruker.brukernavn, pin: krypter(String(randomGeneratedPIN))},TWOFA_SECRET,{expiresIn:'20m'});
                 res.cookie("two_FA", newToken, {
                     httpOnly: true,
                     secure: process.env.HTTPS_ENABLED == "secure",
